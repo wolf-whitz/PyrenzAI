@@ -4,12 +4,12 @@ import { supabase } from '~/Utility/supabaseClient';
 import { useUserStore as UserStore } from '~/store';
 import { User } from '@supabase/supabase-js';
 
-const Home = React.lazy(() => import('~/routes/home'));
-const Index = React.lazy(() => import('~/routes/index'));
-const Auth = React.lazy(() => import('~/routes/auth'));
-const Create = React.lazy(() => import('~/routes/create'));
-const Profile = React.lazy(() => import('~/routes/profile'));
-const Chat = React.lazy(() => import('~/routes/chat'));
+const Home = React.lazy(() => import('~/routes/Home'));
+const Index = React.lazy(() => import('~/routes/Index'));
+const Auth = React.lazy(() => import('~/routes/Auth'));
+const Create = React.lazy(() => import('~/routes/Create'));
+const Profile = React.lazy(() => import('~/routes/Profile'));
+const Chat = React.lazy(() => import('~/routes/Chat'));
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -59,12 +59,12 @@ function App() {
       <Suspense>
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/create" element={<Create />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/chat/:conversation_id" element={<Chat />} />
+          <Route path="/Home" element={<Home />} />
+          <Route path="/Create" element={<Create />} />
+          <Route path="/Profile" element={<Profile />} />
+          <Route path="/Chat/:conversation_id" element={<Chat />} />
 
-          {unauthenticated && <Route path="/auth" element={<Auth />} />}
+          {unauthenticated && <Route path="/Auth" element={<Auth />} />}
         </Routes>
       </Suspense>
     </Router>
