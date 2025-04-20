@@ -4,11 +4,11 @@ import { supabase } from '~/Utility/supabaseClient';
 import { useUserStore as UserStore } from '~/store';
 import { User } from '@supabase/supabase-js';
 
-const Home = React.lazy(() => import('~/routes/Home'));
+const Home = React.lazy(() => import('~/routes/home'));
 const Index = React.lazy(() => import('~/routes/index'));
 const Auth = React.lazy(() => import('~/routes/auth'));
-const Create = React.lazy(() => import('~/routes/Create'));
-const Profile = React.lazy(() => import('~/routes/Profile'));
+const Create = React.lazy(() => import('~/routes/create'));
+const Profile = React.lazy(() => import('~/routes/profile'));
 const Chat = React.lazy(() => import('~/routes/chat'));
 
 function App() {

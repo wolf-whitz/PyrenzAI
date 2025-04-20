@@ -1,10 +1,13 @@
 {
-    "extends": "./tsconfig.json",
-    "compilerOptions": {
-      "noEmit": false,      
-      "outDir": "./dist", 
-      "rootDir": "./src" 
-    },
-    "include": ["src"]
-  }
-  
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "noEmit": true, 
+    "outDir": "./dist", 
+    "rootDir": "./src",
+    "baseUrl": ".",  
+    "paths": {
+      "~/*": ["src/*"]
+    }
+  },
+  "include": ["src"]
+}
