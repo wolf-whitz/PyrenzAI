@@ -1,9 +1,4 @@
 {
-  "build": {
-    "src": "src",
-    "use": "@vercel/node",
-    "outputDirectory": "dist"  
-  },
   "headers": [
     {
       "source": "/(.*)",
