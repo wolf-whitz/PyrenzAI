@@ -4,7 +4,7 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "build": "concurrently \"tsc -p tsconfig.build.json \" \"tsc-alias\" \"vite build\"",
+    "build": "concurrently \"tsc -p tsconfig.build.json \" \"vite build\"",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "dev": "concurrently \"vite dev --port 8800\" \"tsc --watch\"",
