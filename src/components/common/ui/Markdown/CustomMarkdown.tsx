@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import '~/Assets/Css/Renderer.css';
+import '~/styles/Renderer.css';
 
 interface CustomMarkdownProps {
   text?: string;

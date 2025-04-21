@@ -1,27 +1,13 @@
 import { useState } from 'react';
-import { supabase } from '~/Utility/supabaseClient';
 import { FaDiscord } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Utils } from '~/Utility/Utility';
 import ReactDOM from 'react-dom';
+import { handleLogin, handleOAuthSignIn } from '~/api';
 
 interface LoginProps {
   onClose: () => void;
   onRegisterOpen: () => void;
-}
-
-interface AppUser {
-  id: string;
-  email?: string;
-  user_metadata?: {
-    avatar_url?: string;
-    full_name?: string;
-  };
-}
-
-interface ApiResponse {
-  error?: string;
 }
 
 export default function Login({ onClose, onRegisterOpen }: LoginProps) {
@@ -30,108 +16,32 @@ export default function Login({ onClose, onRegisterOpen }: LoginProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
-  const extractTokensFromLocalStorage = (): {
-    accessToken?: string;
-    refreshToken?: string;
-  } | null => {
-    const authData = localStorage.getItem('sb-dojdyydsanxoblgjmzmq-auth-token');
-    if (!authData) return null;
-
-    try {
-      const parsedData = JSON.parse(authData);
-      const accessToken = parsedData?.provider_token;
-      const refreshToken = parsedData?.refresh_token;
-
-      if (accessToken && refreshToken) {
-        localStorage.setItem('sb-auth-token', accessToken);
-        localStorage.setItem('sb-refresh-token', refreshToken);
-        return { accessToken, refreshToken };
-      }
-    } catch (err) {
-      console.error('Error parsing auth data:', err);
-    }
-    return null;
-  };
-
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) throw new Error(error.message);
-
-      const tokens = extractTokensFromLocalStorage();
-      if (tokens) {
-        const authData = JSON.parse(
-          localStorage.getItem('sb-dojdyydsanxoblgjmzmq-auth-token') || ''
-        );
-        const user = authData?.user;
-        if (user) await sendUserDataToSupabase(user);
-      }
-
+      await handleLogin(email, password);
       onClose();
     } catch (err: any) {
-      setError(err.message || 'An unexpected error occurred.');
+      setError(err.message);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleOAuthSignIn = async (provider: 'google' | 'discord') => {
+  const handleOAuth = async (provider: 'google' | 'discord') => {
     setLoading(true);
     setError('');
 
     try {
-      const { error } = await supabase.auth.signInWithOAuth({ provider });
-
-      if (error) throw new Error(error.message);
-
-      const tokens = extractTokensFromLocalStorage();
-      if (tokens) {
-        const authData = JSON.parse(
-          localStorage.getItem('sb-dojdyydsanxoblgjmzmq-auth-token') || ''
-        );
-        const user = authData?.user;
-        if (user) await sendUserDataToSupabase(user);
-      }
-
+      await handleOAuthSignIn(provider);
       onClose();
     } catch (err: any) {
-      setError(err.message || 'Failed to sign in with OAuth.');
+      setError(err.message);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const sendUserDataToSupabase = async (user: AppUser): Promise<void> => {
-    const username: string = user.email?.split('@')[0] || 'UnknownUser';
-    const imageUrl: string =
-      user.user_metadata?.avatar_url ||
-      `https://api.dicebear.com/8.x/avataaars/svg?seed=${username}`;
-
-    try {
-      const response: ApiResponse = await Utils.post<ApiResponse>(
-        '/authorized',
-        {
-          id: user.id,
-          name: user.user_metadata?.full_name || username,
-          imageUrl,
-        }
-      );
-
-      if (response.error) {
-        console.error('Error sending user data:', response.error);
-      } else {
-        console.log('User data successfully sent!');
-      }
-    } catch (err) {
-      console.error('Unexpected error:', err);
     }
   };
 
@@ -172,7 +82,7 @@ export default function Login({ onClose, onRegisterOpen }: LoginProps) {
 
           <div className="flex flex-col gap-3 mb-5">
             <button
-              onClick={() => handleOAuthSignIn('google')}
+              onClick={() => handleOAuth('google')}
               className="flex items-center justify-center gap-3 bg-white text-black py-2 rounded font-bold transition-all hover:bg-gray-200 font-baloo-da-2 border border-gray-400 shadow-md"
               disabled={loading}
             >
@@ -181,7 +91,7 @@ export default function Login({ onClose, onRegisterOpen }: LoginProps) {
             </button>
 
             <button
-              onClick={() => handleOAuthSignIn('discord')}
+              onClick={() => handleOAuth('discord')}
               className="flex items-center justify-center gap-3 bg-[#5865F2] text-white py-2 rounded font-bold transition-all hover:bg-[#4651c8] font-baloo-da-2 shadow-md"
               disabled={loading}
             >
@@ -198,7 +108,7 @@ export default function Login({ onClose, onRegisterOpen }: LoginProps) {
             <div className="flex-1 border-t border-gray-700"></div>
           </div>
 
-          <form onSubmit={handleLogin} className="flex flex-col gap-4">
+          <form onSubmit={handleLoginSubmit} className="flex flex-col gap-4">
             <div>
               <label className="text-gray-400 text-sm font-baloo-da-2">
                 Email

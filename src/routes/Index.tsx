@@ -11,34 +11,26 @@ import {
   CardTitle,
   DownloadModal,
 } from '~/components';
-import '~/Assets/Css/Preview.css';
-import '~/Assets/Fonts/BalooDa2-Regular.ttf';
-import Background from '~/Assets/Images/BackgroundTree.png';
-import ChattingExample from '~/Assets/Images/ChattingExample.png';
-import MagicalBook from '~/Assets/Images/MagicalBook.png';
+import '~/styles/Preview.css';
 import { motion } from 'framer-motion';
 import AOS from 'aos';
-
-export const meta = () => [
-  { title: 'Pyrenz AI - A Powerful AI Chat Application' },
-];
 
 const cardData = [
   {
     cardName: 'Smart. Fast. Free.',
-    cardImage: ChattingExample,
+    cardImage: '/Images/ChattingExample.png',
     cardDescription:
       'Talk to characters anytime. No delays, no message limits just pure roleplay.',
   },
   {
     cardName: 'Tools For Creator',
-    cardImage: MagicalBook,
+    cardImage: '/Images/MagicalBook.png',
     cardDescription:
       'Experience Pyrenz tools unleash your creativity with lorebooks, powerful model customization, and so much more',
   },
   {
     cardName: 'Unlimited Messages',
-    cardImage: ChattingExample,
+    cardImage: '/Images/ChattingExample.png',
     cardDescription:
       'Free or not, welcome to PyrenzAi! We offer unlimited messages for free!',
   },
@@ -161,9 +153,9 @@ export default function Preview() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 1 }}
-      className="flex flex-col font-[BalooDa2] bg-cover bg-fixed bg-center bg-no-repeat"
+      className="flex flex-col font-baloo bg-cover bg-fixed bg-center bg-no-repeat"
       style={{
-        backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(${Background})`,
+        backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(/Images/BackgroundTree.png)`,
       }}
     >
       <motion.div
@@ -185,7 +177,7 @@ export default function Preview() {
           data-aos="fade-up"
           className="flex flex-col justify-center items-center min-h-screen text-white -mt-16"
         >
-          <h1 className="text-7xl font-extrabold mb-4 text-center">
+          <h1 className="text-7xl font-semibold mb-4 text-center">
             Pyrenz AI
           </h1>
           <p className="text-2xl opacity-80 text-center">

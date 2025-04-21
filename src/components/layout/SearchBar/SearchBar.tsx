@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, KeyboardEvent, useEffect } from 'react';
+import { useState, ChangeEvent, KeyboardEvent } from 'react';
 import { motion } from 'framer-motion';
 import { FaSearch } from 'react-icons/fa';
 
@@ -33,14 +33,12 @@ export default function SearchBar({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <motion.div
-        className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer"
+      <div
+        className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer flex items-center justify-center w-8 h-8"
         onClick={handleSearch}
-        whileHover={{ scale: 1.1 }}
-        transition={{ duration: 0.3 }}
       >
-        <FaSearch />
-      </motion.div>
+        <FaSearch className="text-lg" />
+      </div>
       <motion.input
         type="text"
         placeholder="Search characters..."
@@ -49,7 +47,7 @@ export default function SearchBar({
           setInputValue(e.target.value)
         }
         onKeyDown={handleKeyDown}
-        className="w-full p-3 pl-12 border-none rounded-full text-lg bg-gray-800 text-white shadow-lg focus:ring-2 focus:ring-blue-500 outline-none"
+        className="w-full p-3 pl-14 border-none rounded-full text-lg bg-gray-800 text-white shadow-lg focus:ring-2 focus:ring-blue-500 outline-none"
         initial={{ scale: 0.9 }}
         animate={{ scale: 1 }}
         transition={{ duration: 0.5 }}

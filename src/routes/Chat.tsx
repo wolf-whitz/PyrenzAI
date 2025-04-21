@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useParams } from "react-router-dom";
 import { useUserStore } from "~/store";
 import { useChatStore } from "~/store";
-import { fetchChatData } from "~/routes/api/ChatPageAPI";
+import { fetchChatData } from "~/api";
 import { Utils } from "~/Utility/Utility";
 import {
   Sidebar,

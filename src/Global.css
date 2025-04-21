@@ -2,6 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Fonts */
+@font-face {
+  font-family: 'Baloo Da 2';
+  src: url('/Fonts/BalooDa2-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Lato-Regular';
+  src: url('/Fonts/Lato-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Baloo2';
+  src: url('/Fonts/Baloo2-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Fredoka';
+  src: url('/Fonts/Fredoka-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -57,6 +85,7 @@
     --chart-5: 340 75% 55%;
   }
 }
+
 ::-webkit-scrollbar {
   width: 8px;
 }

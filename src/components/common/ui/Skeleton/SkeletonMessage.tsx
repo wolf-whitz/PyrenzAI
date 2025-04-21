@@ -1,4 +1,4 @@
-import Mascot from '~/Assets/Images/MascotHappy.png';
+import Mascot from '@public/Images/MascotHappy.png';
 
 export default function SkeletonMessage() {
   return (

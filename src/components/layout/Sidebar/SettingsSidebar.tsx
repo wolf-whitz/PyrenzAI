@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import SupportUs from '~/Assets/Images/Support.png';
+import SupportUs from '/Images/Support.png';
 import { Persona } from '~/components';
 
 interface SettingsSidebarProps {

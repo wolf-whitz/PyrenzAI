@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Card } from '~/components';
-import backgroundtree from '../../../Assets/Images/BackgroundTree.png';
 
 export default function Banner() {
   const [displayedText, setDisplayedText] = useState('');
@@ -58,7 +56,7 @@ export default function Banner() {
     <motion.div
       className="p-4 rounded-3xl mb-4 text-center flex justify-center items-center h-[140px] font-[Baloo_Da_2] text-white border-none relative"
       style={{
-        backgroundImage: `url(${backgroundtree})`,
+        backgroundImage: `url(/Images/BackgroundTree.png)`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}

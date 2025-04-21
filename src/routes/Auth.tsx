@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 import { useNavigate } from 'react-router-dom';
-import Background from '../Assets/Images/BackgroundTree.png';
 import { useUserStore } from '~/store';
 
 export default function Auth() {
@@ -24,10 +23,10 @@ export default function Auth() {
   return (
     <div
       className="min-h-screen flex justify-center items-center"
-      style={{ backgroundImage: `url(${Background})`, backgroundSize: 'cover' }}
+      style={{ backgroundImage: `url(/Images/BackgroundTree.png)`, backgroundSize: 'cover' }}
     >
       <div className="w-full max-w-md p-10 rounded-2xl bg-gray-900 bg-opacity-70 shadow-2xl border border-gray-700">
-        <h2 className="text-3xl font-semibold text-center text-white mb-6">
+        <h2 className="text-3xl font-baloo text-center text-white mb-6">
           Please Verify You're Not a Bot
         </h2>
         <div className="flex justify-center">

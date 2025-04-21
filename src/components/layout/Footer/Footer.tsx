@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FaDiscord } from 'react-icons/fa';
 import { Card, CardContent } from '~/components';
-import HoldingGun from '../../../Assets/Images/Mascot-holdingGun.png';
 import { motion } from 'framer-motion';
 
 export default function Footer() {
@@ -23,7 +22,7 @@ export default function Footer() {
 
   return (
     <motion.div
-      className="flex flex-col items-center space-y-5 mb-8 font-[Fredoka_One]"
+      className="flex flex-col items-center space-y-5 mb-8 font-fredoka"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -36,7 +35,7 @@ export default function Footer() {
         <CardContent
           className="relative flex flex-col justify-center items-center h-[160px] text-white bg-no-repeat bg-center bg-cover border-none bg-transparent overflow-hidden"
           style={{
-            backgroundImage: `url(${HoldingGun})`,
+            backgroundImage: `url(/Images/Mascot-holdingGun.png)`,
             backgroundSize: 'cover',
             backgroundPosition: 'center bottom -164px',
           }}

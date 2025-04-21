@@ -5,7 +5,14 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        baloo: ['Baloo Da 2', 'cursive'],
+        lato: ['Lato', 'sans-serif'],
+        fredoka: ['Fredoka', 'sans-serif'],
+        baloo2: ['Baloo 2', 'sans-serif'],
+      },
+    },
   },
   plugins: [],
-}
+};

@@ -4,7 +4,7 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "build": "concurrently \"tsc -p tsconfig.build.json \" \"vite build\"",
+    "build": "concurrently \"tsc -p tsconfig.build.json \" \"vite build \"",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "dev": "concurrently \"vite dev --port 8800\" \"tsc --watch\"",
@@ -33,7 +33,6 @@
     "compression": "^1.8.0",
     "concurrently": "^9.1.2",
     "framer-motion": "^12.4.7",
-    "helmet": "^8.1.0",
     "install": "^0.13.0",
     "isbot": "^4.4.0",
     "llama-tokenizer-js": "^1.2.2",
@@ -84,7 +83,9 @@
     "tsc-alias": "^1.8.15",
     "typescript": "^5.8.2",
     "vite": "^5.4.18",
+    "vite-imagetools": "^7.0.5",
     "vite-plugin-compression": "^0.5.1",
+    "vite-plugin-image-presets": "^0.3.4",
     "vite-tsconfig-paths": "^4.3.2",
     "webpack-bundle-analyzer": "^4.10.2",
     "webpack-cli": "^6.0.1"

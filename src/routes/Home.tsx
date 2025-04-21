@@ -13,7 +13,7 @@ import {
 import { Sparkles } from 'lucide-react';
 import { useHomeStore } from '~/store';
 import { useUserStore } from '~/store';
-import { fetchCharacters } from '~/routes/api/CharacterAPI';
+import { fetchCharacters } from '~/api';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Home() {
@@ -88,7 +88,7 @@ export default function Home() {
 
   return (
     <motion.div
-      className="flex flex-col bg-[#0F0F0F] min-h-screen text-white font-['Baloo Da 2']"
+      className="flex flex-col bg-[#0F0F0F] min-h-screen text-white font-baloo"
       style={{
         backgroundImage: bgImage ? `url(${bgImage})` : 'none',
         backgroundSize: bgImage ? 'cover' : 'auto',
@@ -100,10 +100,10 @@ export default function Home() {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="flex flex-1">
+      <div className="flex flex-1 flex-col md:flex-row">
         {!isSmallScreen && (
           <motion.div
-            className="hidden sm:block sm:pl-[50px]"
+            className="hidden md:flex md:pl-[50px]"
             initial={{ x: -100, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.5 }}
@@ -187,6 +187,16 @@ export default function Home() {
           />
         </div>
       </div>
+      {isSmallScreen && (
+        <motion.div
+          className="fixed bottom-0 left-0 w-full bg-gray-900 text-white flex justify-around p-2 shadow-lg z-50"
+          initial={{ y: 50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Sidebar />
+        </motion.div>
+      )}
       {isClient && <Footer />}
     </motion.div>
   );

@@ -28,6 +28,7 @@ export default function Sidebar({ className }: { className?: string }) {
 
   return (
     <>
+      {/* Sidebar for larger screens */}
       <motion.div
         className={`hidden md:flex fixed top-0 left-0 h-screen w-16 bg-gray-900 text-white flex-col justify-between p-4 rounded-r-3xl shadow-lg z-50 ${className}`}
         initial={{ x: -50, opacity: 0 }}
@@ -90,6 +91,7 @@ export default function Sidebar({ className }: { className?: string }) {
         </div>
       </motion.div>
 
+      {/* Footer for smaller screens */}
       <motion.div
         className="md:hidden fixed bottom-0 left-0 w-full bg-gray-900 text-white flex justify-around p-2 shadow-lg z-50"
         initial={{ y: 50, opacity: 0 }}

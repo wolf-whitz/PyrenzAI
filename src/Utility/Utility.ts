@@ -3,6 +3,8 @@ import { useUserStore as UserStore } from '~/store';
 
 type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 
+export const AuthTokenName = "sb-cqtbishpefnfvaxheyqu-auth-token"
+
 export const Utils = {
   TIMEOUT: 5000,
   BASE_URL: 'http://localhost:1983',

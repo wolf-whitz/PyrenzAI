@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import SupportUs from '~/Assets/Images/Support.png';
+import SupportUs from '/Images/Support.png';
 
 interface DesktopSidebarProps {
   className?: string;

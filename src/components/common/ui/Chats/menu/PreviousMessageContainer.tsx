@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useParams, useNavigate } from 'react-router-dom';
 import SkeletonLoader from '~/components/common/ui/Skeleton/SkeletonPreviousMessage';
-import CryingMascot from '~/Assets/Images/MascotCrying.png';
 import { Utils } from '~/Utility/Utility';
 import { useUserStore } from '~/store';
 
@@ -93,7 +92,7 @@ export default function PreviousChat() {
         ) : error ? (
           <div className="flex flex-col items-center justify-center p-4 space-y-4">
             <motion.img
-              src={CryingMascot}
+              src='/Images/MascotCrying.png'
               alt="Crying Mascot"
               className="w-24 h-24 mt-2"
               whileHover={{ scale: 1.1 }}
@@ -106,7 +105,7 @@ export default function PreviousChat() {
         ) : messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-4 space-y-4">
             <motion.img
-              src={CryingMascot}
+              src='/Images/MascotCrying.png'
               alt="Crying Mascot"
               className="w-24 h-24 mt-3"
               whileHover={{ scale: 1.1 }}

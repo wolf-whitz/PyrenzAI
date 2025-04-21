@@ -7,7 +7,7 @@ import {
   FaBars,
 } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
-import Pyrenz from '~/Assets/Images/Pyrenz.png';
+import Pyrenz from '@public/Images/Pyrenz.png';
 
 interface HeaderProps {
   hideNavbar: boolean;
