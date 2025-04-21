@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useChatStore } from '~/middleware/Middleware';
+import { useChatStore } from '~/middleware';
 import TypingIndicator from '../Indicator/TypingIndicator';
 import CustomMarkdown from '../Markdown/CustomMarkdown';
 
