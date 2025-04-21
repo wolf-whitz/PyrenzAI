@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { useChatStore } from '~/middleware';
 import TypingIndicator from '../Indicator/TypingIndicator';
 import CustomMarkdown from '../Markdown/CustomMarkdown';
 
@@ -29,16 +28,6 @@ export default function ChatMessages({
   token,
   role,
 }: ChatMessagesProps) {
-  const { isClient, setIsClient } = useChatStore();
-
-  useEffect(() => {
-    setIsClient(true);
-  }, [setIsClient]);
-
-  if (!isClient || !previous_message.length) {
-    return null;
-  }
-
   return (
     <div className="space-y-4 p-4 max-w-2xl mx-auto">
       {previous_message.map((msg, index) => {
