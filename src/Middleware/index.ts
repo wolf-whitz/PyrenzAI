@@ -1,4 +1,4 @@
-import { useChatStore } from './Middleware';
+import { useChatStore } from './middleware';
 
 
 export {
