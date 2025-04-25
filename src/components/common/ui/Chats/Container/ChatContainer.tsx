@@ -6,7 +6,7 @@ import {
   Message,
   ChatContainerProps,
   GenerateResponse,
-} from '~/components/types/chatTypes';
+} from '@shared-types/chatTypes';
 import { Utils } from '~/Utility/Utility';
 
 export default function ChatContainer({

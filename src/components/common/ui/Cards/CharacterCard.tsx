@@ -1,12 +1,13 @@
 import { MessageSquare, Share2, Globe, Lock } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Card, CardContent } from '~/components';
-import { CharacterCardProps } from '~/components/types/CharacterCardPropsTypes';
+import { CardContent } from '~/components';
+import { CharacterCardProps } from '@shared-types/CharacterCardPropsTypes';
 import { CharacterCardModal } from '~/components';
 
 export default function CharacterCard({
   id,
+  input_char_uuid,
   name,
   description,
   creator,
@@ -14,6 +15,7 @@ export default function CharacterCard({
   image_url,
   tags = [],
   public: isPublic = false,
+  token_total,
 }: CharacterCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState<CharacterCardProps | null>(null);
@@ -27,6 +29,7 @@ export default function CharacterCard({
   const handleCardClick = () => {
     setModalData({
       id,
+      input_char_uuid,
       name,
       description,
       creator,
@@ -34,6 +37,7 @@ export default function CharacterCard({
       image_url,
       tags,
       public: isPublic,
+      token_total,
     });
     setIsModalOpen(true);
   };
@@ -42,7 +46,7 @@ export default function CharacterCard({
     <>
       <motion.div
         onClick={handleCardClick}
-        className="w-full sm:w-56 min-h-[360px] rounded-xl shadow-lg border border-gray-600 bg-gray-900 text-white font-[Baloo_Da_2] overflow-hidden cursor-pointer"
+        className="w-full sm:w-56 min-h-[360px] rounded-xl shadow-lg border border-gray-600 bg-gray-900 text-white font-baloo overflow-hidden cursor-pointer"
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: isLoaded ? 1 : 0, scale: isLoaded ? 1 : 0.95 }}
         transition={{ duration: 1.5, ease: 'easeOut' }}
@@ -85,7 +89,7 @@ export default function CharacterCard({
                 Private
               </span>
             )}
-            {tags.map((tag, index) => (
+            {Array.isArray(tags) && tags.map((tag, index) => (
               <span
                 key={index}
                 className="bg-black text-white text-[10px] font-semibold py-1 px-2 rounded-full"
@@ -106,7 +110,7 @@ export default function CharacterCard({
                 onClick={(e) => {
                   e.stopPropagation();
                   navigator.clipboard.writeText(
-                    `${window.location.origin}/characters/${id}`
+                    `${window.location.origin}/characters/${input_char_uuid}`
                   );
                 }}
                 className="flex items-center transition-colors duration-200 hover:text-blue-400"

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { MessageSquare, Globe, Lock } from 'lucide-react';
-import { CharacterCardProps } from '~/components/types/CharacterCardPropsTypes';
+import { MessageSquare, Globe, Lock, Info } from 'lucide-react';
+import { CharacterCardProps } from '@shared-types/CharacterCardPropsTypes';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from '@remix-run/react';
@@ -14,19 +14,20 @@ interface CharacterCardModalProps {
   character: CharacterCardProps | null;
 }
 
-const CharacterCardModal: React.FC<CharacterCardModalProps> = ({
+export default function CharacterCardModal({
   isOpen,
   onClose,
   character,
-}) => {
+}: CharacterCardModalProps) {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const { user_uuid, auth_key } = useUserStore();
+  const [isInfoOpen, setIsInfoOpen] = useState(false);
 
   if (!character) return null;
 
   const handleChatNow = async () => {
-    if (isLoading || !character?.id) return;
+    if (isLoading || !character?.input_char_uuid) return;
 
     if (!user_uuid || !auth_key) {
       WindowAlert('error', 'Error: User is not logged in yet');
@@ -37,7 +38,7 @@ const CharacterCardModal: React.FC<CharacterCardModalProps> = ({
 
     const requestData = {
       type: 'createchat',
-      character_uuid: character.id,
+      character_uuid: character.input_char_uuid,
       user_uuid,
       auth_key,
     };
@@ -96,7 +97,17 @@ const CharacterCardModal: React.FC<CharacterCardModalProps> = ({
               }}
             />
             <div className="flex flex-col items-start sm:items-start flex-1">
-              <h2 className="mt-3 text-xl font-bold">{character.name}</h2>
+              <div className="flex items-center">
+                <h2 className="mt-3 text-xl font-bold">{character.name}</h2>
+                <motion.button
+                  className="ml-2 text-gray-400 hover:text-white"
+                  onClick={() => setIsInfoOpen(!isInfoOpen)}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <Info size={18} />
+                </motion.button>
+              </div>
               <span className="text-gray-400 text-sm">
                 @{character.creator}
               </span>
@@ -166,9 +177,39 @@ const CharacterCardModal: React.FC<CharacterCardModalProps> = ({
           </motion.div>
         </motion.div>
       )}
+      {isInfoOpen && (
+        <motion.div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          onClick={() => setIsInfoOpen(false)}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0, transition: { duration: 0.4, ease: 'easeOut' } }}
+        >
+          <motion.div
+            className="bg-gray-900 text-white p-6 rounded-2xl shadow-2xl flex flex-col items-start relative"
+            onClick={(e) => e.stopPropagation()}
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{
+              opacity: 0,
+              y: 40,
+              scale: 0.8,
+              rotate: -8,
+              transition: { duration: 0.35, ease: 'easeInOut' },
+            }}
+          >
+            <h2 className="text-xl font-bold mb-4">Character Info</h2>
+            <p><strong>Name:</strong> {character.name}</p>
+            <p><strong>Creator:</strong> {character.creator}</p>
+            <p><strong>Description:</strong> {character.description}</p>
+            <p><strong>Chat Messages Count:</strong> {character.chat_messages_count}</p>
+            <p><strong>Tags:</strong> {character.tags.join(', ')}</p>
+            <p><strong>Public:</strong> {character.public ? 'Yes' : 'No'}</p>
+            <p><strong>Token Total:</strong> {character.token_total}</p>
+          </motion.div>
+        </motion.div>
+      )}
     </AnimatePresence>,
     document.body
   );
-};
-
-export default CharacterCardModal;
+}

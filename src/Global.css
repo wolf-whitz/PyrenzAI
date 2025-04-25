@@ -151,3 +151,24 @@
 .animate-slide-in {
   animation: slideIn 0.5s ease-out;
 }
+
+@keyframes loadingAnimation {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.loading-ball {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  animation: loadingAnimation 0.8s infinite ease-in-out;
+  margin: auto;
+}

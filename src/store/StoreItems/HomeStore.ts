@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, PersistStorage, StorageValue } from 'zustand/middleware';
-import { Character } from '~/components/types/CharacterProp';
+import { Character } from '@shared-types/CharacterProp';
 
 interface StoreState {
   search: string;

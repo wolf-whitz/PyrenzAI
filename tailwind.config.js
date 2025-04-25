@@ -12,6 +12,9 @@ export default {
         fredoka: ['Fredoka', 'sans-serif'],
         baloo2: ['Baloo 2', 'sans-serif'],
       },
+      colors: {
+        midnight: '#0F0F0F',
+      },
     },
   },
   plugins: [],

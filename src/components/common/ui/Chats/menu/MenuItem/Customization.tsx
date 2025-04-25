@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import * as Slider from '@radix-ui/react-slider';
 import { Utils } from '~/Utility/Utility';
 import { motion } from 'framer-motion';
 import { useUserStore } from '~/store';
+import { FaQuestionCircle } from 'react-icons/fa';
 
-// Define the expected structure of the API response
-interface CustomizationLimits {
-  maxTokensLimit: number;
-  temperatureLimit: number;
-  topPLimit: number;
-  presencePenaltyLimit: number;
-  frequencyPenaltyLimit: number;
-}
+const sliderDescriptions = {
+  maxTokens: "Controls the maximum number of tokens in the response.",
+  temperature: "Controls the randomness of the output. Higher values make the output more random.",
+  topP: "Controls the diversity of the output. Higher values make the output more diverse.",
+  presencePenalty: "Penalizes new tokens based on their presence in the input. Higher values make the output more different from the input.",
+  frequencyPenalty: "Penalizes new tokens based on their frequency in the input. Higher values make the output less repetitive."
+};
 
 export default function Customization() {
   const [maxTokens, setMaxTokens] = useState(100);
@@ -19,46 +19,15 @@ export default function Customization() {
   const [topP, setTopP] = useState(100);
   const [presencePenalty, setPresencePenalty] = useState(100);
   const [frequencyPenalty, setFrequencyPenalty] = useState(100);
+  const [showPopover, setShowPopover] = useState<keyof typeof sliderDescriptions | null>(null);
 
-  const { user_uuid, auth_key } = useUserStore((state) => ({
-    user_uuid: state.user_uuid,
-    auth_key: state.auth_key,
-  }));
-
-  useEffect(() => {
-    const fetchCustomizationLimits = async () => {
-      if (user_uuid && auth_key) {
-        try {
-          const response = await Utils.post<CustomizationLimits>(
-            '/api/GetAICustomizationLimit',
-            {
-              user_uuid,
-              auth_key,
-              type: 'GetAICustomizationLimit',
-            }
-          );
-
-          const {
-            maxTokensLimit,
-            temperatureLimit,
-            topPLimit,
-            presencePenaltyLimit,
-            frequencyPenaltyLimit,
-          } = response;
-
-          setMaxTokens(maxTokensLimit || 100);
-          setTemperature(temperatureLimit || 100);
-          setTopP(topPLimit || 100);
-          setPresencePenalty(presencePenaltyLimit || 100);
-          setFrequencyPenalty(frequencyPenaltyLimit || 100);
-        } catch (error) {
-          console.error('Error fetching customization limits:', error);
-        }
-      }
-    };
-
-    fetchCustomizationLimits();
-  }, [user_uuid, auth_key]);
+  const stateSetters = {
+    maxTokens: setMaxTokens,
+    temperature: setTemperature,
+    topP: setTopP,
+    presencePenalty: setPresencePenalty,
+    frequencyPenalty: setFrequencyPenalty,
+  };
 
   const handleSubmit = async () => {
     const data = {
@@ -79,101 +48,62 @@ export default function Customization() {
   };
 
   return (
-    <div className="p-4 space-y-4">
-      <div>
-        <label className="block text-sm font-medium text-gray-300">
-          Max Tokens
-        </label>
-        <Slider.Root
-          className="relative flex items-center h-5"
-          value={[maxTokens]}
-          onValueChange={(value) => setMaxTokens(value[0])}
-          max={4000}
-          step={1}
-        >
-          <Slider.Track className="relative h-1 w-full grow rounded-full bg-gray-600">
-            <Slider.Range className="absolute h-full rounded-full bg-blue-500" />
-          </Slider.Track>
-          <Slider.Thumb className="block h-5 w-5 rounded-full bg-white shadow transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" />
-        </Slider.Root>
-        <span className="text-sm text-gray-400">{maxTokens}</span>
-      </div>
+    <div className="p-4 space-y-4 relative">
+      {Object.keys(sliderDescriptions).map((key) => {
+        const sliderKey = key as keyof typeof sliderDescriptions;
+        const stateValue = {
+          maxTokens,
+          temperature,
+          topP,
+          presencePenalty,
+          frequencyPenalty,
+        }[sliderKey];
 
-      <div>
-        <label className="block text-sm font-medium text-gray-300">
-          Temperature
-        </label>
-        <Slider.Root
-          className="relative flex items-center h-5"
-          value={[temperature]}
-          onValueChange={(value) => setTemperature(value[0])}
-          max={2}
-          step={0.1}
-        >
-          <Slider.Track className="relative h-1 w-full grow rounded-full bg-gray-600">
-            <Slider.Range className="absolute h-full rounded-full bg-blue-500" />
-          </Slider.Track>
-          <Slider.Thumb className="block h-5 w-5 rounded-full bg-white shadow transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" />
-        </Slider.Root>
-        <span className="text-sm text-gray-400">{temperature}</span>
-      </div>
+        return (
+          <div key={sliderKey}>
+            <div className="flex items-center justify-between">
+              <label className="block text-sm font-medium text-gray-300">
+                {sliderKey.charAt(0).toUpperCase() + sliderKey.slice(1).replace(/([A-Z])/g, ' $1')}
+              </label>
+              <button
+                onClick={() => setShowPopover(sliderKey)}
+                className="text-gray-400 hover:text-gray-300 focus:outline-none"
+              >
+                <FaQuestionCircle />
+              </button>
+            </div>
+            <Slider.Root
+              className="relative flex items-center h-5"
+              value={[stateValue]}
+              onValueChange={(value) => stateSetters[sliderKey](value[0])}
+              max={sliderKey === 'maxTokens' ? 4000 : sliderKey === 'topP' ? 1 : 2}
+              min={sliderKey.includes('Penalty') ? -2 : 0}
+              step={sliderKey === 'maxTokens' ? 1 : sliderKey === 'topP' ? 0.01 : 0.1}
+            >
+              <Slider.Track className="relative h-1 w-full grow rounded-full bg-gray-600">
+                <Slider.Range className="absolute h-full rounded-full bg-blue-500" />
+              </Slider.Track>
+              <Slider.Thumb className="block h-5 w-5 rounded-full bg-white shadow transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" />
+            </Slider.Root>
+            <span className="text-sm text-gray-400">{stateValue}</span>
+          </div>
+        );
+      })}
 
-      <div>
-        <label className="block text-sm font-medium text-gray-300">Top-p</label>
-        <Slider.Root
-          className="relative flex items-center h-5"
-          value={[topP]}
-          onValueChange={(value) => setTopP(value[0])}
-          max={1}
-          step={0.01}
+      {showPopover && (
+        <div
+          className="absolute bg-gray-800 text-white text-sm rounded p-2 z-10"
+          style={{ top: '20px', left: '50%', transform: 'translateX(-50%)' }}
         >
-          <Slider.Track className="relative h-1 w-full grow rounded-full bg-gray-600">
-            <Slider.Range className="absolute h-full rounded-full bg-blue-500" />
-          </Slider.Track>
-          <Slider.Thumb className="block h-5 w-5 rounded-full bg-white shadow transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" />
-        </Slider.Root>
-        <span className="text-sm text-gray-400">{topP}</span>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-300">
-          Presence Penalty
-        </label>
-        <Slider.Root
-          className="relative flex items-center h-5"
-          value={[presencePenalty]}
-          onValueChange={(value) => setPresencePenalty(value[0])}
-          max={2}
-          min={-2}
-          step={0.1}
-        >
-          <Slider.Track className="relative h-1 w-full grow rounded-full bg-gray-600">
-            <Slider.Range className="absolute h-full rounded-full bg-blue-500" />
-          </Slider.Track>
-          <Slider.Thumb className="block h-5 w-5 rounded-full bg-white shadow transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" />
-        </Slider.Root>
-        <span className="text-sm text-gray-400">{presencePenalty}</span>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-300">
-          Frequency Penalty
-        </label>
-        <Slider.Root
-          className="relative flex items-center h-5"
-          value={[frequencyPenalty]}
-          onValueChange={(value) => setFrequencyPenalty(value[0])}
-          max={2}
-          min={-2}
-          step={0.1}
-        >
-          <Slider.Track className="relative h-1 w-full grow rounded-full bg-gray-600">
-            <Slider.Range className="absolute h-full rounded-full bg-blue-500" />
-          </Slider.Track>
-          <Slider.Thumb className="block h-5 w-5 rounded-full bg-white shadow transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" />
-        </Slider.Root>
-        <span className="text-sm text-gray-400">{frequencyPenalty}</span>
-      </div>
+          {sliderDescriptions[showPopover]}
+          <button
+            onClick={() => setShowPopover(null)}
+            className="absolute top-0 right-0 mt-1 mr-1 text-gray-400 hover:text-gray-300 focus:outline-none"
+          >
+            &times;
+          </button>
+        </div>
+      )}
 
       <motion.button
         onClick={handleSubmit}

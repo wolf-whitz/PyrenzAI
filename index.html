@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="manifest" href="/manifest.json" />
     <title>PyrenzAI</title>
 
     <meta name="title" content="PyrenzAI" />
@@ -26,7 +27,56 @@
     <meta name="twitter:description" content="Talk to endless anime characters for free. PyrenzAI makes it real. Let’s go!" />
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root" aria-label="PyrenzAI"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <noscript>
+      <div 
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black text-white p-6 text-center"
+        role="alert"
+        aria-live="assertive"
+        aria-label="JavaScript is disabled"
+      >
+        <div class="max-w-md space-y-4" aria-describedby="noscript-desc">
+          <h2 class="text-3xl font-bold">🚫 JavaScript is Disabled</h2>
+          <p id="noscript-desc" class="text-sm leading-relaxed">
+            PyrenzAI is a full-on AI chat app where you can talk to endless anime characters whenever you want, all powered by AI. However, we need JavaScript to make the magic happen 💫.
+          </p>
+          <p class="text-sm text-gray-400">
+            Please enable JavaScript in your browser settings to use PyrenzAI properly.
+          </p>
+          
+          <!-- Instructions for Enabling JS -->
+          <div class="text-sm space-y-2 mt-4">
+            <h3 class="font-semibold">Here's how to enable JavaScript on your platform:</h3>
+            
+            <div class="space-y-1">
+              <h4 class="font-semibold">📱 Mobile (iOS & Android)</h4>
+              <p>1. Go to your browser settings.</p>
+              <p>2. Find "JavaScript" under settings and turn it on.</p>
+            </div>
+    
+            <div class="space-y-1">
+              <h4 class="font-semibold">💻 Desktop</h4>
+              <p>1. Open your browser settings.</p>
+              <p>2. Find the "Privacy" or "Security" section.</p>
+              <p>3. Enable JavaScript under the "Content Settings" section.</p>
+            </div>
+    
+            <div class="space-y-1">
+              <h4 class="font-semibold">🌐 Instructions for specific browsers:</h4>
+              <p><strong>Chrome / Chromium</strong>: Settings → Privacy and Security → Site Settings → JavaScript → Allowed.</p>
+              <p><strong>Firefox</strong>: Settings → Privacy & Security → Enhanced Tracking Protection → Custom → Uncheck “Strict”.</p>
+              <p><strong>Safari (Mac/iOS)</strong>: Settings → Safari → Advanced → Enable JavaScript (under Web Content).</p>
+              <p><strong>Opera</strong>: Settings → Advanced → Privacy & Security → Site Settings → JavaScript → Allowed.</p>
+            </div>
+          </div>
+          
+          <p class="text-xs text-gray-600 italic mt-4">
+            P.S. This app supports dark/light mode, PWA install, offline caching, and it's fully open source ✨
+          </p>
+        </div>
+      </div>
+    </noscript>
+    
   </body>
 </html>

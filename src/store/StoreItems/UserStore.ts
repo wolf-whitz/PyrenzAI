@@ -7,8 +7,8 @@ interface UserState {
   captcha_uuid: string | null;
   captcha_expiration: number | null;
   hasHydrated: boolean;
-  setUserUUID: (uuid: string) => void;
-  setAuthKey: (key: string) => void;
+  setUserUUID: (uuid: string | null) => void;
+  setAuthKey: (key: string | null) => void;
   setCaptcha: (token: string, expiration: number) => void;
   clearCaptcha: () => void;
   setHasHydrated: (state: boolean) => void;
@@ -22,8 +22,8 @@ export const useUserStore = create<UserState>()(
       captcha_uuid: null,
       captcha_expiration: null,
       hasHydrated: false,
-      setUserUUID: (uuid: string) => set({ user_uuid: uuid }),
-      setAuthKey: (key: string) => set({ auth_key: key }),
+      setUserUUID: (uuid: string | null) => set({ user_uuid: uuid }),
+      setAuthKey: (key: string | null) => set({ auth_key: key }),
       setCaptcha: (token: string, expiration: number) =>
         set({ captcha_uuid: token, captcha_expiration: expiration }),
       clearCaptcha: () => set({ captcha_uuid: null, captcha_expiration: null }),

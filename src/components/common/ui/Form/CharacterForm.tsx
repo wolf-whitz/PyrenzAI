@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Utils } from '~/Utility/Utility';
-import { useUserStore as UserStore } from '~/store';
+import { useUserStore } from '~/store';
 import { useCharacterStore } from '~/store';
 import {
   TextareaSection,
@@ -32,10 +32,6 @@ interface ApiResponse {
   error?: any;
 }
 
-interface UserState {
-  user_uuid: string | null;
-}
-
 export default function CharacterForm() {
   const [loading, setLoading] = useState(false);
   const [showRequiredFieldsPopup, setShowRequiredFieldsPopup] = useState(false);
@@ -44,7 +40,8 @@ export default function CharacterForm() {
   const characterData = useCharacterStore((state) => state);
   const setCharacterData = useCharacterStore((state) => state.setCharacterData);
 
-  const user_uuid = UserStore((state: UserState) => state.user_uuid);
+  const user_uuid = useUserStore((state) => state.user_uuid);
+  const auth_key = useUserStore((state) => state.auth_key);
 
   const requiredFields = [
     'persona',
@@ -124,7 +121,8 @@ export default function CharacterForm() {
         ...characterData,
         bannerImage,
         profileImage,
-        input_user_uuid: user_uuid,
+        user_uuid: user_uuid,
+        auth_key: auth_key,
       });
 
       if (response.error) {

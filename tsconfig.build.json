@@ -4,11 +4,6 @@
     "noEmit": true, 
     "outDir": "./build", 
     "rootDir": "./src",
-    "baseUrl": ".",
-    "paths": {
-      "@public/*": ["public/*"],
-      "~/*": ["src/*"]
-    }
   },
   "include": ["src"]
 }

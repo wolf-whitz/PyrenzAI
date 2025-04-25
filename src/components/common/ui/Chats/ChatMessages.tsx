@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import TypingIndicator from '../Indicator/TypingIndicator';
 import CustomMarkdown from '../Markdown/CustomMarkdown';
 

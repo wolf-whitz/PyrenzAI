@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { ChatContainerProps } from '~/components/types/chatTypes';
+import { ChatContainerProps } from '@shared-types/chatTypes';
 import ChatInput from '../ChatInput';
 import Chatbar from '../ChatBar';
 import ChatMessages from '../ChatMessages';

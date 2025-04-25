@@ -62,34 +62,36 @@ export default function Menu({ onClose }: MenuProps) {
               )}
             </button>
 
-            {isDropdownOpen && (
-              <motion.div
-                initial={{ opacity: 0, y: -5 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -5 }}
-                transition={{ duration: 0.2 }}
-                className="mt-2 bg-gray-700 text-white rounded-md shadow-lg overflow-hidden"
-              >
-                <button
-                  className="w-full px-4 py-2 text-left hover:bg-gray-600 transition duration-200"
-                  onClick={() => {
-                    setSelectedOption('Cosmetic');
-                    setIsDropdownOpen(false);
-                  }}
+            <AnimatePresence>
+              {isDropdownOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -5 }}
+                  transition={{ duration: 0.2 }}
+                  className="mt-2 bg-gray-700 text-white rounded-md shadow-lg overflow-hidden"
                 >
-                  Cosmetic
-                </button>
-                <button
-                  className="w-full px-4 py-2 text-left hover:bg-gray-600 transition duration-200"
-                  onClick={() => {
-                    setSelectedOption('AI Customization');
-                    setIsDropdownOpen(false);
-                  }}
-                >
-                  AI Customization
-                </button>
-              </motion.div>
-            )}
+                  <button
+                    className="w-full px-4 py-2 text-left hover:bg-gray-600 transition duration-200"
+                    onClick={() => {
+                      setSelectedOption('Cosmetic');
+                      setIsDropdownOpen(false);
+                    }}
+                  >
+                    Cosmetic
+                  </button>
+                  <button
+                    className="w-full px-4 py-2 text-left hover:bg-gray-600 transition duration-200"
+                    onClick={() => {
+                      setSelectedOption('AI Customization');
+                      setIsDropdownOpen(false);
+                    }}
+                  >
+                    AI Customization
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {selectedOption === 'Cosmetic' && (

@@ -1,71 +1,59 @@
-import React, { useEffect, useState, Suspense } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import React, { useEffect, Suspense } from 'react';
+import { BrowserRouter as Router, useRoutes } from 'react-router-dom';
 import { supabase } from '~/Utility/supabaseClient';
-import { useUserStore as UserStore } from '~/store';
-import { User } from '@supabase/supabase-js';
+import { useUserStore } from '~/store';
+import { routes as allRoutes } from '~/routes/routes';
 
-const Home = React.lazy(() => import('~/routes/Home'));
-const Index = React.lazy(() => import('~/routes/Index'));
-const Auth = React.lazy(() => import('~/routes/Auth'));
-const Create = React.lazy(() => import('~/routes/Create'));
-const Profile = React.lazy(() => import('~/routes/Profile'));
-const Chat = React.lazy(() => import('~/routes/Chat'));
+function RoutesWrapper() {
+  return useRoutes(allRoutes);
+}
 
 function App() {
-  const [user, setUser] = useState<User | null>(null);
-  const [hydrated, setHydrated] = useState(false);
-  const captchaUUID = UserStore((state) => state.captcha_uuid);
+  const {
+    setHasHydrated,
+    hasHydrated,
+    setUserUUID,
+  } = useUserStore();
 
   useEffect(() => {
-    setHydrated(true);
-  }, []);
+    setHasHydrated(true);
+  }, [setHasHydrated]);
 
   useEffect(() => {
-    if (!hydrated) return;
+    if (!hasHydrated) return;
 
     const authDataString = localStorage.getItem("sb-dojdyydsanxoblgjmzmq-auth-token");
 
     const handleSession = async () => {
+      if (!authDataString) return;
+
       try {
-        if (!authDataString) return;
+        const { access_token, refresh_token } = JSON.parse(authDataString);
 
-        const authData = JSON.parse(authDataString);
-        const { access_token, refresh_token } = authData;
-
-        const { error } = await supabase.auth.setSession({
-          access_token,
-          refresh_token,
-        });
-
+        const { error } = await supabase.auth.setSession({ access_token, refresh_token });
         if (error) throw error;
 
         const { data, error: sessionError } = await supabase.auth.getSession();
         if (sessionError || !data.session) throw sessionError;
 
-        setUser(data.session.user);
+        setUserUUID(data.session.user.id);
       } catch {
         localStorage.removeItem("sb-dojdyydsanxoblgjmzmq-auth-token");
-        setUser(null);
+        setUserUUID(null);
       }
     };
 
     handleSession();
-  }, [hydrated]);
+  }, [hasHydrated, setUserUUID]);
 
-  const unauthenticated = !user && !captchaUUID;
+  if (!hasHydrated) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Router>
       <Suspense>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/Home" element={<Home />} />
-          <Route path="/Create" element={<Create />} />
-          <Route path="/Profile" element={<Profile />} />
-          <Route path="/Chat/:conversation_id" element={<Chat />} />
-
-          {unauthenticated && <Route path="/Auth" element={<Auth />} />}
-        </Routes>
+        <RoutesWrapper />
       </Suspense>
     </Router>
   );

@@ -3,12 +3,13 @@ import { useUserStore as UserStore } from '~/store';
 
 type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 
-export const AuthTokenName = "sb-cqtbishpefnfvaxheyqu-auth-token"
+export const AuthTokenName = "sb-cqtbishpefnfvaxheyqu-auth-token";
+
+const pendingRequests = new Map<string, Promise<any>>();
 
 export const Utils = {
   TIMEOUT: 5000,
   BASE_URL: 'http://localhost:1983',
-  abortControllers: new Map<string, AbortController>(),
 
   async request<T>(
     method: RequestMethod,
@@ -20,12 +21,8 @@ export const Utils = {
   ): Promise<T> {
     const url = new URL(`${this.BASE_URL}${endpoint}`);
 
-    const searchParams = new URLSearchParams();
-
-    if (
-      (method === 'GET' || method === 'DELETE') &&
-      Object.keys(params).length
-    ) {
+    if ((method === 'GET' || method === 'DELETE') && Object.keys(params).length) {
+      const searchParams = new URLSearchParams();
       Object.entries(params).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
           searchParams.append(key, String(value));
@@ -34,68 +31,58 @@ export const Utils = {
       url.search = searchParams.toString();
     }
 
-    let session = null;
-    const { data: sessionData, error } = await supabase.auth.getSession();
+    const cacheKey = url.toString();
 
-    if (error) {
-      console.warn('Error fetching Supabase session:', error);
-    } else {
-      session = sessionData.session;
+    if (pendingRequests.has(cacheKey)) {
+      return pendingRequests.get(cacheKey) as Promise<T>;
     }
 
-    const captcha_uuid = UserStore.getState().captcha_uuid || '';
-    const auth_key = UserStore.getState().auth_key || '';
+    const fetchPromise = (async (): Promise<T> => {
+      let session = null;
+      const { data: sessionData, error } = await supabase.auth.getSession();
 
-    const headers: HeadersInit = {
-      'Content-Type': 'application/json',
-      Accept: isImageRequest ? 'image/png' : 'application/json',
-    };
-
-    if (session) headers.Authorization = `Bearer ${session.access_token}`;
-    if (captcha_uuid) headers['captcha_key'] = captcha_uuid;
-    if (auth_key) headers['Authentication_Key'] = auth_key;
-    if (user_uuid) headers['User-UUID'] = user_uuid;
-
-    const options: RequestInit = {
-      method,
-      headers,
-    };
-
-    if (method !== 'GET' && Object.keys(data).length) {
-      if (data instanceof FormData) {
-        options.body = data;
+      if (error) {
+        console.warn('Error fetching Supabase session:', error);
       } else {
-        options.body = JSON.stringify(data);
+        session = sessionData.session;
       }
-    }
 
-    if (this.abortControllers.has(endpoint)) {
-      this.abortControllers.get(endpoint)?.abort();
-    }
+      const captcha_uuid = UserStore.getState().captcha_uuid || '';
+      const auth_key = UserStore.getState().auth_key || '';
 
-    const controller = new AbortController();
-    this.abortControllers.set(endpoint, controller);
-    options.signal = controller.signal;
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+        Accept: isImageRequest ? 'image/png' : 'application/json',
+      };
 
-    const fetchWithTimeout = (
-      url: string,
-      options: RequestInit,
-      timeout: number
-    ) => {
-      return Promise.race([
-        fetch(url, options),
-        new Promise<Response>((_, reject) =>
-          setTimeout(() => reject(new Error('Request timed out')), timeout)
-        ),
-      ]);
-    };
+      if (session) headers.Authorization = `Bearer ${session.access_token}`;
+      if (captcha_uuid) headers['captcha_key'] = captcha_uuid;
+      if (auth_key) headers['Authentication_Key'] = auth_key;
+      if (user_uuid) headers['User-UUID'] = user_uuid;
 
-    try {
-      const response = await fetchWithTimeout(
-        url.toString(),
-        options,
-        this.TIMEOUT
-      );
+      const options: RequestInit = {
+        method,
+        headers,
+      };
+
+      if (method !== 'GET' && Object.keys(data).length) {
+        options.body = data instanceof FormData ? data : JSON.stringify(data);
+      }
+
+      const fetchWithTimeout = (
+        url: string,
+        options: RequestInit,
+        timeout: number
+      ) => {
+        return Promise.race([
+          fetch(url, options),
+          new Promise<Response>((_, reject) =>
+            setTimeout(() => reject(new Error('Request timed out')), timeout)
+          ),
+        ]);
+      };
+
+      const response = await fetchWithTimeout(url.toString(), options, this.TIMEOUT);
 
       if (!response.ok) {
         let errorMessage = `${response.status} ${response.statusText}`;
@@ -120,45 +107,31 @@ export const Utils = {
       }
 
       return await response.json();
-    } catch (error) {
-      console.error(`Request Failed - ${method} ${url}:`, error);
-      throw error;
+    })();
+
+    pendingRequests.set(cacheKey, fetchPromise);
+
+    try {
+      return await fetchPromise;
     } finally {
-      this.abortControllers.delete(endpoint);
+      //Always clean it up after its done, win or lose lol
+      pendingRequests.delete(cacheKey);
     }
   },
 
-  get<T>(
-    endpoint: string,
-    params: Record<string, any> = {},
-    user_uuid?: string
-  ): Promise<T> {
+  get<T>(endpoint: string, params: Record<string, any> = {}, user_uuid?: string): Promise<T> {
     return this.request<T>('GET', endpoint, {}, params, false, user_uuid);
   },
 
-  post<T>(
-    endpoint: string,
-    data: Record<string, any> = {},
-    params: Record<string, any> = {},
-    user_uuid?: string
-  ): Promise<T> {
+  post<T>(endpoint: string, data: Record<string, any> = {}, params: Record<string, any> = {}, user_uuid?: string): Promise<T> {
     return this.request<T>('POST', endpoint, data, params, false, user_uuid);
   },
 
-  patch<T>(
-    endpoint: string,
-    data: Record<string, any> = {},
-    params: Record<string, any> = {},
-    user_uuid?: string
-  ): Promise<T> {
+  patch<T>(endpoint: string, data: Record<string, any> = {}, params: Record<string, any> = {}, user_uuid?: string): Promise<T> {
     return this.request<T>('PATCH', endpoint, data, params, false, user_uuid);
   },
 
-  delete<T>(
-    endpoint: string,
-    params: Record<string, any> = {},
-    user_uuid?: string
-  ): Promise<T> {
+  delete<T>(endpoint: string, params: Record<string, any> = {}, user_uuid?: string): Promise<T> {
     return this.request<T>('DELETE', endpoint, {}, params, false, user_uuid);
   },
 };

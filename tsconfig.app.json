@@ -10,7 +10,7 @@
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
-    "noEmit": true, 
+    "noEmit": true,
     "jsx": "react-jsx",
     "strict": true,
     "noUnusedLocals": false,
@@ -18,9 +18,14 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
     "baseUrl": ".",
-   "paths": {
+    "paths": {
+      "~/*": ["src/*"],
       "@public/*": ["public/*"],
-      "~/*": ["src/*"]
+      "@components/*": ["src/components/*"],
+      "@ui/*": ["src/components/common/ui/*"],
+      "@layout/*": ["src/components/common/layout/*"],
+      "@shared-types/*": ["src/components/common/shared-types/*"],
+      "@store/*": ["src/store/*"],
     }
   },
   "include": ["src/**/*"]

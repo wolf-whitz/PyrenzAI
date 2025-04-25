@@ -1,5 +1,5 @@
 import { supabase } from "~/Utility/supabaseClient";
-import { Character } from "~/components/types/CharacterProp";
+import { Character } from "@shared-types/CharacterProp";
 
 export const fetchCharacters = async (
   currentPage: number,
@@ -8,7 +8,7 @@ export const fetchCharacters = async (
   user_uuid: string,
 ): Promise<{ characters: Character[]; total: number }> => {
   try {
-    const { data, error } = await supabase.rpc("fetch_public_characters", {
+    const { data, error } = await supabase.rpc("fetch_characters", {
       request_type: "character",
       page: currentPage,
       items_per_page: itemsPerPage,
@@ -36,6 +36,8 @@ export const fetchCharacters = async (
       image_url: char.profile_image,
       tags: Object.keys(char.tags),
       public: char.is_public,
+      input_char_uuid: char.input_char_uuid,
+      token_total: char.token_total,
     }));
 
     return {

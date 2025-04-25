@@ -23,5 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
-.vercel
 build/
+
+vite.config.ts.timestamp-*.mjs

@@ -3,17 +3,20 @@ import react from '@vitejs/plugin-react-swc'
 import tailwindcss from 'tailwindcss'
 import path from 'path'
 import { imagetools } from 'vite-imagetools'
+import headerDevPlugin from "./Plugins/DevHeaderPlugin"
 
 export default defineConfig({
   plugins: [
     react(),
     imagetools(),
+    headerDevPlugin(),
   ],
   css: {
     postcss: {
-      plugins: [tailwindcss()]
+      plugins: [tailwindcss(),]
     }
   },
+  cacheDir: 'node_modules/.vite_cache',
   build: {
     outDir: 'build',
     assetsDir: 'assets',
@@ -58,8 +61,13 @@ export default defineConfig({
   resolve: {
     alias: {
       '~': path.resolve(__dirname, 'src'),
-      '@public': path.resolve(__dirname, 'public')
-    }
+      '@public': path.resolve(__dirname, 'public'),
+      '@components': path.resolve(__dirname, 'src/components'),
+      '@ui': path.resolve(__dirname, 'src/components/common/ui'),
+      '@layout': path.resolve(__dirname, 'src/components/common/layout'),
+      '@shared-types': path.resolve(__dirname, 'src/components/common/shared-types'),
+      '@store': path.resolve(__dirname, 'src/store'),
+    },
   },
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-redux', '@reduxjs/toolkit']

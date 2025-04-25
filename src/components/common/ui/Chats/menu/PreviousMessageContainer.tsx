@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useParams, useNavigate } from 'react-router-dom';
-import SkeletonLoader from '~/components/common/ui/Skeleton/SkeletonPreviousMessage';
 import { Utils } from '~/Utility/Utility';
 import { useUserStore } from '~/store';
 
@@ -14,10 +13,20 @@ interface Message {
   user_uuid: string;
 }
 
-export default function PreviousChat() {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+interface ApiResponse {
+  messages: Message[] | {};
+  error?: string;
+}
+
+interface PreviousChatProps {
+  messages?: Message[] | {};
+}
+
+export default function PreviousChat({ messages: initialMessages = [] }: PreviousChatProps) {
+  const [messages, setMessages] = useState<Message[]>(Array.isArray(initialMessages) ? initialMessages : []);
+  const [loading, setLoading] = useState(messages.length === 0);
+  const [error, setError] = useState<string | null>(null);
+  const [dataFetched, setDataFetched] = useState(false);
 
   const { conversation_id } = useParams<{ conversation_id: string }>();
   const navigate = useNavigate();
@@ -26,13 +35,13 @@ export default function PreviousChat() {
   useEffect(() => {
     const fetchPreviousChat = async () => {
       if (!user_uuid || !auth_key || !conversation_id) {
-        setError(true);
+        setError('User information or conversation ID is missing.');
         setLoading(false);
         return;
       }
 
       try {
-        const response = await Utils.post<Message[]>('/api/GetPreviousChat', {
+        const response: ApiResponse = await Utils.post('/api/GetPreviousChat', {
           user_uuid,
           auth_key,
           page: 1,
@@ -41,21 +50,26 @@ export default function PreviousChat() {
           conversation_id,
         });
 
-        if (!response || !Array.isArray(response)) {
-          throw new Error('Invalid response from API');
+        if (response.error) {
+          setError(response.error);
+        } else if (Array.isArray(response.messages)) {
+          setMessages(response.messages);
+        } else {
+          setMessages([]);
         }
-
-        setMessages(response);
       } catch (error) {
         console.error('Failed to fetch previous chat:', error);
-        setError(true);
+        setError('An unexpected error occurred. Please try again later.');
       } finally {
         setLoading(false);
+        setDataFetched(true);
       }
     };
 
-    fetchPreviousChat();
-  }, [conversation_id, user_uuid, auth_key]);
+    if (!dataFetched) {
+      fetchPreviousChat();
+    }
+  }, [conversation_id, user_uuid, auth_key, dataFetched]);
 
   useEffect(() => {
     const handlePopState = () => {
@@ -84,28 +98,23 @@ export default function PreviousChat() {
       <div className="rounded-xl w-full bg-gray-800 flex-grow overflow-auto min-h-[200px] max-h-[400px]">
         {loading ? (
           <div className="flex flex-col items-center justify-center p-4 space-y-4">
-            <SkeletonLoader />
-            <SkeletonLoader />
-            <SkeletonLoader />
             <p className="text-gray-300">Loading previous chats...</p>
           </div>
         ) : error ? (
           <div className="flex flex-col items-center justify-center p-4 space-y-4">
             <motion.img
-              src='/Images/MascotCrying.png'
+              src='/Images/MascotCrying.avif'
               alt="Crying Mascot"
               className="w-24 h-24 mt-2"
               whileHover={{ scale: 1.1 }}
               transition={{ duration: 0.5 }}
             />
-            <p className="text-gray-300">
-              Oh no, messages failed to load. Please try again later.
-            </p>
+            <p className="text-gray-300">{error}</p>
           </div>
         ) : messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-4 space-y-4">
             <motion.img
-              src='/Images/MascotCrying.png'
+              src='/Images/MascotCrying.avif'
               alt="Crying Mascot"
               className="w-24 h-24 mt-3"
               whileHover={{ scale: 1.1 }}

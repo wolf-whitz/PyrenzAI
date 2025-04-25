@@ -1,65 +1,66 @@
 // Layout Components
-import Banner from '~/components/layout/Banner/Banner';
-import Footer from '~/components/layout/Footer/Footer';
-import PreviewFooter from '~/components/layout/Footer/PreviewFooter';
-import SearchBar from '~/components/layout/SearchBar/SearchBar';
-import PreviewHeader from '~/components/layout/Header/PreviewHeader';
+import Banner from '@layout/Banner/Banner';
+import Footer from '@layout/Footer/Footer';
+import PreviewFooter from '@layout/Footer/PreviewFooter';
+import SearchBar from '@layout/SearchBar/SearchBar';
+import PreviewHeader from '@layout/Header/PreviewHeader';
 
 // Sidebar Components
-import Sidebar from '~/components/layout/Sidebar/sidebar';
-import DesktopSidebar from '~/components/layout/Sidebar/DesktopSidebar';
-import MobileSidebar from '~/components/layout/Sidebar/sidebar';
-import SettingsSidebar from '~/components/layout/Sidebar/SettingsSidebar';
+import Sidebar from '@layout/Sidebar/sidebar';
+import DesktopSidebar from '@layout/Sidebar/DesktopSidebar';
+import MobileSidebar from '@layout/Sidebar/sidebar';
+import SettingsSidebar from '@layout/Sidebar/SettingsSidebar';
+import CommunityGuidelines from '@layout/Sidebar/GuidelineSidebar';
 
-//Alert
-import { WindowAlert } from '~/components/common/ui/Alert/Alert';
+// Alert
+import { WindowAlert } from '@ui/Alert/Alert';
 
-//Buttons
-import GenerateButton from '~/components/common/ui/Buttons/GenerateBtn';
-import CreateButton from '~/components/common/ui/Buttons/CreateBtn';
+// Buttons
+import GenerateButton from '@ui/Buttons/GenerateBtn';
+import CreateButton from '@ui/Buttons/CreateBtn';
 
-//Fields
-import DropdownField from '~/components/common/ui/Dropdown/DropdownField';
-import CheckboxField from '~/components/common/ui/Input/CheckBox';
-import InputField from '~/components/common/ui/Input/InputField';
+// Fields
+import DropdownField from '@ui/Dropdown/DropdownField';
+import CheckboxField from '@ui/Input/CheckBox';
+import InputField from '@ui/Input/InputField';
 
-//Textrea
-import Textarea from '~/components/common/ui/Textarea/Textarea';
+// Textrea
+import Textarea from '@ui/Textarea/Textarea';
 
-//Image Uploader
-import ImageUploader from '~/components/common/ui/ImageUploader/ImageUploader';
+// Image Uploader
+import ImageUploader from '@ui/ImageUploader/ImageUploader';
 
-//Dropzone
-import Dropzone from '~/components/common/ui/Dropzone/Dropzone';
+// Dropzone
+import Dropzone from '@ui/Dropzone/Dropzone';
 
 // Chat Components
-import ChatContainer from '~/components/common/ui/Chats/Container/ChatContainer';
-import PreviousChat from '~/components/common/ui/Chats/menu/PreviousMessageContainer';
-import Menu from '~/components/common/ui/Chats/menu/Menu';
-import ChatMain from '~/components/common/ui/Chats/main/Chatmain';
+import ChatContainer from '@ui/Chats/Container/ChatContainer';
+import PreviousChat from '@ui/Chats/menu/PreviousMessageContainer';
+import Menu from '@ui/Chats/menu/Menu';
+import ChatMain from '@ui/Chats/main/Chatmain';
 
-//Create Component
-import CharacterForm from '~/components/common/ui/Form/CharacterForm';
-import RequiredFieldsPopup from '~/components/common/ui/Fields/RequiredFieldsPopup';
-import FormActions from '~/components/common/ui/Actions/FormActions';
-import TokenSummary from '~/components/common/ui/Summary/TokenSummary';
-import VisibilityCheckboxes from '~/components/common/ui/CheckBox/VisibilityCheckboxes';
-import GenderDropdown from '~/components/common/ui/Dropdown/GenderDropdown';
-import TextareaSection from '~/components/common/ui/Sections/TextareaSection';
-import ImageUpload from '~/components/common/ui/ImageUploader/ImageUpload';
+// Create Component
+import CharacterForm from '@ui/Form/CharacterForm';
+import RequiredFieldsPopup from '@ui/Fields/RequiredFieldsPopup';
+import FormActions from '@ui/Actions/FormActions';
+import TokenSummary from '@ui/Summary/TokenSummary';
+import VisibilityCheckboxes from '@ui/CheckBox/VisibilityCheckboxes';
+import GenderDropdown from '@ui/Dropdown/GenderDropdown';
+import TextareaSection from '@ui/Sections/TextareaSection';
+import ImageUpload from '@ui/ImageUploader/ImageUpload';
 
 // UI Components
-import CharacterCard from '~/components/common/ui/Cards/CharacterCard';
-import LoadMore from '~/components/common/ui/LoadMore/LoadMoreButton';
-import SkeletonMessage from '~/components/common/ui/Skeleton/SkeletonMessage';
-import SkeletonCard from '~/components/common/ui/Skeleton/SkeletonCard';
-import CustomButton from '~/components/common/ui/Buttons/Buttons';
+import CharacterCard from '@ui/Cards/CharacterCard';
+import LoadMore from '@ui/LoadMore/LoadMoreButton';
+import SkeletonMessage from '@ui/Skeleton/SkeletonMessage';
+import SkeletonCard from '@ui/Skeleton/SkeletonCard';
+import CustomButton from '@ui/Buttons/Buttons';
 
 // Modal Components
-import CharacterCardModal from '~/components/common/ui/Modal/CharacterCardModal';
-import RegisterModal from '~/components/common/ui/Modal/Auth/RegisterModal';
-import LoginModal from '~/components/common/ui/Modal/Auth/Loginmodal';
-import DownloadModal from '~/components/common/ui/Modal/DownloadsModal';
+import CharacterCardModal from '@ui/Modal/CharacterCardModal';
+import RegisterModal from '@ui/Modal/Auth/RegisterModal';
+import LoginModal from '@ui/Modal/Auth/Loginmodal';
+import DownloadModal from '@ui/Modal/DownloadsModal';
 
 // Card Components
 import {
@@ -67,10 +68,10 @@ import {
   CardContent,
   CardTitle,
   CardHeader,
-} from '~/components/common/ui/ShadCdn/card';
+} from '@ui/ShadCdn/card';
 
 // Persona Components
-import Persona from '~/components/common/ui/Persona/Persona';
+import Persona from '@ui/Persona/Persona';
 
 export {
   // Layout
@@ -125,7 +126,8 @@ export {
   DesktopSidebar,
   MobileSidebar,
   SettingsSidebar,
-
+  CommunityGuidelines,
+  
   //Textareas
   Textarea,
 
@@ -148,4 +150,4 @@ export {
   Persona,
 };
 
-//Had to organize everything else i would go insane when looking at everything compiled into one
+// Had to organize everything else i would go insane when looking at everything compiled into one
