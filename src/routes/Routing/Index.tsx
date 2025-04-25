@@ -18,19 +18,19 @@ import AOS from 'aos';
 const cardData = [
   {
     cardName: 'Smart. Fast. Free.',
-    cardImage: '/Images/ChattingExample.avif',
+    cardImage: 'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/ChattingExample.avif',
     cardDescription:
       'Talk to characters anytime. No delays, no message limits just pure roleplay.',
   },
   {
     cardName: 'Tools For Creator',
-    cardImage: '/Images/MagicalBook.avif',
+    cardImage: 'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MagicalBook.avif',
     cardDescription:
       'Experience Pyrenz tools unleash your creativity with lorebooks, powerful model customization, and so much more',
   },
   {
     cardName: 'Unlimited Messages',
-    cardImage: '/Images/ChattingExample.avif',
+    cardImage: 'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/ChattingExample.avif',
     cardDescription:
       'Free or not, welcome to PyrenzAi! We offer unlimited messages for free!',
   },
@@ -155,7 +155,7 @@ export default function Preview() {
       transition={{ duration: 1 }}
       className="flex flex-col font-baloo bg-cover bg-fixed bg-center bg-no-repeat"
       style={{
-        backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(/Images/BackgroundTree.avif)`,
+        backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif)`,
       }}
     >
       <motion.div

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FaDiscord } from 'react-icons/fa';
-import { Card, CardContent } from '~/components';
+import { CardContent } from '~/components';
 import { motion } from 'framer-motion';
 
 export default function Footer() {
@@ -18,7 +18,7 @@ export default function Footer() {
       window.addEventListener('mousemove', handleMouseMove);
 
       const img = new Image();
-      img.src = '/Images/Mascot-holdingGun.avif';
+      img.src = 'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif';
       img.onload = () => {
         setImageSrc(img.src);
         setImageLoaded(true);
@@ -43,12 +43,11 @@ export default function Footer() {
         transition={{ duration: 0.3 }}
       >
         <CardContent
-          className="relative flex flex-col justify-center items-center h-[160px] text-white bg-no-repeat bg-center bg-cover border-none bg-transparent overflow-hidden"
-          style={{
-            backgroundImage: imageLoaded ? `url(${imageSrc})` : 'none',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center bottom -164px',
-          }}
+          className={`relative flex flex-col justify-center items-center h-[160px] text-white bg-cover bg-center border-none bg-transparent overflow-hidden transition-all ${
+            imageLoaded
+              ? 'bg-[url("https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif")] bg-cover'
+              : ''
+          }`}
           onMouseEnter={() => setHovering(true)}
           onMouseLeave={() => setHovering(false)}
           onMouseMove={(e: React.MouseEvent<HTMLDivElement>) =>

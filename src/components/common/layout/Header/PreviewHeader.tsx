@@ -49,9 +49,9 @@ export default function Header({
           className="flex items-center space-x-4 cursor-pointer"
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         >
-          <img src='/Images/Pyrenz.avif' alt="Pyrenz Logo" className="h-8 w-8" />
+          <img src='/favicon.ico' alt="Pyrenz Logo" className="h-8 w-8" />
           <h1 className="text-2xl font-bold text-white font-baloo-da-2">
-            Pyrenz<span className="text-[#E03201]">AI</span>
+            Pyrenz<span className="text-redorange">AI</span>
           </h1>
         </motion.div>
 

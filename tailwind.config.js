@@ -14,6 +14,7 @@ export default {
       },
       colors: {
         midnight: '#0F0F0F',
+        redorange: '#E03201',
       },
     },
   },

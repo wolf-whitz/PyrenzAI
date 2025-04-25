@@ -54,11 +54,9 @@ export default function Banner() {
 
   return (
     <motion.div
-      className="p-4 rounded-3xl mb-4 text-center flex justify-center items-center h-[140px] font-[Baloo_Da_2] text-white border-none relative"
+      className="p-4 rounded-3xl mb-4 text-center flex justify-center items-center h-[140px] font-baloo text-white border-none relative bg-cover bg-center"
       style={{
-        backgroundImage: `url(/Images/BackgroundTree.avif)`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
+        backgroundImage: `url(https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif)`,
       }}
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
