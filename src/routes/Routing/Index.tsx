@@ -192,7 +192,7 @@ export default function Preview() {
             Get Started
           </motion.button>
         </motion.section>
-
+         <button onClick={() => {throw new Error("This is your first error!");}}>Break the world</button>
         <DownloadModal isModalOpen={isModalOpen} closeModal={closeModal} />
 
         <motion.section

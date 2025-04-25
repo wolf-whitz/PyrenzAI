@@ -3,8 +3,24 @@ import { BrowserRouter as Router, useRoutes } from 'react-router-dom';
 import { supabase } from '~/Utility/supabaseClient';
 import { useUserStore } from '~/store';
 import { routes as allRoutes } from '~/routes/routes';
+import { motion } from 'framer-motion';
 
 const RoutesWrapper = lazy(() => Promise.resolve({ default: () => useRoutes(allRoutes) }));
+
+const Spinner = () => (
+  <motion.div
+    className="flex flex-col justify-center items-center h-screen space-y-4 bg-black text-white text-center px-4"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    transition={{ duration: 0.4 }}
+  >
+    <div className="w-12 h-12 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
+    <p className="text-sm animate-pulse">
+      Loading <span className="font-semibold text-blue-400">Pyrenz</span>, Open Source, Free Alternative
+    </p>
+  </motion.div>
+);
 
 function App() {
   const {
@@ -14,7 +30,6 @@ function App() {
   } = useUserStore();
 
   useEffect(() => {
-    // Minimal initial render side effect
     setHasHydrated(true);
   }, [setHasHydrated]);
 
@@ -23,11 +38,9 @@ function App() {
 
     const authDataString = localStorage.getItem("sb-dojdyydsanxoblgjmzmq-auth-token");
 
-    // Give priority to rendering, then do heavy lifting
     const handleSession = () => {
       if (!authDataString) return;
 
-      // Use idle time to chill and check session
       const runAsync = async () => {
         try {
           const { access_token, refresh_token } = JSON.parse(authDataString);
@@ -45,11 +58,10 @@ function App() {
         }
       };
 
-      // Schedule when browser's got time
       if ('requestIdleCallback' in window) {
         requestIdleCallback(runAsync);
       } else {
-        setTimeout(runAsync, 1); // Backup plan
+        setTimeout(runAsync, 1);
       }
     };
 
@@ -57,16 +69,12 @@ function App() {
   }, [hasHydrated, setUserUUID]);
 
   if (!hasHydrated) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="loader">Loading...</div>
-      </div>
-    );
+    return <Spinner />;
   }
 
   return (
     <Router>
-      <Suspense fallback={<div className="text-center mt-8">Loading Routes...</div>}>
+      <Suspense fallback={<Spinner />}>
         <RoutesWrapper />
       </Suspense>
     </Router>
