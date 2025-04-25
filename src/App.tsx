@@ -3,24 +3,9 @@ import { BrowserRouter as Router, useRoutes } from 'react-router-dom';
 import { supabase } from '~/Utility/supabaseClient';
 import { useUserStore } from '~/store';
 import { routes as allRoutes } from '~/routes/routes';
-import { motion } from 'framer-motion';
+import { Spinner } from "@ui/Spinner/Spinner"
 
 const RoutesWrapper = lazy(() => Promise.resolve({ default: () => useRoutes(allRoutes) }));
-
-const Spinner = () => (
-  <motion.div
-    className="flex flex-col justify-center items-center h-screen space-y-4 bg-black text-white text-center px-4"
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    exit={{ opacity: 0 }}
-    transition={{ duration: 0.4 }}
-  >
-    <div className="w-12 h-12 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
-    <p className="text-sm animate-pulse">
-      Loading <span className="font-semibold text-blue-400">Pyrenz</span>, Open Source, Free Alternative
-    </p>
-  </motion.div>
-);
 
 function App() {
   const {

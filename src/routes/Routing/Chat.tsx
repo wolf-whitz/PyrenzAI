@@ -10,8 +10,8 @@ import {
   DesktopSidebar,
   ChatContainer,
   PreviousChat,
-  SkeletonMessage,
 } from "~/components";
+import { ChatPageSpinner } from "@ui/Spinner/Spinner"
 
 interface PersonaResponse {
   user_uuid: string;
@@ -40,7 +40,6 @@ export default function ChatPage() {
           const result = await fetchChatData(conversation_id, user_uuid, auth_key);
           setChatData(result);
 
-          // Fix the character.id check here
           if (result?.character?.first_message && result?.character?.id === result?.character?.id) {
             setFirstMessage(result.character.first_message);
           } else {
@@ -73,7 +72,7 @@ export default function ChatPage() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center h-screen">
-        <SkeletonMessage />
+        <ChatPageSpinner />
       </div>
     );
   }

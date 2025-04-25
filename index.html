@@ -7,6 +7,7 @@
     <link rel="manifest" href="/manifest.json" />
     <title>PyrenzAI</title>
 
+    <!-- MetaData -->
     <meta name="title" content="PyrenzAI" />
     <meta name="description" content="Talk to endless anime characters for free. PyrenzAI makes it real. Let’s go!" />
     <meta name="theme-color" content="#14181f" media="(prefers-color-scheme: light)" />
@@ -17,18 +18,29 @@
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="format-detection" content="telephone=no" />
 
+    <!--  Open Graph title -->
     <meta property="og:title" content="PyrenzAI" />
     <meta property="og:description" content="Talk to endless anime characters for free. PyrenzAI makes it real. Let’s go!" />
     <meta property="og:url" content="https://pyrenzai.com" />
     <meta property="og:type" content="website" />
 
+    <!-- Twitter Stuff -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="PyrenzAI" />
     <meta name="twitter:description" content="Talk to endless anime characters for free. PyrenzAI makes it real. Let’s go!" />
+
+    <!-- Preloads -->
+    <link rel="preload" href="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif" as="image">
+    <link rel="preload" href="/favicon.ico" as="image" type="image/x-icon" />
+    <link rel="preload" href="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MascotCrying.avif" as="image" type="image/avif" />
+    <link rel="preload" href="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/Support.avif" as="image" type="image/avif"/>
+
   </head>
   <body>
     <div id="root" aria-label="PyrenzAI"></div>
     <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- If a user has javascript off then this will show up instead of a blank page due to how react works and stuff since react need javascript so noscript would show up if the user doesn't have javascript on  -->
     <noscript>
       <div 
         class="fixed inset-0 z-50 flex items-center justify-center bg-black text-white p-6 text-center"

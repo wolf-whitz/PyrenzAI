@@ -52,7 +52,6 @@ import ImageUpload from '@ui/ImageUploader/ImageUpload';
 // UI Components
 import CharacterCard from '@ui/Cards/CharacterCard';
 import LoadMore from '@ui/LoadMore/LoadMoreButton';
-import SkeletonMessage from '@ui/Skeleton/SkeletonMessage';
 import SkeletonCard from '@ui/Skeleton/SkeletonCard';
 import CustomButton from '@ui/Buttons/Buttons';
 
@@ -103,7 +102,6 @@ export {
   // UI
   CharacterCard,
   LoadMore,
-  SkeletonMessage,
   SkeletonCard,
   CustomButton,
 

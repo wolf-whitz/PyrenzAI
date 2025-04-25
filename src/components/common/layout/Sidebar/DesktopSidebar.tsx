@@ -41,7 +41,7 @@ export default function DesktopSidebar({
 
       <div className="flex justify-center">
         <motion.img
-          src='/Images/Support.avif'
+          src='https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/Support.avif'
           alt="Support Us"
           className="rounded-lg max-w-full h-auto select-none pointer-events-none shadow-lg"
           whileHover={{

@@ -8,6 +8,7 @@ import {
   GenerateResponse,
 } from '@shared-types/chatTypes';
 import { Utils } from '~/Utility/Utility';
+import { ChatPageSpinner } from "@ui/Spinner/Spinner"
 
 export default function ChatContainer({
   user,
@@ -94,7 +95,7 @@ export default function ChatContainer({
   );
 
   return (
-    <Suspense fallback={<div className="text-white">Loading chat...</div>}>
+    <Suspense fallback={<ChatPageSpinner />}>
       <div
         className={`flex justify-center items-center w-full h-full ${className}`}
       >

@@ -39,7 +39,7 @@ export default function Header({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.5 }}
-      className={`fixed top-0 left-0 w-full bg-black bg-opacity-40 p-4 z-[100] transition-opacity duration-500 ${
+      className={`fixed top-0 left-0 w-full bg-black bg-opacity-40 p-4 z-50 transition-opacity duration-500 ${
         hideNavbar ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
     >
