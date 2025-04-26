@@ -129,7 +129,7 @@ export default function Header({
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setShowLogin(true)}
-                  className="text-white font-baloo-da-2 hover:text-[#E03201] transition-all"
+                  className="block w-full text-left px-4 py-2 hover:bg-gray-800 rounded text-white font-baloo-da-2 hover:text-[#E03201] transition-all mb-2"
                 >
                   Login
                 </motion.button>
@@ -137,7 +137,7 @@ export default function Header({
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setShowRegister(true)}
-                  className="bg-[#E03201] text-white px-4 py-2 rounded font-baloo-da-2 transition-all hover:bg-[#611600]"
+                  className="block w-full text-left bg-[#E03201] text-white px-4 py-2 rounded font-baloo-da-2 transition-all hover:bg-[#611600]"
                 >
                   Sign Up
                 </motion.button>

@@ -198,7 +198,7 @@ export default function Preview() {
         <motion.section
           ref={discoverMoreRef}
           data-aos="fade-up"
-          className="p-10 text-white pb-32 md:pb-16 max-h-screen overflow-y-auto md:max-h-none md:overflow-visible"
+          className="p-10 text-white pb-32 md:pb-16"
         >
           <h2 className="text-4xl font-bold mb-8 text-center">Discover More</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
@@ -208,7 +208,7 @@ export default function Preview() {
                 data-aos="zoom-in"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="bg-gray-800 text-white shadow-lg rounded-2xl overflow-hidden hover:shadow-2xl transition-transform duration-300 border-2 border-red-500"
+                className="bg-gray-800 text-white shadow-lg rounded-2xl overflow-hidden hover:shadow-2xl transition-transform duration-300 border-2 border-red-500 md:max-w-xs mx-auto"
               >
                 <CardHeader>
                   <CardTitle className="text-2xl font-semibold p-4">

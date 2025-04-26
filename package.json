@@ -53,7 +53,6 @@
     "react-markdown": "^10.1.0",
     "react-redux": "^9.2.0",
     "react-responsive": "^10.0.0",
-    "react-swipe": "^6.0.4",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.1",
     "sanitize-html": "^2.14.0",
