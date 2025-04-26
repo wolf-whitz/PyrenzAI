@@ -18,11 +18,17 @@ export default function Auth() {
   const handleCaptcha = (token: string) => {
     const expiration = Date.now() + 2 * 60 * 1000;
     setCaptcha(token, expiration);
-    navigate('/#');
+    navigate('/Home');
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif')" }}>
+    <div
+      className="min-h-screen flex justify-center items-center bg-cover bg-center bg-no-repeat"
+      style={{
+        backgroundImage:
+          "linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif')",
+      }}
+    >
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -32,7 +38,7 @@ export default function Auth() {
         <h2 className="text-3xl font-baloo text-center text-white mb-6">
           Please Verify You're Not a Bot 🤖🚫
         </h2>
-        <div className="flex justify-center">
+        <div className="flex justify-center flex-col items-center">
           {isLoaded ? (
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
@@ -48,6 +54,9 @@ export default function Auth() {
           ) : (
             <p className="text-white animate-pulse">Loading CAPTCHA...</p>
           )}
+          <p className="text-gray-300 text-center mt-4 text-sm font-light">
+            PyrenzAI is an AI chat platform allowing users to chat with bots for free. To use PyrenzAI, we need you to be a human and not a bot.
+          </p>
         </div>
       </motion.div>
     </div>

@@ -27,11 +27,11 @@ export default function Footer() {
                 setImageSrc(img.src);
                 setImageLoaded(true);
               };
-              observer.disconnect(); 
+              observer.disconnect();
             }
           });
         },
-        { threshold: 0.1 } 
+        { threshold: 0.1 }
       );
 
       const target = document.querySelector('.bg-cover-container');
@@ -57,11 +57,12 @@ export default function Footer() {
         transition={{ duration: 0.3 }}
       >
         <CardContent
-          className={`relative flex flex-col justify-center items-center h-[160px] text-white bg-cover bg-center border-none bg-transparent overflow-hidden transition-all ${
-            imageLoaded
-              ? 'bg-[url("https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif")] bg-cover'
-              : ''
-          } bg-cover-container`}
+          className={`relative flex flex-col justify-center items-center h-[160px] text-white bg-cover bg-center border-none bg-transparent overflow-hidden transition-all bg-cover-container`}
+          style={{
+            backgroundImage: imageLoaded
+              ? `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('${imageSrc}')`
+              : 'none',
+          }}
           onMouseEnter={() => setHovering(true)}
           onMouseLeave={() => setHovering(false)}
           onMouseMove={(e: React.MouseEvent<HTMLDivElement>) =>
@@ -90,7 +91,7 @@ export default function Footer() {
       </motion.div>
 
       <motion.a
-        href="https://discord.com/invite/yourserver"
+        href="https://discord.gg/zTcyP4WB8h"
         target="_blank"
         rel="noopener noreferrer"
         className="flex items-center gap-3 text-white text-lg font-semibold"
