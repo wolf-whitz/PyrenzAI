@@ -237,19 +237,12 @@ export default function Preview() {
       {showLogin && (
         <LoginModal
           onClose={() => setShowLogin(false)}
-          onRegisterOpen={() => {
-            setShowLogin(false);
-            setShowRegister(true);
-          }}
+        
         />
       )}
       {showRegister && (
         <RegisterModal
           onClose={() => setShowRegister(false)}
-          onRegisterOpen={() => {
-            setShowRegister(false);
-            setShowLogin(true);
-          }}
         />
       )}
     </motion.div>

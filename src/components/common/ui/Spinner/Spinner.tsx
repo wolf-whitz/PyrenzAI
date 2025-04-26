@@ -42,4 +42,16 @@ const ChatPageSpinner = () => (
   />
 );
 
-export { Spinner, ChatPageSpinner };
+const SettingsPageLoader = () => (
+  <SpinnerBase
+    message={
+      <>
+        Loading.. Please Wait While <span className="font-semibold text-blue-400">Pyrenz</span> loads your settings.
+      </>
+    }
+    subMessage="It may take a few seconds."
+  />
+);
+
+
+export { Spinner, ChatPageSpinner, SettingsPageLoader };

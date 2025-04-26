@@ -12,6 +12,9 @@ import MobileSidebar from '@layout/Sidebar/sidebar';
 import SettingsSidebar from '@layout/Sidebar/SettingsSidebar';
 import CommunityGuidelines from '@layout/Sidebar/GuidelineSidebar';
 
+//Spinner
+import { Spinner, ChatPageSpinner, SettingsPageLoader  } from "@ui/Spinner/Spinner"
+
 // Alert
 import { WindowAlert } from '@ui/Alert/Alert';
 
@@ -60,6 +63,7 @@ import CharacterCardModal from '@ui/Modal/CharacterCardModal';
 import RegisterModal from '@ui/Modal/Auth/RegisterModal';
 import LoginModal from '@ui/Modal/Auth/Loginmodal';
 import DownloadModal from '@ui/Modal/DownloadsModal';
+import LanguageModal from "@ui/Modal/LanguageModal"
 
 // Card Components
 import {
@@ -93,6 +97,11 @@ export {
   //WindowAlert
   WindowAlert,
 
+  //Spinner 
+  ChatPageSpinner,
+  Spinner,
+  SettingsPageLoader,
+  
   // Chat
   ChatContainer,
   PreviousChat,
@@ -134,7 +143,8 @@ export {
   RegisterModal,
   LoginModal,
   DownloadModal,
-
+  LanguageModal,
+  
   // Cards
   Card,
   CardContent,

@@ -3,7 +3,7 @@ import { BrowserRouter as Router, useRoutes } from 'react-router-dom';
 import { supabase } from '~/Utility/supabaseClient';
 import { useUserStore } from '~/store';
 import { routes as allRoutes } from '~/routes/routes';
-import { Spinner } from "@ui/Spinner/Spinner"
+import { Spinner } from "@components/index"
 
 const RoutesWrapper = lazy(() => Promise.resolve({ default: () => useRoutes(allRoutes) }));
 

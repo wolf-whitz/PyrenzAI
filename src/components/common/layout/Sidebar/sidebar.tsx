@@ -4,10 +4,12 @@ import { FaHome, FaUser, FaPlus, FaCog, FaComments } from 'react-icons/fa';
 import { useNavigate } from '@remix-run/react';
 import { supabase } from '~/Utility/supabaseClient';
 import type { User } from '@supabase/supabase-js';
+import { LoginModal } from '@components/index';
 
 export default function Sidebar({ className }: { className?: string }) {
   const [hovered, setHovered] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,6 +28,14 @@ export default function Sidebar({ className }: { className?: string }) {
     { name: 'Chats', icon: <FaComments size={20} />, path: '/Chats' },
   ];
 
+  const handleCloseLoginModal = () => {
+    setShowLoginModal(false);
+  };
+
+  const handleRegisterOpen = () => {
+    console.log('Register open');
+  };
+
   return (
     <>
       <motion.div
@@ -42,11 +52,13 @@ export default function Sidebar({ className }: { className?: string }) {
               hovered={hovered}
               setHovered={setHovered}
               navigate={navigate}
+              setShowLoginModal={setShowLoginModal}
+              user={user}
             />
           ))}
         </div>
         <div className="flex flex-col items-center gap-6">
-          {user ? (
+          {user && (
             <SidebarItem
               item={{
                 name: 'Profile',
@@ -64,18 +76,8 @@ export default function Sidebar({ className }: { className?: string }) {
               hovered={hovered}
               setHovered={setHovered}
               navigate={navigate}
-            />
-          ) : (
-            <SidebarItem
-              key="Login"
-              item={{
-                name: 'Login',
-                icon: <FaUser size={20} />,
-                path: '/Login',
-              }}
-              hovered={hovered}
-              setHovered={setHovered}
-              navigate={navigate}
+              setShowLoginModal={setShowLoginModal}
+              user={user}
             />
           )}
           {menuItems.slice(2).map((item) => (
@@ -85,6 +87,8 @@ export default function Sidebar({ className }: { className?: string }) {
               hovered={hovered}
               setHovered={setHovered}
               navigate={navigate}
+              setShowLoginModal={setShowLoginModal}
+              user={user}
             />
           ))}
         </div>
@@ -97,9 +101,9 @@ export default function Sidebar({ className }: { className?: string }) {
         transition={{ duration: 0.5 }}
       >
         {menuItems.map((item) => (
-          <MobileNavItem key={item.name} item={item} navigate={navigate} />
+          <MobileNavItem key={item.name} item={item} navigate={navigate} setShowLoginModal={setShowLoginModal} user={user} />
         ))}
-        {user ? (
+        {user && (
           <MobileNavItem
             item={{
               name: '',
@@ -113,24 +117,32 @@ export default function Sidebar({ className }: { className?: string }) {
               path: '/Profile',
             }}
             navigate={navigate}
-          />
-        ) : (
-          <MobileNavItem
-            key="Login"
-            item={{ name: 'Login', icon: <FaUser size={20} />, path: '/Login' }}
-            navigate={navigate}
+            setShowLoginModal={setShowLoginModal}
+            user={user}
           />
         )}
       </motion.div>
+
+      {showLoginModal && (
+        <LoginModal onClose={handleCloseLoginModal} />
+      )}
     </>
   );
 }
 
-function SidebarItem({ item, hovered, setHovered, navigate }: any) {
+function SidebarItem({ item, hovered, setHovered, navigate, setShowLoginModal, user }: any) {
+  const handleClick = () => {
+    if (['Settings', 'Profile', 'Chats', 'Create'].includes(item.name) && !user) {
+      setShowLoginModal(true);
+    } else {
+      navigate(item.path);
+    }
+  };
+
   return (
     <motion.div
       className="relative flex items-center justify-center w-12 h-12 rounded-lg hover:bg-gray-800 cursor-pointer"
-      onClick={() => navigate(item.path)}
+      onClick={handleClick}
       onMouseEnter={() => setHovered(item.name)}
       onMouseLeave={() => setHovered(null)}
       whileHover={{ scale: 1.05 }}
@@ -151,11 +163,19 @@ function SidebarItem({ item, hovered, setHovered, navigate }: any) {
   );
 }
 
-function MobileNavItem({ item, navigate }: any) {
+function MobileNavItem({ item, navigate, setShowLoginModal, user }: any) {
+  const handleClick = () => {
+    if (['Settings', 'Profile', 'Chats', 'Create'].includes(item.name) && !user) {
+      setShowLoginModal(true);
+    } else {
+      navigate(item.path);
+    }
+  };
+
   return (
     <motion.div
       className="flex flex-col items-center cursor-pointer"
-      onClick={() => navigate(item.path)}
+      onClick={handleClick}
       whileHover={{ scale: 1.1 }}
       transition={{ duration: 0.3 }}
     >
