@@ -89,7 +89,7 @@ export default function ChatMain({
       </motion.div>
 
       <motion.div
-        className="w-full bg-[#1e1e1e] sm:relative sm:bg-transparent"
+        className="w-full bg-charcoal sm:relative sm:bg-transparent"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
