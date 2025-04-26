@@ -1,7 +1,7 @@
 {
   "name": "PyrenzAI",
   "short_name": "Pyrenz",
-  "description": "PyrenzAI: Open-source, free alternative for AI chatting.",
+  "description": "PyrenzAI: Open-source, free alternative AI chatting.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",
@@ -11,12 +11,12 @@
   "scope": "/",
   "icons": [
     {
-      "src": "/favicon.png",
+      "src": "/favicon.ico",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/favicon.png",
+      "src": "/favicon512.ico",
       "sizes": "512x512",
       "type": "image/png"
     }
