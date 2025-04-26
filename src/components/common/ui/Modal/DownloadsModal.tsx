@@ -18,6 +18,7 @@ export default function DownloadModal({
       icon: FaGlobe,
       label: 'Web',
       link: '/Home',
+      is_up: true,
       className: 'w-full border-b-2 border-red-500 pb-4',
       buttonClassName:
         'flex flex-col items-center w-full bg-transparent hover:shadow-glow',
@@ -26,6 +27,7 @@ export default function DownloadModal({
       icon: FaWindows,
       label: 'Windows',
       link: '/Windows',
+      is_up: false,
       className: '',
       buttonClassName:
         'flex flex-col items-center bg-black bg-opacity-80 p-3 rounded-lg border-2 border-red-500 w-40 hover:shadow-glow',
@@ -34,11 +36,20 @@ export default function DownloadModal({
       icon: FaMobileAlt,
       label: 'Mobile',
       link: '/Mobile',
+      is_up: false,
       className: '',
       buttonClassName:
         'flex flex-col items-center bg-black bg-opacity-80 p-3 rounded-lg border-2 border-red-500 w-40 hover:shadow-glow',
     },
   ];
+
+  const handleButtonClick = (link: string, label: string, is_up: boolean) => {
+    if (is_up) {
+      navigate(link);
+    } else {
+      window.alert(`${label} is not up yet, please check soon.`);
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -64,7 +75,13 @@ export default function DownloadModal({
                   return (
                     <div className={buttonsConfig[0].className}>
                       <motion.button
-                        onClick={() => navigate(buttonsConfig[0].link)}
+                        onClick={() =>
+                          handleButtonClick(
+                            buttonsConfig[0].link,
+                            buttonsConfig[0].label,
+                            buttonsConfig[0].is_up
+                          )
+                        }
                         className={buttonsConfig[0].buttonClassName}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
@@ -86,7 +103,9 @@ export default function DownloadModal({
                   return (
                     <motion.button
                       key={index}
-                      onClick={() => navigate(button.link)}
+                      onClick={() =>
+                        handleButtonClick(button.link, button.label, button.is_up)
+                      }
                       className={button.buttonClassName}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
