@@ -17,15 +17,29 @@ export default function Footer() {
 
       window.addEventListener('mousemove', handleMouseMove);
 
-      const img = new Image();
-      img.src = 'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif';
-      img.onload = () => {
-        setImageSrc(img.src);
-        setImageLoaded(true);
-      };
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const img = new Image();
+              img.src = 'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif';
+              img.onload = () => {
+                setImageSrc(img.src);
+                setImageLoaded(true);
+              };
+              observer.disconnect(); 
+            }
+          });
+        },
+        { threshold: 0.1 } 
+      );
+
+      const target = document.querySelector('.bg-cover-container');
+      if (target) observer.observe(target);
 
       return () => {
         window.removeEventListener('mousemove', handleMouseMove);
+        if (target) observer.unobserve(target);
       };
     }
   }, []);
@@ -47,7 +61,7 @@ export default function Footer() {
             imageLoaded
               ? 'bg-[url("https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif")] bg-cover'
               : ''
-          }`}
+          } bg-cover-container`}
           onMouseEnter={() => setHovering(true)}
           onMouseLeave={() => setHovering(false)}
           onMouseMove={(e: React.MouseEvent<HTMLDivElement>) =>

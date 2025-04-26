@@ -220,6 +220,7 @@ export default function Preview() {
                   <img
                     src={card.cardImage}
                     alt={card.cardName}
+                    loading="lazy"
                     className="mt-4 rounded-lg w-full"
                   />
                 </CardContent>
