@@ -171,7 +171,7 @@ export default function Login({ onClose }: LoginProps) {
           </motion.div>
         </motion.div>
       ) : (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense>
           <RegisterModal onClose={onClose} />
         </Suspense>
       )}
