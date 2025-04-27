@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { CreateButton, DraftsModal } from '~/components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFileAlt, faSave } from '@fortawesome/free-solid-svg-icons';
 
 interface Draft {
   id: number;
@@ -58,15 +60,17 @@ export default function FormActions({
         type="button"
         onClick={onSave}
         disabled={saveLoading}
-        className="text-white p-3 rounded-lg bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        className="text-white p-3 rounded-lg bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 flex items-center"
       >
+        <FontAwesomeIcon icon={faSave} className="mr-2" />
         {saveLoading ? 'Saving...' : 'Save'}
       </button>
       <button
         type="button"
         onClick={handleOpenDraftModal}
-        className="text-white p-3 rounded-lg bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-green-400"
+        className="text-white p-3 rounded-lg bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-green-400 flex items-center"
       >
+        <FontAwesomeIcon icon={faFileAlt} className="mr-2" />
         Drafts
       </button>
       <CreateButton loading={loading} />
