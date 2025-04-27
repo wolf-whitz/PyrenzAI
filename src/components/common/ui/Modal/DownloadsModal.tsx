@@ -18,7 +18,7 @@ export default function DownloadModal({
       icon: FaGlobe,
       label: 'Web',
       link: '/Home',
-      is_up: true,
+      is_up: false,
       className: 'w-full border-b-2 border-red-500 pb-4',
       buttonClassName:
         'flex flex-col items-center w-full bg-transparent hover:shadow-glow',
