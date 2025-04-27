@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { supabase } from "~/Utility/supabaseClient";
+import { supabase } from "../src/Utility/supabaseClient";
 import { z } from "zod";
 
 const requestSchema = z.object({
@@ -12,6 +12,9 @@ const requestSchema = z.object({
     .optional()
     .transform((val) => val?.replace(/\\/g, "")),
 });
+export const config = {
+  runtime: 'edge',
+};
 
 export default async (req: VercelRequest, res: VercelResponse) => {
   if (req.method !== "POST") {
