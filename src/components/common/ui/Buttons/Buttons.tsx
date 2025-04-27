@@ -40,7 +40,9 @@ export default function CustomButton({ onButtonClick }: { onButtonClick: Functio
   const [searchQuery, setSearchQuery] = useState('');
   const [modalResults, setModalResults] = useState<ModalResultType[]>([]);
   const [loading, setLoading] = useState(false);
+  const [visibleButtons, setVisibleButtons] = useState(buttons);
   const modalRef = useRef<HTMLDivElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const user_uuid = useUserStore(state => state.user_uuid);
   const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
 
@@ -84,6 +86,36 @@ export default function CustomButton({ onButtonClick }: { onButtonClick: Functio
     };
   }, [isModalOpen]);
 
+  useEffect(() => {
+    const resizeObserver = new ResizeObserver(entries => {
+      for (let entry of entries) {
+        const containerWidth = entry.contentRect.width;
+        let count = 0;
+        let totalWidth = 0;
+
+        buttons.forEach(btn => {
+          const buttonWidth = 100;
+          if (totalWidth + buttonWidth <= containerWidth) {
+            totalWidth += buttonWidth;
+            count++;
+          }
+        });
+
+        setVisibleButtons(buttons.slice(0, count));
+      }
+    });
+
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current);
+    }
+
+    return () => {
+      if (containerRef.current) {
+        resizeObserver.unobserve(containerRef.current);
+      }
+    };
+  }, []);
+
   const filteredModalButtons = modalResults.length > 0
     ? modalResults
     : buttons.filter(btn => btn.label.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -103,25 +135,27 @@ export default function CustomButton({ onButtonClick }: { onButtonClick: Functio
 
   return (
     <motion.div
-      className="flex justify-center gap-4 mb-6 text-white font-baloo p-4 rounded-lg"
+      ref={containerRef}
+      className="flex flex-wrap justify-center gap-2 mb-6 text-white font-baloo p-4 rounded-lg"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      {buttons.slice(0, 3).map((btn, index) => (
+      {buttons.map((btn, index) => (
         <motion.button
           key={index}
-          className="border border-white flex items-center space-x-2 rounded-md px-6 py-3 bg-black text-white transform transition-transform duration-300 hover:scale-105 font-baloo"
+          className="border border-white flex items-center space-x-2 rounded-md px-4 py-2 bg-black text-white transform transition-transform duration-300 hover:scale-105 font-baloo"
           onClick={() => onButtonClick(btn.rpcFunction, btn.type, btn.max_character, btn.page)}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
+          style={{ display: index < visibleButtons.length ? 'flex' : 'none' }}
         >
-          <btn.icon size={20} />
+          <btn.icon size={18} />
           <span>{btn.label}</span>
         </motion.button>
       ))}
       <motion.button
-        className="border border-white flex items-center space-x-2 rounded-md px-6 py-3 bg-black text-white transform transition-transform duration-300 hover:scale-105 font-baloo"
+        className="border border-white flex items-center space-x-2 rounded-md px-4 py-2 bg-black text-white transform transition-transform duration-300 hover:scale-105 font-baloo"
         onClick={() => setIsModalOpen(true)}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
@@ -157,19 +191,19 @@ export default function CustomButton({ onButtonClick }: { onButtonClick: Functio
                 filteredModalButtons.map((btn, index) => (
                   <motion.button
                     key={index}
-                    className="border border-white flex items-center space-x-2 rounded-md px-6 py-3 bg-black text-white transform transition-transform duration-300 hover:scale-105 font-baloo"
+                    className="border border-white flex items-center space-x-2 rounded-md px-4 py-2 bg-black text-white transform transition-transform duration-300 hover:scale-105 font-baloo"
                     onClick={() => handleButtonClick(btn)}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
                     {'icon' in btn ? (
                       <>
-                        <btn.icon size={20} />
+                        <btn.icon size={18} />
                         <span>{btn.label}</span>
                       </>
                     ) : (
                       <>
-                        <Tag size={20} />
+                        <Tag size={18} />
                         <span>{btn.name}</span>
                       </>
                     )}

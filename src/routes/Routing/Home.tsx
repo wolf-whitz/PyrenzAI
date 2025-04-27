@@ -215,7 +215,12 @@ export default function Home() {
           <Sidebar />
         </motion.div>
       )}
-      {isClient && <Footer />}
+      <div className="pb-16">
+        {isClient && <Footer />}
+        <p className="text-center text-gray-500 mt-4">
+          © 2025 Pyrenz AI. All Rights Reserved.
+        </p>
+      </div>
     </motion.div>
   );
 }

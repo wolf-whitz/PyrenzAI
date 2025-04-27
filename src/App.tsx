@@ -7,7 +7,7 @@ import { Spinner } from "@components/index"
 
 const RoutesWrapper = lazy(() => Promise.resolve({ default: () => useRoutes(allRoutes) }));
 
-function App() {
+export default function App() {
   const {
     setHasHydrated,
     hasHydrated,
@@ -66,4 +66,4 @@ function App() {
   );
 }
 
-export default App;
+ 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   FaHome,
   FaCompass,
@@ -20,6 +20,11 @@ export default function Header({
   setShowRegister,
 }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const menuItems = [
     { name: 'Home', icon: FaHome, link: '/Home' },
@@ -35,8 +40,8 @@ export default function Header({
 
   return (
     <motion.header
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={false}
+      animate={isMounted ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.5 }}
       className={`fixed top-0 left-0 w-full bg-black bg-opacity-40 p-4 z-50 transition-opacity duration-500 ${

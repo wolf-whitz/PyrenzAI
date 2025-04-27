@@ -3,17 +3,17 @@ import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import './Global.css';
 import { Analytics } from "@vercel/analytics/react"
-import * as Sentry from '@sentry/react';
+import { datadogRum } from '@datadog/browser-rum';
 
-Sentry.init({
-  dsn: "https://0335d11be39c3c075ef8f5f37e5823ac@o4509146218299392.ingest.us.sentry.io/4509214976770048",
-  integrations: [
-    Sentry.replayIntegration()
-  ],  
-  tracesSampleRate: 1.0,
-  sendDefaultPii: true,
-  replaysSessionSampleRate: 0.1,
-  replaysOnErrorSampleRate: 1.0
+datadogRum.init({
+    applicationId: '651aae08-df38-44d6-8944-9b4208ad8ba2',
+    clientToken: 'pub612e2a2baa742ee72147e1bbaf23de53',
+    site: 'us5.datadoghq.com',
+    service:'pyrenzai',
+    env: 'development',
+    sessionSampleRate:  100,
+    sessionReplaySampleRate: 35,
+    defaultPrivacyLevel: 'mask-user-input',
 });
 
 createRoot(document.getElementById('root')!).render(

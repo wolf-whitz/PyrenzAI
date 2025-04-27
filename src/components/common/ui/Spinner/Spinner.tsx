@@ -7,7 +7,7 @@ type SpinnerBaseProps = {
 
 const SpinnerBase = ({ message, subMessage }: SpinnerBaseProps) => (
   <motion.div
-    className="flex flex-col justify-center items-center h-screen space-y-4 text-white text-center px-4"
+    className="flex flex-col justify-center items-center h-screen space-y-4 text-white text-center px-4 bg-black"
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     exit={{ opacity: 0 }}
