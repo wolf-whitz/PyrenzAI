@@ -9,7 +9,7 @@ const pendingRequests = new Map<string, Promise<any>>();
 
 export const Utils = {
   TIMEOUT: 5000,
-  BASE_URL: 'http://localhost:1983',
+  BASE_URL: 'http://api.pyrenzai.com',
 
   async request<T>(
     method: RequestMethod,
