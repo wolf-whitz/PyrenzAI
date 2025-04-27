@@ -194,6 +194,7 @@ export default function Preview() {
             whileTap={{ scale: 0.95 }}
             className="mt-4 bg-red-800 text-white px-8 py-3 rounded w-full max-w-xs hover:bg-red-900 transition-colors duration-300"
             onClick={openModal}
+            aria-label="Get Started"
           >
             Get Started
           </motion.button>
@@ -215,14 +216,17 @@ export default function Preview() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="bg-gray-800 text-white shadow-lg rounded-2xl overflow-hidden hover:shadow-2xl transition-transform duration-300 border-2 border-red-500 md:max-w-xs mx-auto"
+                role="article"
+                aria-labelledby={`card-title-${i}`}
+                aria-describedby={`card-description-${i}`}
               >
                 <CardHeader>
-                  <CardTitle className="text-2xl font-semibold p-4">
+                  <CardTitle id={`card-title-${i}`} className="text-2xl font-semibold p-4">
                     {card.cardName}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-4">
-                  <p className="opacity-90">{card.cardDescription}</p>
+                  <p id={`card-description-${i}`} className="opacity-90">{card.cardDescription}</p>
                   <img
                     src={card.cardImage}
                     alt={card.cardName}
@@ -230,6 +234,7 @@ export default function Preview() {
                     width={card.imageWidth}
                     height={card.imageHeight}
                     className="mt-4 rounded-lg w-full"
+                    aria-hidden="true"
                   />
                 </CardContent>
               </motion.div>
