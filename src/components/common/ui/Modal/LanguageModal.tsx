@@ -7,7 +7,11 @@ interface LanguageModalProps {
   onClose: () => void;
 }
 
-export default function LanguageModal({ languages, isOpen, onClose }: LanguageModalProps) {
+export default function LanguageModal({
+  languages,
+  isOpen,
+  onClose,
+}: LanguageModalProps) {
   if (!isOpen) return null;
 
   return (
@@ -23,7 +27,9 @@ export default function LanguageModal({ languages, isOpen, onClose }: LanguageMo
         transition={{ duration: 0.3, ease: 'easeOut' }}
         onClick={(e) => e.stopPropagation()}
       >
-        <h3 className="text-2xl font-semibold mb-4 text-center">Select Language</h3>
+        <h3 className="text-2xl font-semibold mb-4 text-center">
+          Select Language
+        </h3>
         <div className="grid grid-cols-2 gap-4 mb-4">
           {languages.map((lang, index) => (
             <button
@@ -35,14 +41,10 @@ export default function LanguageModal({ languages, isOpen, onClose }: LanguageMo
           ))}
         </div>
         <div className="flex justify-center gap-4">
-          <button
-            className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition duration-200"
-          >
+          <button className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition duration-200">
             Request a Language
           </button>
-          <button
-            className="bg-yellow-500 text-white px-6 py-2 rounded-lg hover:bg-yellow-700 transition duration-200"
-          >
+          <button className="bg-yellow-500 text-white px-6 py-2 rounded-lg hover:bg-yellow-700 transition duration-200">
             Found a Grammar Issue
           </button>
         </div>

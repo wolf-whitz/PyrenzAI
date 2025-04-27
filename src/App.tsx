@@ -3,16 +3,14 @@ import { BrowserRouter as Router, useRoutes } from 'react-router-dom';
 import { supabase } from '~/Utility/supabaseClient';
 import { useUserStore } from '~/store';
 import { routes as allRoutes } from '~/routes/routes';
-import { Spinner } from "@components/index"
+import { Spinner } from '@components/index';
 
-const RoutesWrapper = lazy(() => Promise.resolve({ default: () => useRoutes(allRoutes) }));
+const RoutesWrapper = lazy(() =>
+  Promise.resolve({ default: () => useRoutes(allRoutes) })
+);
 
 export default function App() {
-  const {
-    setHasHydrated,
-    hasHydrated,
-    setUserUUID,
-  } = useUserStore();
+  const { setHasHydrated, hasHydrated, setUserUUID } = useUserStore();
 
   useEffect(() => {
     setHasHydrated(true);
@@ -21,7 +19,9 @@ export default function App() {
   useEffect(() => {
     if (!hasHydrated) return;
 
-    const authDataString = localStorage.getItem("sb-dojdyydsanxoblgjmzmq-auth-token");
+    const authDataString = localStorage.getItem(
+      'sb-dojdyydsanxoblgjmzmq-auth-token'
+    );
 
     const handleSession = () => {
       if (!authDataString) return;
@@ -30,15 +30,19 @@ export default function App() {
         try {
           const { access_token, refresh_token } = JSON.parse(authDataString);
 
-          const { error } = await supabase.auth.setSession({ access_token, refresh_token });
+          const { error } = await supabase.auth.setSession({
+            access_token,
+            refresh_token,
+          });
           if (error) throw error;
 
-          const { data, error: sessionError } = await supabase.auth.getSession();
+          const { data, error: sessionError } =
+            await supabase.auth.getSession();
           if (sessionError || !data.session) throw sessionError;
 
           setUserUUID(data.session.user.id);
         } catch {
-          localStorage.removeItem("sb-dojdyydsanxoblgjmzmq-auth-token");
+          localStorage.removeItem('sb-dojdyydsanxoblgjmzmq-auth-token');
           setUserUUID(null);
         }
       };
@@ -58,12 +62,10 @@ export default function App() {
   }
 
   return (
-    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true, }}>
+    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Suspense fallback={<Spinner />}>
         <RoutesWrapper />
       </Suspense>
     </Router>
   );
 }
-
- 

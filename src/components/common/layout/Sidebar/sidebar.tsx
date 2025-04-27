@@ -101,7 +101,13 @@ export default function Sidebar({ className }: { className?: string }) {
         transition={{ duration: 0.5 }}
       >
         {menuItems.map((item) => (
-          <MobileNavItem key={item.name} item={item} navigate={navigate} setShowLoginModal={setShowLoginModal} user={user} />
+          <MobileNavItem
+            key={item.name}
+            item={item}
+            navigate={navigate}
+            setShowLoginModal={setShowLoginModal}
+            user={user}
+          />
         ))}
         {user && (
           <MobileNavItem
@@ -123,16 +129,24 @@ export default function Sidebar({ className }: { className?: string }) {
         )}
       </motion.div>
 
-      {showLoginModal && (
-        <LoginModal onClose={handleCloseLoginModal} />
-      )}
+      {showLoginModal && <LoginModal onClose={handleCloseLoginModal} />}
     </>
   );
 }
 
-function SidebarItem({ item, hovered, setHovered, navigate, setShowLoginModal, user }: any) {
+function SidebarItem({
+  item,
+  hovered,
+  setHovered,
+  navigate,
+  setShowLoginModal,
+  user,
+}: any) {
   const handleClick = () => {
-    if (['Settings', 'Profile', 'Chats', 'Create'].includes(item.name) && !user) {
+    if (
+      ['Settings', 'Profile', 'Chats', 'Create'].includes(item.name) &&
+      !user
+    ) {
       setShowLoginModal(true);
     } else {
       navigate(item.path);
@@ -165,7 +179,10 @@ function SidebarItem({ item, hovered, setHovered, navigate, setShowLoginModal, u
 
 function MobileNavItem({ item, navigate, setShowLoginModal, user }: any) {
   const handleClick = () => {
-    if (['Settings', 'Profile', 'Chats', 'Create'].includes(item.name) && !user) {
+    if (
+      ['Settings', 'Profile', 'Chats', 'Create'].includes(item.name) &&
+      !user
+    ) {
       setShowLoginModal(true);
     } else {
       navigate(item.path);

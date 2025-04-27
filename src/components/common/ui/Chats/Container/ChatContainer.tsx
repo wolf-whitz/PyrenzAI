@@ -8,7 +8,7 @@ import {
   GenerateResponse,
 } from '@shared-types/chatTypes';
 import { Utils } from '~/Utility/Utility';
-import { ChatPageSpinner } from "@ui/Spinner/Spinner"
+import { ChatPageSpinner } from '@ui/Spinner/Spinner';
 
 export default function ChatContainer({
   user,

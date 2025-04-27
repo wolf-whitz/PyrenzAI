@@ -41,14 +41,11 @@ export const sendUserDataToSupabase = async (user: AppUser): Promise<void> => {
     `https://api.dicebear.com/8.x/avataaars/svg?seed=${username}`;
 
   try {
-    const response: ApiResponse = await Utils.post<ApiResponse>(
-      '/authorized',
-      {
-        id: user.id,
-        name: user.user_metadata?.full_name || username,
-        imageUrl,
-      }
-    );
+    const response: ApiResponse = await Utils.post<ApiResponse>('/authorized', {
+      id: user.id,
+      name: user.user_metadata?.full_name || username,
+      imageUrl,
+    });
 
     if (response.error) {
       console.error('Error sending user data:', response.error);
@@ -60,7 +57,11 @@ export const sendUserDataToSupabase = async (user: AppUser): Promise<void> => {
   }
 };
 
-export const handleSignUp = async (email: string, password: string, isAdult: boolean) => {
+export const handleSignUp = async (
+  email: string,
+  password: string,
+  isAdult: boolean
+) => {
   if (!isAdult) {
     throw new Error('You must confirm you are 18+ to sign up.');
   }
@@ -72,7 +73,9 @@ export const handleSignUp = async (email: string, password: string, isAdult: boo
   return 'Sign-up successful! Please check your email to verify your account.';
 };
 
-export const handleRegisterOAuthSignIn = async (provider: 'google' | 'discord') => {
+export const handleRegisterOAuthSignIn = async (
+  provider: 'google' | 'discord'
+) => {
   const { error } = await supabase.auth.signInWithOAuth({ provider });
 
   if (error) throw error;

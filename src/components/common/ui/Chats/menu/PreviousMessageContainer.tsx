@@ -22,8 +22,12 @@ interface PreviousChatProps {
   messages?: Message[] | {};
 }
 
-export default function PreviousChat({ messages: initialMessages = [] }: PreviousChatProps) {
-  const [messages, setMessages] = useState<Message[]>(Array.isArray(initialMessages) ? initialMessages : []);
+export default function PreviousChat({
+  messages: initialMessages = [],
+}: PreviousChatProps) {
+  const [messages, setMessages] = useState<Message[]>(
+    Array.isArray(initialMessages) ? initialMessages : []
+  );
   const [loading, setLoading] = useState(messages.length === 0);
   const [error, setError] = useState<string | null>(null);
   const [dataFetched, setDataFetched] = useState(false);
@@ -103,7 +107,7 @@ export default function PreviousChat({ messages: initialMessages = [] }: Previou
         ) : error ? (
           <div className="flex flex-col items-center justify-center p-4 space-y-4">
             <motion.img
-              src='https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MascotCrying.avif'
+              src="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MascotCrying.avif"
               alt="Crying Mascot"
               className="w-24 h-24 mt-2"
               whileHover={{ scale: 1.1 }}
@@ -114,7 +118,7 @@ export default function PreviousChat({ messages: initialMessages = [] }: Previou
         ) : messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-4 space-y-4">
             <motion.img
-              src='https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MascotCrying.avif'
+              src="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MascotCrying.avif"
               alt="Crying Mascot"
               className="w-24 h-24 mt-3"
               whileHover={{ scale: 1.1 }}

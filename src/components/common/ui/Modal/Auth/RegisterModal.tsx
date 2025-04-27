@@ -9,9 +9,11 @@ import {
   handleRegisterOAuthSignIn as handleOAuthSignIn,
   sendUserDataToSupabase,
 } from '~/api';
-import { supabase } from "~/Utility/supabaseClient"
+import { supabase } from '~/Utility/supabaseClient';
 
-const LoginModal = lazy(() => import('@components/index').then(module => ({ default: module.LoginModal })));
+const LoginModal = lazy(() =>
+  import('@components/index').then((module) => ({ default: module.LoginModal }))
+);
 
 interface RegisterProps {
   onClose: () => void;
@@ -213,7 +215,9 @@ export default function Register({ onClose }: RegisterProps) {
                 Terms of Service
               </span>{' '}
               and acknowledge our{' '}
-              <span className="text-blue-500 cursor-pointer">Privacy Policy</span>
+              <span className="text-blue-500 cursor-pointer">
+                Privacy Policy
+              </span>
               .
             </p>
 

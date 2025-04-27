@@ -1,17 +1,17 @@
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { useParams } from "react-router-dom";
-import { useUserStore } from "~/store";
-import { useChatStore } from "~/store";
-import { fetchChatData } from "~/api";
-import { Utils } from "~/Utility/Utility";
+import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import { useParams } from 'react-router-dom';
+import { useUserStore } from '~/store';
+import { useChatStore } from '~/store';
+import { fetchChatData } from '~/api';
+import { Utils } from '~/Utility/Utility';
 import {
   Sidebar,
   DesktopSidebar,
   ChatContainer,
   PreviousChat,
-} from "~/components";
-import { ChatPageSpinner } from "@ui/Spinner/Spinner"
+} from '~/components';
+import { ChatPageSpinner } from '@ui/Spinner/Spinner';
 
 interface PersonaResponse {
   user_uuid: string;
@@ -37,13 +37,20 @@ export default function ChatPage() {
       if (conversation_id && user_uuid && auth_key && !chatDataFetched) {
         try {
           setChatDataFetched(true);
-          const result = await fetchChatData(conversation_id, user_uuid, auth_key);
+          const result = await fetchChatData(
+            conversation_id,
+            user_uuid,
+            auth_key
+          );
           setChatData(result);
 
-          if (result?.character?.first_message && result?.character?.id === result?.character?.id) {
+          if (
+            result?.character?.first_message &&
+            result?.character?.id === result?.character?.id
+          ) {
             setFirstMessage(result.character.first_message);
           } else {
-            setFirstMessage("");
+            setFirstMessage('');
           }
 
           setFetchError(false);
@@ -61,7 +68,10 @@ export default function ChatPage() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await Utils.post<PersonaResponse>("/api/getPersona", { user_uuid, auth_key });
+        const response = await Utils.post<PersonaResponse>('/api/getPersona', {
+          user_uuid,
+          auth_key,
+        });
         setUserData(response);
       } catch {}
     };
@@ -91,7 +101,7 @@ export default function ChatPage() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
+      transition={{ duration: 0.6, ease: 'easeOut' }}
       className="flex min-h-screen w-full text-white bg-gray-900"
     >
       <aside className="hidden lg:flex flex-col w-64">

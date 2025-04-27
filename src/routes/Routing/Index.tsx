@@ -18,7 +18,8 @@ import AOS from 'aos';
 const cardData = [
   {
     cardName: 'Smart. Fast. Free.',
-    cardImage: 'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/ChattingExample.avif',
+    cardImage:
+      'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/ChattingExample.avif',
     cardDescription:
       'Talk to characters anytime. No delays, no message limits just pure roleplay.',
     imageWidth: 400,
@@ -26,7 +27,8 @@ const cardData = [
   },
   {
     cardName: 'Tools For Creator',
-    cardImage: 'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MagicalBook.avif',
+    cardImage:
+      'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MagicalBook.avif',
     cardDescription:
       'Experience Pyrenz tools unleash your creativity with lorebooks, powerful model customization, and so much more',
     imageWidth: 400,
@@ -34,7 +36,8 @@ const cardData = [
   },
   {
     cardName: 'Unlimited Messages',
-    cardImage: 'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/ChattingExample.avif',
+    cardImage:
+      'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/ChattingExample.avif',
     cardDescription:
       'Free or not, welcome to PyrenzAi! We offer unlimited messages for free!',
     imageWidth: 400,
@@ -183,9 +186,7 @@ export default function Preview() {
           data-aos="fade-up"
           className="flex flex-col justify-center items-center min-h-screen text-white -mt-16"
         >
-          <h1 className="text-7xl font-semibold mb-4 text-center">
-            Pyrenz AI
-          </h1>
+          <h1 className="text-7xl font-semibold mb-4 text-center">Pyrenz AI</h1>
           <p className="text-2xl opacity-80 text-center">
             Enrich Creativity with AI, with advanced tools, let creativity flow
           </p>
@@ -221,12 +222,17 @@ export default function Preview() {
                 aria-describedby={`card-description-${i}`}
               >
                 <CardHeader>
-                  <CardTitle id={`card-title-${i}`} className="text-2xl font-semibold p-4">
+                  <CardTitle
+                    id={`card-title-${i}`}
+                    className="text-2xl font-semibold p-4"
+                  >
                     {card.cardName}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-4">
-                  <p id={`card-description-${i}`} className="opacity-90">{card.cardDescription}</p>
+                  <p id={`card-description-${i}`} className="opacity-90">
+                    {card.cardDescription}
+                  </p>
                   <img
                     src={card.cardImage}
                     alt={card.cardName}
@@ -247,16 +253,8 @@ export default function Preview() {
         <Footer />
       </motion.div>
 
-      {showLogin && (
-        <LoginModal
-          onClose={() => setShowLogin(false)}
-        />
-      )}
-      {showRegister && (
-        <RegisterModal
-          onClose={() => setShowRegister(false)}
-        />
-      )}
+      {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
+      {showRegister && <RegisterModal onClose={() => setShowRegister(false)} />}
     </motion.div>
   );
 }

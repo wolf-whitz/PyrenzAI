@@ -22,7 +22,8 @@ export default function Footer() {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
               const img = new Image();
-              img.src = 'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif';
+              img.src =
+                'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif';
               img.onload = () => {
                 setImageSrc(img.src);
                 setImageLoaded(true);

@@ -58,7 +58,9 @@ export default function Pagination({
         onClick={handleLoadMore}
         disabled={isLoading}
         className={`px-4 py-2 rounded-full flex items-center justify-center ${
-          isLoading ? 'bg-gray-700 cursor-not-allowed' : 'bg-gray-800 hover:bg-gray-700'
+          isLoading
+            ? 'bg-gray-700 cursor-not-allowed'
+            : 'bg-gray-800 hover:bg-gray-700'
         }`}
         aria-label="Load more items"
         whileHover={{ scale: 1.05 }}

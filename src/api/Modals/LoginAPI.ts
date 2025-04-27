@@ -44,14 +44,11 @@ export const sendUserDataToSupabase = async (user: AppUser): Promise<void> => {
     `https://api.dicebear.com/8.x/avataaars/svg?seed=${username}`;
 
   try {
-    const response: ApiResponse = await Utils.post<ApiResponse>(
-      '/authorized',
-      {
-        id: user.id,
-        name: user.user_metadata?.full_name || username,
-        imageUrl,
-      }
-    );
+    const response: ApiResponse = await Utils.post<ApiResponse>('/authorized', {
+      id: user.id,
+      name: user.user_metadata?.full_name || username,
+      imageUrl,
+    });
 
     if (response.error) {
       console.error('Error sending user data:', response.error);
@@ -74,9 +71,7 @@ export const handleLogin = async (email: string, password: string) => {
 
     const tokens = extractTokensFromLocalStorage();
     if (tokens) {
-      const authData = JSON.parse(
-        localStorage.getItem(AuthTokenName) || ''
-      );
+      const authData = JSON.parse(localStorage.getItem(AuthTokenName) || '');
       const user = authData?.user;
       if (user) await sendUserDataToSupabase(user);
     }
@@ -95,9 +90,7 @@ export const handleOAuthSignIn = async (provider: 'google' | 'discord') => {
 
     const tokens = extractTokensFromLocalStorage();
     if (tokens) {
-      const authData = JSON.parse(
-        localStorage.getItem(AuthTokenName) || ''
-      );
+      const authData = JSON.parse(localStorage.getItem(AuthTokenName) || '');
       const user = authData?.user;
       if (user) await sendUserDataToSupabase(user);
     }

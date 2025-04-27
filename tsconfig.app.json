@@ -25,7 +25,7 @@
       "@ui/*": ["src/components/common/ui/*"],
       "@layout/*": ["src/components/common/layout/*"],
       "@shared-types/*": ["src/components/common/shared-types/*"],
-      "@store/*": ["src/store/*"],
+      "@store/*": ["src/store/*"]
     }
   },
   "include": ["src/**/*"]

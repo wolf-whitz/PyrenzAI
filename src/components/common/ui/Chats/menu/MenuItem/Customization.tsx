@@ -6,11 +6,14 @@ import { useUserStore } from '~/store';
 import { FaQuestionCircle } from 'react-icons/fa';
 
 const sliderDescriptions = {
-  maxTokens: "Controls the maximum number of tokens in the response.",
-  temperature: "Controls the randomness of the output. Higher values make the output more random.",
-  topP: "Controls the diversity of the output. Higher values make the output more diverse.",
-  presencePenalty: "Penalizes new tokens based on their presence in the input. Higher values make the output more different from the input.",
-  frequencyPenalty: "Penalizes new tokens based on their frequency in the input. Higher values make the output less repetitive."
+  maxTokens: 'Controls the maximum number of tokens in the response.',
+  temperature:
+    'Controls the randomness of the output. Higher values make the output more random.',
+  topP: 'Controls the diversity of the output. Higher values make the output more diverse.',
+  presencePenalty:
+    'Penalizes new tokens based on their presence in the input. Higher values make the output more different from the input.',
+  frequencyPenalty:
+    'Penalizes new tokens based on their frequency in the input. Higher values make the output less repetitive.',
 };
 
 export default function Customization() {
@@ -19,7 +22,9 @@ export default function Customization() {
   const [topP, setTopP] = useState(100);
   const [presencePenalty, setPresencePenalty] = useState(100);
   const [frequencyPenalty, setFrequencyPenalty] = useState(100);
-  const [showPopover, setShowPopover] = useState<keyof typeof sliderDescriptions | null>(null);
+  const [showPopover, setShowPopover] = useState<
+    keyof typeof sliderDescriptions | null
+  >(null);
 
   const stateSetters = {
     maxTokens: setMaxTokens,
@@ -63,7 +68,8 @@ export default function Customization() {
           <div key={sliderKey}>
             <div className="flex items-center justify-between">
               <label className="block text-sm font-medium text-gray-300">
-                {sliderKey.charAt(0).toUpperCase() + sliderKey.slice(1).replace(/([A-Z])/g, ' $1')}
+                {sliderKey.charAt(0).toUpperCase() +
+                  sliderKey.slice(1).replace(/([A-Z])/g, ' $1')}
               </label>
               <button
                 onClick={() => setShowPopover(sliderKey)}
@@ -76,9 +82,17 @@ export default function Customization() {
               className="relative flex items-center h-5"
               value={[stateValue]}
               onValueChange={(value) => stateSetters[sliderKey](value[0])}
-              max={sliderKey === 'maxTokens' ? 4000 : sliderKey === 'topP' ? 1 : 2}
+              max={
+                sliderKey === 'maxTokens' ? 4000 : sliderKey === 'topP' ? 1 : 2
+              }
               min={sliderKey.includes('Penalty') ? -2 : 0}
-              step={sliderKey === 'maxTokens' ? 1 : sliderKey === 'topP' ? 0.01 : 0.1}
+              step={
+                sliderKey === 'maxTokens'
+                  ? 1
+                  : sliderKey === 'topP'
+                    ? 0.01
+                    : 0.1
+              }
             >
               <Slider.Track className="relative h-1 w-full grow rounded-full bg-gray-600">
                 <Slider.Range className="absolute h-full rounded-full bg-blue-500" />

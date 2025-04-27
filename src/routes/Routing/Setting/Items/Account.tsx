@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { LanguageModal } from "@components/index";
+import { LanguageModal } from '@components/index';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
-import { supabase } from "~/Utility/supabaseClient";
-import { Utils } from "~/Utility/Utility";
+import { supabase } from '~/Utility/supabaseClient';
+import { Utils } from '~/Utility/Utility';
 import { User } from '@supabase/supabase-js';
 import { useNavigate } from 'react-router-dom';
 
@@ -50,20 +50,20 @@ export default function Account() {
     if (error) {
       console.error('Error logging out:', error);
     } else {
-      console.log("Logged out successfully");
+      console.log('Logged out successfully');
       setIsAuthenticated(false);
       setUser(null);
-      navigate("/");
+      navigate('/');
     }
   };
 
   const handleDeleteAccount = async () => {
     try {
       await Utils.post('/api/delete-account');
-      console.log("Account deleted successfully");
+      console.log('Account deleted successfully');
       setIsAuthenticated(false);
       setUser(null);
-      navigate("/auth");
+      navigate('/auth');
     } catch (error) {
       console.error('Error deleting account:', error);
     }
@@ -72,7 +72,9 @@ export default function Account() {
   if (!isAuthenticated) {
     return (
       <div className="flex flex-col gap-4 justify-center items-center h-full">
-        <h1 className="text-4xl font-bold text-white">Please log in to access your account settings.</h1>
+        <h1 className="text-4xl font-bold text-white">
+          Please log in to access your account settings.
+        </h1>
       </div>
     );
   }
@@ -87,7 +89,9 @@ export default function Account() {
     >
       <div className="text-center mb-6">
         <h1 className="text-4xl font-bold text-white">Account</h1>
-        <p className="text-lg text-gray-400 mt-2">Manage your login and account settings</p>
+        <p className="text-lg text-gray-400 mt-2">
+          Manage your login and account settings
+        </p>
       </div>
 
       {user && (
@@ -97,7 +101,9 @@ export default function Account() {
             alt="Profile"
             className="w-12 h-12 rounded-full"
           />
-          <span className="text-white text-lg">{user.user_metadata?.full_name || user.email}</span>
+          <span className="text-white text-lg">
+            {user.user_metadata?.full_name || user.email}
+          </span>
         </div>
       )}
 

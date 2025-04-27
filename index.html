@@ -7,51 +7,140 @@
 
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="manifest" href="/manifest.json" />
-    
+
     <!-- Google Tag Manager -->
     <script>
-      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-      })(window,document,'script','dataLayer','GTM-PV9LKZJF');
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != 'dataLayer' ? '&l=' + l : '';
+        j.async = true;
+        j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, 'script', 'dataLayer', 'GTM-PV9LKZJF');
     </script>
     <!-- End Google Tag Manager -->
 
     <!-- Meta Data -->
     <meta name="title" content="PyrenzAI" />
-    <meta name="description" content="Talk to endless anime characters for free. PyrenzAI makes it real. Let’s go!" />
-    <meta name="theme-color" content="#14181f" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#0f1117" media="(prefers-color-scheme: dark)" />
+    <meta
+      name="description"
+      content="Talk to endless anime characters for free. PyrenzAI makes it real. Let’s go!"
+    />
+    <meta
+      name="theme-color"
+      content="#14181f"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#0f1117"
+      media="(prefers-color-scheme: dark)"
+    />
     <meta name="color-scheme" content="dark light" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="format-detection" content="telephone=no" />
 
     <!-- Open Graph -->
     <meta property="og:title" content="PyrenzAI" />
-    <meta property="og:description" content="Talk to endless anime characters for free. PyrenzAI makes it real. Let’s go!" />
+    <meta
+      property="og:description"
+      content="Talk to endless anime characters for free. PyrenzAI makes it real. Let’s go!"
+    />
     <meta property="og:url" content="https://pyrenzai.com" />
     <meta property="og:type" content="website" />
 
     <!-- Twitter Meta -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="PyrenzAI" />
-    <meta name="twitter:description" content="Talk to endless anime characters for free. PyrenzAI makes it real. Let’s go!" />
+    <meta
+      name="twitter:description"
+      content="Talk to endless anime characters for free. PyrenzAI makes it real. Let’s go!"
+    />
 
     <!-- Preload Critical Assets -->
-    <link rel="preload" href="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif" as="image" type="image/avif" />
+    <link
+      rel="preload"
+      href="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif"
+      as="image"
+      type="image/avif"
+    />
     <link rel="preload" href="/favicon.ico" as="image" type="image/x-icon" />
-    <link rel="preload" href="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MascotCrying.avif" as="image" type="image/avif" />
-    <link rel="preload" href="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/Support.avif" as="image" type="image/avif" />
-    <link rel="preload" href="/fonts/baloo-da-2.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+    <link
+      rel="preload"
+      href="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MascotCrying.avif"
+      as="image"
+      type="image/avif"
+    />
+    <link
+      rel="preload"
+      href="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/Support.avif"
+      as="image"
+      type="image/avif"
+    />
+    <!-- Preload .woff2 fonts for modern browsers -->
+    <link
+      rel="preload"
+      href="/fonts/Baloo2-Regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="preload"
+      href="/fonts/BalooDa2-Regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="preload"
+      href="/fonts/Fredoka-Regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin="anonymous"
+    />
+
+    <!-- Fallback for browsers that don't support .woff2 -->
+    <link
+      rel="preload"
+      href="/fonts/Baloo2-Regular.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="preload"
+      href="/fonts/BalooDa2-Regular.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="preload"
+      href="/fonts/Fredoka-Regular.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin="anonymous"
+    />
   </head>
 
   <body>
     <!-- Google Tag Manager (noscript) -->
     <noscript>
-      <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PV9LKZJF" height="0" width="0" style="display:none;visibility:hidden"></iframe>
+      <iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-PV9LKZJF"
+        height="0"
+        width="0"
+        style="display: none; visibility: hidden"
+      ></iframe>
     </noscript>
     <!-- End Google Tag Manager (noscript) -->
 
@@ -60,14 +149,22 @@
     <script type="module" src="/src/main.tsx"></script>
 
     <noscript>
-      <div class="fixed inset-0 z-50 flex items-center justify-center bg-black text-white p-6 text-center" role="alert" aria-live="assertive" aria-label="JavaScript is disabled">
+      <div
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black text-white p-6 text-center"
+        role="alert"
+        aria-live="assertive"
+        aria-label="JavaScript is disabled"
+      >
         <div class="max-w-md space-y-4" aria-describedby="noscript-desc">
           <h2 class="text-3xl font-bold">🚫 JavaScript is Disabled</h2>
           <p id="noscript-desc" class="text-sm leading-relaxed">
-            PyrenzAI is a full-on AI chat app where you can talk to endless anime characters whenever you want, all powered by AI. However, we need JavaScript to make the magic happen 💫.
+            PyrenzAI is a full-on AI chat app where you can talk to endless
+            anime characters whenever you want, all powered by AI. However, we
+            need JavaScript to make the magic happen 💫.
           </p>
           <p class="text-sm text-gray-400">
-            Please enable JavaScript in your browser settings to use PyrenzAI properly.
+            Please enable JavaScript in your browser settings to use PyrenzAI
+            properly.
           </p>
 
           <div class="text-sm space-y-2 mt-4">
@@ -88,15 +185,28 @@
 
             <div class="space-y-1">
               <h4 class="font-semibold">🌐 Browser-specific Instructions:</h4>
-              <p><strong>Chrome/Chromium:</strong> Settings → Privacy and Security → Site Settings → JavaScript → Allowed.</p>
-              <p><strong>Firefox:</strong> Settings → Privacy & Security → Enhanced Tracking Protection → Custom → Uncheck “Strict”.</p>
-              <p><strong>Safari (Mac/iOS):</strong> Settings → Safari → Advanced → Enable JavaScript.</p>
-              <p><strong>Opera:</strong> Settings → Advanced → Privacy & Security → Site Settings → JavaScript → Allowed.</p>
+              <p>
+                <strong>Chrome/Chromium:</strong> Settings → Privacy and
+                Security → Site Settings → JavaScript → Allowed.
+              </p>
+              <p>
+                <strong>Firefox:</strong> Settings → Privacy & Security →
+                Enhanced Tracking Protection → Custom → Uncheck “Strict”.
+              </p>
+              <p>
+                <strong>Safari (Mac/iOS):</strong> Settings → Safari → Advanced
+                → Enable JavaScript.
+              </p>
+              <p>
+                <strong>Opera:</strong> Settings → Advanced → Privacy & Security
+                → Site Settings → JavaScript → Allowed.
+              </p>
             </div>
           </div>
 
           <p class="text-xs text-gray-600 italic mt-4">
-            P.S. PyrenzAI supports dark/light mode, PWA install, offline caching, and it's fully open source ✨
+            P.S. PyrenzAI supports dark/light mode, PWA install, offline
+            caching, and it's fully open source ✨
           </p>
         </div>
       </div>

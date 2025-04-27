@@ -15,9 +15,7 @@ const SpinnerBase = ({ message, subMessage }: SpinnerBaseProps) => (
   >
     <div className="w-16 h-16 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
     <p className="text-sm animate-pulse">{message}</p>
-    {subMessage && (
-      <p className="text-sm mt-2 text-gray-300">{subMessage}</p>
-    )}
+    {subMessage && <p className="text-sm mt-2 text-gray-300">{subMessage}</p>}
   </motion.div>
 );
 
@@ -25,7 +23,8 @@ const Spinner = () => (
   <SpinnerBase
     message={
       <>
-        Loading <span className="font-semibold text-blue-400">Pyrenz</span>, Open Source, Free Alternative
+        Loading <span className="font-semibold text-blue-400">Pyrenz</span>,
+        Open Source, Free Alternative
       </>
     }
   />
@@ -35,7 +34,9 @@ const ChatPageSpinner = () => (
   <SpinnerBase
     message={
       <>
-        Loading.. Please Wait While <span className="font-semibold text-blue-400">Pyrenz</span> loads your chats.
+        Loading.. Please Wait While{' '}
+        <span className="font-semibold text-blue-400">Pyrenz</span> loads your
+        chats.
       </>
     }
     subMessage="It may take a few seconds."
@@ -46,12 +47,13 @@ const SettingsPageLoader = () => (
   <SpinnerBase
     message={
       <>
-        Loading.. Please Wait While <span className="font-semibold text-blue-400">Pyrenz</span> loads your settings.
+        Loading.. Please Wait While{' '}
+        <span className="font-semibold text-blue-400">Pyrenz</span> loads your
+        settings.
       </>
     }
     subMessage="It may take a few seconds."
   />
 );
-
 
 export { Spinner, ChatPageSpinner, SettingsPageLoader };

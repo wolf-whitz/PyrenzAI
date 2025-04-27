@@ -3,7 +3,7 @@ import { useUserStore as UserStore } from '~/store';
 
 type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 
-export const AuthTokenName = "sb-cqtbishpefnfvaxheyqu-auth-token";
+export const AuthTokenName = 'sb-cqtbishpefnfvaxheyqu-auth-token';
 
 const pendingRequests = new Map<string, Promise<any>>();
 
@@ -21,7 +21,10 @@ export const Utils = {
   ): Promise<T> {
     const url = new URL(`${this.BASE_URL}${endpoint}`);
 
-    if ((method === 'GET' || method === 'DELETE') && Object.keys(params).length) {
+    if (
+      (method === 'GET' || method === 'DELETE') &&
+      Object.keys(params).length
+    ) {
       const searchParams = new URLSearchParams();
       Object.entries(params).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
@@ -82,7 +85,11 @@ export const Utils = {
         ]);
       };
 
-      const response = await fetchWithTimeout(url.toString(), options, this.TIMEOUT);
+      const response = await fetchWithTimeout(
+        url.toString(),
+        options,
+        this.TIMEOUT
+      );
 
       if (!response.ok) {
         let errorMessage = `${response.status} ${response.statusText}`;
@@ -119,19 +126,37 @@ export const Utils = {
     }
   },
 
-  get<T>(endpoint: string, params: Record<string, any> = {}, user_uuid?: string): Promise<T> {
+  get<T>(
+    endpoint: string,
+    params: Record<string, any> = {},
+    user_uuid?: string
+  ): Promise<T> {
     return this.request<T>('GET', endpoint, {}, params, false, user_uuid);
   },
 
-  post<T>(endpoint: string, data: Record<string, any> = {}, params: Record<string, any> = {}, user_uuid?: string): Promise<T> {
+  post<T>(
+    endpoint: string,
+    data: Record<string, any> = {},
+    params: Record<string, any> = {},
+    user_uuid?: string
+  ): Promise<T> {
     return this.request<T>('POST', endpoint, data, params, false, user_uuid);
   },
 
-  patch<T>(endpoint: string, data: Record<string, any> = {}, params: Record<string, any> = {}, user_uuid?: string): Promise<T> {
+  patch<T>(
+    endpoint: string,
+    data: Record<string, any> = {},
+    params: Record<string, any> = {},
+    user_uuid?: string
+  ): Promise<T> {
     return this.request<T>('PATCH', endpoint, data, params, false, user_uuid);
   },
 
-  delete<T>(endpoint: string, params: Record<string, any> = {}, user_uuid?: string): Promise<T> {
+  delete<T>(
+    endpoint: string,
+    params: Record<string, any> = {},
+    user_uuid?: string
+  ): Promise<T> {
     return this.request<T>('DELETE', endpoint, {}, params, false, user_uuid);
   },
 };

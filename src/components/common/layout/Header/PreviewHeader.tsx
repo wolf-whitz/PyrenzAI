@@ -55,7 +55,7 @@ export default function Header({
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           aria-label="Scroll to top"
         >
-          <img src='/favicon.ico' alt="Pyrenz Logo" className="h-8 w-8" />
+          <img src="/favicon.ico" alt="Pyrenz Logo" className="h-8 w-8" />
           <h1 className="text-2xl font-bold text-white font-baloo-da-2 font-display: swap">
             Pyrenz<span className="text-redorange">AI</span>
           </h1>

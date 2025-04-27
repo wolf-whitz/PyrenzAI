@@ -5,7 +5,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ReactDOM from 'react-dom';
 import { handleLogin, handleOAuthSignIn } from '~/api';
 
-const RegisterModal = lazy(() => import('@components/index').then(module => ({ default: module.RegisterModal })));
+const RegisterModal = lazy(() =>
+  import('@components/index').then((module) => ({
+    default: module.RegisterModal,
+  }))
+);
 
 interface LoginProps {
   onClose: () => void;
@@ -153,7 +157,9 @@ export default function Login({ onClose }: LoginProps) {
                 Terms of Service
               </span>{' '}
               and acknowledge our{' '}
-              <span className="text-blue-500 cursor-pointer">Privacy Policy</span>
+              <span className="text-blue-500 cursor-pointer">
+                Privacy Policy
+              </span>
               .
             </p>
 

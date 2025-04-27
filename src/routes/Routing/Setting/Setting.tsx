@@ -7,7 +7,9 @@ const Profile = React.lazy(() => import('./Items/Profile'));
 const Preference = React.lazy(() => import('./Items/Preference'));
 
 export default function Setting() {
-  const [activeTab, setActiveTab] = useState<'account' | 'profile' | 'preference'>('account');
+  const [activeTab, setActiveTab] = useState<
+    'account' | 'profile' | 'preference'
+  >('account');
 
   const renderContent = () => {
     switch (activeTab) {
@@ -30,7 +32,9 @@ export default function Setting() {
           <span
             onClick={() => setActiveTab('account')}
             className={`cursor-pointer text-lg relative pb-1 border-b-2 ${
-              activeTab === 'account' ? 'border-current' : 'border-transparent hover:border-gray-400'
+              activeTab === 'account'
+                ? 'border-current'
+                : 'border-transparent hover:border-gray-400'
             }`}
           >
             Account
@@ -38,7 +42,9 @@ export default function Setting() {
           <span
             onClick={() => setActiveTab('profile')}
             className={`cursor-pointer text-lg relative pb-1 border-b-2 ${
-              activeTab === 'profile' ? 'border-current' : 'border-transparent hover:border-gray-400'
+              activeTab === 'profile'
+                ? 'border-current'
+                : 'border-transparent hover:border-gray-400'
             }`}
           >
             Profile
@@ -46,7 +52,9 @@ export default function Setting() {
           <span
             onClick={() => setActiveTab('preference')}
             className={`cursor-pointer text-lg relative pb-1 border-b-2 ${
-              activeTab === 'preference' ? 'border-current' : 'border-transparent hover:border-gray-400'
+              activeTab === 'preference'
+                ? 'border-current'
+                : 'border-transparent hover:border-gray-400'
             }`}
           >
             Preference

@@ -18,10 +18,38 @@ type ModalResultType = {
 };
 
 const buttons: ButtonType[] = [
-  { icon: Sparkles, label: 'Latest', rpcFunction: 'get_latest_characters', type: 'GetLatestCharacter', max_character: 10, page: 1 },
-  { icon: RefreshCw, label: 'Random', rpcFunction: 'get_random_characters', type: 'GetRandomCharacter', max_character: 10, page: 1 },
-  { icon: Flame, label: 'Hot', rpcFunction: 'get_hot_characters', type: 'GetHotCharacter', max_character: 10, page: 1 },
-  { icon: Tag, label: 'Male', rpcFunction: 'get_male_characters', type: 'GetMaleCharacter', max_character: 10, page: 1 },
+  {
+    icon: Sparkles,
+    label: 'Latest',
+    rpcFunction: 'get_latest_characters',
+    type: 'GetLatestCharacter',
+    max_character: 10,
+    page: 1,
+  },
+  {
+    icon: RefreshCw,
+    label: 'Random',
+    rpcFunction: 'get_random_characters',
+    type: 'GetRandomCharacter',
+    max_character: 10,
+    page: 1,
+  },
+  {
+    icon: Flame,
+    label: 'Hot',
+    rpcFunction: 'get_hot_characters',
+    type: 'GetHotCharacter',
+    max_character: 10,
+    page: 1,
+  },
+  {
+    icon: Tag,
+    label: 'Male',
+    rpcFunction: 'get_male_characters',
+    type: 'GetMaleCharacter',
+    max_character: 10,
+    page: 1,
+  },
 ];
 
 const LoadingSpinner = () => (
@@ -35,7 +63,11 @@ const LoadingSpinner = () => (
   </motion.div>
 );
 
-export default function CustomButton({ onButtonClick }: { onButtonClick: Function }) {
+export default function CustomButton({
+  onButtonClick,
+}: {
+  onButtonClick: Function;
+}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [modalResults, setModalResults] = useState<ModalResultType[]>([]);
@@ -43,8 +75,10 @@ export default function CustomButton({ onButtonClick }: { onButtonClick: Functio
   const [visibleButtons, setVisibleButtons] = useState(buttons);
   const modalRef = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const user_uuid = useUserStore(state => state.user_uuid);
-  const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
+  const user_uuid = useUserStore((state) => state.user_uuid);
+  const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(
+    null
+  );
 
   const handleSearch = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const query = event.target.value;
@@ -72,7 +106,10 @@ export default function CustomButton({ onButtonClick }: { onButtonClick: Functio
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
         setIsModalOpen(false);
       }
     };
@@ -87,13 +124,13 @@ export default function CustomButton({ onButtonClick }: { onButtonClick: Functio
   }, [isModalOpen]);
 
   useEffect(() => {
-    const resizeObserver = new ResizeObserver(entries => {
+    const resizeObserver = new ResizeObserver((entries) => {
       for (let entry of entries) {
         const containerWidth = entry.contentRect.width;
         let count = 0;
         let totalWidth = 0;
 
-        buttons.forEach(btn => {
+        buttons.forEach((btn) => {
           const buttonWidth = 100;
           if (totalWidth + buttonWidth <= containerWidth) {
             totalWidth += buttonWidth;
@@ -116,13 +153,21 @@ export default function CustomButton({ onButtonClick }: { onButtonClick: Functio
     };
   }, []);
 
-  const filteredModalButtons = modalResults.length > 0
-    ? modalResults
-    : buttons.filter(btn => btn.label.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filteredModalButtons =
+    modalResults.length > 0
+      ? modalResults
+      : buttons.filter((btn) =>
+          btn.label.toLowerCase().includes(searchQuery.toLowerCase())
+        );
 
   const handleButtonClick = async (btn: ModalResultType | ButtonType) => {
     if ('rpcFunction' in btn && 'type' in btn) {
-      onButtonClick(btn.rpcFunction, btn.type, btn.max_character || 10, btn.page || 1);
+      onButtonClick(
+        btn.rpcFunction,
+        btn.type,
+        btn.max_character || 10,
+        btn.page || 1
+      );
     } else {
       const { data } = await supabase.rpc('get_tagged_characters', {
         type: 'GetTaggedCharacters',
@@ -145,7 +190,14 @@ export default function CustomButton({ onButtonClick }: { onButtonClick: Functio
         <motion.button
           key={index}
           className="border border-white flex items-center space-x-2 rounded-md px-4 py-2 bg-black text-white transform transition-transform duration-300 hover:scale-105 font-baloo"
-          onClick={() => onButtonClick(btn.rpcFunction, btn.type, btn.max_character, btn.page)}
+          onClick={() =>
+            onButtonClick(
+              btn.rpcFunction,
+              btn.type,
+              btn.max_character,
+              btn.page
+            )
+          }
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           style={{ display: index < visibleButtons.length ? 'flex' : 'none' }}

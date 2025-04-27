@@ -104,7 +104,11 @@ export default function DownloadModal({
                     <motion.button
                       key={index}
                       onClick={() =>
-                        handleButtonClick(button.link, button.label, button.is_up)
+                        handleButtonClick(
+                          button.link,
+                          button.label,
+                          button.is_up
+                        )
                       }
                       className={button.buttonClassName}
                       whileHover={{ scale: 1.05 }}

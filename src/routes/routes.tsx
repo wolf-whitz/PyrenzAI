@@ -29,8 +29,10 @@ export const routes: RouteObject[] = [
   { path: '/Home', element: <ProtectedRoute element={<Home />} /> },
   { path: '/Create', element: <ProtectedRoute element={<Create />} /> },
   { path: '/Profile', element: <ProtectedRoute element={<Profile />} /> },
-  { path: '/Chat/:conversation_id', element: <ProtectedRoute element={<Chat />} /> },
+  {
+    path: '/Chat/:conversation_id',
+    element: <ProtectedRoute element={<Chat />} />,
+  },
   { path: '/Settings', element: <ProtectedRoute element={<Setting />} /> },
-  { path: '*', element: <ErrorBoundary /> }, 
+  { path: '*', element: <ErrorBoundary /> },
 ];
-

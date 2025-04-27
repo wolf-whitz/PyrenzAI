@@ -15,7 +15,7 @@ import { useHomeStore } from '~/store';
 import { useUserStore } from '~/store';
 import { fetchCharacters } from '~/api';
 import { motion, AnimatePresence } from 'framer-motion';
-import { supabase } from "~/Utility/supabaseClient";
+import { supabase } from '~/Utility/supabaseClient';
 import { Character } from '@shared-types/CharacterProp';
 
 export default function Home() {
@@ -88,11 +88,20 @@ export default function Home() {
     });
   }, [currentPage, search, navigate]);
 
-  const handleButtonClick = async (rpcFunction: string, type: string, max_character: number, page: number) => {
+  const handleButtonClick = async (
+    rpcFunction: string,
+    type: string,
+    max_character: number,
+    page: number
+  ) => {
     setLoading(true);
     setCharacters([]);
     try {
-      const { data, error } = await supabase.rpc(rpcFunction, { type, max_character, page });
+      const { data, error } = await supabase.rpc(rpcFunction, {
+        type,
+        max_character,
+        page,
+      });
       if (error) throw error;
       setCharacters(data);
     } catch (error) {
@@ -144,7 +153,10 @@ export default function Home() {
             <Sparkles size={28} className="mr-2" aria-hidden="true" /> Explore
           </motion.h2>
 
-          <CustomButton onButtonClick={handleButtonClick} aria-label="Custom Action Button" />
+          <CustomButton
+            onButtonClick={handleButtonClick}
+            aria-label="Custom Action Button"
+          />
 
           <motion.div
             className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-2"

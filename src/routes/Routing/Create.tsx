@@ -1,8 +1,5 @@
 import { CharacterForm } from '~/components';
-import { 
-  Sidebar,
-  CommunityGuidelines
-} from '~/components';
+import { Sidebar, CommunityGuidelines } from '~/components';
 
 export default function CreatePage() {
   return (

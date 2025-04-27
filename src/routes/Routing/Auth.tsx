@@ -55,7 +55,8 @@ export default function Auth() {
             <p className="text-white animate-pulse">Loading CAPTCHA...</p>
           )}
           <p className="text-gray-300 text-center mt-4 text-sm font-light">
-            PyrenzAI is an AI chat platform allowing users to chat with bots for free. To use PyrenzAI, we need you to be a human and not a bot.
+            PyrenzAI is an AI chat platform allowing users to chat with bots for
+            free. To use PyrenzAI, we need you to be a human and not a bot.
           </p>
         </div>
       </motion.div>

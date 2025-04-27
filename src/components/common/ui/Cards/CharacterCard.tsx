@@ -89,14 +89,15 @@ export default function CharacterCard({
                 Private
               </span>
             )}
-            {Array.isArray(tags) && tags.map((tag, index) => (
-              <span
-                key={index}
-                className="bg-black text-white text-[10px] font-semibold py-1 px-2 rounded-full"
-              >
-                {tag}
-              </span>
-            ))}
+            {Array.isArray(tags) &&
+              tags.map((tag, index) => (
+                <span
+                  key={index}
+                  className="bg-black text-white text-[10px] font-semibold py-1 px-2 rounded-full"
+                >
+                  {tag}
+                </span>
+              ))}
           </div>
 
           <div className="mt-4 flex items-center text-gray-400 text-xs">

@@ -199,13 +199,28 @@ export default function CharacterCardModal({
             }}
           >
             <h2 className="text-xl font-bold mb-4">Character Info</h2>
-            <p><strong>Name:</strong> {character.name}</p>
-            <p><strong>Creator:</strong> {character.creator}</p>
-            <p><strong>Description:</strong> {character.description}</p>
-            <p><strong>Chat Messages Count:</strong> {character.chat_messages_count}</p>
-            <p><strong>Tags:</strong> {character.tags.join(', ')}</p>
-            <p><strong>Public:</strong> {character.public ? 'Yes' : 'No'}</p>
-            <p><strong>Token Total:</strong> {character.token_total}</p>
+            <p>
+              <strong>Name:</strong> {character.name}
+            </p>
+            <p>
+              <strong>Creator:</strong> {character.creator}
+            </p>
+            <p>
+              <strong>Description:</strong> {character.description}
+            </p>
+            <p>
+              <strong>Chat Messages Count:</strong>{' '}
+              {character.chat_messages_count}
+            </p>
+            <p>
+              <strong>Tags:</strong> {character.tags.join(', ')}
+            </p>
+            <p>
+              <strong>Public:</strong> {character.public ? 'Yes' : 'No'}
+            </p>
+            <p>
+              <strong>Token Total:</strong> {character.token_total}
+            </p>
           </motion.div>
         </motion.div>
       )}
