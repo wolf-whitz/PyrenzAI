@@ -54,7 +54,7 @@ export default function Banner() {
 
   return (
     <motion.div
-      className="p-4 rounded-3xl mb-4 text-center flex justify-center items-center h-[140px] font-baloo text-white border-none relative bg-cover bg-center"
+      className="p-4 rounded-3xl mb-4 flex justify-center items-center h-[140px] font-baloo text-white border-none relative bg-cover bg-center w-full"
       style={{
         backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif)`,
       }}
@@ -62,7 +62,7 @@ export default function Banner() {
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5 }}
     >
-      <h1 className="text-3xl font-bold relative z-10">
+      <h1 className="text-3xl font-bold relative z-10 text-center w-full">
         {displayedText}
         <motion.span
           className="ml-1"

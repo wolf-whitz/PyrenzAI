@@ -145,7 +145,7 @@ export default function Home() {
             aria-label="Search Characters"
           />
           <motion.h2
-            className="text-3xl font-extrabold mt-10 mb-4 text-blue-400 flex items-center"
+            className="text-3xl font-extrabold mt-10 mb-4 text-blue-400 flex items-center justify-center"
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5 }}
@@ -159,7 +159,7 @@ export default function Home() {
           />
 
           <motion.div
-            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-2"
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-4 p-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
@@ -227,7 +227,7 @@ export default function Home() {
           <Sidebar />
         </motion.div>
       )}
-      <div className="pb-16">
+      <div className="pb-16 px-4">
         {isClient && <Footer />}
         <p className="text-center text-gray-500 mt-4">
           © 2025 Pyrenz AI. All Rights Reserved.
