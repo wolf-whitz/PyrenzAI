@@ -1,12 +1,12 @@
-import React from 'react';
 import { CreateButton } from '~/components';
 
 interface FormActionsProps {
   onClear: () => void;
+  onSave: () => void;
   loading: boolean;
 }
 
-export default function FormActions({ onClear, loading }: FormActionsProps) {
+export default function FormActions({ onClear, onSave, loading }: FormActionsProps) {
   return (
     <div className="flex justify-end space-x-2 mt-4">
       <button
@@ -15,6 +15,13 @@ export default function FormActions({ onClear, loading }: FormActionsProps) {
         className="text-white p-3 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
       >
         Clear
+      </button>
+      <button
+        type="button"
+        onClick={onSave}
+        className="text-white p-3 rounded-lg bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+      >
+        Save
       </button>
       <CreateButton loading={loading} />
     </div>

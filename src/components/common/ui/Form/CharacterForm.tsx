@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Utils } from '~/Utility/Utility';
 import { useUserStore } from '~/store';
 import { useCharacterStore } from '~/store';
+import { supabase } from '~/Utility/supabaseClient';
 import {
   GenderDropdown,
   VisibilityCheckboxes,
@@ -10,7 +11,7 @@ import {
   RequiredFieldsPopup,
   ImageUpload,
 } from '~/components';
-import TextareaForm from "./Childrens/TextareaForm"
+import TextareaForm from "./Childrens/TextareaForm";
 
 interface CharacterData {
   persona: string;
@@ -90,6 +91,39 @@ export default function CharacterForm() {
     setCharacterData({ ...emptyData, textarea_token: {} });
   };
 
+  const handleSave = async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('draft_characters')
+        .upsert([{
+          user_uuid,
+          persona: characterData.persona,
+          name: characterData.name,
+          model_instructions: characterData.model_instructions,
+          scenario: characterData.scenario,
+          description: characterData.description,
+          first_message: characterData.first_message,
+          tags: characterData.tags,
+          gender: characterData.gender,
+          is_public: characterData.is_public,
+          is_nsfw: characterData.is_nsfw,
+          textarea_token: characterData.textarea_token,
+          token_total: characterData.token_total
+        }]);
+
+      if (error) {
+        alert('Error saving draft: ' + error.message);
+      } else {
+        alert('Saved');
+      }
+    } catch (error) {
+      console.error('Unexpected error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -158,7 +192,7 @@ export default function CharacterForm() {
           handleChange={handleChange}
         />
         <TokenSummary tokenTotal={characterData.token_total} />
-        <FormActions onClear={handleClear} loading={loading} />
+        <FormActions onClear={handleClear} onSave={handleSave} loading={loading} />
       </form>
       {showRequiredFieldsPopup && (
         <RequiredFieldsPopup
