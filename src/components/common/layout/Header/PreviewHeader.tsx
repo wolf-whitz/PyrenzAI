@@ -53,6 +53,7 @@ export default function Header({
           whileHover={{ scale: 1.05 }}
           className="flex items-center space-x-4 cursor-pointer"
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          aria-label="Scroll to top"
         >
           <img src='/favicon.ico' alt="Pyrenz Logo" className="h-8 w-8" />
           <h1 className="text-2xl font-bold text-white font-baloo-da-2 font-display: swap">
@@ -60,40 +61,45 @@ export default function Header({
           </h1>
         </motion.div>
 
-        <div className="hidden md:flex items-center space-x-6">
-          {menuItems.map(({ name, icon: Icon, link, external }) => (
+        <nav aria-label="Main navigation">
+          <div className="hidden md:flex items-center space-x-6">
+            {menuItems.map(({ name, icon: Icon, link, external }) => (
+              <motion.button
+                key={name}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                className="flex items-center gap-2 text-white font-baloo-da-2 hover:text-[#E03201]"
+                onClick={() =>
+                  external
+                    ? window.open(link, '_blank')
+                    : (window.location.href = link)
+                }
+                aria-label={`Navigate to ${name}`}
+              >
+                <Icon size={18} /> {name}
+              </motion.button>
+            ))}
+
             <motion.button
-              key={name}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
-              className="flex items-center gap-2 text-white font-baloo-da-2 hover:text-[#E03201]"
-              onClick={() =>
-                external
-                  ? window.open(link, '_blank')
-                  : (window.location.href = link)
-              }
+              onClick={() => setShowLogin(true)}
+              className="text-white font-baloo-da-2 hover:text-[#E03201] transition-all"
+              aria-label="Login"
             >
-              <Icon size={18} /> {name}
+              Login
             </motion.button>
-          ))}
-
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setShowLogin(true)}
-            className="text-white font-baloo-da-2 hover:text-[#E03201] transition-all"
-          >
-            Login
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setShowRegister(true)}
-            className="bg-[#E03201] text-white px-4 py-2 rounded font-baloo-da-2 transition-all hover:bg-[#611600]"
-          >
-            Sign Up
-          </motion.button>
-        </div>
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setShowRegister(true)}
+              className="bg-[#E03201] text-white px-4 py-2 rounded font-baloo-da-2 transition-all hover:bg-[#611600]"
+              aria-label="Sign Up"
+            >
+              Sign Up
+            </motion.button>
+          </div>
+        </nav>
 
         <div className="md:hidden relative">
           <motion.button
@@ -101,6 +107,8 @@ export default function Header({
             whileTap={{ scale: 0.95 }}
             onClick={() => setMenuOpen(!menuOpen)}
             className="text-white text-2xl focus:outline-none"
+            aria-label="Toggle menu"
+            aria-expanded={menuOpen}
           >
             <FaBars />
           </motion.button>
@@ -113,6 +121,7 @@ export default function Header({
                 exit={{ opacity: 0, scale: 0.95, y: -10 }}
                 transition={{ duration: 0.2 }}
                 className="absolute right-0 mt-2 w-48 bg-gray-900 text-white rounded-lg shadow-lg border border-gray-700 p-2"
+                role="menu"
               >
                 {menuItems.map(({ name, icon: Icon, link, external }) => (
                   <motion.button
@@ -125,6 +134,8 @@ export default function Header({
                         ? window.open(link, '_blank')
                         : (window.location.href = link)
                     }
+                    aria-label={`Navigate to ${name}`}
+                    role="menuitem"
                   >
                     <Icon className="inline-block mr-2" /> {name}
                   </motion.button>
@@ -135,6 +146,8 @@ export default function Header({
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setShowLogin(true)}
                   className="block w-full text-left px-4 py-2 hover:bg-gray-800 rounded text-white font-baloo-da-2 hover:text-[#E03201] transition-all mb-2"
+                  aria-label="Login"
+                  role="menuitem"
                 >
                   Login
                 </motion.button>
@@ -143,6 +156,8 @@ export default function Header({
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setShowRegister(true)}
                   className="block w-full text-left bg-[#E03201] text-white px-4 py-2 rounded font-baloo-da-2 transition-all hover:bg-[#611600]"
+                  aria-label="Sign Up"
+                  role="menuitem"
                 >
                   Sign Up
                 </motion.button>
