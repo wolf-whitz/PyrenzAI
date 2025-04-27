@@ -21,18 +21,24 @@ const cardData = [
     cardImage: 'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/ChattingExample.avif',
     cardDescription:
       'Talk to characters anytime. No delays, no message limits just pure roleplay.',
+    imageWidth: 400,
+    imageHeight: 300,
   },
   {
     cardName: 'Tools For Creator',
     cardImage: 'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MagicalBook.avif',
     cardDescription:
       'Experience Pyrenz tools unleash your creativity with lorebooks, powerful model customization, and so much more',
+    imageWidth: 400,
+    imageHeight: 300,
   },
   {
     cardName: 'Unlimited Messages',
     cardImage: 'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/ChattingExample.avif',
     cardDescription:
       'Free or not, welcome to PyrenzAi! We offer unlimited messages for free!',
+    imageWidth: 400,
+    imageHeight: 300,
   },
 ];
 
@@ -221,6 +227,8 @@ export default function Preview() {
                     src={card.cardImage}
                     alt={card.cardName}
                     loading="lazy"
+                    width={card.imageWidth}
+                    height={card.imageHeight}
                     className="mt-4 rounded-lg w-full"
                   />
                 </CardContent>
@@ -237,7 +245,6 @@ export default function Preview() {
       {showLogin && (
         <LoginModal
           onClose={() => setShowLogin(false)}
-        
         />
       )}
       {showRegister && (
