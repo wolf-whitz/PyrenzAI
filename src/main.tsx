@@ -1,24 +1,24 @@
+import "../sentry.ts"
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import './Global.css';
 import { Analytics } from '@vercel/analytics/react';
-import { datadogRum } from '@datadog/browser-rum';
+import { PostHogProvider } from 'posthog-js/react';
 
-datadogRum.init({
-  applicationId: '651aae08-df38-44d6-8944-9b4208ad8ba2',
-  clientToken: 'pub612e2a2baa742ee72147e1bbaf23de53',
-  site: 'us5.datadoghq.com',
-  service: 'pyrenzai',
-  env: 'development',
-  sessionSampleRate: 100,
-  sessionReplaySampleRate: 35,
-  defaultPrivacyLevel: 'mask-user-input',
-});
+const options = {
+  api_host: 'https://us.i.posthog.com',
+  debug: import.meta.env.MODE === 'development',
+};
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
-    <Analytics />
+    <PostHogProvider
+      apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_KEY}
+      options={options}
+    >
+      <App />
+      <Analytics />
+    </PostHogProvider>
   </StrictMode>
 );

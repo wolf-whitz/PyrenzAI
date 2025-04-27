@@ -1,18 +1,22 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 export default function CommunityGuidelines({
   className,
 }: {
   className?: string;
 }) {
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isVisible, setIsVisible] = useState(true);
 
-  const toggleExpand = () => {
-    setIsExpanded(!isExpanded);
+  const handleRemove = () => {
+    setIsVisible(false);
   };
+
+  if (!isVisible) {
+    return null;
+  }
 
   return (
     <motion.div
@@ -24,15 +28,15 @@ export default function CommunityGuidelines({
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold pb-2">Community Guidelines</h2>
         <button
-          onClick={toggleExpand}
+          onClick={handleRemove}
           className="text-white sm:absolute sm:right-6 sm:top-6"
         >
-          <FontAwesomeIcon icon={isExpanded ? faChevronUp : faChevronDown} />
+          <FontAwesomeIcon icon={faTimes} />
         </button>
       </div>
       <hr className="border-gray-700 mb-6 w-full" />
       <motion.div
-        animate={{ height: isExpanded ? 'auto' : '0px' }}
+        animate={{ height: 'auto' }}
         transition={{ duration: 0.3, ease: 'easeInOut' }}
         className="overflow-hidden"
       >

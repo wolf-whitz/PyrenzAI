@@ -3,7 +3,6 @@ import { Utils } from '~/Utility/Utility';
 import { useUserStore } from '~/store';
 import { useCharacterStore } from '~/store';
 import {
-  TextareaSection,
   GenderDropdown,
   VisibilityCheckboxes,
   TokenSummary,
@@ -11,6 +10,7 @@ import {
   RequiredFieldsPopup,
   ImageUpload,
 } from '~/components';
+import TextareaForm from "./Childrens/TextareaForm"
 
 interface CharacterData {
   persona: string;
@@ -144,7 +144,7 @@ export default function CharacterForm() {
         className="bg-black p-8 rounded-lg shadow-lg w-full max-w-2xl space-y-6"
       >
         <ImageUpload onImageSelect={handleImageSelect} />
-        <TextareaSection
+        <TextareaForm
           formState={characterData}
           handleChange={handleChange}
         />

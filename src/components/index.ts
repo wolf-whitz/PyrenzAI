@@ -53,7 +53,6 @@ import FormActions from '@ui/Actions/FormActions';
 import TokenSummary from '@ui/Summary/TokenSummary';
 import VisibilityCheckboxes from '@ui/CheckBox/VisibilityCheckboxes';
 import GenderDropdown from '@ui/Dropdown/GenderDropdown';
-import TextareaSection from '@ui/Sections/TextareaSection';
 import ImageUpload from '@ui/ImageUploader/ImageUpload';
 
 // UI Components
@@ -90,7 +89,6 @@ export {
   TokenSummary,
   VisibilityCheckboxes,
   GenderDropdown,
-  TextareaSection,
   ImageUpload,
 
   //WindowAlert

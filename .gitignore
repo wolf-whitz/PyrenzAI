@@ -28,3 +28,5 @@ build/
 
 #Buggy ahh config stuff
 vite.config.ts.timestamp-*.mjs
+.env
+.env.local
