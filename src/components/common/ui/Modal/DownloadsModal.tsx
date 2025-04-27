@@ -1,3 +1,5 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaGlobe, FaWindows, FaMobileAlt } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
@@ -51,7 +53,7 @@ export default function DownloadModal({
     }
   };
 
-  return (
+  return ReactDOM.createPortal(
     <AnimatePresence>
       {isModalOpen && (
         <motion.div
@@ -60,6 +62,7 @@ export default function DownloadModal({
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
           className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50"
+          onClick={closeModal}
         >
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
@@ -67,6 +70,7 @@ export default function DownloadModal({
             exit={{ scale: 0.9, opacity: 0 }}
             transition={{ duration: 0.3 }}
             className="bg-black bg-opacity-80 p-6 rounded-lg w-96 border-2 border-red-500"
+            onClick={(e) => e.stopPropagation()}
           >
             <div className="grid grid-cols-1 gap-6">
               {buttonsConfig[0] &&
@@ -138,6 +142,7 @@ export default function DownloadModal({
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.getElementById('modal-root')!
   );
 }

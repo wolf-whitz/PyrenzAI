@@ -225,6 +225,6 @@ export default function CharacterCardModal({
         </motion.div>
       )}
     </AnimatePresence>,
-    document.body
+    document.getElementById('modal-root')!
   );
 }

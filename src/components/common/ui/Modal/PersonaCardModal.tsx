@@ -85,6 +85,6 @@ export default function PersonaModal({
         )}
       </motion.div>
     </motion.div>,
-    document.body
+    document.getElementById('modal-root')!
   );
 }

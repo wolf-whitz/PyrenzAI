@@ -240,6 +240,6 @@ export default function Register({ onClose }: RegisterProps) {
         </Suspense>
       )}
     </AnimatePresence>,
-    document.body
+    document.getElementById('modal-root')!
   );
 }

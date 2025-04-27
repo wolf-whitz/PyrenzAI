@@ -1,4 +1,4 @@
-import React from 'react';
+import ReactDOM from 'react-dom';
 import { motion } from 'framer-motion';
 
 interface LanguageModalProps {
@@ -14,7 +14,7 @@ export default function LanguageModal({
 }: LanguageModalProps) {
   if (!isOpen) return null;
 
-  return (
+  return ReactDOM.createPortal(
     <div
       className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50"
       onClick={onClose}
@@ -49,6 +49,7 @@ export default function LanguageModal({
           </button>
         </div>
       </motion.div>
-    </div>
+    </div>,
+    document.getElementById('modal-root')!
   );
 }

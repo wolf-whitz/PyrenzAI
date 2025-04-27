@@ -28,6 +28,25 @@ interface CharacterData {
   token_total: number;
 }
 
+interface Draft {
+  id: number;
+  user_uuid: string;
+  persona: string;
+  name: string;
+  model_instructions: string;
+  scenario: string;
+  description: string;
+  first_message: string;
+  tags: string;
+  gender: string;
+  is_public: boolean;
+  is_nsfw: boolean;
+  textarea_token: { [key: string]: number };
+  token_total: number;
+  created_at: string;
+  updated_at: string;
+}
+
 interface ApiResponse {
   data?: any;
   error?: any;
@@ -35,6 +54,7 @@ interface ApiResponse {
 
 export default function CharacterForm() {
   const [loading, setLoading] = useState(false);
+  const [saveLoading, setSaveLoading] = useState(false);
   const [showRequiredFieldsPopup, setShowRequiredFieldsPopup] = useState(false);
   const [missingFields, setMissingFields] = useState<string[]>([]);
 
@@ -92,7 +112,7 @@ export default function CharacterForm() {
   };
 
   const handleSave = async () => {
-    setLoading(true);
+    setSaveLoading(true);
     try {
       const { data, error } = await supabase
         .from('draft_characters')
@@ -120,8 +140,25 @@ export default function CharacterForm() {
     } catch (error) {
       console.error('Unexpected error:', error);
     } finally {
-      setLoading(false);
+      setSaveLoading(false);
     }
+  };
+
+  const handleSelectDraft = (draft: Draft) => {
+    setCharacterData({
+      persona: draft.persona,
+      name: draft.name,
+      model_instructions: draft.model_instructions,
+      scenario: draft.scenario,
+      description: draft.description,
+      first_message: draft.first_message,
+      tags: draft.tags,
+      gender: draft.gender,
+      is_public: draft.is_public,
+      is_nsfw: draft.is_nsfw,
+      textarea_token: draft.textarea_token,
+      token_total: draft.token_total,
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -192,7 +229,13 @@ export default function CharacterForm() {
           handleChange={handleChange}
         />
         <TokenSummary tokenTotal={characterData.token_total} />
-        <FormActions onClear={handleClear} onSave={handleSave} loading={loading} />
+        <FormActions
+          onClear={handleClear}
+          onSave={handleSave}
+          loading={loading}
+          saveLoading={saveLoading}
+          onSelectDraft={handleSelectDraft}
+        />
       </form>
       {showRequiredFieldsPopup && (
         <RequiredFieldsPopup

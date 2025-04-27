@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { FaDiscord } from 'react-icons/fa';
 import { CardContent } from '~/components';
 import { motion } from 'framer-motion';
+import ReactDOM from 'react-dom';
 
 export default function Footer() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -45,7 +46,7 @@ export default function Footer() {
     }
   }, []);
 
-  return (
+  const footerContent = (
     <motion.div
       className="flex flex-col items-center space-y-5 mb-8 font-fredoka"
       initial={{ opacity: 0, y: 20 }}
@@ -104,4 +105,6 @@ export default function Footer() {
       </motion.a>
     </motion.div>
   );
+
+  return ReactDOM.createPortal(footerContent, document.getElementById('footer-root')!);
 }

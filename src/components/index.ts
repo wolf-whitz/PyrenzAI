@@ -67,6 +67,7 @@ import RegisterModal from '@ui/Modal/Auth/RegisterModal';
 import LoginModal from '@ui/Modal/Auth/Loginmodal';
 import DownloadModal from '@ui/Modal/DownloadsModal';
 import LanguageModal from '@ui/Modal/LanguageModal';
+import DraftsModal from '@ui/Modal/DraftsModal';
 
 // Card Components
 import { Card, CardContent, CardTitle, CardHeader } from '@ui/ShadCdn/card';
@@ -141,6 +142,7 @@ export {
   LoginModal,
   DownloadModal,
   LanguageModal,
+  DraftsModal,
 
   // Cards
   Card,

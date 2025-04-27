@@ -182,6 +182,6 @@ export default function Login({ onClose }: LoginProps) {
         </Suspense>
       )}
     </AnimatePresence>,
-    document.body
+    document.getElementById('modal-root')!
   );
 }
