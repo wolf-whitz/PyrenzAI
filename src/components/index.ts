@@ -4,6 +4,8 @@ import Footer from '@layout/Footer/Footer';
 import PreviewFooter from '@layout/Footer/PreviewFooter';
 import SearchBar from '@layout/SearchBar/SearchBar';
 import PreviewHeader from '@layout/Header/PreviewHeader';
+import HeroSection from '@layout/Sections/Hero/PreviewHeroSection';
+import FeaturesSection from '@layout/Sections/FeaturesSection';
 
 // Sidebar Components
 import Sidebar from '@layout/Sidebar/sidebar';
@@ -55,11 +57,12 @@ import VisibilityCheckboxes from '@ui/CheckBox/VisibilityCheckboxes';
 import GenderDropdown from '@ui/Dropdown/GenderDropdown';
 import ImageUpload from '@ui/ImageUploader/ImageUpload';
 
-// UI Components
+// UI/UX Components
 import CharacterCard from '@ui/Cards/CharacterCard';
 import LoadMore from '@ui/LoadMore/LoadMoreButton';
 import SkeletonCard from '@ui/Skeleton/SkeletonCard';
 import CustomButton from '@ui/Buttons/Buttons';
+import FeatureCard from '@ui/Cards/FeaturesCard';
 
 // Modal Components
 import CharacterCardModal from '@ui/Modal/CharacterCardModal';
@@ -83,7 +86,9 @@ export {
   SearchBar,
   PreviewHeader,
   PreviewFooter,
-
+  HeroSection,
+  FeaturesSection,
+  
   //Create
   CharacterForm,
   RequiredFieldsPopup,
@@ -107,12 +112,13 @@ export {
   Menu,
   ChatMain,
 
-  // UI
+  // UI/UX components
   CharacterCard,
   LoadMore,
   SkeletonCard,
   CustomButton,
-
+  FeatureCard,
+  
   //Fields
   CheckboxField,
   DropdownField,

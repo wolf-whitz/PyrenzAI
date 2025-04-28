@@ -9,16 +9,11 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface HeaderProps {
-  hideNavbar: boolean;
   setShowLogin: (value: boolean) => void;
   setShowRegister: (value: boolean) => void;
 }
 
-export default function Header({
-  hideNavbar,
-  setShowLogin,
-  setShowRegister,
-}: HeaderProps) {
+export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -44,9 +39,7 @@ export default function Header({
       animate={isMounted ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.5 }}
-      className={`fixed top-0 left-0 w-full bg-black bg-opacity-40 p-4 z-50 transition-opacity duration-500 ${
-        hideNavbar ? 'opacity-0 pointer-events-none' : 'opacity-100'
-      }`}
+      className="fixed top-0 left-0 w-full bg-black bg-opacity-40 p-4 z-50 transition-opacity duration-500"
     >
       <div className="flex justify-between items-center w-full max-w-screen-xl mx-auto px-4">
         <motion.div

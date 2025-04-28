@@ -172,3 +172,22 @@
   animation: loadingAnimation 0.8s infinite ease-in-out;
   margin: auto;
 }
+
+@keyframes shimmer {
+  0%, 100% {
+    background-position: -468px 0;
+  }
+  50% {
+    background-position: 468px 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(270deg, #ff0000, #8b0000, #ff0000);
+  background-size: 400% 400%;
+  animation: shimmer 4s linear infinite;
+}
+
+.bg-dark-red {
+  background-color: #8b0000; 
+}

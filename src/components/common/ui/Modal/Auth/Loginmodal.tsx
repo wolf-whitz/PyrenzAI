@@ -122,6 +122,7 @@ export default function Login({ onClose }: LoginProps) {
                 </label>
                 <input
                   type="email"
+                  placeholder='Your Email Address'
                   className="mt-1 p-3 rounded bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none w-full font-baloo-da-2 transition-all"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -135,6 +136,7 @@ export default function Login({ onClose }: LoginProps) {
                 </label>
                 <input
                   type="password"
+                  placeholder='Your Password'
                   className="mt-1 p-3 rounded bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none w-full font-baloo-da-2 transition-all"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}

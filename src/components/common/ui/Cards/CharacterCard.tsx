@@ -1,9 +1,8 @@
 import { MessageSquare, Share2, Globe, Lock } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { CardContent } from '~/components';
+import { CardContent, CharacterCardModal } from '~/components';
 import { CharacterCardProps } from '@shared-types/CharacterCardPropsTypes';
-import { CharacterCardModal } from '~/components';
 
 export default function CharacterCard({
   id,
@@ -113,6 +112,7 @@ export default function CharacterCard({
                   navigator.clipboard.writeText(
                     `${window.location.origin}/characters/${input_char_uuid}`
                   );
+                  alert('Saved')
                 }}
                 className="flex items-center transition-colors duration-200 hover:text-blue-400"
                 aria-label={`Share ${name}`}

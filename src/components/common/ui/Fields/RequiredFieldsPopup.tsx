@@ -11,41 +11,39 @@ export default function RequiredFieldsPopup({
 }: RequiredFieldsPopupProps) {
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+      className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-4"
       role="dialog"
       aria-labelledby="missingFieldsTitle"
       aria-describedby="missingFieldsList"
       onClick={onClose}
     >
       <div
-        className="bg-gray-800 p-8 rounded-xl shadow-xl text-white flex flex-col animate-fade-in"
+        className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-2xl text-gray-900 dark:text-white w-full max-w-md flex flex-col gap-6 animate-fade-in"
         onClick={(e) => e.stopPropagation()}
         role="alertdialog"
       >
         <h2
           id="missingFieldsTitle"
-          className="text-xl font-bold mb-6 text-center"
+          className="text-2xl font-bold text-center"
         >
-          Missing Required Fields
+          🚨 Missing Fields Alert 🚨
         </h2>
         <ul
           id="missingFieldsList"
-          className="list-disc list-inside mb-6 flex-grow space-y-3"
+          className="list-disc list-inside flex flex-col gap-2 text-base"
         >
           {missingFields.map((field, index) => (
-            <li key={index} className="animate-slide-in text-lg">
+            <li key={index} className="animate-slide-in">
               {field}
             </li>
           ))}
         </ul>
-        <div className="flex justify-center">
-          <button
-            onClick={onClose}
-            className="bg-blue-500 px-4 py-2 rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300"
-          >
-            OK
-          </button>
-        </div>
+        <button
+          onClick={onClose}
+          className="self-center bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-full transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-300"
+        >
+          Got it 👌
+        </button>
       </div>
     </div>
   );

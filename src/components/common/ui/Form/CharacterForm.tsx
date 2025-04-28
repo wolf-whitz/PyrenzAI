@@ -209,8 +209,8 @@ export default function CharacterForm() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 p-6">
-      <form
+<div className="flex flex-col items-center justify-center bg-gray-900 p-6">
+<form
         onSubmit={handleSubmit}
         className="bg-black p-8 rounded-lg shadow-lg w-full max-w-2xl space-y-6"
       >
