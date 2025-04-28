@@ -29,9 +29,6 @@ export default function SearchBar({
   return (
     <motion.div
       className="relative w-full mb-6"
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
     >
       <div
         className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer flex items-center justify-center w-8 h-8"
@@ -48,9 +45,6 @@ export default function SearchBar({
         }
         onKeyDown={handleKeyDown}
         className="w-full p-3 pl-14 border-none rounded-full text-lg bg-gray-800 text-white shadow-lg focus:ring-2 focus:ring-blue-500 outline-none"
-        initial={{ scale: 0.9 }}
-        animate={{ scale: 1 }}
-        transition={{ duration: 0.5 }}
       />
     </motion.div>
   );

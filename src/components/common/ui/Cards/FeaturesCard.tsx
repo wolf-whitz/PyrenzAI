@@ -9,16 +9,16 @@ const cardData = [
     imageHeight: 300,
   },
   {
-    cardName: 'Tools For Creator',
+    cardName: 'Helpful Community',
     cardImage:
-      'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MagicalBook.avif',
+      'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/Pyrenz.avif',
     imageWidth: 400,
     imageHeight: 300,
   },
   {
-    cardName: 'Unlimited Messages',
+    cardName: 'OpenSourced',
     cardImage:
-      'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/ChattingExample.avif',
+      'https://avatars1.githubusercontent.com/u/9919',
     imageWidth: 400,
     imageHeight: 300,
   },

@@ -112,13 +112,7 @@ export default function Home() {
     >
       <div className="flex flex-1 flex-col md:flex-row">
         <aside className="hidden md:flex md:pl-[50px]">
-          <motion.div
-            initial={{ x: -100, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Sidebar />
-          </motion.div>
+          <Sidebar />
         </aside>
         <main className="p-6 flex-1">
           <Banner />
@@ -193,14 +187,9 @@ export default function Home() {
           />
         </main>
       </div>
-      <motion.div
-        className="fixed bottom-0 left-0 w-full bg-gray-900 text-white flex justify-around p-2 shadow-lg z-50 md:hidden"
-        initial={{ y: 50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      >
+      <div className="fixed bottom-0 left-0 w-full bg-gray-900 text-white flex justify-around p-2 shadow-lg z-50 md:hidden">
         <Sidebar />
-      </motion.div>
+      </div>
       <div className="pb-16 px-4">
         {isClient && <Footer />}
         <p className="text-center text-gray-500 mt-4">

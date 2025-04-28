@@ -9,14 +9,14 @@ const cardData = [
       'Talk to characters anytime. No delays, no message limits just pure roleplay.',
   },
   {
-    cardName: 'Tools For Creator',
+    cardName: 'Helpful Community',
     cardDescription:
-      'Experience Pyrenz tools unleash your creativity with lorebooks, powerful model customization, and so much more',
+      'We have a very helpful community where you can ask questions and, perhaps, have some fun!',
   },
   {
-    cardName: 'Unlimited Messages',
+    cardName: 'OpenSourced',
     cardDescription:
-      'Free or not, welcome to PyrenzAi! We offer unlimited messages for free!',
+      'PyrenzAI is completely free and open-source, allowing all forms of local modifications and more!',
   },
 ];
 
