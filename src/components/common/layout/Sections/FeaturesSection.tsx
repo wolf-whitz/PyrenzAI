@@ -31,10 +31,10 @@ export default function FeaturesSection({ discoverMoreRef }: FeaturesSectionProp
       data-aos="fade-up"
       className="p-10 text-white pb-32 md:pb-16"
     >
-      <h2 className="text-4xl font-bold mb-8 text-center bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+      <h2 className="text-4xl font-bold mb-6 text-center bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
         Why Choose Pyrenz<span className="text-red-500">AI</span>?
       </h2>
-      <div className="space-y-8">
+      <div className="mt-8 space-y-8">
         {cardData.map((card, index) => (
           <div key={index} className="flex flex-col md:flex-row-reverse items-center space-y-4 md:space-y-0 md:space-x-8">
             <FeatureCard index={index} />

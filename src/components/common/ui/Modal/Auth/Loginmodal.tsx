@@ -1,5 +1,5 @@
 import { useState, lazy, Suspense } from 'react';
-import { FaDiscord } from 'react-icons/fa';
+import { FaDiscord, FaTimes } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactDOM from 'react-dom';
@@ -79,6 +79,13 @@ export default function Login({ onClose }: LoginProps) {
             }}
             onClick={(e) => e.stopPropagation()}
           >
+            <button
+              className="absolute top-4 right-4 text-gray-400 hover:text-white"
+              onClick={onClose}
+            >
+              <FaTimes />
+            </button>
+
             <h2 className="text-2xl font-bold mb-6 text-center font-baloo-da-2">
               Login
             </h2>
