@@ -1,5 +1,6 @@
 import { supabase } from '~/Utility/supabaseClient';
 import { Utils, AuthTokenName } from '~/Utility/Utility';
+import posthog from 'posthog-js';
 
 interface AppUser {
   id: string;
@@ -29,31 +30,36 @@ export const extractTokensFromLocalStorage = (): string | null => {
     }
     return authData;
   } catch (err) {
-    console.error('Error parsing auth data:', err);
+    const error = err as Error;
+    posthog.captureException(error);
     return null;
   }
 };
 
 export const sendUserDataToSupabase = async (user: AppUser): Promise<void> => {
-  const username: string = user.email?.split('@')[0] || 'UnknownUser';
-  const imageUrl: string =
+  const username = user.email?.split('@')[0] || 'UnknownUser';
+  const imageUrl =
     user.user_metadata?.avatar_url ||
     `https://api.dicebear.com/8.x/avataaars/svg?seed=${username}`;
 
   try {
-    const response: ApiResponse = await Utils.post<ApiResponse>('/authorized', {
+    const response = await Utils.post<ApiResponse>('/authorized', {
       id: user.id,
       name: user.user_metadata?.full_name || username,
       imageUrl,
     });
 
     if (response.error) {
-      console.error('Error sending user data:', response.error);
     } else {
-      console.log('User data successfully sent!');
+      posthog.identify(user.id, {
+        email: user.email,
+        full_name: user.user_metadata?.full_name,
+        avatar_url: imageUrl,
+      });
     }
   } catch (err) {
-    console.error('Unexpected error:', err);
+    const error = err as Error;
+    posthog.captureException(error);
   }
 };
 
@@ -61,7 +67,7 @@ export const handleSignUp = async (
   email: string,
   password: string,
   isAdult: boolean
-) => {
+): Promise<string> => {
   if (!isAdult) {
     throw new Error('You must confirm you are 18+ to sign up.');
   }
@@ -75,8 +81,9 @@ export const handleSignUp = async (
 
 export const handleRegisterOAuthSignIn = async (
   provider: 'google' | 'discord'
-) => {
+): Promise<void> => {
   const { error } = await supabase.auth.signInWithOAuth({ provider });
 
   if (error) throw error;
+  posthog.captureException(error);
 };

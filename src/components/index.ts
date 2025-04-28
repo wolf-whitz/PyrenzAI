@@ -9,7 +9,7 @@ import FeaturesSection from '@layout/Sections/FeaturesSection';
 
 // Sidebar Components
 import Sidebar from '@layout/Sidebar/sidebar';
-import DesktopSidebar from '@layout/Sidebar/DesktopSidebar';
+import CharacterViewSidebar from '~/components/common/layout/Sidebar/CharacterViewSidebar.tsx';
 import MobileSidebar from '@layout/Sidebar/sidebar';
 import SettingsSidebar from '@layout/Sidebar/SettingsSidebar';
 import CommunityGuidelines from '@layout/Sidebar/GuidelineSidebar';
@@ -135,7 +135,7 @@ export {
 
   // Sidebar
   Sidebar,
-  DesktopSidebar,
+  CharacterViewSidebar,
   MobileSidebar,
   SettingsSidebar,
   CommunityGuidelines,

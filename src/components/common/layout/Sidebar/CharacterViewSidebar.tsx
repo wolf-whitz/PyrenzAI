@@ -26,7 +26,7 @@ export default function DesktopSidebar({
       animate={{ x: 60, opacity: 1, scale: 1 }}
       exit={{ x: '-100%', opacity: 0.8, scale: 0.98 }}
       transition={{ type: 'spring', stiffness: 120, damping: 20 }}
-      className={`fixed left-0 top-0 h-full w-72 bg-charcoal shadow-2xl z-20 p-6 flex flex-col space-y-6 ${className}`}
+      className={`fixed left-0 top-0 h-full w-72 bg-charcoal shadow-2xl z-20 p-6 flex flex-col space-y-6 ${className} hidden md:block`}
     >
       <div className="flex flex-col items-center">
         <motion.img

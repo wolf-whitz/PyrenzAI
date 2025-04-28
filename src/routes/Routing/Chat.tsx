@@ -7,7 +7,7 @@ import { fetchChatData } from '~/api';
 import { Utils } from '~/Utility/Utility';
 import {
   Sidebar,
-  DesktopSidebar,
+  CharacterViewSidebar,
   ChatContainer,
   PreviousChat,
 } from '~/components';
@@ -107,7 +107,7 @@ export default function ChatPage() {
       <aside className="hidden lg:flex flex-col w-64">
         <Sidebar />
         {character && (
-          <DesktopSidebar
+          <CharacterViewSidebar
             profilePic={character.profile_image}
             safeName={character.name}
           />

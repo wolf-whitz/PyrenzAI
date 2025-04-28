@@ -1,3 +1,4 @@
+import posthog from 'posthog-js'; // Import PostHog
 import { supabase } from '~/Utility/supabaseClient';
 import { Utils, AuthTokenName } from '~/Utility/Utility';
 
@@ -32,19 +33,21 @@ export const extractTokensFromLocalStorage = (): {
       return { accessToken, refreshToken };
     }
   } catch (err) {
-    console.error('Error parsing auth data:', err);
+    const error = err as Error;
+    posthog.captureException(error);
+    console.error('Error parsing auth data:', error);
   }
   return null;
 };
 
 export const sendUserDataToSupabase = async (user: AppUser): Promise<void> => {
-  const username: string = user.email?.split('@')[0] || 'UnknownUser';
-  const imageUrl: string =
+  const username = user.email?.split('@')[0] || 'UnknownUser';
+  const imageUrl =
     user.user_metadata?.avatar_url ||
     `https://api.dicebear.com/8.x/avataaars/svg?seed=${username}`;
 
   try {
-    const response: ApiResponse = await Utils.post<ApiResponse>('/authorized', {
+    const response = await Utils.post<ApiResponse>('/authorized', {
       id: user.id,
       name: user.user_metadata?.full_name || username,
       imageUrl,
@@ -52,11 +55,19 @@ export const sendUserDataToSupabase = async (user: AppUser): Promise<void> => {
 
     if (response.error) {
       console.error('Error sending user data:', response.error);
+      posthog.captureException(new Error(response.error));
     } else {
       console.log('User data successfully sent!');
+      posthog.identify(user.id, {
+        email: user.email,
+        full_name: user.user_metadata?.full_name,
+        avatar_url: imageUrl,
+      });
     }
   } catch (err) {
-    console.error('Unexpected error:', err);
+    const error = err as Error;
+    posthog.captureException(error);
+    console.error('Unexpected error:', error);
   }
 };
 
@@ -78,7 +89,9 @@ export const handleLogin = async (email: string, password: string) => {
 
     return { success: true };
   } catch (err: any) {
-    throw new Error(err.message || 'An unexpected error occurred.');
+    const error = new Error(err.message || 'An unexpected error occurred.');
+    posthog.captureException(error);
+    throw error;
   }
 };
 
@@ -97,6 +110,8 @@ export const handleOAuthSignIn = async (provider: 'google' | 'discord') => {
 
     return { success: true };
   } catch (err: any) {
-    throw new Error(err.message || 'Failed to sign in with OAuth.');
+    const error = new Error(err.message || 'Failed to sign in with OAuth.');
+    posthog.captureException(error);
+    throw error;
   }
 };
