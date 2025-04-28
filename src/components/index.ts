@@ -68,6 +68,7 @@ import LoginModal from '@ui/Modal/Auth/Loginmodal';
 import DownloadModal from '@ui/Modal/DownloadsModal';
 import LanguageModal from '@ui/Modal/LanguageModal';
 import DraftsModal from '@ui/Modal/DraftsModal';
+import MoreButtonsModal from '@ui/Modal/MoreButtonsModal';
 
 // Card Components
 import { Card, CardContent, CardTitle, CardHeader } from '@ui/ShadCdn/card';
@@ -143,7 +144,8 @@ export {
   DownloadModal,
   LanguageModal,
   DraftsModal,
-
+  MoreButtonsModal,
+  
   // Cards
   Card,
   CardContent,

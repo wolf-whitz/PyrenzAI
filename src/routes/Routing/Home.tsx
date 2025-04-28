@@ -38,7 +38,6 @@ export default function Home() {
   const { user_uuid } = useUserStore();
 
   const [isClient, setIsClient] = useState(false);
-  const [isSmallScreen, setIsSmallScreen] = useState(false);
 
   const itemsPerPage = 10;
   const totalPages = Math.max(1, Math.ceil(total / itemsPerPage));
@@ -48,19 +47,6 @@ export default function Home() {
     setSearch(searchParams.get('search') || '');
     setCurrentPage(Number(searchParams.get('page')) || 1);
   }, [searchParams]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsSmallScreen(window.innerWidth <= 665 && window.innerHeight <= 741);
-    };
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
 
   const fetchCharactersData = useCallback(async () => {
     setLoading(true);
@@ -126,17 +112,15 @@ export default function Home() {
       transition={{ duration: 0.5 }}
     >
       <div className="flex flex-1 flex-col md:flex-row">
-        {!isSmallScreen && (
-          <motion.div
-            className="hidden md:flex md:pl-[50px]"
-            initial={{ x: -100, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Sidebar />
-          </motion.div>
-        )}
-        <div className={`p-6 flex-1 ${isSmallScreen ? 'pl-0' : ''}`}>
+        <motion.div
+          className="hidden md:flex md:pl-[50px]"
+          initial={{ x: -100, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Sidebar />
+        </motion.div>
+        <div className="p-6 flex-1">
           <Banner />
           <SearchBar
             search={search}
@@ -144,15 +128,7 @@ export default function Home() {
             setCurrentPage={setCurrentPage}
             aria-label="Search Characters"
           />
-          <motion.h2
-            className="text-3xl font-extrabold mt-10 mb-4 text-blue-400 flex items-center justify-center"
-            initial={{ y: -20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Sparkles size={28} className="mr-2" aria-hidden="true" /> Explore
-          </motion.h2>
-
+          
           <CustomButton
             onButtonClick={handleButtonClick}
             aria-label="Custom Action Button"
@@ -217,16 +193,14 @@ export default function Home() {
           />
         </div>
       </div>
-      {isSmallScreen && (
-        <motion.div
-          className="fixed bottom-0 left-0 w-full bg-gray-900 text-white flex justify-around p-2 shadow-lg z-50"
-          initial={{ y: 50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <Sidebar />
-        </motion.div>
-      )}
+      <motion.div
+        className="fixed bottom-0 left-0 w-full bg-gray-900 text-white flex justify-around p-2 shadow-lg z-50 md:hidden"
+        initial={{ y: 50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <Sidebar />
+      </motion.div>
       <div className="pb-16 px-4">
         {isClient && <Footer />}
         <p className="text-center text-gray-500 mt-4">

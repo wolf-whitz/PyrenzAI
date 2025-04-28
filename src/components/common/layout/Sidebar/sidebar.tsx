@@ -32,14 +32,10 @@ export default function Sidebar({ className }: { className?: string }) {
     setShowLoginModal(false);
   };
 
-  const handleRegisterOpen = () => {
-    console.log('Register open');
-  };
-
   return (
     <>
       <motion.div
-        className={`hidden md:flex fixed top-0 left-0 h-screen w-16 bg-gray-900 text-white flex-col justify-between p-4 rounded-r-3xl shadow-lg z-50 ${className}`}
+        className={`hidden md:flex fixed top-0 left-0 h-screen w-16 md:w-16 lg:w-20 bg-gray-900 text-white flex-col justify-between p-4 rounded-r-3xl shadow-lg z-50 ${className}`}
         initial={{ x: -50, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.5 }}
@@ -155,7 +151,7 @@ function SidebarItem({
 
   return (
     <motion.div
-      className="relative flex items-center justify-center w-12 h-12 rounded-lg hover:bg-gray-800 cursor-pointer"
+      className="relative flex items-center justify-center w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 rounded-lg hover:bg-gray-800 cursor-pointer"
       onClick={handleClick}
       onMouseEnter={() => setHovered(item.name)}
       onMouseLeave={() => setHovered(null)}
@@ -197,7 +193,7 @@ function MobileNavItem({ item, navigate, setShowLoginModal, user }: any) {
       transition={{ duration: 0.3 }}
     >
       {item.icon}
-      {item.name && <span className="text-xs">{item.name}</span>}
+      {item.name && <span className="text-xs mt-1">{item.name}</span>}
     </motion.div>
   );
 }
