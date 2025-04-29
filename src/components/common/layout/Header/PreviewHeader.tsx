@@ -13,6 +13,16 @@ interface HeaderProps {
   setShowRegister: (value: boolean) => void;
 }
 
+const menuVariants = {
+  hidden: { opacity: 0, y: -20 },
+  visible: { opacity: 1, y: 0, transition: { staggerChildren: 0.1 } },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: -10 },
+  visible: { opacity: 1, y: 0 },
+};
+
 export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
@@ -36,9 +46,9 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
   return (
     <motion.header
       initial={false}
-      animate={isMounted ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.5 }}
+      animate={isMounted ? 'visible' : 'hidden'}
+      exit="hidden"
+      variants={menuVariants}
       className="fixed top-0 left-0 w-full bg-black bg-opacity-40 p-4 z-50 transition-opacity duration-500"
     >
       <div className="flex justify-between items-center w-full max-w-screen-xl mx-auto px-4">
@@ -55,10 +65,11 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
         </motion.div>
 
         <nav aria-label="Main navigation">
-          <div className="hidden md:flex items-center space-x-6">
+          <motion.div className="hidden md:flex items-center space-x-6" variants={menuVariants}>
             {menuItems.map(({ name, icon: Icon, link, external }) => (
               <motion.button
                 key={name}
+                variants={itemVariants}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
                 className="flex items-center gap-2 text-white font-baloo-da-2 hover:text-[#E03201]"
@@ -74,6 +85,7 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
             ))}
 
             <motion.button
+              variants={itemVariants}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowLogin(true)}
@@ -83,6 +95,7 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
               Login
             </motion.button>
             <motion.button
+              variants={itemVariants}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowRegister(true)}
@@ -91,7 +104,7 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
             >
               Sign Up
             </motion.button>
-          </div>
+          </motion.div>
         </nav>
 
         <div className="md:hidden relative">
@@ -109,16 +122,17 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
           <AnimatePresence>
             {menuOpen && (
               <motion.div
-                initial={{ opacity: 0, scale: 0.95, y: -10 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: -10 }}
-                transition={{ duration: 0.2 }}
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                variants={menuVariants}
                 className="absolute right-0 mt-2 w-48 bg-gray-900 text-white rounded-lg shadow-lg border border-gray-700 p-2"
                 role="menu"
               >
                 {menuItems.map(({ name, icon: Icon, link, external }) => (
                   <motion.button
                     key={name}
+                    variants={itemVariants}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     className="block w-full text-left px-4 py-2 hover:bg-gray-800 rounded"
@@ -135,6 +149,7 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
                 ))}
 
                 <motion.button
+                  variants={itemVariants}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setShowLogin(true)}
@@ -145,6 +160,7 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
                   Login
                 </motion.button>
                 <motion.button
+                  variants={itemVariants}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setShowRegister(true)}

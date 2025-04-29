@@ -12,6 +12,7 @@ import {
 import '~/styles/Preview.css';
 import { motion } from 'framer-motion';
 import AOS from 'aos';
+import { Box, Container } from '@mui/material';
 
 export default function Preview() {
   const [showModal, setShowModal] = useState<'login' | 'register' | null>(null);
@@ -100,18 +101,18 @@ export default function Preview() {
         backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif)`,
       }}
     >
-      <div className="fixed top-0 w-full z-50">
+      <Box className="fixed top-0 w-full z-50">
         <PreviewHeader
           setShowLogin={() => setShowModal('login')}
           setShowRegister={() => setShowModal('register')}
         />
-      </div>
+      </Box>
 
-      <div className="pt-20 flex-grow">
+      <Container maxWidth={false} disableGutters className="pt-20 flex-grow">
         <HeroSection openModal={openModal} pyrenzAiRef={pyrenzAiRef} />
         <DownloadModal isModalOpen={isModalOpen} closeModal={closeModal} />
         <FeaturesSection discoverMoreRef={discoverMoreRef} />
-      </div>
+      </Container>
 
       <motion.div data-aos="fade-up" className="mt-44">
         <Footer />

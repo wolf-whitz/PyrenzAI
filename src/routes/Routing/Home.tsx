@@ -16,6 +16,7 @@ import { fetchCharacters } from '~/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '~/Utility/supabaseClient';
 import { Character } from '@shared-types/CharacterProp';
+import { Box, Typography, Container, Grid } from '@mui/material';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -110,11 +111,11 @@ export default function Home() {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="flex flex-1 flex-col md:flex-row">
-        <aside className="hidden md:flex md:pl-[50px]">
+      <Container maxWidth={false} disableGutters className="flex flex-1 flex-col md:flex-row">
+        <Box className="hidden md:flex md:pl-[50px]">
           <Sidebar />
-        </aside>
-        <main className="p-6 flex-1">
+        </Box>
+        <Box className="p-6 flex-1">
           <Banner />
           <SearchBar
             search={search}
@@ -152,7 +153,7 @@ export default function Home() {
                 ))
               ) : characters.length > 0 ? (
                 characters.map((char: Character) => (
-                  <div
+                  <Box
                     key={char.id}
                     data-character-uuid={char.input_char_uuid}
                     data-character-id={char.id}
@@ -161,10 +162,10 @@ export default function Home() {
                     style={{ order: char.id }}
                   >
                     <CharacterCard {...char} />
-                  </div>
+                  </Box>
                 ))
               ) : (
-                <motion.p
+                <motion.div
                   className="text-gray-500 text-center w-full"
                   aria-live="polite"
                   initial={{ opacity: 0 }}
@@ -172,8 +173,10 @@ export default function Home() {
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.5 }}
                 >
-                  No characters found. (˚ ˃̣̣̥⌓˂̣̣̥ )
-                </motion.p>
+                  <Typography variant="body1">
+                    No characters found. (˚ ˃̣̣̥⌓˂̣̣̥ )
+                  </Typography>
+                </motion.div>
               )}
             </AnimatePresence>
           </motion.div>
@@ -185,17 +188,17 @@ export default function Home() {
             user_param_uuid={user_uuid || ''}
             onLoadMore={setCurrentPage}
           />
-        </main>
-      </div>
-      <div className="fixed bottom-0 left-0 w-full bg-gray-900 text-white flex justify-around p-2 shadow-lg z-50 md:hidden">
+        </Box>
+      </Container>
+      <Box className="fixed bottom-0 left-0 w-full bg-gray-900 text-white flex justify-around p-2 shadow-lg z-50 md:hidden">
         <Sidebar />
-      </div>
-      <div className="pb-16 px-4">
+      </Box>
+      <Box className="pb-16 px-4">
         {isClient && <Footer />}
-        <p className="text-center text-gray-500 mt-4">
+        <Typography variant="body2" className="text-center text-gray-500 mt-4">
           © 2025 Pyrenz AI. All Rights Reserved.
-        </p>
-      </div>
+        </Typography>
+      </Box>
     </motion.div>
   );
 }

@@ -4,21 +4,21 @@ import { FeatureCard } from '@components/index';
 
 const cardData = [
   {
-    cardName: 'Smart. Fast. Free.',
+    cardName: 'Smart. Fast. Free. 🚀',
     cardDescription: 'Talk to characters anytime. No delays, no message limits just pure roleplay.',
     cardImage: 'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/ChattingExample.avif',
     imageWidth: 400,
     imageHeight: 300,
   },
   {
-    cardName: 'Helpful Community',
+    cardName: 'Helpful Community 👥',
     cardDescription: 'We have a very helpful community where you can ask questions and, perhaps, have some fun!',
     cardImage: 'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/Pyrenz.avif',
     imageWidth: 400,
     imageHeight: 300,
   },
   {
-    cardName: 'OpenSourced',
+    cardName: 'OpenSourced 🖥️',
     cardDescription: 'PyrenzAI is completely free and open-source, allowing all forms of local modifications and more!',
     cardImage: 'https://avatars1.githubusercontent.com/u/9919',
     imageWidth: 400,
