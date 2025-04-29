@@ -3,8 +3,8 @@ export default function headerDevPlugin() {
     name: 'vite-plugin-header-dev',
     configureServer(server) {
       const allowedSites = [
-        'https://example.com',
-        'https://another-allowed-site.com',
+        'https://pyrenzai.com/',
+        'https://cqtbishpefnfvaxheyqu.supabase.co/'
       ];
 
       server.middlewares.use((req, res, next) => {
