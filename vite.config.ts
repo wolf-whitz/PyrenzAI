@@ -18,7 +18,7 @@ export default defineConfig({
     assetsDir: 'assets',
     chunkSizeWarningLimit: 5000,
     minify: 'terser',
-    sourcemap: false,
+    sourcemap: true,
     target: 'es2020',
     cssCodeSplit: true,
     terserOptions: {
