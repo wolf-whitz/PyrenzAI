@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Box, Typography, Fade } from '@mui/material';
+import 'tailwindcss/tailwind.css';
 
 export default function Banner() {
   const [displayedText, setDisplayedText] = useState('');
@@ -53,25 +55,28 @@ export default function Banner() {
   }, []);
 
   return (
-    <motion.div
-      className="p-4 rounded-3xl mb-4 flex justify-center items-center h-[140px] font-baloo text-white border-none relative bg-cover bg-center w-full"
-      style={{
-        backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif)`,
-      }}
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5 }}
-    >
-      <h1 className="text-3xl font-bold relative z-10 text-center w-full">
-        {displayedText}
-        <motion.span
-          className="ml-1"
-          animate={{ opacity: showCursor ? 1 : 0 }}
-          transition={{ duration: 0.5, repeat: Infinity, repeatType: 'loop' }}
-        >
-          |
-        </motion.span>
-      </h1>
-    </motion.div>
+    <Fade in={true} timeout={500}>
+      <Box
+        component={motion.div}
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+        className="p-4 rounded-3xl mb-4 flex justify-center items-center h-36 font-baloo text-white border-none relative bg-cover bg-center w-full"
+        style={{
+          backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif)`,
+        }}
+      >
+        <Typography variant="h4" className="text-3xl font-bold relative z-10 text-center w-full">
+          {displayedText}
+          <motion.span
+            className="ml-1"
+            animate={{ opacity: showCursor ? 1 : 0 }}
+            transition={{ duration: 0.5, repeat: Infinity, repeatType: 'loop' }}
+          >
+            |
+          </motion.span>
+        </Typography>
+      </Box>
+    </Fade>
   );
 }

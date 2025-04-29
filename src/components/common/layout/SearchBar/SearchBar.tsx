@@ -1,6 +1,7 @@
 import { useState, ChangeEvent, KeyboardEvent } from 'react';
 import { motion } from 'framer-motion';
 import { FaSearch } from 'react-icons/fa';
+import TextField from '@mui/material/TextField';
 
 interface SearchBarProps {
   search: string;
@@ -27,24 +28,42 @@ export default function SearchBar({
   };
 
   return (
-    <motion.div
-      className="relative w-full mb-6"
-    >
+    <motion.div className="relative w-full mb-6">
       <div
-        className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer flex items-center justify-center w-8 h-8"
+        className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer flex items-center justify-center w-8 h-8 z-10"
         onClick={handleSearch}
       >
-        <FaSearch className="text-lg" />
+        <FaSearch className="text-lg text-gray-400" />
       </div>
-      <motion.input
-        type="text"
-        placeholder="Search characters..."
+      <TextField
+        fullWidth
+        variant="outlined"
         value={inputValue}
         onChange={(e: ChangeEvent<HTMLInputElement>) =>
           setInputValue(e.target.value)
         }
         onKeyDown={handleKeyDown}
-        className="w-full p-3 pl-14 border-none rounded-full text-lg bg-gray-800 text-white shadow-lg focus:ring-2 focus:ring-blue-500 outline-none"
+        placeholder="Search characters..."
+        className="pl-14"
+        inputProps={{ className: 'text-white placeholder-gray-400' }}
+        sx={{
+          '& .MuiOutlinedInput-root': {
+            borderRadius: '9999px',
+            backgroundColor: '#1F2937',
+            color: 'white',
+            paddingLeft: '2.75rem',
+            '& fieldset': { border: 'none' },
+            '&:hover fieldset': { border: 'none' },
+            '&.Mui-focused fieldset': {
+              border: '2px solid #3B82F6',
+            },
+          },
+          input: {
+            padding: '0.75rem 1rem',
+            fontSize: '1.125rem',
+            color: 'white',
+          },
+        }}
       />
     </motion.div>
   );

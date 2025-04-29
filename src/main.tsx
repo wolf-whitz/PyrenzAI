@@ -10,6 +10,9 @@ import { posthogConfig } from '~/config';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import theme from '~/provider/ThemeProvider';
 
+// Translation System
+import './i18n';
+
 posthog.init(posthogConfig.apiKey, {
   api_host: posthogConfig.apiHost,
   loaded: posthogConfig.loaded,

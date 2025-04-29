@@ -2,6 +2,7 @@ import { useNavigate, useSearchParams } from '@remix-run/react';
 import { useState } from 'react';
 import { supabase } from '~/Utility/supabaseClient';
 import { motion } from 'framer-motion';
+import { Button, CircularProgress } from '@mui/material';
 
 interface PaginationProps {
   currentPage: number;
@@ -53,22 +54,28 @@ export default function Pagination({
   };
 
   return (
-    <div className="flex justify-center items-center gap-2 mt-8">
-      <motion.button
-        onClick={handleLoadMore}
-        disabled={isLoading}
-        className={`px-4 py-2 rounded-full flex items-center justify-center ${
-          isLoading
-            ? 'bg-gray-700 cursor-not-allowed'
-            : 'bg-gray-800 hover:bg-gray-700'
-        }`}
-        aria-label="Load more items"
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem', marginTop: '2rem' }}>
+      <motion.div
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         transition={{ duration: 0.3 }}
       >
-        {isLoading ? 'Loading...' : 'Load More'}
-      </motion.button>
+        <Button
+          variant="contained"
+          onClick={handleLoadMore}
+          disabled={isLoading}
+          style={{
+            backgroundColor: isLoading ? '#4a5568' : '#2d3748',
+            color: '#fff',
+            borderRadius: '9999px',
+            padding: '0.5rem 1rem',
+            cursor: isLoading ? 'not-allowed' : 'pointer',
+          }}
+          aria-label="Load more items"
+        >
+          {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Load More'}
+        </Button>
+      </motion.div>
     </div>
   );
 }

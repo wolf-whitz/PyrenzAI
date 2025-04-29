@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { RefObject } from 'react';
+import { useTranslation } from 'react-i18next'; 
 
 interface HeroSectionProps {
   openModal: () => void;
@@ -7,15 +8,18 @@ interface HeroSectionProps {
 }
 
 export default function HeroSection({ openModal, pyrenzAiRef }: HeroSectionProps) {
+  const { t } = useTranslation();
+
   return (
     <motion.section
       ref={pyrenzAiRef}
       data-aos="fade-up"
       className="flex flex-col justify-center items-center min-h-screen text-white -mt-16 px-4"
     >
-      <h1 className="text-7xl font-semibold mb-4 text-center">Pyrenz AI</h1>
+      <h1 className="text-7xl font-semibold mb-4 text-center">{t('heroTitle')}</h1>
       <p className="text-2xl opacity-80 text-center max-w-xl">
-      Chat with unlimited characters, create your own, and have an absolute blast!      </p>
+        {t('heroDescription')}
+      </p>
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
@@ -23,7 +27,7 @@ export default function HeroSection({ openModal, pyrenzAiRef }: HeroSectionProps
         onClick={openModal}
         aria-label="Get Started"
       >
-        Get Started
+        {t('getStartedButton')}
       </motion.button>
     </motion.section>
   );

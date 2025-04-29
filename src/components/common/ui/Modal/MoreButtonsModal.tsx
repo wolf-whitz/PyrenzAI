@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom';
 import { supabase } from '~/Utility/supabaseClient';
 import { useUserStore } from '~/store/index';
 import { Sparkles, RefreshCw, Flame, Tag } from 'lucide-react';
+import { Button, TextField, CircularProgress, Box, Modal } from '@mui/material';
 
 type ButtonType = {
   icon: React.ElementType;
@@ -65,14 +66,9 @@ const buttons: ButtonType[] = [
 ];
 
 const LoadingSpinner = () => (
-  <motion.div
-    className="flex justify-center items-center"
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    transition={{ duration: 0.5 }}
-  >
-    <div className="border-t-4 border-blue-500 border-solid w-16 h-16 rounded-full animate-spin"></div>
-  </motion.div>
+  <Box display="flex" justifyContent="center" alignItems="center">
+    <CircularProgress />
+  </Box>
 );
 
 export default function MoreButtonsModal({
@@ -160,55 +156,73 @@ export default function MoreButtonsModal({
   if (!isOpen) return null;
 
   return createPortal(
-    <motion.div
-      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 text-white font-baloo z-50 p-4"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+    <Modal
+      open={isOpen}
+      onClose={onClose}
+      aria-labelledby="more-buttons-modal"
+      aria-describedby="more-buttons-modal-description"
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backdropFilter: 'blur(4px)',
+      }}
     >
       <motion.div
         ref={modalRef}
-        className="bg-black p-6 rounded-md border border-white w-full max-w-md"
         initial={{ scale: 0.5 }}
         animate={{ scale: 1 }}
         exit={{ scale: 0.5 }}
+        style={{
+          backgroundColor: '#000',
+          padding: '1.5rem',
+          borderRadius: '0.375rem',
+          border: '1px solid #fff',
+          width: '100%',
+          maxWidth: '20rem',
+        }}
       >
-        <input
-          type="text"
-          placeholder="Search..."
+        <TextField
+          label="Search..."
+          variant="outlined"
           value={searchQuery}
           onChange={handleSearch}
-          className="border border-white bg-black text-white rounded-md p-3 mb-4 w-full font-baloo placeholder-gray-400 text-lg"
+          fullWidth
+          InputProps={{
+            style: { color: '#fff', borderColor: '#fff' },
+          }}
+          InputLabelProps={{
+            style: { color: '#fff' },
+          }}
+          sx={{ marginBottom: '1rem' }}
         />
-        <div className="flex flex-col gap-4">
+        <Box display="flex" flexDirection="column" gap={2}>
           {loading ? (
             <LoadingSpinner />
           ) : (
             filteredModalButtons.map((btn, index) => (
-              <motion.button
-                key={index}
-                className="border border-white flex items-center justify-center space-x-2 rounded-md px-4 py-3 bg-black text-white transform transition-transform duration-300 hover:scale-105 font-baloo text-lg"
-                onClick={() => handleButtonClick(btn)}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {'icon' in btn ? (
-                  <>
-                    <btn.icon size={24} />
-                    <span>{btn.label}</span>
-                  </>
-                ) : (
-                  <>
-                    <Tag size={24} />
-                    <span>{btn.name}</span>
-                  </>
-                )}
-              </motion.button>
+              <motion.div key={index} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button
+                  variant="outlined"
+                  startIcon={'icon' in btn ? <btn.icon size={24} /> : <Tag size={24} />}
+                  onClick={() => handleButtonClick(btn)}
+                  fullWidth
+                  sx={{
+                    color: '#fff',
+                    borderColor: '#fff',
+                    justifyContent: 'flex-start',
+                    textTransform: 'none',
+                    fontSize: '1rem',
+                  }}
+                >
+                  {'icon' in btn ? btn.label : btn.name}
+                </Button>
+              </motion.div>
             ))
           )}
-        </div>
+        </Box>
       </motion.div>
-    </motion.div>,
+    </Modal>,
     document.getElementById('modal-root')!
   );
 }
