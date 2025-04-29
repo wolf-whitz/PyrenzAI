@@ -7,6 +7,7 @@ import { useNavigate } from '@remix-run/react';
 import { Utils } from '~/Utility/Utility';
 import { useUserStore } from '~/store';
 import { WindowAlert } from '~/components';
+import posthog from 'posthog-js';
 
 interface CharacterCardModalProps {
   isOpen: boolean;
@@ -44,10 +45,7 @@ export default function CharacterCardModal({
     };
 
     try {
-      const response = await Utils.post<{ chat_uuid: string }>(
-        '/api/Chats',
-        requestData
-      );
+      const response = await Utils.post<{ chat_uuid: string }>('/api/Chats', requestData);
 
       if (response?.chat_uuid) {
         navigate(`/chat/${response.chat_uuid}`);
@@ -57,6 +55,15 @@ export default function CharacterCardModal({
       }
     } catch (error) {
       console.error('Error generating chat_uuid:', error);
+
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+
+      posthog.capture('Error generating chat_uuid', {
+        error: errorMessage,
+        character_uuid: character.input_char_uuid,
+        user_uuid: user_uuid,
+      });
+
       WindowAlert('error', 'Error: User is not logged in yet');
     } finally {
       setIsLoading(false);

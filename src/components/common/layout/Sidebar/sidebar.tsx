@@ -4,14 +4,14 @@ import { FaHome, FaPlus, FaCog, FaComments, FaUser } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '~/Utility/supabaseClient';
 import type { User } from '@supabase/supabase-js';
-import { LoginModal } from '@components/index';
-import * as Dialog from '@radix-ui/react-dialog';
+import { AuthenticationModal } from '@components/index';
 import * as Tooltip from '@radix-ui/react-tooltip';
 
 export default function Sidebar({ className }: { className?: string }) {
   const [hovered, setHovered] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [modalMode, setModalMode] = useState<'login' | 'register'>('login');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,8 +30,8 @@ export default function Sidebar({ className }: { className?: string }) {
     { name: 'Settings', icon: <FaCog size={20} />, path: '/Settings' },
   ];
 
-  const handleCloseLoginModal = () => {
-    setShowLoginModal(false);
+  const toggleModalMode = () => {
+    setModalMode((prevMode) => (prevMode === 'login' ? 'register' : 'login'));
   };
 
   return (
@@ -125,14 +125,13 @@ export default function Sidebar({ className }: { className?: string }) {
         )}
       </motion.div>
 
-      <Dialog.Root open={showLoginModal} onOpenChange={setShowLoginModal}>
-        <Dialog.Portal>
-          <Dialog.Overlay className="fixed inset-0 bg-black bg-opacity-50" />
-          <Dialog.Content className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg">
-            <LoginModal onClose={handleCloseLoginModal} />
-          </Dialog.Content>
-        </Dialog.Portal>
-      </Dialog.Root>
+      {showLoginModal && (
+        <AuthenticationModal
+          mode={modalMode}
+          onClose={() => setShowLoginModal(false)}
+          toggleMode={toggleModalMode}
+        />
+      )}
     </>
   );
 }

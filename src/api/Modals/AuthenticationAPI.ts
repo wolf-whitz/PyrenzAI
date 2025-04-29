@@ -1,4 +1,4 @@
-import posthog from 'posthog-js'; // Import PostHog
+import posthog from 'posthog-js';
 import { supabase } from '~/Utility/supabaseClient';
 import { Utils, AuthTokenName } from '~/Utility/Utility';
 
@@ -34,7 +34,6 @@ export const extractTokensFromLocalStorage = (): {
     }
   } catch (err) {
     const error = err as Error;
-    posthog.captureException(error);
     console.error('Error parsing auth data:', error);
   }
   return null;
@@ -55,7 +54,6 @@ export const sendUserDataToSupabase = async (user: AppUser): Promise<void> => {
 
     if (response.error) {
       console.error('Error sending user data:', response.error);
-      posthog.captureException(new Error(response.error));
     } else {
       console.log('User data successfully sent!');
       posthog.identify(user.id, {
@@ -66,7 +64,6 @@ export const sendUserDataToSupabase = async (user: AppUser): Promise<void> => {
     }
   } catch (err) {
     const error = err as Error;
-    posthog.captureException(error);
     console.error('Unexpected error:', error);
   }
 };
@@ -89,9 +86,7 @@ export const handleLogin = async (email: string, password: string) => {
 
     return { success: true };
   } catch (err: any) {
-    const error = new Error(err.message || 'An unexpected error occurred.');
-    posthog.captureException(error);
-    throw error;
+    throw new Error(err.message || 'An unexpected error occurred.');
   }
 };
 
@@ -110,8 +105,33 @@ export const handleOAuthSignIn = async (provider: 'google' | 'discord') => {
 
     return { success: true };
   } catch (err: any) {
-    const error = new Error(err.message || 'Failed to sign in with OAuth.');
-    posthog.captureException(error);
-    throw error;
+    throw new Error(err.message || 'Failed to sign in with OAuth.');
+  }
+};
+
+export const handleSignUp = async (email: string, password: string, isAdult: boolean) => {
+  try {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          is_adult: isAdult,
+        },
+      },
+    });
+
+    if (error) throw new Error(error.message);
+
+    const tokens = extractTokensFromLocalStorage();
+    if (tokens) {
+      const authData = JSON.parse(localStorage.getItem(AuthTokenName) || '');
+      const user = authData?.user;
+      if (user) await sendUserDataToSupabase(user);
+    }
+
+    return { success: true };
+  } catch (err: any) {
+    throw new Error(err.message || 'An unexpected error occurred.');
   }
 };

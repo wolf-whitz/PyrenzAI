@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaGlobe, FaWindows, FaMobileAlt } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import posthog from 'posthog-js';
 
 interface DownloadModalProps {
   isModalOpen: boolean;
@@ -46,6 +47,8 @@ export default function DownloadModal({
   ];
 
   const handleButtonClick = (link: string, label: string, is_up: boolean) => {
+    posthog.capture(`${label} Button Clicked`);
+
     if (is_up) {
       navigate(link);
     } else {

@@ -12,6 +12,7 @@ import {
   ImageUpload,
 } from '~/components';
 import TextareaForm from "./Childrens/TextareaForm";
+import posthog from 'posthog-js';
 
 interface CharacterData {
   persona: string;
@@ -134,11 +135,20 @@ export default function CharacterForm() {
 
       if (error) {
         alert('Error saving draft: ' + error.message);
+        posthog.capture('Error saving draft', {
+          error: error.message,
+          user_uuid,
+        });
       } else {
         alert('Saved');
       }
     } catch (error) {
       console.error('Unexpected error:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      posthog.capture('Unexpected error saving draft', {
+        error: errorMessage,
+        user_uuid,
+      });
     } finally {
       setSaveLoading(false);
     }
@@ -198,19 +208,28 @@ export default function CharacterForm() {
 
       if (response.error) {
         console.error('Error creating character:', response.error);
+        posthog.capture('Error creating character', {
+          error: response.error,
+          user_uuid,
+        });
       } else {
         console.log('Character created:', response.data);
       }
     } catch (error) {
       console.error('Unexpected error:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      posthog.capture('Unexpected error creating character', {
+        error: errorMessage,
+        user_uuid,
+      });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-<div className="flex flex-col items-center justify-center bg-gray-900 p-6">
-<form
+    <div className="flex flex-col items-center justify-center bg-gray-900 p-6">
+      <form
         onSubmit={handleSubmit}
         className="bg-black p-8 rounded-lg shadow-lg w-full max-w-2xl space-y-6"
       >

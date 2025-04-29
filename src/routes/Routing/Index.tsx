@@ -4,8 +4,7 @@ import { useUserStore as UserStore } from '~/store';
 import {
   PreviewHeader,
   PreviewFooter as Footer,
-  LoginModal,
-  RegisterModal,
+  AuthenticationModal,
   DownloadModal,
   HeroSection,
   FeaturesSection,
@@ -15,8 +14,7 @@ import { motion } from 'framer-motion';
 import AOS from 'aos';
 
 export default function Preview() {
-  const [showLogin, setShowLogin] = useState(false);
-  const [showRegister, setShowRegister] = useState(false);
+  const [showModal, setShowModal] = useState<'login' | 'register' | null>(null);
   const pyrenzAiRef = useRef<HTMLElement>(null);
   const discoverMoreRef = useRef<HTMLElement>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -87,6 +85,10 @@ export default function Preview() {
     });
   }, []);
 
+  const toggleMode = () => {
+    setShowModal((prevMode) => (prevMode === 'login' ? 'register' : 'login'));
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -100,8 +102,8 @@ export default function Preview() {
     >
       <div className="fixed top-0 w-full z-50">
         <PreviewHeader
-          setShowLogin={setShowLogin}
-          setShowRegister={setShowRegister}
+          setShowLogin={() => setShowModal('login')}
+          setShowRegister={() => setShowModal('register')}
         />
       </div>
 
@@ -115,8 +117,13 @@ export default function Preview() {
         <Footer />
       </motion.div>
 
-      {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
-      {showRegister && <RegisterModal onClose={() => setShowRegister(false)} />}
+      {showModal && (
+        <AuthenticationModal
+          mode={showModal}
+          onClose={() => setShowModal(null)}
+          toggleMode={toggleMode}
+        />
+      )}
     </motion.div>
   );
 }

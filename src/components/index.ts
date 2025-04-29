@@ -66,8 +66,7 @@ import FeatureCard from '@ui/Cards/FeaturesCard';
 
 // Modal Components
 import CharacterCardModal from '@ui/Modal/CharacterCardModal';
-import RegisterModal from '@ui/Modal/Auth/RegisterModal';
-import LoginModal from '@ui/Modal/Auth/Loginmodal';
+import AuthenticationModal from '~/components/common/ui/Modal/Auth/AuthenticationModal';
 import DownloadModal from '@ui/Modal/DownloadsModal';
 import LanguageModal from '@ui/Modal/LanguageModal';
 import DraftsModal from '@ui/Modal/DraftsModal';
@@ -145,8 +144,7 @@ export {
 
   // Modals
   CharacterCardModal,
-  RegisterModal,
-  LoginModal,
+  AuthenticationModal,
   DownloadModal,
   LanguageModal,
   DraftsModal,
