@@ -2,6 +2,7 @@ import { useState, ChangeEvent, KeyboardEvent } from 'react';
 import { motion } from 'framer-motion';
 import { FaSearch } from 'react-icons/fa';
 import TextField from '@mui/material/TextField';
+import { useTranslation } from 'react-i18next';
 
 interface SearchBarProps {
   search: string;
@@ -15,6 +16,7 @@ export default function SearchBar({
   setCurrentPage,
 }: SearchBarProps) {
   const [inputValue, setInputValue] = useState(search);
+  const { t } = useTranslation();
 
   const handleSearch = () => {
     setSearch(inputValue);
@@ -43,7 +45,7 @@ export default function SearchBar({
           setInputValue(e.target.value)
         }
         onKeyDown={handleKeyDown}
-        placeholder="Search characters..."
+        placeholder={t('search.placeholder')}
         className="pl-14"
         inputProps={{ className: 'text-white placeholder-gray-400' }}
         sx={{

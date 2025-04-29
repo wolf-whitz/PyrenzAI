@@ -6,6 +6,7 @@ import { supabase } from '~/Utility/supabaseClient';
 import type { User } from '@supabase/supabase-js';
 import { AuthenticationModal } from '@components/index';
 import * as Tooltip from '@radix-ui/react-tooltip';
+import { useTranslation } from 'react-i18next';
 
 export default function Sidebar({ className }: { className?: string }) {
   const [hovered, setHovered] = useState<string | null>(null);
@@ -13,6 +14,7 @@ export default function Sidebar({ className }: { className?: string }) {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [modalMode, setModalMode] = useState<'login' | 'register'>('login');
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const checkUser = async () => {
@@ -24,10 +26,10 @@ export default function Sidebar({ className }: { className?: string }) {
   }, []);
 
   const menuItems = [
-    { name: 'Home', icon: <FaHome size={20} />, path: '/Home' },
-    { name: 'Create', icon: <FaPlus size={20} />, path: '/Create' },
-    { name: 'Chats', icon: <FaComments size={20} />, path: '/Chats' },
-    { name: 'Settings', icon: <FaCog size={20} />, path: '/Settings' },
+    { name: t('navigation.home'), icon: <FaHome size={20} />, path: '/Home' },
+    { name: t('navigation.create'), icon: <FaPlus size={20} />, path: '/Create' },
+    { name: t('navigation.chats'), icon: <FaComments size={20} />, path: '/Chats' },
+    { name: t('navigation.settings'), icon: <FaCog size={20} />, path: '/Settings' },
   ];
 
   const toggleModalMode = () => {
@@ -59,11 +61,11 @@ export default function Sidebar({ className }: { className?: string }) {
           {user && (
             <SidebarItem
               item={{
-                name: 'Profile',
+                name: t('navigation.profile'),
                 icon: (
                   <img
                     src={user.user_metadata?.avatar_url}
-                    alt="Avatar"
+                    alt={t('navigation.avatar')}
                     className="w-12 h-12 rounded-full border-2 border-gray-700"
                   />
                 ),
@@ -108,11 +110,11 @@ export default function Sidebar({ className }: { className?: string }) {
         {user && (
           <MobileNavItem
             item={{
-              name: 'Profile',
+              name: t('navigation.profile'),
               icon: (
                 <img
                   src={user.user_metadata?.avatar_url}
-                  alt="Avatar"
+                  alt={t('navigation.avatar')}
                   className="w-8 h-8 rounded-full border-2 border-gray-700"
                 />
               ),
@@ -144,9 +146,11 @@ function SidebarItem({
   setShowLoginModal,
   user,
 }: any) {
+  const { t } = useTranslation();
+
   const handleClick = () => {
     if (
-      ['Settings', 'Profile', 'Chats', 'Create'].includes(item.name) &&
+      [t('navigation.settings'), t('navigation.profile'), t('navigation.chats'), t('navigation.create')].includes(item.name) &&
       !user
     ) {
       setShowLoginModal(true);
@@ -183,9 +187,11 @@ function SidebarItem({
 }
 
 function MobileNavItem({ item, navigate, setShowLoginModal, user }: any) {
+  const { t } = useTranslation();
+
   const handleClick = () => {
     if (
-      ['Settings', 'Profile', 'Chats', 'Create'].includes(item.name) &&
+      [t('navigation.settings'), t('navigation.profile'), t('navigation.chats'), t('navigation.create')].includes(item.name) &&
       !user
     ) {
       setShowLoginModal(true);

@@ -1,25 +1,26 @@
-import { motion } from 'framer-motion'; 
+import { motion } from 'framer-motion';
 import { RefObject } from 'react';
 import { FeatureCard } from '@components/index';
+import { useTranslation } from 'react-i18next';
 
 const cardData = [
   {
-    cardName: 'Smart. Fast. Free. 🚀',
-    cardDescription: 'Talk to characters anytime. No delays, no message limits just pure roleplay.',
+    cardNameKey: 'features.smartFastFree',
+    cardDescriptionKey: 'features.smartFastFreeDescription',
     cardImage: 'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/ChattingExample.avif',
     imageWidth: 400,
     imageHeight: 300,
   },
   {
-    cardName: 'Helpful Community 👥',
-    cardDescription: 'We have a very helpful community where you can ask questions and, perhaps, have some fun!',
+    cardNameKey: 'features.helpfulCommunity',
+    cardDescriptionKey: 'features.helpfulCommunityDescription',
     cardImage: 'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/Pyrenz.avif',
     imageWidth: 400,
     imageHeight: 300,
   },
   {
-    cardName: 'OpenSourced 🖥️',
-    cardDescription: 'PyrenzAI is completely free and open-source, allowing all forms of local modifications and more!',
+    cardNameKey: 'features.openSourced',
+    cardDescriptionKey: 'features.openSourcedDescription',
     cardImage: 'https://avatars1.githubusercontent.com/u/9919',
     imageWidth: 400,
     imageHeight: 300,
@@ -31,6 +32,8 @@ interface FeaturesSectionProps {
 }
 
 export default function FeaturesSection({ discoverMoreRef }: FeaturesSectionProps) {
+  const { t } = useTranslation();
+
   return (
     <motion.section
       ref={discoverMoreRef}
@@ -47,11 +50,15 @@ export default function FeaturesSection({ discoverMoreRef }: FeaturesSectionProp
             className={`flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center space-y-8 md:space-y-0 md:space-x-8`}
           >
             <div className="md:order-2 flex flex-col items-center md:items-start space-y-4">
-              <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent text-center md:text-left">{card.cardName}</h3>
-              <p className="opacity-90 max-w-prose text-center md:text-left">{card.cardDescription}</p>
+              <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent text-center md:text-left">
+                {t(card.cardNameKey)}
+              </h3>
+              <p className="opacity-90 max-w-prose text-center md:text-left">
+                {t(card.cardDescriptionKey)}
+              </p>
             </div>
             <FeatureCard
-              cardName={card.cardName}
+              cardName={t(card.cardNameKey)}
               cardImage={card.cardImage}
               imageWidth={card.imageWidth}
               imageHeight={card.imageHeight}

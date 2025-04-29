@@ -7,12 +7,12 @@ import { supabase } from '~/Utility/supabaseClient';
 import { Utils } from '~/Utility/Utility';
 import { User } from '@supabase/supabase-js';
 import { useNavigate } from 'react-router-dom';
+import { Avatar, Button, Container, Typography, Box } from '@mui/material';
 
 export default function Account() {
   const [languages, setLanguages] = useState<string[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,14 +26,12 @@ export default function Account() {
       const { data, error } = await supabase.auth.getSession();
       if (error || !data.session) {
         console.error('Error fetching session:', error);
-        setIsAuthenticated(false);
       } else {
         const userData = await supabase.auth.getUser();
         if (userData.error) {
           console.error('Error fetching user:', userData.error);
         } else {
           setUser(userData.data.user);
-          setIsAuthenticated(true);
         }
       }
     };
@@ -51,7 +49,6 @@ export default function Account() {
       console.error('Error logging out:', error);
     } else {
       console.log('Logged out successfully');
-      setIsAuthenticated(false);
       setUser(null);
       navigate('/');
     }
@@ -61,7 +58,6 @@ export default function Account() {
     try {
       await Utils.post('/api/delete-account');
       console.log('Account deleted successfully');
-      setIsAuthenticated(false);
       setUser(null);
       navigate('/auth');
     } catch (error) {
@@ -69,79 +65,97 @@ export default function Account() {
     }
   };
 
-  if (!isAuthenticated) {
-    return (
-      <div className="flex flex-col gap-4 justify-center items-center h-full">
-        <h1 className="text-4xl font-bold text-white">
-          Please log in to access your account settings.
-        </h1>
-      </div>
-    );
-  }
-
   return (
     <motion.div
-      className="flex flex-col gap-4 justify-center items-center h-full"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.4, ease: 'easeOut' }}
+      style={{ display: 'flex', flexDirection: 'column', gap: '1rem', justifyContent: 'center', alignItems: 'center', height: '100%', color: 'white' }}
     >
-      <div className="text-center mb-6">
-        <h1 className="text-4xl font-bold text-white">Account</h1>
-        <p className="text-lg text-gray-400 mt-2">
+      <Box textAlign="center" mb={6}>
+        <Typography variant="h3" component="h1">
+          Account
+        </Typography>
+        <Typography variant="subtitle1" style={{ color: '#cbd5e0', marginTop: '0.5rem' }}>
           Manage your login and account settings
-        </p>
-      </div>
+        </Typography>
+      </Box>
 
       {user && (
-        <div className="flex items-center gap-4 mb-6">
-          <img
-            src={user.user_metadata?.avatar_url || ''}
-            alt="Profile"
-            className="w-12 h-12 rounded-full"
-          />
-          <span className="text-white text-lg">
+        <Box display="flex" alignItems="center" gap={2} mb={6}>
+          <Avatar src={user.user_metadata?.avatar_url || ''} alt="Profile" />
+          <Typography variant="body1">
             {user.user_metadata?.full_name || user.email}
-          </span>
-        </div>
+          </Typography>
+        </Box>
       )}
 
-      <div className="text-center p-6 bg-opacity-50 rounded-lg max-w-md w-full flex justify-between items-center">
-        <span className="text-white">Language</span>
-        <motion.button
-          onClick={toggleModal}
-          className="text-white hover:text-blue-500 transition duration-200"
-          whileHover={{ scaleX: -1 }}
-          transition={{ duration: 0.1 }}
-        >
-          <FontAwesomeIcon icon={faChevronLeft} className="h-6 w-6" />
-        </motion.button>
-      </div>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        p={3}
+        bgcolor="rgba(255, 255, 255, 0.1)"
+        borderRadius="0.5rem"
+        maxWidth="md"
+        width="100%"
+      >
+        <Typography variant="body1">
+          Language
+        </Typography>
+        <motion.div whileHover={{ scaleX: -1 }} transition={{ duration: 0.1 }}>
+          <Button
+            onClick={toggleModal}
+            style={{ color: '#fff', minWidth: 0 }}
+            startIcon={<FontAwesomeIcon icon={faChevronLeft} />}
+          />
+        </motion.div>
+      </Box>
 
-      <div className="text-center p-6 bg-opacity-50 rounded-lg max-w-md w-full flex justify-between items-center">
-        <span className="text-white">Log Out</span>
-        <motion.button
-          onClick={handleLogOut}
-          className="text-white hover:text-blue-500 transition duration-200"
-          whileHover={{ scaleX: -1 }}
-          transition={{ duration: 0.1 }}
-        >
-          <FontAwesomeIcon icon={faChevronLeft} className="h-6 w-6" />
-        </motion.button>
-      </div>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        p={3}
+        bgcolor="rgba(255, 255, 255, 0.1)"
+        borderRadius="0.5rem"
+        maxWidth="md"
+        width="100%"
+      >
+        <Typography variant="body1">
+          Log Out
+        </Typography>
+        <motion.div whileHover={{ scaleX: -1 }} transition={{ duration: 0.1 }}>
+          <Button
+            onClick={handleLogOut}
+            style={{ color: '#fff', minWidth: 0 }}
+            startIcon={<FontAwesomeIcon icon={faChevronLeft} />}
+          />
+        </motion.div>
+      </Box>
 
-      <div className="text-center p-6 bg-opacity-50 rounded-lg max-w-md w-full flex justify-between items-center">
-        <span className="text-white">Delete Account</span>
-        <motion.button
-          onClick={handleDeleteAccount}
-          className="text-white hover:text-blue-500 transition duration-200"
-          whileHover={{ scaleX: -1 }}
-          transition={{ duration: 0.1 }}
-        >
-          <FontAwesomeIcon icon={faChevronLeft} className="h-6 w-6" />
-        </motion.button>
-      </div>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        p={3}
+        bgcolor="rgba(255, 255, 255, 0.1)"
+        borderRadius="0.5rem"
+        maxWidth="md"
+        width="100%"
+      >
+        <Typography variant="body1">
+          Delete Account
+        </Typography>
+        <motion.div whileHover={{ scaleX: -1 }} transition={{ duration: 0.1 }}>
+          <Button
+            onClick={handleDeleteAccount}
+            style={{ color: '#fff', minWidth: 0 }}
+            startIcon={<FontAwesomeIcon icon={faChevronLeft} />}
+          />
+        </motion.div>
+      </Box>
 
       <LanguageModal
         languages={languages}

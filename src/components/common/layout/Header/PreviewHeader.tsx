@@ -7,6 +7,7 @@ import {
   FaBars,
 } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 interface HeaderProps {
   setShowLogin: (value: boolean) => void;
@@ -26,17 +27,18 @@ const itemVariants = {
 export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
   const menuItems = [
-    { name: 'Home', icon: FaHome, link: '/Home' },
-    { name: 'Explore', icon: FaCompass, link: '/Explore' },
-    { name: 'Chats', icon: FaComments, link: '/Chats' },
+    { name: t('navigation.home'), icon: FaHome, link: '/Home' },
+    { name: t('footer.links.explore'), icon: FaCompass, link: '/Explore' },
+    { name: t('navigation.chats'), icon: FaComments, link: '/Chats' },
     {
-      name: 'Discord',
+      name: t('footer.links.discord'),
       icon: FaDiscord,
       link: 'https://discord.com',
       external: true,
@@ -56,15 +58,15 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
           whileHover={{ scale: 1.05 }}
           className="flex items-center space-x-4 cursor-pointer"
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          aria-label="Scroll to top"
+          aria-label={t('navigation.scrollToTop')}
         >
-          <img src="/favicon.ico" alt="Pyrenz Logo" className="h-8 w-8" />
+          <img src="/favicon.ico" alt={t('footer.pyrenzLogo')} className="h-8 w-8" />
           <h1 className="text-2xl font-bold text-white font-baloo-da-2 font-display: swap">
             Pyrenz<span className="text-redorange">AI</span>
           </h1>
         </motion.div>
 
-        <nav aria-label="Main navigation">
+        <nav aria-label={t('navigation.mainNavigation')}>
           <motion.div className="hidden md:flex items-center space-x-6" variants={menuVariants}>
             {menuItems.map(({ name, icon: Icon, link, external }) => (
               <motion.button
@@ -78,7 +80,7 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
                     ? window.open(link, '_blank')
                     : (window.location.href = link)
                 }
-                aria-label={`Navigate to ${name}`}
+                aria-label={t('navigation.navigateTo', { name })}
               >
                 <Icon size={18} /> {name}
               </motion.button>
@@ -90,9 +92,9 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowLogin(true)}
               className="text-white font-baloo-da-2 hover:text-[#E03201] transition-all"
-              aria-label="Login"
+              aria-label={t('buttons.login')}
             >
-              Login
+              {t('buttons.login')}
             </motion.button>
             <motion.button
               variants={itemVariants}
@@ -100,9 +102,9 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowRegister(true)}
               className="bg-[#E03201] text-white px-4 py-2 rounded font-baloo-da-2 transition-all hover:bg-[#611600]"
-              aria-label="Sign Up"
+              aria-label={t('buttons.signUp')}
             >
-              Sign Up
+              {t('buttons.signUp')}
             </motion.button>
           </motion.div>
         </nav>
@@ -113,7 +115,7 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
             whileTap={{ scale: 0.95 }}
             onClick={() => setMenuOpen(!menuOpen)}
             className="text-white text-2xl focus:outline-none"
-            aria-label="Toggle menu"
+            aria-label={t('navigation.toggleMenu')}
             aria-expanded={menuOpen}
           >
             <FaBars />
@@ -141,7 +143,7 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
                         ? window.open(link, '_blank')
                         : (window.location.href = link)
                     }
-                    aria-label={`Navigate to ${name}`}
+                    aria-label={t('navigation.navigateTo', { name })}
                     role="menuitem"
                   >
                     <Icon className="inline-block mr-2" /> {name}
@@ -154,10 +156,10 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setShowLogin(true)}
                   className="block w-full text-left px-4 py-2 hover:bg-gray-800 rounded text-white font-baloo-da-2 hover:text-[#E03201] transition-all mb-2"
-                  aria-label="Login"
+                  aria-label={t('buttons.login')}
                   role="menuitem"
                 >
-                  Login
+                  {t('buttons.login')}
                 </motion.button>
                 <motion.button
                   variants={itemVariants}
@@ -165,10 +167,10 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setShowRegister(true)}
                   className="block w-full text-left bg-[#E03201] text-white px-4 py-2 rounded font-baloo-da-2 transition-all hover:bg-[#611600]"
-                  aria-label="Sign Up"
+                  aria-label={t('buttons.signUp')}
                   role="menuitem"
                 >
-                  Sign Up
+                  {t('buttons.signUp')}
                 </motion.button>
               </motion.div>
             )}

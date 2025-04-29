@@ -6,6 +6,7 @@ import ReactDOM from 'react-dom';
 import { handleLogin, handleOAuthSignIn, handleSignUp } from '~/api';
 import posthog from 'posthog-js';
 import * as Dialog from '@radix-ui/react-dialog';
+import { useTranslation } from 'react-i18next';
 
 interface AuthenticationModalProps {
   mode: 'login' | 'register';
@@ -19,6 +20,7 @@ export default function AuthenticationModal({ mode, onClose, toggleMode }: Authe
   const [isAdult, setIsAdult] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
+  const { t } = useTranslation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,13 +33,13 @@ export default function AuthenticationModal({ mode, onClose, toggleMode }: Authe
       } else {
         const response = await handleSignUp(email, password, isAdult);
         if (!response.success) {
-          setError('Sign up failed. Please try again.');
+          setError(t('auth.signUpFailed'));
           return;
         }
       }
       onClose();
     } catch (err: any) {
-      setError(err.message || 'An error occurred.');
+      setError(err.message || t('errors.anErrorOccurred'));
       posthog.capture(`${mode}_error`, { error: err.message });
     } finally {
       setLoading(false);
@@ -52,7 +54,7 @@ export default function AuthenticationModal({ mode, onClose, toggleMode }: Authe
       await handleOAuthSignIn(provider);
       onClose();
     } catch (err: any) {
-      setError(err.message || 'Failed to sign in with OAuth.');
+      setError(err.message || t('errors.oauthError'));
       posthog.capture('oauth_error', { provider, error: err.message });
     } finally {
       setLoading(false);
@@ -84,11 +86,11 @@ export default function AuthenticationModal({ mode, onClose, toggleMode }: Authe
               </button>
 
               <Dialog.Title className="text-2xl font-bold mb-6 text-center font-baloo">
-                {mode === 'login' ? 'Login' : 'Create an Account'}
+                {mode === 'login' ? t('buttons.login') : t('buttons.createAccount')}
               </Dialog.Title>
 
               <p id="dialog-description" className="sr-only">
-                {mode === 'login' ? 'Login to your account' : 'Create a new account'}
+                {mode === 'login' ? t('auth.loginToAccount') : t('auth.createNewAccount')}
               </p>
 
               {error && (
@@ -111,7 +113,7 @@ export default function AuthenticationModal({ mode, onClose, toggleMode }: Authe
                   disabled={loading}
                 >
                   <FcGoogle className="text-xl" />
-                  {mode === 'login' ? 'Login' : 'Sign Up'} with Google
+                  {mode === 'login' ? t('auth.loginWithGoogle') : t('auth.signUpWithGoogle')}
                 </motion.button>
 
                 <motion.button
@@ -122,14 +124,14 @@ export default function AuthenticationModal({ mode, onClose, toggleMode }: Authe
                   disabled={loading}
                 >
                   <FaDiscord className="text-xl" />
-                  {mode === 'login' ? 'Login' : 'Sign Up'} with Discord
+                  {mode === 'login' ? t('auth.loginWithDiscord') : t('auth.signUpWithDiscord')}
                 </motion.button>
               </div>
 
               <div className="flex items-center my-6">
                 <div className="flex-1 border-t border-gray-700"></div>
                 <span className="mx-4 text-gray-400 text-sm font-baloo">
-                  OR
+                  {t('auth.or')}
                 </span>
                 <div className="flex-1 border-t border-gray-700"></div>
               </div>
@@ -137,11 +139,11 @@ export default function AuthenticationModal({ mode, onClose, toggleMode }: Authe
               <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                 <div>
                   <label className="text-gray-400 text-sm font-baloo">
-                    Email
+                    {t('auth.email')}
                   </label>
                   <input
                     type="email"
-                    placeholder='Your Email Address'
+                    placeholder={t('auth.yourEmailAddress')}
                     className="mt-1 p-3 rounded bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none w-full font-baloo transition-all"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -151,11 +153,11 @@ export default function AuthenticationModal({ mode, onClose, toggleMode }: Authe
 
                 <div>
                   <label className="text-gray-400 text-sm font-baloo">
-                    Password
+                    {t('auth.password')}
                   </label>
                   <input
                     type="password"
-                    placeholder='Your Password'
+                    placeholder={t('auth.yourPassword')}
                     className="mt-1 p-3 rounded bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none w-full font-baloo transition-all"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -187,7 +189,7 @@ export default function AuthenticationModal({ mode, onClose, toggleMode }: Authe
                       className="text-gray-400 text-sm cursor-pointer font-baloo"
                       onClick={() => setIsAdult(!isAdult)}
                     >
-                      CONFIRM YOU ARE 18+
+                      {t('auth.confirm18')}
                     </span>
                   </div>
                 )}
@@ -199,18 +201,18 @@ export default function AuthenticationModal({ mode, onClose, toggleMode }: Authe
                   className="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-bold transition-all font-baloo"
                   disabled={loading}
                 >
-                  {loading ? `${mode === 'login' ? 'Logging in' : 'Signing up'}...` : mode === 'login' ? 'Login' : 'Sign Up'}
+                  {loading ? `${mode === 'login' ? t('auth.loggingIn') : t('auth.signingUp')}...` : mode === 'login' ? t('buttons.login') : t('buttons.signUp')}
                 </motion.button>
               </form>
 
               <p className="text-gray-500 text-xs text-center mt-6 font-baloo">
-                By continuing, you accept our{' '}
+                {t('auth.byContinuing')}
                 <span className="text-blue-500 cursor-pointer">
-                  Terms of Service
+                  {t('footer.legal.termsOfService')}
                 </span>{' '}
-                and acknowledge our{' '}
+                {t('auth.and')}{' '}
                 <span className="text-blue-500 cursor-pointer">
-                  Privacy Policy
+                  {t('footer.legal.privacyPolicy')}
                 </span>
                 .
               </p>
@@ -218,12 +220,12 @@ export default function AuthenticationModal({ mode, onClose, toggleMode }: Authe
               <hr className="mt-4 border-t-2 border-gray-700 w-4/5 mx-auto opacity-50" />
 
               <p className="text-gray-400 text-sm text-center mt-4 font-baloo">
-                {mode === 'login' ? "Don't have an account?" : 'Already have an account?'}{' '}
+                {mode === 'login' ? t('auth.dontHaveAccount') : t('auth.alreadyHaveAccount')}{' '}
                 <span
                   className="text-blue-500 cursor-pointer"
                   onClick={toggleMode}
                 >
-                  {mode === 'login' ? 'Register' : 'Login'}
+                  {mode === 'login' ? t('buttons.register') : t('buttons.login')}
                 </span>
               </p>
             </Dialog.Content>

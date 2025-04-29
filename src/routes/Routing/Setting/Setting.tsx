@@ -1,17 +1,54 @@
-import React, { useState, Suspense } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { SettingsPageLoader, Sidebar } from '@components/index';
+import { supabase } from '~/Utility/supabaseClient';
+import { User } from '@supabase/supabase-js';
+import { Tabs, Tab, Box, Typography, CircularProgress } from '@mui/material';
 
 const Account = React.lazy(() => import('./Items/Account'));
 const Profile = React.lazy(() => import('./Items/Profile'));
 const Preference = React.lazy(() => import('./Items/Preference'));
 
 export default function Setting() {
-  const [activeTab, setActiveTab] = useState<
-    'account' | 'profile' | 'preference'
-  >('account');
+  const [activeTab, setActiveTab] = useState<'account' | 'profile' | 'preference'>('account');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      if (error || !data.session) {
+        console.error('Error fetching session:', error);
+        setIsAuthenticated(false);
+      } else {
+        const userData = await supabase.auth.getUser();
+        if (userData.error) {
+          console.error('Error fetching user:', userData.error);
+        } else {
+          setUser(userData.data.user);
+          setIsAuthenticated(true);
+        }
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: 'account' | 'profile' | 'preference') => {
+    setActiveTab(newValue);
+  };
 
   const renderContent = () => {
+    if (!isAuthenticated && activeTab === 'account') {
+      return (
+        <Box display="flex" justifyContent="center" alignItems="center" height="100%" minHeight="300px">
+          <Typography variant="h6" color="textSecondary">
+            Please log in to access your account settings.
+          </Typography>
+        </Box>
+      );
+    }
+
     switch (activeTab) {
       case 'account':
         return <Account />;
@@ -25,55 +62,29 @@ export default function Setting() {
   };
 
   return (
-    <div className="flex">
+    <Box display="flex">
       <Sidebar />
-      <div className="flex-1 p-8">
-        <div className="mb-4 flex justify-center gap-8">
-          <span
-            onClick={() => setActiveTab('account')}
-            className={`cursor-pointer text-lg relative pb-1 border-b-2 ${
-              activeTab === 'account'
-                ? 'border-current'
-                : 'border-transparent hover:border-gray-400'
-            }`}
-          >
-            Account
-          </span>
-          <span
-            onClick={() => setActiveTab('profile')}
-            className={`cursor-pointer text-lg relative pb-1 border-b-2 ${
-              activeTab === 'profile'
-                ? 'border-current'
-                : 'border-transparent hover:border-gray-400'
-            }`}
-          >
-            Profile
-          </span>
-          <span
-            onClick={() => setActiveTab('preference')}
-            className={`cursor-pointer text-lg relative pb-1 border-b-2 ${
-              activeTab === 'preference'
-                ? 'border-current'
-                : 'border-transparent hover:border-gray-400'
-            }`}
-          >
-            Preference
-          </span>
-        </div>
-
-        <Suspense fallback={<SettingsPageLoader />}>
+      <Box flexGrow={1} p={3} display="flex" flexDirection="column" alignItems="center">
+        <Tabs value={activeTab} onChange={handleTabChange} centered>
+          <Tab label="Account" value="account" />
+          <Tab label="Profile" value="profile" />
+          <Tab label="Preference" value="preference" />
+        </Tabs>
+        <Suspense fallback={<Box display="flex" justifyContent="center" alignItems="center" height="100%"><CircularProgress /></Box>}>
           <motion.div
             key={activeTab}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.4, ease: 'easeOut' }}
-            className="flex justify-center items-center"
+            style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
           >
-            <div className="max-w-3xl w-full">{renderContent()}</div>
+            <Box maxWidth="md" width="100%">
+              {renderContent()}
+            </Box>
           </motion.div>
         </Suspense>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }

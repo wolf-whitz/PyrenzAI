@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaGlobe, FaWindows, FaMobileAlt } from 'react-icons/fa';
+import { FaGlobe, FaWindows, FaMobileAlt, FaTimes } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import posthog from 'posthog-js';
+import { useTranslation } from 'react-i18next';
 
 interface DownloadModalProps {
   isModalOpen: boolean;
@@ -15,11 +16,12 @@ export default function DownloadModal({
   closeModal,
 }: DownloadModalProps) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const buttonsConfig = [
     {
       icon: FaGlobe,
-      label: 'Web',
+      label: t('platforms.web'),
       link: '/Home',
       is_up: true,
       className: 'w-full border-b-2 border-red-500 pb-4',
@@ -28,7 +30,7 @@ export default function DownloadModal({
     },
     {
       icon: FaWindows,
-      label: 'Windows',
+      label: t('platforms.windows'),
       link: '/Windows',
       is_up: false,
       className: '',
@@ -37,7 +39,7 @@ export default function DownloadModal({
     },
     {
       icon: FaMobileAlt,
-      label: 'Mobile',
+      label: t('platforms.mobile'),
       link: '/Mobile',
       is_up: false,
       className: '',
@@ -52,7 +54,7 @@ export default function DownloadModal({
     if (is_up) {
       navigate(link);
     } else {
-      window.alert(`${label} is not up yet, please check soon.`);
+      window.alert(t('platforms.notUpYet', { label }));
     }
   };
 
@@ -134,12 +136,12 @@ export default function DownloadModal({
 
               <motion.button
                 onClick={closeModal}
-                className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
+                className="mt-4 bg-red-500 text-white px-4 py-2 rounded flex items-center justify-center"
                 whileHover={{ backgroundColor: '#333' }}
                 whileTap={{ scale: 0.95 }}
                 transition={{ duration: 0.3 }}
               >
-                X
+                <FaTimes />
               </motion.button>
             </div>
           </motion.div>

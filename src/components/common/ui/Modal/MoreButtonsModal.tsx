@@ -5,6 +5,7 @@ import { supabase } from '~/Utility/supabaseClient';
 import { useUserStore } from '~/store/index';
 import { Sparkles, RefreshCw, Flame, Tag } from 'lucide-react';
 import { Button, TextField, CircularProgress, Box, Modal } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 type ButtonType = {
   icon: React.ElementType;
@@ -33,7 +34,7 @@ type MoreButtonsModalProps = {
 const buttons: ButtonType[] = [
   {
     icon: Sparkles,
-    label: 'Latest',
+    label: 'HomePageMoreButtons.btn.latest',
     rpcFunction: 'get_latest_characters',
     type: 'GetLatestCharacter',
     max_character: 10,
@@ -41,7 +42,7 @@ const buttons: ButtonType[] = [
   },
   {
     icon: RefreshCw,
-    label: 'Random',
+    label: 'HomePageMoreButtons.btn.random',
     rpcFunction: 'get_random_characters',
     type: 'GetRandomCharacter',
     max_character: 10,
@@ -49,7 +50,7 @@ const buttons: ButtonType[] = [
   },
   {
     icon: Flame,
-    label: 'Hot',
+    label: 'HomePageMoreButtons.btn.hot',
     rpcFunction: 'get_hot_characters',
     type: 'GetHotCharacter',
     max_character: 10,
@@ -57,7 +58,7 @@ const buttons: ButtonType[] = [
   },
   {
     icon: Tag,
-    label: 'Male',
+    label: 'HomePageMoreButtons.btn.male',
     rpcFunction: 'get_male_characters',
     type: 'GetMaleCharacter',
     max_character: 10,
@@ -84,6 +85,7 @@ export default function MoreButtonsModal({
   const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(
     null
   );
+  const { t } = useTranslation();
 
   const handleSearch = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const query = event.target.value;
@@ -132,7 +134,7 @@ export default function MoreButtonsModal({
     modalResults.length > 0
       ? modalResults
       : buttons.filter((btn) =>
-          btn.label.toLowerCase().includes(searchQuery.toLowerCase())
+          t(btn.label).toLowerCase().includes(searchQuery.toLowerCase())
         );
 
   const handleButtonClick = async (btn: ModalResultType | ButtonType) => {
@@ -183,7 +185,7 @@ export default function MoreButtonsModal({
         }}
       >
         <TextField
-          label="Search..."
+          label={t('search.placeholder')}
           variant="outlined"
           value={searchQuery}
           onChange={handleSearch}
@@ -215,7 +217,7 @@ export default function MoreButtonsModal({
                     fontSize: '1rem',
                   }}
                 >
-                  {'icon' in btn ? btn.label : btn.name}
+                  {'icon' in btn ? t(btn.label) : btn.name}
                 </Button>
               </motion.div>
             ))

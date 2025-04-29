@@ -8,6 +8,7 @@ import { Utils } from '~/Utility/Utility';
 import { useUserStore } from '~/store';
 import { WindowAlert } from '~/components';
 import posthog from 'posthog-js';
+import { Box, Typography, IconButton, Button, Tooltip } from '@mui/material';
 
 interface CharacterCardModalProps {
   isOpen: boolean;
@@ -103,43 +104,47 @@ export default function CharacterCardModal({
                 transition: { delay: 0.1, duration: 0.3, ease: 'easeOut' },
               }}
             />
-            <div className="flex flex-col items-start sm:items-start flex-1">
-              <div className="flex items-center">
-                <h2 className="mt-3 text-xl font-bold">{character.name}</h2>
-                <motion.button
-                  className="ml-2 text-gray-400 hover:text-white"
-                  onClick={() => setIsInfoOpen(!isInfoOpen)}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <Info size={18} />
-                </motion.button>
-              </div>
-              <span className="text-gray-400 text-sm">
+            <Box className="flex flex-col items-start sm:items-start flex-1">
+              <Box className="flex items-center">
+                <Typography variant="h6" className="mt-3 font-bold">
+                  {character.name}
+                </Typography>
+                <Tooltip title="Character Info">
+                  <IconButton
+                    className="ml-2 text-gray-400 hover:text-white"
+                    onClick={() => setIsInfoOpen(!isInfoOpen)}
+                    size="small"
+                  >
+                    <Info size={18} />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+              <Typography variant="caption" color="textSecondary">
                 @{character.creator}
-              </span>
+              </Typography>
 
-              <p className="mt-4 text-gray-300 text-left text-sm leading-relaxed px-2">
+              <Typography variant="body2" color="textSecondary" className="mt-4 px-2">
                 {character.description || 'No description available.'}
-              </p>
+              </Typography>
 
-              <div className="flex items-center mt-4 w-full">
-                <motion.button
-                  className={`flex-1 ${isLoading ? 'bg-gray-600' : 'bg-blue-600 hover:bg-blue-700'} text-white font-semibold py-2 px-6 rounded-lg`}
+              <Box className="flex items-center mt-4 w-full">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className="flex-1"
                   onClick={handleChatNow}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
                   disabled={isLoading}
+                  startIcon={isLoading ? <span>Processing...</span> : null}
                 >
                   {isLoading ? 'Processing...' : 'Chat Now'}
-                </motion.button>
-                <div className="flex items-center gap-1 ml-4">
+                </Button>
+                <Box className="flex items-center gap-1 ml-4">
                   <MessageSquare size={18} className="text-white" />
-                  <span>{character.chat_messages_count}</span>
-                </div>
-              </div>
+                  <Typography variant="caption">{character.chat_messages_count}</Typography>
+                </Box>
+              </Box>
 
-              <div className="mt-3 flex flex-wrap justify-start gap-2 w-full">
+              <Box className="mt-3 flex flex-wrap justify-start gap-2 w-full">
                 {character.public !== undefined && (
                   <motion.span
                     className="bg-black text-white text-xs font-semibold py-1 px-3 rounded-full flex items-center gap-1"
@@ -179,8 +184,8 @@ export default function CharacterCardModal({
                       {tag}
                     </motion.span>
                   ))}
-              </div>
-            </div>
+              </Box>
+            </Box>
           </motion.div>
         </motion.div>
       )}
@@ -205,29 +210,30 @@ export default function CharacterCardModal({
               transition: { duration: 0.35, ease: 'easeInOut' },
             }}
           >
-            <h2 className="text-xl font-bold mb-4">Character Info</h2>
-            <p>
+            <Typography variant="h6" className="mb-4">
+              Character Info
+            </Typography>
+            <Typography variant="body2">
               <strong>Name:</strong> {character.name}
-            </p>
-            <p>
+            </Typography>
+            <Typography variant="body2">
               <strong>Creator:</strong> {character.creator}
-            </p>
-            <p>
+            </Typography>
+            <Typography variant="body2">
               <strong>Description:</strong> {character.description}
-            </p>
-            <p>
-              <strong>Chat Messages Count:</strong>{' '}
-              {character.chat_messages_count}
-            </p>
-            <p>
+            </Typography>
+            <Typography variant="body2">
+              <strong>Chat Messages Count:</strong> {character.chat_messages_count}
+            </Typography>
+            <Typography variant="body2">
               <strong>Tags:</strong> {character.tags.join(', ')}
-            </p>
-            <p>
+            </Typography>
+            <Typography variant="body2">
               <strong>Public:</strong> {character.public ? 'Yes' : 'No'}
-            </p>
-            <p>
+            </Typography>
+            <Typography variant="body2">
               <strong>Token Total:</strong> {character.token_total}
-            </p>
+            </Typography>
           </motion.div>
         </motion.div>
       )}

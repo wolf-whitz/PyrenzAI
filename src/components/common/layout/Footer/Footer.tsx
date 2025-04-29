@@ -3,12 +3,14 @@ import { FaDiscord } from 'react-icons/fa';
 import { CardContent } from '~/components';
 import { motion } from 'framer-motion';
 import { Box, Typography, Button } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 export default function Footer() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [hovering, setHovering] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageSrc, setImageSrc] = useState('');
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -105,7 +107,7 @@ export default function Footer() {
             />
           )}
           <Typography variant="h4" component="h1" style={{ fontWeight: 'bold', textAlign: 'center' }}>
-            Join The Discord Server Or Else...
+            {t('banner.joinDiscordTitle')}
           </Typography>
         </CardContent>
       </motion.div>
@@ -123,7 +125,7 @@ export default function Footer() {
           startIcon={<FaDiscord size={30} />}
           style={{ color: '#fff', fontSize: '1.125rem', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '0.75rem' }}
         >
-          Join Discord
+          {t('buttons.joinDiscord')}
         </Button>
       </motion.div>
     </motion.div>

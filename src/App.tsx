@@ -36,12 +36,12 @@ export default function App() {
           });
           if (error) throw error;
 
-          const { data, error: sessionError } =
-            await supabase.auth.getSession();
+          const { data, error: sessionError } = await supabase.auth.getSession();
           if (sessionError || !data.session) throw sessionError;
 
           setUserUUID(data.session.user.id);
-        } catch {
+        } catch (error) {
+          console.error('Error handling session:', error);
           localStorage.removeItem('sb-dojdyydsanxoblgjmzmq-auth-token');
           setUserUUID(null);
         }

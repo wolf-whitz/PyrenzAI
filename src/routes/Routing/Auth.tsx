@@ -4,11 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '~/store';
 import { motion } from 'framer-motion';
 import { Box, Typography, CircularProgress } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 export default function Auth() {
   const [isLoaded, setIsLoaded] = useState(false);
   const navigate = useNavigate();
   const setCaptcha = useUserStore((state) => state.setCaptcha);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -37,7 +39,7 @@ export default function Auth() {
         className="w-full max-w-md p-10 rounded-2xl bg-gray-900 bg-opacity-70 shadow-2xl border border-gray-700"
       >
         <Typography variant="h4" className="text-center text-white mb-8 font-baloo">
-          Please Verify You're Not a Bot 🤖🚫
+          {t('verifyNotBot')}
         </Typography>
         <Box className="flex justify-center flex-col items-center">
           {isLoaded ? (
@@ -56,12 +58,11 @@ export default function Auth() {
           ) : (
             <Box className="text-white animate-pulse flex items-center mb-6">
               <CircularProgress size={24} className="mr-2" />
-              <Typography>Loading CAPTCHA...</Typography>
+              <Typography>{t('loadingCaptcha')}</Typography>
             </Box>
           )}
           <Typography variant="body2" className="text-gray-300 text-center mt-4 text-sm font-light">
-            PyrenzAI is an AI chat platform allowing users to chat with bots for
-            free. To use PyrenzAI, we need you to be a human and not a bot.
+            {t('pyrenzAIDescription')}
           </Typography>
         </Box>
       </motion.div>

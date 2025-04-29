@@ -1,5 +1,6 @@
 import { supabase } from '~/Utility/supabaseClient';
 import { Character } from '@shared-types/CharacterProp';
+import { toast } from 'react-toastify';
 
 export const fetchCharacters = async (
   currentPage: number,
@@ -45,7 +46,11 @@ export const fetchCharacters = async (
       total: data.total || 0,
     };
   } catch (error) {
-    console.error('Error fetching characters:', error);
+    if (error instanceof Error) {
+      toast.error('Error fetching characters: ' + error.message);
+    } else {
+      toast.error('An unknown error occurred.');
+    }
     return {
       characters: [],
       total: 0,

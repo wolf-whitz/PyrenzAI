@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Sparkles, RefreshCw, Flame, Tag } from 'lucide-react';
 import { MoreButtonsModal } from "@components/index";
 import { Button } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 type ButtonType = {
   icon: React.ElementType;
@@ -16,7 +17,7 @@ type ButtonType = {
 const buttons: ButtonType[] = [
   {
     icon: Sparkles,
-    label: 'Latest',
+    label: 'HomePageMoreButtons.btn.latest',
     rpcFunction: 'get_latest_characters',
     type: 'GetLatestCharacter',
     max_character: 10,
@@ -24,7 +25,7 @@ const buttons: ButtonType[] = [
   },
   {
     icon: RefreshCw,
-    label: 'Random',
+    label: 'HomePageMoreButtons.btn.random',
     rpcFunction: 'get_random_characters',
     type: 'GetRandomCharacter',
     max_character: 10,
@@ -32,7 +33,7 @@ const buttons: ButtonType[] = [
   },
   {
     icon: Flame,
-    label: 'Hot',
+    label: 'HomePageMoreButtons.btn.hot',
     rpcFunction: 'get_hot_characters',
     type: 'GetHotCharacter',
     max_character: 10,
@@ -40,7 +41,7 @@ const buttons: ButtonType[] = [
   },
   {
     icon: Tag,
-    label: 'Male',
+    label: 'HomePageMoreButtons.btn.male',
     rpcFunction: 'get_male_characters',
     type: 'GetMaleCharacter',
     max_character: 10,
@@ -56,6 +57,7 @@ export default function CustomButton({ onButtonClick }: CustomButtonProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [visibleButtons, setVisibleButtons] = useState(buttons);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries) => {
@@ -125,7 +127,7 @@ export default function CustomButton({ onButtonClick }: CustomButtonProps) {
               },
             }}
           >
-            {btn.label}
+            {t(btn.label)}
           </Button>
         </motion.div>
       ))}
@@ -147,7 +149,7 @@ export default function CustomButton({ onButtonClick }: CustomButtonProps) {
             },
           }}
         >
-          More
+          {t('HomePageMoreButtons.btn.more')}
         </Button>
       </motion.div>
 

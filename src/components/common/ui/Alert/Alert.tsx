@@ -1,4 +1,3 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -13,7 +12,7 @@ interface AlertProps {
 export function Alert({ type, message, onClose }: AlertProps) {
   const alertStyles = {
     error: 'border rounded-md border-red-500 bg-red-500/10 text-white',
-    info: 'border rounded-md border-blue-500 bg-blue-500/10 text-white', // Updated to text-white
+    info: 'border rounded-md border-blue-500 bg-blue-500/10 text-white',
   };
 
   return createPortal(
@@ -75,7 +74,6 @@ export function WindowAlert(type: 'error' | 'info', message: string) {
 }
 
 if (typeof window !== 'undefined') {
-  const originalAlert = window.alert;
   window.alert = (message: string) => {
     WindowAlert('info', message);
   };

@@ -1,18 +1,16 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Box, Typography, Fade } from '@mui/material';
-import 'tailwindcss/tailwind.css';
 
 export default function Banner() {
   const [displayedText, setDisplayedText] = useState('');
   const [showCursor, setShowCursor] = useState(true);
-  const fullText = 'Pyrenz Ai';
+  const fullText = 'PyrenzAI';
   const typingSpeed = 80;
   const resetTime = 3000;
 
   const getRandomChar = () => {
-    const chars =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
     return chars[Math.floor(Math.random() * chars.length)];
   };
 
@@ -47,7 +45,7 @@ export default function Banner() {
       clearTimeout(typingTimeout);
       clearTimeout(restartTimeout);
     };
-  }, []);
+  }, [fullText]);
 
   useEffect(() => {
     const cursorBlink = setInterval(() => setShowCursor((prev) => !prev), 500);

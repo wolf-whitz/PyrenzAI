@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { CardContent, CharacterCardModal } from '~/components';
 import { CharacterCardProps } from '@shared-types/CharacterCardPropsTypes';
+import { Box, Typography, IconButton, Tooltip } from '@mui/material';
 
 export default function CharacterCard({
   id,
@@ -60,69 +61,76 @@ export default function CharacterCard({
         </div>
 
         <CardContent className="p-3">
-          <h2 className="text-lg font-bold truncate">{name}</h2>
-          <span className="text-gray-400 text-xs">@{creator}</span>
+          <Typography variant="h6" className="font-bold truncate">
+            {name}
+          </Typography>
+          <Typography variant="caption" color="textSecondary">
+            @{creator}
+          </Typography>
 
-          <p className="mt-2 text-gray-300 text-xs leading-tight line-clamp-4">
+          <Typography variant="body2" color="textSecondary" className="mt-2 line-clamp-4">
             {description?.length > 120
               ? `${description.substring(0, 120)}...`
               : description || 'No description available.'}
-          </p>
+          </Typography>
 
-          <div className="mt-3 flex flex-wrap gap-1">
+          <Box className="mt-3 flex flex-wrap gap-1">
             {isPublic && (
-              <span
-                key="public-tag"
+              <Typography
+                component="span"
                 className="bg-black text-white text-[10px] font-semibold py-1 px-2 rounded-full flex items-center gap-1"
               >
                 <Globe size={12} />
                 Public
-              </span>
+              </Typography>
             )}
             {!isPublic && (
-              <span
-                key="private-tag"
+              <Typography
+                component="span"
                 className="bg-black text-white text-[10px] font-semibold py-1 px-2 rounded-full flex items-center gap-1"
               >
                 <Lock size={12} />
                 Private
-              </span>
+              </Typography>
             )}
             {Array.isArray(tags) &&
               tags.map((tag, index) => (
-                <span
+                <Typography
                   key={index}
+                  component="span"
                   className="bg-black text-white text-[10px] font-semibold py-1 px-2 rounded-full"
                 >
                   {tag}
-                </span>
+                </Typography>
               ))}
-          </div>
+          </Box>
 
-          <div className="mt-4 flex items-center text-gray-400 text-xs">
-            <div className="flex items-center">
+          <Box className="mt-4 flex items-center text-gray-400 text-xs">
+            <Box className="flex items-center">
               <MessageSquare size={14} className="text-white" />
-              <span className="font-medium ml-1">{chat_messages_count}</span>
-            </div>
+              <Typography variant="caption" className="font-medium ml-1">
+                {chat_messages_count}
+              </Typography>
+            </Box>
 
-            <div className="flex items-center ml-auto gap-2">
-              <motion.button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  navigator.clipboard.writeText(
-                    `${window.location.origin}/characters/${input_char_uuid}`
-                  );
-                  alert('Saved')
-                }}
-                className="flex items-center transition-colors duration-200 hover:text-blue-400"
-                aria-label={`Share ${name}`}
-                whileHover={{ scale: 1.1 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Share2 size={16} />
-              </motion.button>
-            </div>
-          </div>
+            <Box className="flex items-center ml-auto gap-2">
+              <Tooltip title="Copy link">
+                <IconButton
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigator.clipboard.writeText(
+                      `${window.location.origin}/characters/${input_char_uuid}`
+                    );
+                    alert('Saved')
+                  }}
+                  aria-label={`Share ${name}`}
+                  className="transition-colors duration-200 hover:text-blue-400"
+                >
+                  <Share2 size={16} />
+                </IconButton>
+              </Tooltip>
+            </Box>
+          </Box>
         </CardContent>
       </motion.div>
 

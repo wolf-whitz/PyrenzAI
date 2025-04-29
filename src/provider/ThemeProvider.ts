@@ -1,9 +1,25 @@
 import { createTheme } from '@mui/material/styles';
 
-export default createTheme({
-    typography: {
-      fontFamily: `'Baloo 2', cursive`,
-    },
+const isDarkMode = document.documentElement.classList.contains('theme-dark');
 
+const theme = createTheme({
+  typography: {
+    fontFamily: `'Baloo 2', cursive`,
+  },
+  palette: {
+    mode: isDarkMode ? 'dark' : 'light',
+    primary: {
+      main: '#3f51b5',
+    },
+    background: {
+      default: isDarkMode ? '#111827' : '#ffffff',
+      paper: isDarkMode ? '#1f2937' : '#ffffff',
+    },
+    text: {
+      primary: isDarkMode ? '#ffffff' : '#000000',
+      secondary: isDarkMode ? '#d1d5db' : '#4b5563',
+    },
+  },
 });
-  
+
+export default theme;

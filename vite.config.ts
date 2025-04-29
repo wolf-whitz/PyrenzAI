@@ -66,6 +66,7 @@ export default defineConfig({
         'src/components/common/shared-types'
       ),
       '@store': path.resolve(__dirname, 'src/store'),
+      '@libs': path.resolve(__dirname, 'src/lib'),
     },
   },
   optimizeDeps: {

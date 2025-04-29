@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { supabase } from '~/Utility/supabaseClient';
 import { motion } from 'framer-motion';
 import { Button, CircularProgress } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 interface PaginationProps {
   currentPage: number;
@@ -23,6 +24,7 @@ export default function Pagination({
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get('search') || '';
   const [isLoading, setIsLoading] = useState(false);
+  const { t } = useTranslation();
 
   const handleLoadMore = async () => {
     if (isLoading) return;
@@ -71,9 +73,9 @@ export default function Pagination({
             padding: '0.5rem 1rem',
             cursor: isLoading ? 'not-allowed' : 'pointer',
           }}
-          aria-label="Load more items"
+          aria-label={t('ariaLabels.loadMore')}
         >
-          {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Load More'}
+          {isLoading ? <CircularProgress size={24} color="inherit" /> : t('buttons.loadMore')}
         </Button>
       </motion.div>
     </div>

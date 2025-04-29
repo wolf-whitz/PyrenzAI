@@ -16,7 +16,10 @@ import { fetchCharacters } from '~/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '~/Utility/supabaseClient';
 import { Character } from '@shared-types/CharacterProp';
-import { Box, Typography, Container, Grid } from '@mui/material';
+import { Box, Typography, Container } from '@mui/material';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useTranslation } from 'react-i18next';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -36,8 +39,9 @@ export default function Home() {
   } = useHomeStore();
 
   const { user_uuid } = useUserStore();
+  const { t } = useTranslation();
 
-  const [isClient, setIsClient] = useState(false);
+  const [isClient, setIsClient] = useState<boolean>(false);
 
   const itemsPerPage = 10;
   const totalPages = Math.max(1, Math.ceil(total / itemsPerPage));
@@ -46,20 +50,25 @@ export default function Home() {
     setIsClient(true);
     setSearch(searchParams.get('search') || '');
     setCurrentPage(Number(searchParams.get('page')) || 1);
-  }, [searchParams]);
+  }, [searchParams, setSearch, setCurrentPage]);
 
   const fetchCharactersData = useCallback(async () => {
     setLoading(true);
-    const { characters, total } = await fetchCharacters(
-      currentPage,
-      itemsPerPage,
-      search,
-      user_uuid || ''
-    );
-    setCharacters(characters);
-    setTotal(total);
-    setLoading(false);
-  }, [currentPage, search, itemsPerPage, user_uuid]);
+    try {
+      const { characters, total } = await fetchCharacters(
+        currentPage,
+        itemsPerPage,
+        search,
+        user_uuid || ''
+      );
+      setCharacters(characters);
+      setTotal(total);
+    } catch (error) {
+      toast.error(t('errors.fetchingCharacters'));
+    } finally {
+      setLoading(false);
+    }
+  }, [currentPage, search, itemsPerPage, user_uuid, setCharacters, setTotal, setLoading, t]);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -91,7 +100,11 @@ export default function Home() {
       if (error) throw error;
       setCharacters(data);
     } catch (error) {
-      console.error('Error calling RPC function:', error);
+      if (error instanceof Error) {
+        toast.error(t('errors.callingRPCFunction') + error.message);
+      } else {
+        toast.error(t('errors.unknown'));
+      }
     } finally {
       setLoading(false);
     }
@@ -105,7 +118,7 @@ export default function Home() {
         backgroundSize: bgImage ? 'cover' : 'auto',
         backgroundPosition: bgImage ? 'center' : 'unset',
       }}
-      aria-label="Home Page"
+      aria-label={t('ariaLabels.homePage')}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -121,12 +134,12 @@ export default function Home() {
             search={search}
             setSearch={setSearch}
             setCurrentPage={setCurrentPage}
-            aria-label="Search Characters"
+            aria-label={t('ariaLabels.searchCharacters')}
           />
 
           <CustomButton
             onButtonClick={handleButtonClick}
-            aria-label="Custom Action Button"
+            aria-label={t('ariaLabels.customActionButton')}
           />
 
           <motion.div
@@ -147,7 +160,7 @@ export default function Home() {
                   >
                     <SkeletonCard
                       key={i}
-                      aria-label={`Loading Character ${i + 1}`}
+                      aria-label={t('ariaLabels.loadingCharacter', { index: i + 1 })}
                     />
                   </motion.div>
                 ))
@@ -174,7 +187,7 @@ export default function Home() {
                   transition={{ duration: 0.5 }}
                 >
                   <Typography variant="body1">
-                    No characters found. (˚ ˃̣̣̥⌓˂̣̣̥ )
+                    {t('messages.noCharactersFound')}
                   </Typography>
                 </motion.div>
               )}
@@ -196,9 +209,10 @@ export default function Home() {
       <Box className="pb-16 px-4">
         {isClient && <Footer />}
         <Typography variant="body2" className="text-center text-gray-500 mt-4">
-          © 2025 Pyrenz AI. All Rights Reserved.
+          © 2025 Pyrenz AI. {t('messages.allRightsReserved')}
         </Typography>
       </Box>
+      <ToastContainer />
     </motion.div>
   );
 }
