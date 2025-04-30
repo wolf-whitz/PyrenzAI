@@ -30,6 +30,7 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
   const [isMounted, setIsMounted] = useState(false);
   const [languages, setLanguages] = useState<{ code: string; name: string }[]>([]);
   const [showMore, setShowMore] = useState(false);
+  const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
@@ -61,6 +62,7 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
+    setLanguageMenuOpen(false)
   };
 
   const visibleLanguages = showMore ? languages : languages.slice(0, 5);
@@ -114,20 +116,20 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
             >
               <button
                 className="flex items-center gap-2 text-white font-baloo-da-2 hover:text-[#E03201]"
-                onClick={() => setMenuOpen(!menuOpen)}
+                onClick={() => setLanguageMenuOpen(!languageMenuOpen)}
                 aria-label={t('navigation.changeLanguage')}
               >
                 <FaGlobe size={18} />
                 {t('navigation.language')}
               </button>
               <AnimatePresence>
-                {menuOpen && (
+                {languageMenuOpen && (
                   <motion.div
                     initial="hidden"
                     animate="visible"
                     exit="hidden"
                     variants={menuVariants}
-                    className="absolute right-0 mt-2 w-48 bg-gray-900 text-white rounded-lg shadow-lg border border-gray-700 p-2"
+                    className="fixed top-16 right-4 w-48 bg-gray-900 text-white rounded-lg shadow-lg border border-gray-700 p-2 max-h-60 overflow-y-auto z-50"
                     role="menu"
                   >
                     {visibleLanguages.map(({ code, name }) => (
@@ -202,7 +204,7 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
                 animate="visible"
                 exit="hidden"
                 variants={menuVariants}
-                className="absolute right-0 mt-2 w-48 bg-gray-900 text-white rounded-lg shadow-lg border border-gray-700 p-2"
+                className="absolute right-0 mt-2 w-48 bg-gray-900 text-white rounded-lg shadow-lg border border-gray-700 p-2 max-h-60 overflow-y-auto"
                 role="menu"
               >
                 {menuItems.map(({ name, icon: Icon, link, external }) => (
@@ -232,20 +234,20 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
                 >
                   <button
                     className="flex items-center gap-2 text-white font-baloo-da-2 hover:text-[#E03201] w-full text-left px-4 py-2 hover:bg-gray-800 rounded"
-                    onClick={() => setMenuOpen(!menuOpen)}
+                    onClick={() => setLanguageMenuOpen(!languageMenuOpen)}
                     aria-label={t('navigation.changeLanguage')}
                   >
                     <FaGlobe className="inline-block mr-2" />
                     {t('navigation.language')}
                   </button>
                   <AnimatePresence>
-                    {menuOpen && (
+                    {languageMenuOpen && (
                       <motion.div
                         initial="hidden"
                         animate="visible"
                         exit="hidden"
                         variants={menuVariants}
-                        className="absolute right-0 mt-2 w-48 bg-gray-900 text-white rounded-lg shadow-lg border border-gray-700 p-2"
+                        className="fixed top-16 right-4 w-48 bg-gray-900 text-white rounded-lg shadow-lg border border-gray-700 p-2 max-h-60 overflow-y-auto z-50"
                         role="menu"
                       >
                         {visibleLanguages.map(({ code, name }) => (
