@@ -29,6 +29,7 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [languages, setLanguages] = useState<{ code: string; name: string }[]>([]);
+  const [showMore, setShowMore] = useState(false);
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
@@ -61,6 +62,8 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
   };
+
+  const visibleLanguages = showMore ? languages : languages.slice(0, 5);
 
   return (
     <motion.header
@@ -105,8 +108,8 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
 
             <motion.div
               variants={itemVariants}
-              whileHover={{ scale: 1.05 }} // Subtle hover scale
-              whileTap={{ scale: 0.98 }} // Subtle tap scale
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
               className="relative"
             >
               <button
@@ -127,12 +130,12 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
                     className="absolute right-0 mt-2 w-48 bg-gray-900 text-white rounded-lg shadow-lg border border-gray-700 p-2"
                     role="menu"
                   >
-                    {languages.map(({ code, name }) => (
+                    {visibleLanguages.map(({ code, name }) => (
                       <motion.button
                         key={code}
                         variants={itemVariants}
-                        whileHover={{ scale: 1.02 }} // Subtle hover scale
-                        whileTap={{ scale: 0.98 }} // Subtle tap scale
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
                         className="block w-full text-left px-4 py-2 hover:bg-gray-800 rounded"
                         onClick={() => changeLanguage(code)}
                         role="menuitem"
@@ -140,6 +143,18 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
                         {name}
                       </motion.button>
                     ))}
+                    {languages.length > 5 && (
+                      <motion.button
+                        variants={itemVariants}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="block w-full text-left px-4 py-2 hover:bg-gray-800 rounded text-blue-500"
+                        onClick={() => setShowMore(!showMore)}
+                        role="menuitem"
+                      >
+                        {showMore ? 'Show Less' : 'Show More'}
+                      </motion.button>
+                    )}
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -211,8 +226,8 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
 
                 <motion.div
                   variants={itemVariants}
-                  whileHover={{ scale: 1.05 }} // Subtle hover scale
-                  whileTap={{ scale: 0.98 }} // Subtle tap scale
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.98 }}
                   className="relative mt-2"
                 >
                   <button
@@ -233,12 +248,12 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
                         className="absolute right-0 mt-2 w-48 bg-gray-900 text-white rounded-lg shadow-lg border border-gray-700 p-2"
                         role="menu"
                       >
-                        {languages.map(({ code, name }) => (
+                        {visibleLanguages.map(({ code, name }) => (
                           <motion.button
                             key={code}
                             variants={itemVariants}
-                            whileHover={{ scale: 1.02 }} // Subtle hover scale
-                            whileTap={{ scale: 0.98 }} // Subtle tap scale
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
                             className="block w-full text-left px-4 py-2 hover:bg-gray-800 rounded"
                             onClick={() => changeLanguage(code)}
                             role="menuitem"
@@ -246,6 +261,18 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
                             {name}
                           </motion.button>
                         ))}
+                        {languages.length > 5 && (
+                          <motion.button
+                            variants={itemVariants}
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            className="block w-full text-left px-4 py-2 hover:bg-gray-800 rounded text-blue-500"
+                            onClick={() => setShowMore(!showMore)}
+                            role="menuitem"
+                          >
+                            {showMore ? 'Show Less' : 'Show More'}
+                          </motion.button>
+                        )}
                       </motion.div>
                     )}
                   </AnimatePresence>
