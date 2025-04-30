@@ -5,6 +5,7 @@ import {
   FaComments,
   FaDiscord,
   FaBars,
+  FaGlobe,
 } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -27,10 +28,22 @@ const itemVariants = {
 export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const { t } = useTranslation();
+  const [languages, setLanguages] = useState<{ code: string; name: string }[]>([]);
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     setIsMounted(true);
+
+    fetch('/Languages/Languages.json')
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.languages && Array.isArray(data.languages)) {
+          setLanguages(data.languages);
+        } else {
+          console.error('Fetched data does not contain a valid languages array:', data);
+        }
+      })
+      .catch((error) => console.error('Error fetching languages:', error));
   }, []);
 
   const menuItems = [
@@ -44,6 +57,10 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
       external: true,
     },
   ];
+
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+  };
 
   return (
     <motion.header
@@ -85,6 +102,48 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
                 <Icon size={18} /> {name}
               </motion.button>
             ))}
+
+            <motion.div
+              variants={itemVariants}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              className="relative"
+            >
+              <button
+                className="flex items-center gap-2 text-white font-baloo-da-2 hover:text-[#E03201]"
+                onClick={() => setMenuOpen(!menuOpen)}
+                aria-label={t('navigation.changeLanguage')}
+              >
+                <FaGlobe size={18} />
+                {t('navigation.language')}
+              </button>
+              <AnimatePresence>
+                {menuOpen && (
+                  <motion.div
+                    initial="hidden"
+                    animate="visible"
+                    exit="hidden"
+                    variants={menuVariants}
+                    className="absolute right-0 mt-2 w-48 bg-gray-900 text-white rounded-lg shadow-lg border border-gray-700 p-2"
+                    role="menu"
+                  >
+                    {languages.map(({ code, name }) => (
+                      <motion.button
+                        key={code}
+                        variants={itemVariants}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="block w-full text-left px-4 py-2 hover:bg-gray-800 rounded"
+                        onClick={() => changeLanguage(code)}
+                        role="menuitem"
+                      >
+                        {name}
+                      </motion.button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
 
             <motion.button
               variants={itemVariants}
@@ -149,6 +208,48 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
                     <Icon className="inline-block mr-2" /> {name}
                   </motion.button>
                 ))}
+
+                <motion.div
+                  variants={itemVariants}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="relative mt-2"
+                >
+                  <button
+                    className="flex items-center gap-2 text-white font-baloo-da-2 hover:text-[#E03201] w-full text-left px-4 py-2 hover:bg-gray-800 rounded"
+                    onClick={() => setMenuOpen(!menuOpen)}
+                    aria-label={t('navigation.changeLanguage')}
+                  >
+                    <FaGlobe className="inline-block mr-2" />
+                    {t('navigation.language')}
+                  </button>
+                  <AnimatePresence>
+                    {menuOpen && (
+                      <motion.div
+                        initial="hidden"
+                        animate="visible"
+                        exit="hidden"
+                        variants={menuVariants}
+                        className="absolute right-0 mt-2 w-48 bg-gray-900 text-white rounded-lg shadow-lg border border-gray-700 p-2"
+                        role="menu"
+                      >
+                        {languages.map(({ code, name }) => (
+                          <motion.button
+                            key={code}
+                            variants={itemVariants}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="block w-full text-left px-4 py-2 hover:bg-gray-800 rounded"
+                            onClick={() => changeLanguage(code)}
+                            role="menuitem"
+                          >
+                            {name}
+                          </motion.button>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
 
                 <motion.button
                   variants={itemVariants}
