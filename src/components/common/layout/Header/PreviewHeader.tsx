@@ -105,8 +105,8 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
 
             <motion.div
               variants={itemVariants}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.05 }} // Subtle hover scale
+              whileTap={{ scale: 0.98 }} // Subtle tap scale
               className="relative"
             >
               <button
@@ -131,8 +131,8 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
                       <motion.button
                         key={code}
                         variants={itemVariants}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
+                        whileHover={{ scale: 1.02 }} // Subtle hover scale
+                        whileTap={{ scale: 0.98 }} // Subtle tap scale
                         className="block w-full text-left px-4 py-2 hover:bg-gray-800 rounded"
                         onClick={() => changeLanguage(code)}
                         role="menuitem"
@@ -211,8 +211,8 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
 
                 <motion.div
                   variants={itemVariants}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.05 }} // Subtle hover scale
+                  whileTap={{ scale: 0.98 }} // Subtle tap scale
                   className="relative mt-2"
                 >
                   <button
@@ -237,8 +237,8 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
                           <motion.button
                             key={code}
                             variants={itemVariants}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
+                            whileHover={{ scale: 1.02 }} // Subtle hover scale
+                            whileTap={{ scale: 0.98 }} // Subtle tap scale
                             className="block w-full text-left px-4 py-2 hover:bg-gray-800 rounded"
                             onClick={() => changeLanguage(code)}
                             role="menuitem"
