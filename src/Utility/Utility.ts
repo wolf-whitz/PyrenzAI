@@ -1,5 +1,7 @@
-import { supabase } from '~/Utility/supabaseClient';
 import { useUserStore as UserStore } from '~/store';
+import { supabase } from '~/Utility/supabaseClient';
+import useSWR from 'swr';
+import { SERVER_API_URL as BASE_URL } from "~/config";
 
 type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 
@@ -9,22 +11,11 @@ const pendingRequests = new Map<string, Promise<any>>();
 
 export const Utils = {
   TIMEOUT: 5000,
-  BASE_URL: 'https://api.pyrenzai.com',
 
-  async request<T>(
-    method: RequestMethod,
-    endpoint: string,
-    data: Record<string, any> | FormData = {},
-    params: Record<string, any> = {},
-    isImageRequest: boolean = false,
-    user_uuid?: string
-  ): Promise<T> {
-    const url = new URL(`${this.BASE_URL}${endpoint}`);
+  async request<T>(method: RequestMethod, endpoint: string, data: Record<string, any> | FormData = {}, params: Record<string, any> = {}, isImageRequest: boolean = false, user_uuid?: string): Promise<T> {
+    const url = new URL(`${BASE_URL}${endpoint}`);
 
-    if (
-      (method === 'GET' || method === 'DELETE') &&
-      Object.keys(params).length
-    ) {
+    if ((method === 'GET' || method === 'DELETE') && Object.keys(params).length) {
       const searchParams = new URLSearchParams();
       Object.entries(params).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
@@ -72,11 +63,7 @@ export const Utils = {
         options.body = data instanceof FormData ? data : JSON.stringify(data);
       }
 
-      const fetchWithTimeout = (
-        url: string,
-        options: RequestInit,
-        timeout: number
-      ) => {
+      const fetchWithTimeout = (url: string, options: RequestInit, timeout: number) => {
         return Promise.race([
           fetch(url, options),
           new Promise<Response>((_, reject) =>
@@ -85,11 +72,7 @@ export const Utils = {
         ]);
       };
 
-      const response = await fetchWithTimeout(
-        url.toString(),
-        options,
-        this.TIMEOUT
-      );
+      const response = await fetchWithTimeout(url.toString(), options, this.TIMEOUT);
 
       if (!response.ok) {
         let errorMessage = `${response.status} ${response.statusText}`;
@@ -121,42 +104,34 @@ export const Utils = {
     try {
       return await fetchPromise;
     } finally {
-      //Always clean it up after its done, win or lose lol
+      // Clean up after the request is complete
       pendingRequests.delete(cacheKey);
     }
   },
 
-  get<T>(
-    endpoint: string,
-    params: Record<string, any> = {},
-    user_uuid?: string
-  ): Promise<T> {
-    return this.request<T>('GET', endpoint, {}, params, false, user_uuid);
+  // This is where SWR will take over for caching and re-fetching
+  useFetch<T>(endpoint: string, params: Record<string, any> = {}, user_uuid?: string) {
+    const { data, error, mutate } = useSWR<T>(`${BASE_URL}${endpoint}?${new URLSearchParams(params).toString()}`, async () => {
+      return await this.request<T>('GET', endpoint, {}, params, false, user_uuid);
+    });
+
+    return {
+      data,
+      error,
+      isLoading: !data && !error,
+      mutate,
+    };
   },
 
-  post<T>(
-    endpoint: string,
-    data: Record<string, any> = {},
-    params: Record<string, any> = {},
-    user_uuid?: string
-  ): Promise<T> {
+  post<T>(endpoint: string, data: Record<string, any> = {}, params: Record<string, any> = {}, user_uuid?: string): Promise<T> {
     return this.request<T>('POST', endpoint, data, params, false, user_uuid);
   },
 
-  patch<T>(
-    endpoint: string,
-    data: Record<string, any> = {},
-    params: Record<string, any> = {},
-    user_uuid?: string
-  ): Promise<T> {
+  patch<T>(endpoint: string, data: Record<string, any> = {}, params: Record<string, any> = {}, user_uuid?: string): Promise<T> {
     return this.request<T>('PATCH', endpoint, data, params, false, user_uuid);
   },
 
-  delete<T>(
-    endpoint: string,
-    params: Record<string, any> = {},
-    user_uuid?: string
-  ): Promise<T> {
+  delete<T>(endpoint: string, params: Record<string, any> = {}, user_uuid?: string): Promise<T> {
     return this.request<T>('DELETE', endpoint, {}, params, false, user_uuid);
   },
 };

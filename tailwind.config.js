@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        baloo: ['Baloo Da 2', 'cursive'],
+        baloo: ['Baloo Da 2', 'sans-serif'],
         lato: ['Lato', 'sans-serif'],
         fredoka: ['Fredoka', 'sans-serif'],
         baloo2: ['Baloo 2', 'sans-serif'],

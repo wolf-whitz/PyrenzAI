@@ -11,7 +11,7 @@ i18n
     fallbackLng: 'en',
     debug: false,
     backend: {
-      loadPath: 'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/cdn/Languages/{{lng}}/translation.json',
+      loadPath: `/Languages/{{lng}}/translation.{{lng}}.json`,
     },
     interpolation: {
       escapeValue: false,

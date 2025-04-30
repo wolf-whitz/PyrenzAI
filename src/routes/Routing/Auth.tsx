@@ -39,7 +39,7 @@ export default function Auth() {
         className="w-full max-w-md p-10 rounded-2xl bg-gray-900 bg-opacity-70 shadow-2xl border border-gray-700"
       >
         <Typography variant="h4" className="text-center text-white mb-8 font-baloo">
-          {t('verifyNotBot')}
+          {t('messages.verifyNotBot')}
         </Typography>
         <Box className="flex justify-center flex-col items-center">
           {isLoaded ? (
@@ -58,11 +58,11 @@ export default function Auth() {
           ) : (
             <Box className="text-white animate-pulse flex items-center mb-6">
               <CircularProgress size={24} className="mr-2" />
-              <Typography>{t('loadingCaptcha')}</Typography>
+              <Typography>{t('messages.loadingCaptcha')}</Typography>
             </Box>
           )}
           <Typography variant="body2" className="text-gray-300 text-center mt-4 text-sm font-light">
-            {t('pyrenzAIDescription')}
+            {t('messages.pyrenzAIDescription')}
           </Typography>
         </Box>
       </motion.div>

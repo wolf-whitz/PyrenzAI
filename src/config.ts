@@ -7,6 +7,7 @@ const SUPABASE_ANON_KEY =
 
 const VITE_PUBLIC_POSTHOG_KEY = "phc_VzYgf0QQbnP8w3cco1l9atGPzZcrBpYwCNIglwnI5iE" //Also safe to expose as it doesn't reveal sensitive data
 const POSTHOG_API_HOST = "https://us.i.posthog.com"
+const SERVER_API_URL = "http://localhost:8080"
 
 const posthogConfig = {
   apiKey: VITE_PUBLIC_POSTHOG_KEY,
@@ -17,4 +18,4 @@ const posthogConfig = {
   },
 }; // Posthog Configs
 
-export { SUPABASE_URL, SUPABASE_ANON_KEY, VITE_PUBLIC_POSTHOG_KEY, posthogConfig };
+export { SUPABASE_URL, SUPABASE_ANON_KEY, VITE_PUBLIC_POSTHOG_KEY, posthogConfig, SERVER_API_URL };

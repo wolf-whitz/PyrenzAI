@@ -1,0 +1,116 @@
+{
+    "hero": {
+      "title": "Pyrenz ai",
+      "description": "Trò chuyện với các nhân vật không giới hạn, tạo riêng của bạn và có một vụ nổ tuyệt đối!"
+    },
+    "buttons": {
+      "getStarted": "Bắt đầu",
+      "joinDiscord": "Tham gia Discord",
+      "loadMore": "Tải nhiều hơn",
+      "signUp": "Đăng ký",
+      "login": "Đăng nhập",
+      "createAccount": "Tạo một tài khoản",
+      "register": "Đăng ký"
+    },
+    "banner": {
+      "text": "Pyrenz ai",
+      "joinDiscordTitle": "Tham gia máy chủ Discord hoặc cách khác ..."
+    },
+    "search": {
+      "placeholder": "Nhân vật tìm kiếm ...",
+      "ariaLabel": "Ký tự tìm kiếm"
+    },
+    "features": {
+      "smartFastFree": "Thông minh. ",
+      "smartFastFreeDescription": "Nói chuyện với các nhân vật bất cứ lúc nào. ",
+      "helpfulCommunity": "Cộng đồng hữu ích 👥",
+      "helpfulCommunityDescription": "Chúng tôi có một cộng đồng rất hữu ích, nơi bạn có thể đặt câu hỏi và, có lẽ, có một số niềm vui!",
+      "openSourced": "Mở đầu",
+      "openSourcedDescription": "Pyrenzai hoàn toàn miễn phí và nguồn mở, cho phép tất cả các hình thức sửa đổi địa phương và hơn thế nữa!"
+    },
+    "navigation": {
+      "home": "Trang chủ",
+      "create": "Tạo nên",
+      "chats": "Trò chuyện",
+      "settings": "Cài đặt",
+      "profile": "Hồ sơ",
+      "avatar": "Avatar",
+      "mainNavigation": "Điều hướng chính",
+      "navigateTo": "Điều hướng đến {{name}}",
+      "toggleMenu": "Chuyển đổi menu",
+      "scrollToTop": "Cuộn lên đầu"
+    },
+    "auth": {
+      "loginToAccount": "Đăng nhập vào tài khoản của bạn",
+      "createNewAccount": "Tạo một tài khoản mới",
+      "signUpFailed": "Đăng ký thất bại. ",
+      "oauthError": "Không đăng nhập với OAuth.",
+      "loginWithGoogle": "Đăng nhập với Google",
+      "signUpWithGoogle": "Đăng ký với Google",
+      "loginWithDiscord": "Đăng nhập với Discord",
+      "signUpWithDiscord": "Đăng ký với Discord",
+      "or": "HOẶC",
+      "email": "E-mail",
+      "yourEmailAddress": "Địa chỉ email của bạn",
+      "password": "Mật khẩu",
+      "yourPassword": "Mật khẩu của bạn",
+      "confirm18": "Xác nhận bạn là 18+",
+      "loggingIn": "Đăng nhập",
+      "signingUp": "Đăng ký",
+      "byContinuing": "Bằng cách tiếp tục, bạn chấp nhận",
+      "and": "Và",
+      "dontHaveAccount": "Không có tài khoản?",
+      "alreadyHaveAccount": "Đã có một tài khoản?"
+    },
+    "errors": {
+      "fetchingCharacters": "Lỗi tìm nạp các ký tự",
+      "callingRPCFunction": "Lỗi gọi chức năng RPC: ",
+      "unknown": "Một lỗi không xác định xảy ra.",
+      "anErrorOccurred": "Một lỗi đã xảy ra."
+    },
+    "ariaLabels": {
+      "homePage": "Trang chủ",
+      "customActionButton": "Nút hành động tùy chỉnh",
+      "loadingCharacter": "Đang tải nhân vật {{index}}",
+      "loadMore": "Tải thêm các mặt hàng"
+    },
+    "messages": {
+      "noCharactersFound": "Không tìm thấy nhân vật. ",
+      "allRightsReserved": "Tất cả quyền được bảo lưu.",
+      "verifyNotBot": "Vui lòng xác minh bạn không phải là bot 🤖🚫",
+      "loadingCaptcha": "Đang tải Captcha ...",
+      "pyrenzAIDescription": "Pyrenzai là một nền tảng trò chuyện AI cho phép người dùng trò chuyện với bot miễn phí. "
+    },
+    "platforms": {
+      "web": "Web",
+      "windows": "Windows",
+      "mobile": "Di động",
+      "notUpYet": "{{label}} Vẫn chưa lên, vui lòng kiểm tra sớm."
+    },
+    "footer": {
+      "quickLinks": "Liên kết nhanh",
+      "links": {
+        "explore": "Khám phá",
+        "discord": "Bất hòa",
+        "guide": "Hướng dẫn",
+        "botCreation": "Tạo bot",
+        "howTokenWorks": "Làm thế nào mã thông báo hoạt động",
+        "lorebooks": "Sổ lorsbooks"
+      },
+      "legal": {
+        "privacyPolicy": "Chính sách bảo mật",
+        "termsOfService": "Điều khoản dịch vụ",
+        "rules": "Quy tắc"
+      },
+      "pyrenzLogo": "Logo Pyrenz"
+    },
+    "HomePageMoreButtons": {
+      "btn": {
+        "latest": "Mới nhất",
+        "random": "Ngẫu nhiên",
+        "hot": "Nóng",
+        "male": "Nam giới",
+        "more": "Hơn"
+      }
+    }
+  }

@@ -8,10 +8,9 @@ import posthog from 'posthog-js';
 import { posthogConfig } from '~/config';
 
 import { ThemeProvider, CssBaseline } from '@mui/material';
+import { I18nextProvider } from 'react-i18next';
 import theme from '~/provider/ThemeProvider';
-
-// Translation System
-import './i18n';
+import i18n from "~/provider/TranslationProvider.ts"
 
 posthog.init(posthogConfig.apiKey, {
   api_host: posthogConfig.apiHost,
@@ -28,10 +27,12 @@ window.addEventListener('unhandledrejection', (event) => {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <App />
-      <Analytics />
-    </ThemeProvider>
+    <I18nextProvider i18n={i18n}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <App />
+        <Analytics />
+      </ThemeProvider>
+    </I18nextProvider>
   </StrictMode>
 );

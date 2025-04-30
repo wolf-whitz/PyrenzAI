@@ -1,0 +1,116 @@
+{
+    "hero": {
+      "title": "Pyrenz ai",
+      "description": "무제한 캐릭터와 채팅하고 자신만의 것을 만들고 절대적인 폭발을 일으키십시오!"
+    },
+    "buttons": {
+      "getStarted": "시작하세요",
+      "joinDiscord": "Discord에 가입하십시오",
+      "loadMore": "더로드하십시오",
+      "signUp": "가입하십시오",
+      "login": "로그인",
+      "createAccount": "계정을 만듭니다",
+      "register": "등록하다"
+    },
+    "banner": {
+      "text": "Pyrenz ai",
+      "joinDiscordTitle": "Discord 서버에 가입하십시오."
+    },
+    "search": {
+      "placeholder": "캐릭터 검색 ...",
+      "ariaLabel": "캐릭터 검색"
+    },
+    "features": {
+      "smartFastFree": "똑똑한. ",
+      "smartFastFreeDescription": "언제든지 캐릭터와 대화하십시오. ",
+      "helpfulCommunity": "도움이되는 커뮤니티 👥",
+      "helpfulCommunityDescription": "우리는 당신이 질문을 할 수 있고 아마도 재미있게 보내는 매우 유용한 커뮤니티가 있습니다!",
+      "openSourced": "OpenSourced 🖥️",
+      "openSourcedDescription": "Pyrenzai는 완전히 무료 및 오픈 소스이며 모든 형태의 로컬 수정 등을 허용합니다!"
+    },
+    "navigation": {
+      "home": "집",
+      "create": "만들다",
+      "chats": "채팅",
+      "settings": "설정",
+      "profile": "윤곽",
+      "avatar": "화신",
+      "mainNavigation": "메인 탐색",
+      "navigateTo": "탐색하십시오 {{name}}",
+      "toggleMenu": "토글 메뉴",
+      "scrollToTop": "위로 스크롤하십시오"
+    },
+    "auth": {
+      "loginToAccount": "계정에 로그인하십시오",
+      "createNewAccount": "새 계정을 만듭니다",
+      "signUpFailed": "가입 실패. ",
+      "oauthError": "Oauth와 로그인하지 못했습니다.",
+      "loginWithGoogle": "Google에 로그인하십시오",
+      "signUpWithGoogle": "Google에 가입하십시오",
+      "loginWithDiscord": "불화로 로그인하십시오",
+      "signUpWithDiscord": "불화로 가입하십시오",
+      "or": "또는",
+      "email": "이메일",
+      "yourEmailAddress": "귀하의 이메일 주소",
+      "password": "비밀번호",
+      "yourPassword": "비밀번호",
+      "confirm18": "18 세 이상인지 확인하십시오",
+      "loggingIn": "로그인",
+      "signingUp": "가입",
+      "byContinuing": "계속해서, 당신은 우리를 받아들입니다",
+      "and": "그리고",
+      "dontHaveAccount": "계정이 없습니까?",
+      "alreadyHaveAccount": "이미 계정이 있습니까?"
+    },
+    "errors": {
+      "fetchingCharacters": "오류 페치 문자",
+      "callingRPCFunction": "RPC 함수 호출 오류 : ",
+      "unknown": "알 수없는 오류가 발생했습니다.",
+      "anErrorOccurred": "오류가 발생했습니다."
+    },
+    "ariaLabels": {
+      "homePage": "홈페이지",
+      "customActionButton": "사용자 정의 액션 버튼",
+      "loadingCharacter": "로딩 캐릭터 {{index}}",
+      "loadMore": "더 많은 항목을로드하십시오"
+    },
+    "messages": {
+      "noCharactersFound": "발견 된 문자가 없습니다. ",
+      "allRightsReserved": "모든 권리 보유.",
+      "verifyNotBot": "봇이 아닌지 확인하십시오",
+      "loadingCaptcha": "캡처로드 ...",
+      "pyrenzAIDescription": "Pyrenzai는 AI 채팅 플랫폼으로 사용자가 봇과 무료로 채팅 할 수 있습니다. "
+    },
+    "platforms": {
+      "web": "편물",
+      "windows": "창",
+      "mobile": "이동하는",
+      "notUpYet": "{{label}} 아직 일어나지 않았습니다. 곧 확인하십시오."
+    },
+    "footer": {
+      "quickLinks": "빠른 링크",
+      "links": {
+        "explore": "탐구하다",
+        "discord": "불화",
+        "guide": "가이드",
+        "botCreation": "봇 생성",
+        "howTokenWorks": "토큰의 작동 방식",
+        "lorebooks": "Lorebook"
+      },
+      "legal": {
+        "privacyPolicy": "개인 정보 보호 정책",
+        "termsOfService": "서비스 약관",
+        "rules": "규칙"
+      },
+      "pyrenzLogo": "Pyrenz 로고"
+    },
+    "HomePageMoreButtons": {
+      "btn": {
+        "latest": "최신",
+        "random": "무작위의",
+        "hot": "더운",
+        "male": "남성",
+        "more": "더"
+      }
+    }
+  }

@@ -1,0 +1,118 @@
+{
+  "lang": "English",
+  "AB":"en",
+  "hero": {
+    "title": "Pyrenz AI",
+    "description": "Chat with unlimited characters, create your own, and make an absolute explosion!"
+  },
+  "buttons": {
+    "getStarted": "Get Started",
+    "joinDiscord": "Join Discord",
+    "loadMore": "Load More",
+    "signUp": "Sign Up",
+    "login": "Login",
+    "createAccount": "Create an Account",
+    "register": "Register"
+  },
+  "banner": {
+    "text": "Pyrenz AI",
+    "joinDiscordTitle": "Join the Discord server or else..."
+  },
+  "search": {
+    "placeholder": "Search characters...",
+    "ariaLabel": "Search characters"
+  },
+  "features": {
+    "smartFastFree": "Smart.",
+    "smartFastFreeDescription": "Talk with characters anytime.",
+    "helpfulCommunity": "Helpful Community 👥",
+    "helpfulCommunityDescription": "We have a super helpful community where you can ask questions and maybe have some fun!",
+    "openSourced": "OpenSourced 🖥️",
+    "openSourcedDescription": "Pyrenz AI is fully free and open source, allowing all kinds of local edits and more!"
+  },
+  "navigation": {
+    "home": "Home",
+    "create": "Create",
+    "chats": "Chats",
+    "settings": "Settings",
+    "profile": "Profile",
+    "avatar": "Avatar",
+    "mainNavigation": "Main Navigation",
+    "navigateTo": "Navigate to {{name}}",
+    "toggleMenu": "Toggle Menu",
+    "scrollToTop": "Scroll to Top"
+  },
+  "auth": {
+    "loginToAccount": "Login to your account",
+    "createNewAccount": "Create a new account",
+    "signUpFailed": "Sign up failed.",
+    "oauthError": "Failed to log in with Oauth.",
+    "loginWithGoogle": "Login with Google",
+    "signUpWithGoogle": "Sign up with Google",
+    "loginWithDiscord": "Login with Discord",
+    "signUpWithDiscord": "Sign up with Discord",
+    "or": "Or",
+    "email": "Email",
+    "yourEmailAddress": "Your email address",
+    "password": "Password",
+    "yourPassword": "Your password",
+    "confirm18": "Confirm that you are 18+",
+    "loggingIn": "Logging in",
+    "signingUp": "Signing up",
+    "byContinuing": "By continuing, you agree to our",
+    "and": "And",
+    "dontHaveAccount": "Don't have an account?",
+    "alreadyHaveAccount": "Already have an account?"
+  },
+  "errors": {
+    "fetchingCharacters": "Error fetching characters",
+    "callingRPCFunction": "Error calling RPC function: ",
+    "unknown": "An unknown error occurred.",
+    "anErrorOccurred": "An error occurred."
+  },
+  "ariaLabels": {
+    "homePage": "Home page",
+    "customActionButton": "Custom action button",
+    "loadingCharacter": "Loading character {{index}}",
+    "loadMore": "Load more items"
+  },
+  "messages": {
+    "noCharactersFound": "No characters found.",
+    "allRightsReserved": "All rights reserved.",
+    "verifyNotBot": "Please verify you're not a bot 🤖🚫",
+    "loadingCaptcha": "Loading captcha...",
+    "pyrenzAIDescription": "Pyrenz AI is a platform that allows users to chat with AI bots for free. However we need you to be a human not a bot."
+  },
+  "platforms": {
+    "web": "Web",
+    "windows": "Windows",
+    "mobile": "Mobile",
+    "notUpYet": "{{label}} is not awake yet, please check back soon."
+  },
+  "footer": {
+    "quickLinks": "Quick Links",
+    "links": {
+      "explore": "Explore",
+      "discord": "Discord",
+      "guide": "Guide",
+      "botCreation": "Bot Creation",
+      "howTokenWorks": "How Tokens Work",
+      "lorebooks": "Lorebooks"
+    },
+    "legal": {
+      "privacyPolicy": "Privacy Policy",
+      "termsOfService": "Terms of Service",
+      "rules": "Rules"
+    },
+    "pyrenzLogo": "Pyrenz Logo"
+  },
+  "HomePageMoreButtons": {
+    "btn": {
+      "latest": "Latest",
+      "random": "Random",
+      "hot": "Hot",
+      "male": "Male",
+      "more": "More"
+    }
+  }
+}

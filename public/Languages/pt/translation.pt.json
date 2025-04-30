@@ -1,0 +1,116 @@
+{
+  "hero": {
+    "title": "Pyrenz ai",
+    "description": "Converse com personagens ilimitados, crie o seu próprio e tenha uma explosão absoluta!"
+  },
+  "buttons": {
+    "getStarted": "Comece",
+    "joinDiscord": "Junte -se à discórdia",
+    "loadMore": "Carregar mais",
+    "signUp": "Inscrever-se",
+    "login": "Conecte-se",
+    "createAccount": "Criar uma conta",
+    "register": "Registrar"
+  },
+  "banner": {
+    "text": "Pyrenz ai",
+    "joinDiscordTitle": "Junte -se ao servidor Discord ou então ..."
+  },
+  "search": {
+    "placeholder": "Personagens de pesquisa ...",
+    "ariaLabel": "Pesquise caracteres"
+  },
+  "features": {
+    "smartFastFree": "Inteligente. ",
+    "smartFastFreeDescription": "Fale com os personagens a qualquer momento. ",
+    "helpfulCommunity": "Comunidade útil 👥",
+    "helpfulCommunityDescription": "Temos uma comunidade muito útil, onde você pode fazer perguntas e, talvez, se divertir!",
+    "openSourced": "OpenSourced 🖥️",
+    "openSourcedDescription": "Pyrenzai é totalmente gratuito e de código aberto, permitindo todas as formas de modificações locais e muito mais!"
+  },
+  "navigation": {
+    "home": "Lar",
+    "create": "Criar",
+    "chats": "Bate -papos",
+    "settings": "Configurações",
+    "profile": "Perfil",
+    "avatar": "Avatar",
+    "mainNavigation": "Navegação principal",
+    "navigateTo": "Navegar para {{name}}",
+    "toggleMenu": "Menu de alternância",
+    "scrollToTop": "Role até o topo"
+  },
+  "auth": {
+    "loginToAccount": "Faça login na sua conta",
+    "createNewAccount": "Crie uma nova conta",
+    "signUpFailed": "Inscreva -se falhou. ",
+    "oauthError": "Falhou em entrar com o OAuth.",
+    "loginWithGoogle": "Faça login com o Google",
+    "signUpWithGoogle": "Inscreva -se com o Google",
+    "loginWithDiscord": "Faça login com discórdia",
+    "signUpWithDiscord": "Inscreva -se com a discórdia",
+    "or": "OU",
+    "email": "E-mail",
+    "yourEmailAddress": "Seu endereço de email",
+    "password": "Senha",
+    "yourPassword": "Sua senha",
+    "confirm18": "Confirme que você tem mais de 18 anos",
+    "loggingIn": "Login",
+    "signingUp": "Inscrevendo -se",
+    "byContinuing": "Ao continuar, você aceita nosso",
+    "and": "e",
+    "dontHaveAccount": "Não tem uma conta?",
+    "alreadyHaveAccount": "Já tem uma conta?"
+  },
+  "errors": {
+    "fetchingCharacters": "Erro a buscar caracteres",
+    "callingRPCFunction": "Erro chamando a função RPC: ",
+    "unknown": "Ocorreu um erro desconhecido.",
+    "anErrorOccurred": "Ocorreu um erro."
+  },
+  "ariaLabels": {
+    "homePage": "Página inicial",
+    "customActionButton": "Botão de ação personalizado",
+    "loadingCharacter": "Caráter de carregamento {{index}}",
+    "loadMore": "Carregue mais itens"
+  },
+  "messages": {
+    "noCharactersFound": "Nenhum personagem encontrado. ",
+    "allRightsReserved": "Todos os direitos reservados.",
+    "verifyNotBot": "Por favor, verifique se você não é um bot 🤖🚫",
+    "loadingCaptcha": "Carregando Captcha ...",
+    "pyrenzAIDescription": "Pyrenzai é uma plataforma de bate -papo da AI, permitindo que os usuários conversem com bots gratuitamente. "
+  },
+  "platforms": {
+    "web": "Web",
+    "windows": "Windows",
+    "mobile": "Móvel",
+    "notUpYet": "{{label}} Ainda não acabou, verifique em breve."
+  },
+  "footer": {
+    "quickLinks": "Links rápidos",
+    "links": {
+      "explore": "Explorar",
+      "discord": "Discórdia",
+      "guide": "Guia",
+      "botCreation": "Criação de bot",
+      "howTokenWorks": "Como funciona o token",
+      "lorebooks": "LoreBooks"
+    },
+    "legal": {
+      "privacyPolicy": "política de Privacidade",
+      "termsOfService": "Termos de Serviço",
+      "rules": "Regras"
+    },
+    "pyrenzLogo": "Logotipo Pyrenz"
+  },
+  "HomePageMoreButtons": {
+    "btn": {
+      "latest": "Mais recente",
+      "random": "Aleatório",
+      "hot": "Quente",
+      "male": "Macho",
+      "more": "Mais"
+    }
+  }
+}

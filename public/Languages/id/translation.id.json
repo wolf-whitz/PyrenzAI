@@ -1,0 +1,116 @@
+{
+    "hero": {
+      "title": "Pyrenz AI",
+      "description": "Obrolan dengan karakter tak terbatas, buat sendiri, dan nikmati ledakan mutlak!"
+    },
+    "buttons": {
+      "getStarted": "Mulai",
+      "joinDiscord": "Bergabunglah dengan Perselisihan",
+      "loadMore": "Memuat lebih banyak",
+      "signUp": "Mendaftar",
+      "login": "Login",
+      "createAccount": "Buat akun",
+      "register": "Daftar"
+    },
+    "banner": {
+      "text": "Pyrenz AI",
+      "joinDiscordTitle": "Bergabunglah dengan server Discord atau ..."
+    },
+    "search": {
+      "placeholder": "Karakter pencarian ...",
+      "ariaLabel": "Karakter pencarian"
+    },
+    "features": {
+      "smartFastFree": "Cerdas. ",
+      "smartFastFreeDescription": "Bicaralah dengan karakter kapan saja. ",
+      "helpfulCommunity": "Komunitas yang membantu 👥",
+      "helpfulCommunityDescription": "Kami memiliki komunitas yang sangat membantu di mana Anda dapat mengajukan pertanyaan dan, mungkin, bersenang -senang!",
+      "openSourced": "OpenSourced 🖥️",
+      "openSourcedDescription": "Pyrenzai benar-benar gratis dan open-source, memungkinkan semua bentuk modifikasi lokal dan banyak lagi!"
+    },
+    "navigation": {
+      "home": "Rumah",
+      "create": "Membuat",
+      "chats": "Obrolan",
+      "settings": "Pengaturan",
+      "profile": "Profil",
+      "avatar": "Avatar",
+      "mainNavigation": "Navigasi utama",
+      "navigateTo": "Navigasikan ke {{name}}",
+      "toggleMenu": "Menu sakelar",
+      "scrollToTop": "Gulir ke atas"
+    },
+    "auth": {
+      "loginToAccount": "Masuk ke akun Anda",
+      "createNewAccount": "Buat akun baru",
+      "signUpFailed": "Daftar gagal. ",
+      "oauthError": "Gagal masuk dengan Oauth.",
+      "loginWithGoogle": "Masuk dengan Google",
+      "signUpWithGoogle": "Daftar dengan Google",
+      "loginWithDiscord": "Masuk dengan Perselisihan",
+      "signUpWithDiscord": "Daftar dengan Perselisihan",
+      "or": "ATAU",
+      "email": "E-mail",
+      "yourEmailAddress": "Alamat email Anda",
+      "password": "Kata sandi",
+      "yourPassword": "Kata sandi Anda",
+      "confirm18": "Konfirmasikan Anda 18+",
+      "loggingIn": "Masuk",
+      "signingUp": "Mendaftar",
+      "byContinuing": "Dengan melanjutkan, Anda menerima kami",
+      "and": "Dan",
+      "dontHaveAccount": "Tidak punya akun?",
+      "alreadyHaveAccount": "Sudah punya akun?"
+    },
+    "errors": {
+      "fetchingCharacters": "Kesalahan mengambil karakter",
+      "callingRPCFunction": "Kesalahan Memanggil Fungsi RPC: ",
+      "unknown": "Terjadi kesalahan yang tidak diketahui.",
+      "anErrorOccurred": "Terjadi kesalahan."
+    },
+    "ariaLabels": {
+      "homePage": "Halaman Beranda",
+      "customActionButton": "Tombol Tindakan Kustom",
+      "loadingCharacter": "Karakter Memuat {{index}}",
+      "loadMore": "Muat lebih banyak item"
+    },
+    "messages": {
+      "noCharactersFound": "Tidak ada karakter yang ditemukan. ",
+      "allRightsReserved": "Semua hak dilindungi undang -undang.",
+      "verifyNotBot": "Harap verifikasi bahwa Anda bukan bot 🤖🚫",
+      "loadingCaptcha": "Memuat captcha ...",
+      "pyrenzAIDescription": "Pyrenzai adalah platform obrolan AI yang memungkinkan pengguna untuk mengobrol dengan bot secara gratis. "
+    },
+    "platforms": {
+      "web": "Web",
+      "windows": "Windows",
+      "mobile": "Mobile",
+      "notUpYet": "{{label}} Belum naik, silakan periksa segera."
+    },
+    "footer": {
+      "quickLinks": "Tautan cepat",
+      "links": {
+        "explore": "Mengeksplorasi",
+        "discord": "Perselisihan",
+        "guide": "Memandu",
+        "botCreation": "Penciptaan bot",
+        "howTokenWorks": "Cara kerja token",
+        "lorebooks": "LoreBooks"
+      },
+      "legal": {
+        "privacyPolicy": "Kebijakan Privasi",
+        "termsOfService": "Ketentuan Layanan",
+        "rules": "Aturan"
+      },
+      "pyrenzLogo": "Logo Pyrenz"
+    },
+    "HomePageMoreButtons": {
+      "btn": {
+        "latest": "Terbaru",
+        "random": "Acak",
+        "hot": "Panas",
+        "male": "Pria",
+        "more": "Lagi"
+      }
+    }
+  }
