@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import llamaTokenizer from 'llama-tokenizer-js';
 import { useCharacterStore } from '~/store';
+import { motion } from 'framer-motion';
+import { TextField, Tooltip as MUITooltip, Typography } from '@mui/material';
 
 interface TextareaProps {
   name?: string;
@@ -24,7 +26,7 @@ export default function Textarea({
 }: TextareaProps) {
   const [tokenCount, setTokenCount] = useState(0);
   const maxLength = 15000;
-  const characterCount = value.length;
+  const characterCount = Math.round(value.length);
   const isMaxLengthExceeded = characterCount > maxLength;
 
   const setCharacterData = useCharacterStore((state) => state.setCharacterData);
@@ -32,7 +34,7 @@ export default function Textarea({
   useEffect(() => {
     if (showTokenizer) {
       const tokens = llamaTokenizer.encode(value);
-      const tokenLength = tokens.length;
+      const tokenLength = Math.round(tokens.length);
       setTokenCount(tokenLength);
       setCharacterData({
         textarea_token: {
@@ -55,46 +57,57 @@ export default function Textarea({
     name || `textarea-${Math.random().toString(36).substr(2, 9)}`;
 
   return (
-    <div className={`w-full mb-4 relative ${className}`}>
+    <motion.div
+      className={`w-full mb-4 relative ${className}`}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <div className="flex justify-between items-center mb-1">
-        <label htmlFor={textareaId} className="text-white">
+        <Typography variant="body1" component="label" htmlFor={textareaId} sx={{ color: 'white' }}>
           {label}
-        </label>
+        </Typography>
         {showTokenizer && (
-          <Tooltip.Provider>
-            <Tooltip.Root>
-              <Tooltip.Trigger asChild>
-                <span className="text-gray-500 cursor-pointer">
-                  Tokens: {tokenCount}
-                </span>
-              </Tooltip.Trigger>
-              <Tooltip.Content className="bg-gray-800 text-white p-2 rounded shadow-md">
-                <Tooltip.Arrow className="fill-gray-800" />
-                Token Count: {tokenCount}
-              </Tooltip.Content>
-            </Tooltip.Root>
-          </Tooltip.Provider>
+          <MUITooltip title={`Token Count: ${tokenCount}`} arrow>
+            <Typography variant="body2" sx={{ color: 'gray', cursor: 'pointer' }}>
+              Tokens: {tokenCount}
+            </Typography>
+          </MUITooltip>
         )}
       </div>
-      <textarea
+      <TextField
         id={textareaId}
         name={name}
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className={`w-full h-32 p-4 rounded-xl text-white bg-gray-800 border-none focus:outline-none focus:ring-2 shadow-md transition-all duration-300 ease-in-out ${
-          isMaxLengthExceeded
-            ? 'ring-red-500'
-            : 'focus:ring-gray-600 hover:ring-gray-700'
-        }`}
-        style={{ resize: 'none' }}
-        maxLength={maxLength}
+        multiline
+        rows={4}
+        variant="outlined"
+        fullWidth
+        InputProps={{
+          className: `text-white bg-gray-800 border-none focus:outline-none focus:ring-2 shadow-md transition-all duration-300 ease-in-out ${
+            isMaxLengthExceeded
+              ? 'ring-red-500'
+              : 'focus:ring-gray-600 hover:ring-gray-700'
+          }`,
+          style: { resize: 'none' },
+        }}
+        inputProps={{
+          maxLength: maxLength,
+        }}
       />
-      <span
-        className={`absolute right-2 bottom-2 text-sm ${isMaxLengthExceeded ? 'text-red-500' : 'text-gray-500'}`}
+      <Typography
+        variant="caption"
+        sx={{
+          position: 'absolute',
+          right: '8px',
+          bottom: '8px',
+          color: isMaxLengthExceeded ? 'red' : 'gray',
+        }}
       >
         {characterCount}/{maxLength}
-      </span>
-    </div>
+      </Typography>
+    </motion.div>
   );
 }

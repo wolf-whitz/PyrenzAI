@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import * as Select from '@radix-ui/react-select';
 import { ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons';
+import { motion } from 'framer-motion';
+import { MenuItem, TextField, Typography } from '@mui/material';
 
 interface DropdownFieldProps {
   name: string;
@@ -22,8 +24,15 @@ export default function DropdownField({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="w-full">
-      <label className="block text-white mb-2 animate-fade-in">{label}</label>
+    <motion.div
+      className="w-full"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
+      <Typography variant="body1" className="block text-white mb-2 animate-fade-in">
+        {label}
+      </Typography>
       <Select.Root
         name={name}
         value={value}
@@ -64,6 +73,6 @@ export default function DropdownField({
           </Select.Content>
         </Select.Portal>
       </Select.Root>
-    </div>
+    </motion.div>
   );
 }

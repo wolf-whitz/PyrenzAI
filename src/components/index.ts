@@ -78,6 +78,9 @@ import { Card, CardContent, CardTitle, CardHeader } from '@ui/ShadCdn/card';
 // Persona Components
 import Persona from '@ui/Persona/Persona';
 
+//Import
+import ImportCharacterModal from '@ui/Import/ImportCharacterModal'
+
 export {
   // Layout
   Banner,
@@ -87,6 +90,9 @@ export {
   PreviewFooter,
   HeroSection,
   FeaturesSection,
+  
+  //Import 
+  ImportCharacterModal,
   
   //Create
   CharacterForm,

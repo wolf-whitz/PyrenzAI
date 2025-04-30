@@ -104,12 +104,10 @@ export const Utils = {
     try {
       return await fetchPromise;
     } finally {
-      // Clean up after the request is complete
       pendingRequests.delete(cacheKey);
     }
   },
 
-  // This is where SWR will take over for caching and re-fetching
   useFetch<T>(endpoint: string, params: Record<string, any> = {}, user_uuid?: string) {
     const { data, error, mutate } = useSWR<T>(`${BASE_URL}${endpoint}?${new URLSearchParams(params).toString()}`, async () => {
       return await this.request<T>('GET', endpoint, {}, params, false, user_uuid);

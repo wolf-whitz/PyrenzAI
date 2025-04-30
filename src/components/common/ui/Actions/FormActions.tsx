@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { CreateButton, DraftsModal } from '~/components';
+import { motion } from 'framer-motion';
+import { CreateButton, DraftsModal, ImportCharacterModal } from '~/components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFileAlt, faSave } from '@fortawesome/free-solid-svg-icons';
+import { faFileAlt, faSave, faUpload } from '@fortawesome/free-solid-svg-icons';
 
 interface Draft {
   id: number;
@@ -28,6 +29,7 @@ interface FormActionsProps {
   loading: boolean;
   saveLoading: boolean;
   onSelectDraft: (draft: Draft) => void;
+  onImportCharacter: () => void;
 }
 
 export default function FormActions({
@@ -35,9 +37,11 @@ export default function FormActions({
   onSave,
   loading,
   saveLoading,
-  onSelectDraft
+  onSelectDraft,
+  onImportCharacter
 }: FormActionsProps) {
   const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
+  const [isImportCharacterModalOpen, setIsImportCharacterModalOpen] = useState(false);
 
   const handleOpenDraftModal = () => {
     setIsDraftModalOpen(true);
@@ -47,36 +51,68 @@ export default function FormActions({
     setIsDraftModalOpen(false);
   };
 
+  const handleOpenImportCharacterModal = () => {
+    setIsImportCharacterModalOpen(true);
+  };
+
+  const handleCloseImportCharacterModal = () => {
+    setIsImportCharacterModalOpen(false);
+  };
+
   return (
-    <div className="flex justify-end space-x-2 mt-4">
-      <button
+    <motion.div
+      className="flex justify-end space-x-2 mt-4"
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <motion.button
         type="button"
         onClick={onClear}
         className="text-white p-3 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
       >
         Clear
-      </button>
-      <button
+      </motion.button>
+      <motion.button
         type="button"
         onClick={onSave}
         disabled={saveLoading}
         className="text-white p-3 rounded-lg bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 flex items-center"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
       >
         <FontAwesomeIcon icon={faSave} className="mr-2" />
         {saveLoading ? 'Saving...' : 'Save'}
-      </button>
-      <button
+      </motion.button>
+      <motion.button
         type="button"
         onClick={handleOpenDraftModal}
         className="text-white p-3 rounded-lg bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-green-400 flex items-center"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
       >
         <FontAwesomeIcon icon={faFileAlt} className="mr-2" />
         Drafts
-      </button>
+      </motion.button>
+      <motion.button
+        type="button"
+        onClick={handleOpenImportCharacterModal}
+        className="text-white p-3 rounded-lg bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 flex items-center"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        <FontAwesomeIcon icon={faUpload} className="mr-2" />
+        Import Character
+      </motion.button>
       <CreateButton loading={loading} />
       {isDraftModalOpen && (
         <DraftsModal onClose={handleCloseDraftModal} onSelect={onSelectDraft} />
       )}
-    </div>
+      {isImportCharacterModalOpen && (
+        <ImportCharacterModal onClose={handleCloseImportCharacterModal} onImport={onImportCharacter} />
+      )}
+    </motion.div>
   );
 }

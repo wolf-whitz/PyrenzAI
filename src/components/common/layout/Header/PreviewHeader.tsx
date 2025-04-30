@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   FaHome,
   FaCompass,
@@ -31,6 +31,8 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
   const [languages, setLanguages] = useState<{ code: string; name: string }[]>([]);
   const [showMore, setShowMore] = useState(false);
   const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
+  const languageButtonRef = useRef<HTMLButtonElement>(null);
+  const languageMenuRef = useRef<HTMLDivElement>(null);
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
@@ -62,10 +64,32 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
-    setLanguageMenuOpen(false)
+    setLanguageMenuOpen(false);
   };
 
   const visibleLanguages = showMore ? languages : languages.slice(0, 5);
+
+  const handleLanguageButtonClick = () => {
+    setLanguageMenuOpen(!languageMenuOpen);
+  };
+
+  const handleDocumentClick = (event: MouseEvent) => {
+    if (
+      languageButtonRef.current &&
+      !languageButtonRef.current.contains(event.target as Node) &&
+      languageMenuRef.current &&
+      !languageMenuRef.current.contains(event.target as Node)
+    ) {
+      setLanguageMenuOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleDocumentClick);
+    return () => {
+      document.removeEventListener('mousedown', handleDocumentClick);
+    };
+  }, []);
 
   return (
     <motion.header
@@ -89,7 +113,7 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
         </motion.div>
 
         <nav aria-label={t('navigation.mainNavigation')}>
-          <motion.div className="hidden md:flex items-center space-x-6" variants={menuVariants}>
+          <motion.div className="hidden md:flex items-center space-x-6 relative" variants={menuVariants}>
             {menuItems.map(({ name, icon: Icon, link, external }) => (
               <motion.button
                 key={name}
@@ -115,8 +139,9 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
               className="relative"
             >
               <button
+                ref={languageButtonRef}
                 className="flex items-center gap-2 text-white font-baloo-da-2 hover:text-[#E03201]"
-                onClick={() => setLanguageMenuOpen(!languageMenuOpen)}
+                onClick={handleLanguageButtonClick}
                 aria-label={t('navigation.changeLanguage')}
               >
                 <FaGlobe size={18} />
@@ -125,12 +150,16 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
               <AnimatePresence>
                 {languageMenuOpen && (
                   <motion.div
+                    ref={languageMenuRef}
                     initial="hidden"
                     animate="visible"
                     exit="hidden"
                     variants={menuVariants}
-                    className="fixed top-16 right-4 w-48 bg-gray-900 text-white rounded-lg shadow-lg border border-gray-700 p-2 max-h-60 overflow-y-auto z-50"
+                    className="absolute top-full left-0 w-48 bg-gray-900 text-white rounded-lg shadow-lg border border-gray-700 p-2 max-h-60 overflow-y-auto z-50"
                     role="menu"
+                    onMouseEnter={() => setLanguageMenuOpen(true)}
+                    onMouseLeave={() => setLanguageMenuOpen(false)}
+                    onClick={(e) => e.stopPropagation()}
                   >
                     {visibleLanguages.map(({ code, name }) => (
                       <motion.button
@@ -151,7 +180,10 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         className="block w-full text-left px-4 py-2 hover:bg-gray-800 rounded text-blue-500"
-                        onClick={() => setShowMore(!showMore)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowMore(!showMore);
+                        }}
                         role="menuitem"
                       >
                         {showMore ? 'Show Less' : 'Show More'}
@@ -233,51 +265,14 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
                   className="relative mt-2"
                 >
                   <button
+                    ref={languageButtonRef}
                     className="flex items-center gap-2 text-white font-baloo-da-2 hover:text-[#E03201] w-full text-left px-4 py-2 hover:bg-gray-800 rounded"
-                    onClick={() => setLanguageMenuOpen(!languageMenuOpen)}
+                    onClick={handleLanguageButtonClick}
                     aria-label={t('navigation.changeLanguage')}
                   >
                     <FaGlobe className="inline-block mr-2" />
                     {t('navigation.language')}
                   </button>
-                  <AnimatePresence>
-                    {languageMenuOpen && (
-                      <motion.div
-                        initial="hidden"
-                        animate="visible"
-                        exit="hidden"
-                        variants={menuVariants}
-                        className="fixed top-16 right-4 w-48 bg-gray-900 text-white rounded-lg shadow-lg border border-gray-700 p-2 max-h-60 overflow-y-auto z-50"
-                        role="menu"
-                      >
-                        {visibleLanguages.map(({ code, name }) => (
-                          <motion.button
-                            key={code}
-                            variants={itemVariants}
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            className="block w-full text-left px-4 py-2 hover:bg-gray-800 rounded"
-                            onClick={() => changeLanguage(code)}
-                            role="menuitem"
-                          >
-                            {name}
-                          </motion.button>
-                        ))}
-                        {languages.length > 5 && (
-                          <motion.button
-                            variants={itemVariants}
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            className="block w-full text-left px-4 py-2 hover:bg-gray-800 rounded text-blue-500"
-                            onClick={() => setShowMore(!showMore)}
-                            role="menuitem"
-                          >
-                            {showMore ? 'Show Less' : 'Show More'}
-                          </motion.button>
-                        )}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
                 </motion.div>
 
                 <motion.button
@@ -307,6 +302,52 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
           </AnimatePresence>
         </div>
       </div>
+
+      <AnimatePresence>
+        {languageMenuOpen && (
+          <motion.div
+            ref={languageMenuRef}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            variants={menuVariants}
+            className="fixed top-16 right-4 w-48 bg-gray-900 text-white rounded-lg shadow-lg border border-gray-700 p-2 max-h-60 overflow-y-auto z-50 md:hidden"
+            role="menu"
+            onMouseEnter={() => setLanguageMenuOpen(true)}
+            onMouseLeave={() => setLanguageMenuOpen(false)}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {visibleLanguages.map(({ code, name }) => (
+              <motion.button
+                key={code}
+                variants={itemVariants}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="block w-full text-left px-4 py-2 hover:bg-gray-800 rounded"
+                onClick={() => changeLanguage(code)}
+                role="menuitem"
+              >
+                {name}
+              </motion.button>
+            ))}
+            {languages.length > 5 && (
+              <motion.button
+                variants={itemVariants}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="block w-full text-left px-4 py-2 hover:bg-gray-800 rounded text-blue-500"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowMore(!showMore);
+                }}
+                role="menuitem"
+              >
+                {showMore ? 'Show Less' : 'Show More'}
+              </motion.button>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.header>
   );
 }

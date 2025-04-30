@@ -1,4 +1,5 @@
 import React from 'react';
+import { Typography, Box } from '@mui/material';
 
 interface TokenSummaryProps {
   tokenTotal: number;
@@ -6,9 +7,13 @@ interface TokenSummaryProps {
 
 export default function TokenSummary({ tokenTotal }: TokenSummaryProps) {
   return (
-    <div className="text-gray-400 mt-4">
-      <strong>Token Summary</strong>
-      <p>Total: {tokenTotal} Tokens</p>
-    </div>
+    <Box className="mt-4">
+      <Typography variant="h6" component="strong" className="text-gray-400">
+        Token Summary
+      </Typography>
+      <Typography variant="body1" className="text-gray-400">
+        Total: {Math.round(tokenTotal)} Tokens
+      </Typography>
+    </Box>
   );
 }

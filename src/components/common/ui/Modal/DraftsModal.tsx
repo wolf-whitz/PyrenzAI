@@ -5,6 +5,7 @@ import { supabase } from '~/Utility/supabaseClient';
 import { useUserStore } from '~/store';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { Typography, IconButton, Button, CircularProgress, Card, CardContent, CardActions } from '@mui/material';
 
 interface Draft {
   id: number;
@@ -31,11 +32,13 @@ interface DraftsModalProps {
 }
 
 const SkeletonLoader = () => (
-  <div className="bg-gray-800 p-4 rounded-lg mb-4 animate-pulse">
-    <div className="h-6 bg-gray-700 rounded w-3/4 mb-2"></div>
-    <div className="h-4 bg-gray-700 rounded w-2/3 mb-2"></div>
-    <div className="h-4 bg-gray-700 rounded w-1/2"></div>
-  </div>
+  <Card className="bg-gray-800 p-4 rounded-lg mb-4 animate-pulse">
+    <CardContent>
+      <div className="h-6 bg-gray-700 rounded w-3/4 mb-2"></div>
+      <div className="h-4 bg-gray-700 rounded w-2/3 mb-2"></div>
+      <div className="h-4 bg-gray-700 rounded w-1/2"></div>
+    </CardContent>
+  </Card>
 );
 
 export default function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
@@ -145,7 +148,9 @@ export default function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
         animate={{ scale: 1 }}
         exit={{ scale: 0.9 }}
       >
-        <h2 className="text-2xl font-bold mb-4 text-center">Select a Draft</h2>
+        <Typography variant="h5" component="h2" className="text-center mb-4">
+          Select a Draft
+        </Typography>
         {loading ? (
           <>
             <SkeletonLoader />
@@ -153,51 +158,53 @@ export default function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
             <SkeletonLoader />
           </>
         ) : displayedDrafts.length === 0 ? (
-          <p className="text-center text-gray-400">No drafts available.</p>
+          <Typography variant="body1" className="text-center text-gray-400">
+            No drafts available.
+          </Typography>
         ) : (
           <>
             {displayedDrafts.map((draft) => (
-              <div
+              <Card
                 key={draft.id}
                 className="bg-gray-800 p-4 rounded-lg mb-4 relative border border-gray-700 hover:border-gray-500 transition-colors"
               >
-                <button
-                  className="absolute top-2 right-2 text-red-500 hover:text-red-600"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleRemoveDraft(draft.id);
-                  }}
-                >
-                  <FontAwesomeIcon icon={faTrash} />
-                </button>
-                <div onClick={() => onSelect(draft)} className="cursor-pointer">
-                  <h3 className="text-xl font-semibold mb-2">
+                <CardActions className="absolute top-2 right-2">
+                  <IconButton
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleRemoveDraft(draft.id);
+                    }}
+                    className="text-red-500 hover:text-red-600"
+                  >
+                    <FontAwesomeIcon icon={faTrash} />
+                  </IconButton>
+                </CardActions>
+                <CardContent onClick={() => onSelect(draft)} className="cursor-pointer">
+                  <Typography variant="h6" component="h3" className="text-xl font-semibold mb-2">
                     {draft.name || 'Untitled Draft'}
-                  </h3>
-                  <p className="text-gray-400 mb-2">
+                  </Typography>
+                  <Typography variant="body2" className="text-gray-400 mb-2">
                     {draft.description || 'No description available.'}
-                  </p>
-                  <p className="text-gray-500 text-sm">
+                  </Typography>
+                  <Typography variant="caption" className="text-gray-500 text-sm">
                     Created at: {new Date(draft.created_at).toLocaleString()}
-                  </p>
-                </div>
-              </div>
+                  </Typography>
+                </CardContent>
+              </Card>
             ))}
             <div className="flex justify-between mt-4">
-              <button
+              <Button
                 onClick={handlePrevPage}
                 disabled={currentPage === 0}
                 className="text-white p-2 rounded-lg bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50"
-              >
-                <FontAwesomeIcon icon={faChevronLeft} />
-              </button>
-              <button
+                startIcon={<FontAwesomeIcon icon={faChevronLeft} />}
+              />
+              <Button
                 onClick={handleNextPage}
                 disabled={(currentPage + 1) * 3 >= drafts.length}
                 className="text-white p-2 rounded-lg bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50"
-              >
-                <FontAwesomeIcon icon={faChevronRight} />
-              </button>
+                endIcon={<FontAwesomeIcon icon={faChevronRight} />}
+              />
             </div>
           </>
         )}

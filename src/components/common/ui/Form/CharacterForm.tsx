@@ -171,6 +171,11 @@ export default function CharacterForm() {
     });
   };
 
+  const handleImportCharacter = () => {
+    // Implement the logic to handle character import
+    console.log('Import Character button clicked');
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -254,6 +259,7 @@ export default function CharacterForm() {
           loading={loading}
           saveLoading={saveLoading}
           onSelectDraft={handleSelectDraft}
+          onImportCharacter={handleImportCharacter}
         />
       </form>
       {showRequiredFieldsPopup && (
