@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, ArrowRight, MoreVertical } from 'lucide-react';
 import { Menu } from '~/components';
@@ -35,10 +35,10 @@ export default function ChatInput({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, ease: 'easeOut' }}
-        className={`relative mx-auto max-w-[640px] ${className}`}
+        className={`relative mx-auto w-full max-w-full md:max-w-[500px] lg:max-w-[640px] p-4 ${className}`}
       >
         <div
-          className={`relative flex bg-gray-700 rounded-2xl p-3 ${className}`}
+          className={`relative flex bg-gray-700 rounded-2xl p-3 w-full ${className}`}
         >
           <motion.button
             className="mr-2 text-gray-400 hover:text-white transition duration-200 p-2 rounded-full bg-gray-800 hover:bg-gray-600 flex-shrink-0"
@@ -67,7 +67,7 @@ export default function ChatInput({
               }
             }}
             placeholder={`Chat with ${char.name}`}
-            className="flex-1 w-full bg-transparent outline-none text-white px-4 py-2 rounded-full focus:ring-0 resize-none overflow-hidden min-w-0 max-w-full"
+            className="flex-1 w-full bg-transparent outline-none text-white px-4 py-2 rounded-full focus:ring-0 resize-none overflow-hidden min-w-0"
             rows={1}
           />
 

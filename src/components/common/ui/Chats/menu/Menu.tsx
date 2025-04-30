@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { Customization, Cosmetic } from './MenuItem';
+import { Box, Button, MenuItem, MenuList, Paper, Typography } from '@mui/material';
 
 interface MenuProps {
   onClose: () => void;
@@ -38,29 +39,50 @@ export default function Menu({ onClose }: MenuProps) {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.3 }}
-        className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
         onClick={onClose}
+        style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 50,
+        }}
       >
         <motion.div
           initial={{ scale: 0.8 }}
           animate={{ scale: 1 }}
           exit={{ scale: 0.8 }}
           transition={{ duration: 0.2 }}
-          className="bg-gray-800 text-white p-6 rounded-lg shadow-lg w-full max-w-sm relative h-[80vh]"
           onClick={(e) => e.stopPropagation()}
+          style={{
+            background: '#2d3748',
+            color: '#fff',
+            padding: '24px',
+            borderRadius: '8px',
+            boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.25)',
+            width: '100%',
+            maxWidth: '400px',
+            height: '80vh',
+            overflowY: 'auto',
+          }}
         >
-          <div className="flex flex-col">
-            <button
+          <Box display="flex" flexDirection="column">
+            <Button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="flex items-center justify-between w-full px-4 py-2 bg-gray-700 rounded-md text-white hover:bg-gray-600 transition duration-200"
+              variant="contained"
+              color="primary"
+              fullWidth
+              startIcon={isDropdownOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+              sx={{
+                backgroundColor: '#4a5568',
+                '&:hover': { backgroundColor: '#718096' },
+                justifyContent: 'space-between',
+              }}
             >
-              <span>{selectedOption}</span>
-              {isDropdownOpen ? (
-                <ChevronUp size={20} />
-              ) : (
-                <ChevronDown size={20} />
-              )}
-            </button>
+              <Typography>{selectedOption}</Typography>
+            </Button>
 
             <AnimatePresence>
               {isDropdownOpen && (
@@ -69,30 +91,33 @@ export default function Menu({ onClose }: MenuProps) {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -5 }}
                   transition={{ duration: 0.2 }}
-                  className="mt-2 bg-gray-700 text-white rounded-md shadow-lg overflow-hidden"
                 >
-                  <button
-                    className="w-full px-4 py-2 text-left hover:bg-gray-600 transition duration-200"
-                    onClick={() => {
-                      setSelectedOption('Cosmetic');
-                      setIsDropdownOpen(false);
-                    }}
-                  >
-                    Cosmetic
-                  </button>
-                  <button
-                    className="w-full px-4 py-2 text-left hover:bg-gray-600 transition duration-200"
-                    onClick={() => {
-                      setSelectedOption('AI Customization');
-                      setIsDropdownOpen(false);
-                    }}
-                  >
-                    AI Customization
-                  </button>
+                  <Paper elevation={3} sx={{ mt: 2, borderRadius: '8px', overflow: 'hidden' }}>
+                    <MenuList>
+                      <MenuItem
+                        onClick={() => {
+                          setSelectedOption('Cosmetic');
+                          setIsDropdownOpen(false);
+                        }}
+                        sx={{ '&:hover': { backgroundColor: '#718096' } }}
+                      >
+                        Cosmetic
+                      </MenuItem>
+                      <MenuItem
+                        onClick={() => {
+                          setSelectedOption('AI Customization');
+                          setIsDropdownOpen(false);
+                        }}
+                        sx={{ '&:hover': { backgroundColor: '#718096' } }}
+                      >
+                        AI Customization
+                      </MenuItem>
+                    </MenuList>
+                  </Paper>
                 </motion.div>
               )}
             </AnimatePresence>
-          </div>
+          </Box>
 
           {selectedOption === 'Cosmetic' && (
             <Cosmetic onBackgroundChange={applyBackground} />

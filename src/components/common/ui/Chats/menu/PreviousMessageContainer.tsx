@@ -3,9 +3,10 @@ import { motion } from 'framer-motion';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Utils } from '~/Utility/Utility';
 import { useUserStore } from '~/store';
+import { Avatar, CircularProgress, Typography } from '@mui/material';
 
 interface Message {
-  id: number;
+  id: string; // Ensure id is a string if that's what the API returns
   conversation_id: string;
   message: string;
   character_image_url: string;
@@ -102,7 +103,10 @@ export default function PreviousChat({
       <div className="rounded-xl w-full bg-gray-800 flex-grow overflow-auto min-h-[200px] max-h-[400px]">
         {loading ? (
           <div className="flex flex-col items-center justify-center p-4 space-y-4">
-            <p className="text-gray-300">Loading previous chats...</p>
+            <CircularProgress />
+            <Typography variant="body2" color="textSecondary">
+              Loading previous chats...
+            </Typography>
           </div>
         ) : error ? (
           <div className="flex flex-col items-center justify-center p-4 space-y-4">
@@ -113,7 +117,9 @@ export default function PreviousChat({
               whileHover={{ scale: 1.1 }}
               transition={{ duration: 0.5 }}
             />
-            <p className="text-gray-300">{error}</p>
+            <Typography variant="body2" color="textSecondary">
+              {error}
+            </Typography>
           </div>
         ) : messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-4 space-y-4">
@@ -124,9 +130,9 @@ export default function PreviousChat({
               whileHover={{ scale: 1.1 }}
               transition={{ duration: 0.5 }}
             />
-            <p className="text-gray-300">
+            <Typography variant="body2" color="textSecondary">
               No chats to load. Start a new conversation!
-            </p>
+            </Typography>
           </div>
         ) : (
           messages.slice(0, 11).map((message) => (
@@ -139,20 +145,18 @@ export default function PreviousChat({
               className="flex items-start space-x-4 p-4 border-b border-gray-700 cursor-pointer"
               onClick={() => handleMessageClick(message.conversation_id)}
             >
-              <motion.img
+              <Avatar
                 src={message.character_image_url}
                 alt="Avatar"
-                className="w-12 h-12 rounded-full"
-                whileHover={{ scale: 1.1, rotate: 5 }}
-                transition={{ duration: 0.3 }}
+                className="w-12 h-12"
               />
               <div className="flex-1">
-                <p className="text-gray-300 break-words">
+                <Typography variant="body2" color="textSecondary" className="break-words">
                   {truncateMessage(message.message)}
-                </p>
-                <p className="text-xs text-gray-500">
+                </Typography>
+                <Typography variant="caption" color="textSecondary">
                   {new Date(message.created_at).toLocaleString()}
-                </p>
+                </Typography>
               </div>
             </motion.div>
           ))

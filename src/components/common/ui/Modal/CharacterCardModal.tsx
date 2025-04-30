@@ -8,7 +8,7 @@ import { Utils } from '~/Utility/Utility';
 import { useUserStore } from '~/store';
 import { WindowAlert } from '~/components';
 import posthog from 'posthog-js';
-import { Box, Typography, IconButton, Button, Tooltip } from '@mui/material';
+import { Box, Typography, IconButton, Button, Tooltip, CircularProgress } from '@mui/material';
 
 interface CharacterCardModalProps {
   isOpen: boolean;
@@ -134,7 +134,7 @@ export default function CharacterCardModal({
                   className="flex-1"
                   onClick={handleChatNow}
                   disabled={isLoading}
-                  startIcon={isLoading ? <span>Processing...</span> : null}
+                  startIcon={isLoading ? <CircularProgress size={24} /> : null}
                 >
                   {isLoading ? 'Processing...' : 'Chat Now'}
                 </Button>

@@ -1,5 +1,6 @@
 import TypingIndicator from '../Indicator/TypingIndicator';
 import CustomMarkdown from '../Markdown/CustomMarkdown';
+import { Box, Avatar } from '@mui/material';
 
 interface Message {
   name: string;
@@ -28,7 +29,7 @@ export default function ChatMessages({
   role,
 }: ChatMessagesProps) {
   return (
-    <div className="space-y-4 p-4 max-w-2xl mx-auto">
+    <Box className="space-y-4 p-4 max-w-2xl mx-auto">
       {previous_message.map((msg, index) => {
         const isUser = msg.type === 'user';
         const displayName = isUser ? msg.user_name : msg.name || 'Anon';
@@ -37,23 +38,28 @@ export default function ChatMessages({
           `https://api.dicebear.com/9.x/adventurer/svg?seed=${msg.name?.split('@')[0] || 'Anon'}`;
 
         return (
-          <div
+          <Box
             key={index}
-            className={`flex items-start ${isUser ? 'justify-end' : 'justify-start'}`}
+            display="flex"
+            alignItems="start"
+            justifyContent={isUser ? 'flex-end' : 'flex-start'}
             data-message-id={messageId ?? undefined}
             data-message-token={msg.token ?? token ?? undefined}
             data-role-message={msg.role ?? role ?? undefined}
+            className={`flex items-start ${isUser ? 'justify-end' : 'justify-start'}`}
           >
             {!isUser && (
-              <img
-                src={icon}
+              <Avatar
                 alt={displayName}
-                className="w-8 h-8 rounded-full mr-3"
+                src={icon}
+                sx={{ width: 32, height: 32 }}
+                className="rounded-full"
               />
             )}
 
-            <div
+            <Box
               className={`flex flex-col max-w-md p-3 rounded-lg shadow-md ${isUser ? 'bg-green-600 text-white' : 'bg-gray-700 text-white'}`}
+              sx={{ marginLeft: !isUser ? 2 : 0, marginRight: isUser ? 2 : 0 }}
             >
               {isGenerating &&
                 !isUser &&
@@ -63,18 +69,19 @@ export default function ChatMessages({
                 user={msg.user_name || 'User'}
                 char={msg.char_name || 'Anon'}
               />
-            </div>
+            </Box>
 
             {isUser && (
-              <img
-                src={icon}
+              <Avatar
                 alt={displayName}
-                className="w-8 h-8 rounded-full ml-3"
+                src={icon}
+                sx={{ width: 32, height: 32 }}
+                className="rounded-full"
               />
             )}
-          </div>
+          </Box>
         );
       })}
-    </div>
+    </Box>
   );
 }
