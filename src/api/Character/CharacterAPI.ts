@@ -1,6 +1,7 @@
 import { supabase } from '~/Utility/supabaseClient';
 import { Character } from '@shared-types/CharacterProp';
 import { toast } from 'react-toastify';
+import * as Sentry from '@sentry/react';
 
 export const fetchCharacters = async (
   currentPage: number,
@@ -47,8 +48,10 @@ export const fetchCharacters = async (
     };
   } catch (error) {
     if (error instanceof Error) {
+      Sentry.captureException(error);
       toast.error('Error fetching characters: ' + error.message);
     } else {
+      Sentry.captureMessage('An unknown error occurred.');
       toast.error('An unknown error occurred.');
     }
     return {

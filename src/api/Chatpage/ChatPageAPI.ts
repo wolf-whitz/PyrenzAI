@@ -1,6 +1,7 @@
 import { Utils } from '~/Utility/Utility';
 import { Character, Message } from '@shared-types/chatTypes';
 import { toast } from 'react-toastify';
+import * as Sentry from '@sentry/react';
 
 export const fetchChatData = async (
   conversation_id: string,
@@ -78,8 +79,10 @@ export const fetchChatData = async (
   } catch (error) {
     if (error instanceof Error) {
       toast.error('Error fetching chat data: ' + error.message);
+      Sentry.captureException(error);
     } else {
       toast.error('An unknown error occurred.');
+      Sentry.captureException(error);
     }
     throw error;
   }

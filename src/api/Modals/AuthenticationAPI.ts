@@ -1,6 +1,7 @@
 import posthog from 'posthog-js';
 import { supabase } from '~/Utility/supabaseClient';
 import { Utils, AuthTokenName } from '~/Utility/Utility';
+import * as Sentry from '@sentry/react';
 
 interface AppUser {
   id: string;
@@ -35,6 +36,7 @@ export const extractTokensFromLocalStorage = (): {
   } catch (err) {
     const error = err as Error;
     console.error('Error parsing auth data:', error);
+    Sentry.captureException(error);
   }
   return null;
 };
@@ -54,6 +56,7 @@ export const sendUserDataToSupabase = async (user: AppUser): Promise<void> => {
 
     if (response.error) {
       console.error('Error sending user data:', response.error);
+      Sentry.captureMessage(`Error sending user data: ${response.error}`);
     } else {
       console.log('User data successfully sent!');
       posthog.identify(user.id, {
@@ -65,6 +68,7 @@ export const sendUserDataToSupabase = async (user: AppUser): Promise<void> => {
   } catch (err) {
     const error = err as Error;
     console.error('Unexpected error:', error);
+    Sentry.captureException(error);
   }
 };
 
@@ -86,7 +90,9 @@ export const handleLogin = async (email: string, password: string) => {
 
     return { success: true };
   } catch (err: any) {
-    throw new Error(err.message || 'An unexpected error occurred.');
+    const error = new Error(err.message || 'An unexpected error occurred.');
+    Sentry.captureException(error);
+    throw error;
   }
 };
 
@@ -105,7 +111,9 @@ export const handleOAuthSignIn = async (provider: 'google' | 'discord') => {
 
     return { success: true };
   } catch (err: any) {
-    throw new Error(err.message || 'Failed to sign in with OAuth.');
+    const error = new Error(err.message || 'Failed to sign in with OAuth.');
+    Sentry.captureException(error);
+    throw error;
   }
 };
 
@@ -132,6 +140,8 @@ export const handleSignUp = async (email: string, password: string, isAdult: boo
 
     return { success: true };
   } catch (err: any) {
-    throw new Error(err.message || 'An unexpected error occurred.');
+    const error = new Error(err.message || 'An unexpected error occurred.');
+    Sentry.captureException(error);
+    throw error;
   }
 };
