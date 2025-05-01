@@ -32,6 +32,7 @@ import CreateButton from '@ui/Buttons/CreateBtn';
 import DropdownField from '@ui/Dropdown/DropdownField';
 import CheckboxField from '@ui/Input/CheckBox';
 import InputField from '@ui/Input/InputField';
+import AISelectDropdown from '@ui/Dropdown/AISelectDropdown'
 
 // Textrea
 import Textarea from '@ui/Textarea/Textarea';
@@ -56,7 +57,6 @@ import TokenSummary from '@ui/Summary/TokenSummary';
 import VisibilityCheckboxes from '@ui/CheckBox/VisibilityCheckboxes';
 import GenderDropdown from '@ui/Dropdown/GenderDropdown';
 import ImageUpload from '@ui/ImageUploader/ImageUpload';
-
 // UI/UX Components
 import CharacterCard from '@ui/Cards/CharacterCard';
 import LoadMore from '@ui/LoadMore/LoadMoreButton';
@@ -102,7 +102,8 @@ export {
   VisibilityCheckboxes,
   GenderDropdown,
   ImageUpload,
-
+  AISelectDropdown,
+  
   //WindowAlert
   WindowAlert,
 

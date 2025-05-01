@@ -4,6 +4,7 @@ import llamaTokenizer from 'llama-tokenizer-js';
 import { useCharacterStore } from '~/store';
 import { motion } from 'framer-motion';
 import { TextField, Tooltip as MUITooltip, Typography } from '@mui/material';
+import classNames from 'classnames';
 
 interface TextareaProps {
   name?: string;
@@ -13,6 +14,8 @@ interface TextareaProps {
   placeholder?: string;
   showTokenizer?: boolean;
   className?: string;
+  maxLength?: number;
+  require_link?: boolean;
 }
 
 export default function Textarea({
@@ -23,9 +26,11 @@ export default function Textarea({
   placeholder = '',
   showTokenizer = false,
   className = '',
+  maxLength = 15000,
+  require_link = false,
 }: TextareaProps) {
   const [tokenCount, setTokenCount] = useState(0);
-  const maxLength = 15000;
+  const [isLinkValid, setIsLinkValid] = useState(true);
   const characterCount = Math.round(value.length);
   const isMaxLengthExceeded = characterCount > maxLength;
 
@@ -53,12 +58,26 @@ export default function Textarea({
     }
   }, [value, showTokenizer, setCharacterData, name]);
 
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newValue = e.target.value;
+    if (require_link) {
+      const urlPattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+      setIsLinkValid(urlPattern.test(newValue));
+      if (!urlPattern.test(newValue)) {
+        return;
+      }
+    }
+    if (newValue.length <= maxLength) {
+      onChange(e);
+    }
+  };
+
   const textareaId =
     name || `textarea-${Math.random().toString(36).substr(2, 9)}`;
 
   return (
     <motion.div
-      className={`w-full mb-4 relative ${className}`}
+      className={classNames('w-full mb-4 relative', className)}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
@@ -79,18 +98,22 @@ export default function Textarea({
         id={textareaId}
         name={name}
         value={value}
-        onChange={onChange}
+        onChange={handleChange}
         placeholder={placeholder}
         multiline
         rows={4}
         variant="outlined"
         fullWidth
+        error={!isLinkValid}
+        helperText={!isLinkValid ? 'Please enter a valid link.' : ''}
         InputProps={{
-          className: `text-white bg-gray-800 border-none focus:outline-none focus:ring-2 shadow-md transition-all duration-300 ease-in-out ${
-            isMaxLengthExceeded
-              ? 'ring-red-500'
-              : 'focus:ring-gray-600 hover:ring-gray-700'
-          }`,
+          className: classNames(
+            'text-white bg-gray-800 border-none focus:outline-none focus:ring-2 shadow-md transition-all duration-300 ease-in-out',
+            {
+              'ring-red-500': isMaxLengthExceeded,
+              'focus:ring-gray-600 hover:ring-gray-700': !isMaxLengthExceeded,
+            }
+          ),
           style: { resize: 'none' },
         }}
         inputProps={{

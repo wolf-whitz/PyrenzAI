@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Utils } from '~/Utility/Utility';
-import { useUserStore } from '~/store';
-import { useCharacterStore } from '~/store';
+import { useUserStore, useCharacterStore } from '~/store';
 import { supabase } from '~/Utility/supabaseClient';
 import {
   GenderDropdown,
@@ -13,45 +12,7 @@ import {
 } from '~/components';
 import TextareaForm from "./Childrens/TextareaForm";
 import posthog from 'posthog-js';
-
-interface CharacterData {
-  persona: string;
-  name: string;
-  model_instructions: string;
-  scenario: string;
-  description: string;
-  first_message: string;
-  tags: string;
-  gender: string;
-  is_public: boolean;
-  is_nsfw: boolean;
-  textarea_token: { [key: string]: number };
-  token_total: number;
-}
-
-interface Draft {
-  id: number;
-  user_uuid: string;
-  persona: string;
-  name: string;
-  model_instructions: string;
-  scenario: string;
-  description: string;
-  first_message: string;
-  tags: string;
-  gender: string;
-  is_public: boolean;
-  is_nsfw: boolean;
-  textarea_token: { [key: string]: number };
-  token_total: number;
-  created_at: string;
-  updated_at: string;
-}
-
-interface ApiResponse {
-  data?: any;
-  error?: any;
-}
+import { CharacterData, Draft, ApiResponse } from '@shared-types/CharacterProp';
 
 export default function CharacterForm() {
   const [loading, setLoading] = useState(false);
@@ -171,9 +132,23 @@ export default function CharacterForm() {
     });
   };
 
-  const handleImportCharacter = () => {
-    // Implement the logic to handle character import
-    console.log('Import Character button clicked');
+  const handleImportCharacter = (data: CharacterData | null) => {
+    if (data) {
+      setCharacterData({
+        persona: data.persona || '', // Ensure persona is a string
+        name: data.name || '',
+        model_instructions: data.model_instructions || '',
+        scenario: data.scenario || '',
+        description: data.description || '',
+        first_message: data.first_message || '',
+        tags: data.tags || '',
+        gender: data.gender || '',
+        is_public: data.is_public || false,
+        is_nsfw: data.is_nsfw || false,
+        textarea_token: data.textarea_token || {},
+        token_total: data.token_total || 0,
+      });
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -233,7 +208,7 @@ export default function CharacterForm() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center bg-gray-900 p-6">
+    <div className="flex flex-col items-center justify-center bg-gray-900 p-6 min-h-screen">
       <form
         onSubmit={handleSubmit}
         className="bg-black p-8 rounded-lg shadow-lg w-full max-w-2xl space-y-6"

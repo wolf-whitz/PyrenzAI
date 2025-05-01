@@ -1,27 +1,10 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Button, CircularProgress } from '@mui/material';
 import { CreateButton, DraftsModal, ImportCharacterModal } from '~/components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileAlt, faSave, faUpload } from '@fortawesome/free-solid-svg-icons';
-
-interface Draft {
-  id: number;
-  user_uuid: string;
-  persona: string;
-  name: string;
-  model_instructions: string;
-  scenario: string;
-  description: string;
-  first_message: string;
-  tags: string;
-  gender: string;
-  is_public: boolean;
-  is_nsfw: boolean;
-  textarea_token: { [key: string]: number };
-  token_total: number;
-  created_at: string;
-  updated_at: string;
-}
+import { CharacterData, Draft } from '@shared-types/CharacterProp';
 
 interface FormActionsProps {
   onClear: () => void;
@@ -29,7 +12,7 @@ interface FormActionsProps {
   loading: boolean;
   saveLoading: boolean;
   onSelectDraft: (draft: Draft) => void;
-  onImportCharacter: () => void;
+  onImportCharacter: (data: CharacterData | null) => void;
 }
 
 export default function FormActions({
@@ -61,52 +44,53 @@ export default function FormActions({
 
   return (
     <motion.div
-      className="flex justify-end space-x-2 mt-4"
+      className="flex flex-wrap justify-end space-x-2 space-y-2 mt-4"
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <motion.button
-        type="button"
+      <Button
+        variant="contained"
         onClick={onClear}
-        className="text-white p-3 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+        className="w-full sm:w-auto"
+        sx={{
+          bgcolor: 'black',
+          color: 'white',
+          '&:hover': { bgcolor: 'gray.700' },
+          '&:focus': { outline: 'none', ring: '2px solid gray.500' }
+        }}
       >
         Clear
-      </motion.button>
-      <motion.button
-        type="button"
+      </Button>
+      <Button
+        variant="contained"
+        color="primary"
         onClick={onSave}
         disabled={saveLoading}
-        className="text-white p-3 rounded-lg bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 flex items-center"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+        className="w-full sm:w-auto"
+        startIcon={saveLoading ? <CircularProgress size={20} color="inherit" /> : <FontAwesomeIcon icon={faSave} />}
       >
-        <FontAwesomeIcon icon={faSave} className="mr-2" />
         {saveLoading ? 'Saving...' : 'Save'}
-      </motion.button>
-      <motion.button
-        type="button"
+      </Button>
+      <Button
+        variant="contained"
+        color="primary"
         onClick={handleOpenDraftModal}
-        className="text-white p-3 rounded-lg bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-green-400 flex items-center"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+        className="w-full sm:w-auto"
+        startIcon={<FontAwesomeIcon icon={faFileAlt} />}
       >
-        <FontAwesomeIcon icon={faFileAlt} className="mr-2" />
         Drafts
-      </motion.button>
-      <motion.button
-        type="button"
+      </Button>
+      <Button
+        variant="contained"
+        color="primary"
         onClick={handleOpenImportCharacterModal}
-        className="text-white p-3 rounded-lg bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 flex items-center"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+        className="w-full sm:w-auto"
+        startIcon={<FontAwesomeIcon icon={faUpload} />}
       >
-        <FontAwesomeIcon icon={faUpload} className="mr-2" />
         Import Character
-      </motion.button>
-      <CreateButton loading={loading} />
+      </Button>
+      <CreateButton loading={loading} className="w-full sm:w-auto" />
       {isDraftModalOpen && (
         <DraftsModal onClose={handleCloseDraftModal} onSelect={onSelectDraft} />
       )}

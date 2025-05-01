@@ -1,10 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Button, Tabs, Tab, Typography, Select, MenuItem, FormControl, InputLabel, SelectChangeEvent } from '@mui/material';
-import { Textarea } from '~/components';
-import { IoCloudUploadOutline, IoLinkOutline } from 'react-icons/io5';
+import { Button, Typography, SelectChangeEvent, CircularProgress } from '@mui/material';
+import { Textarea, AISelectDropdown } from '~/components';
 import { Utils } from '~/Utility/Utility';
 import { toast, ToastContainer } from 'react-toastify';
+import * as Sentry from '@sentry/react';
 import 'react-toastify/dist/ReactToastify.css';
 
 interface ImportCharacterModalProps {
@@ -13,7 +13,10 @@ interface ImportCharacterModalProps {
 }
 
 interface ImportCharacterResponse {
-  data: any;
+  success: boolean;
+  data: {
+    error: string;
+  };
 }
 
 interface AIOption {
@@ -22,27 +25,23 @@ interface AIOption {
 }
 
 const aiOptions: AIOption[] = [
-  { Website: "ChubAI", Placeholder: "Enter ChubAI link here" },
-  { Website: "CharacterAI", Placeholder: "Enter Character AI link here" }
+  { Website: "SakuraFm", Placeholder: "Link Example: https://www.sakura.fm/chat/4Xa0Rsc?id=3mBbOSH" },
+  { Website: "Dopple", Placeholder: "Link Example: https://beta.hiwaifu.com/chat/chattow?destination=newChat&chat_id=4443d97b7e433b321c875839fef1af93&session_id=433476874" },
+  { Website: "Character AI", Placeholder: "Link Example: https://character.ai/chat/smtV3Vyez6ODkwS8BErmBAdgGNj-1XWU73wIFVOY1hQ" },
+  { Website: "FlowGPT", Placeholder: "Link Example: https://flowgpt.com/chat/investgpt-use-chatgpt-to-invest" },
+  { Website: "SpicyChat", Placeholder: "Link Example: https://spicychat.ai/chat/bc0e0b5a-0f72-4f1a-a2f4-5ce50849c6f7" },
+  { Website: "PepHopAi", Placeholder: "Link Example: https://pephop.ai/characters/12fe3b95-b73b-434c-88e7-a9276ddcd70a_character-chef-lauren" },
+  { Website: "ChubAI", Placeholder: "Link Example: https://chub.ai/characters/dsiqueira/misandristic-society-of-themyscira-23f168c6f709" },
+  { Website: "PolyAI", Placeholder: "Link Example: https://www.polybuzz.ai/character/chat/pb2HN?recSid=f6df7cae5f678272:cbda1a8b8be92cbc:164c4bb9f71f236b:1&chatScene=3&genderTab=all" },
+  { Website: "CharSnap", Placeholder: "Link Example: https://charsnap.ai/conversation/1af4c8b1-10e1-46a9-8055-2ab3c2d3458e" },
+  { Website: "SpellBound", Placeholder: "Link Example: https://www.tryspellbound.com/app/characters/169123" },
 ];
 
 export default function ImportCharacterModal({ onClose, onImport }: ImportCharacterModalProps) {
-  const [activeTab, setActiveTab] = useState(0);
-  const [file, setFile] = useState<File | null>(null);
   const [link, setLink] = useState('');
-  const [selectedAI, setSelectedAI] = useState('');
-  const [placeholder, setPlaceholder] = useState('');
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    setActiveTab(newValue);
-  };
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      setFile(event.target.files[0]);
-    }
-  };
+  const [selectedAI, setSelectedAI] = useState('Character AI');
+  const [placeholder, setPlaceholder] = useState('Link Example: https://character.ai/chat/smtV3Vyez6ODkwS8BErmBAdgGNj-1XWU73wIFVOY1hQ');
+  const [loading, setLoading] = useState(false);
 
   const handleLinkChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setLink(event.target.value);
@@ -57,21 +56,33 @@ export default function ImportCharacterModal({ onClose, onImport }: ImportCharac
   };
 
   const handleImport = async () => {
-    if (activeTab === 0 && file) {
-      onImport(file);
-    } else if (activeTab === 1 && link) {
-      try {
-        const response = await Utils.post<ImportCharacterResponse>('/api/ImportCharacter', { link, ai: selectedAI });
-        onImport(response.data);
-      } catch (error) {
-        toast.error('Error importing character');
-      }
+    if (!link || !selectedAI) {
+      toast.error('Please complete all required fields.');
+      return;
     }
-    onClose();
-  };
 
-  const handleFileButtonClick = () => {
-    fileInputRef.current?.click();
+    setLoading(true);
+    try {
+      const response = await Utils.post<ImportCharacterResponse>('/api/CharacterExtract', { type: selectedAI, url: link });
+      if (response.success && response.data.error && response.data.error !== "") {
+        toast.error('Error importing character: ' + response.data.error);
+        Sentry.captureMessage('Error importing character', {
+          extra: {
+            error: response.data.error,
+          },
+        });
+      } else {
+        onImport(response.data);
+        toast.success('Character imported successfully!');
+        onClose();
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      toast.error('Error importing character: ' + errorMessage);
+      Sentry.captureException(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -89,73 +100,34 @@ export default function ImportCharacterModal({ onClose, onImport }: ImportCharac
           animate={{ scale: 1 }}
           exit={{ scale: 0.8 }}
         >
-          <Tabs
-            value={activeTab}
-            onChange={handleTabChange}
-            aria-label="import tabs"
-            sx={{ color: 'white' }}
-          >
-            <Tab icon={<IoCloudUploadOutline />} label="File" iconPosition="start" sx={{ color: 'white' }} />
-            <Tab icon={<IoLinkOutline />} label="Link" iconPosition="start" sx={{ color: 'white' }} />
-          </Tabs>
           <div className="mt-4">
-            {activeTab === 0 && (
-              <div>
-                <Typography variant="body1" sx={{ color: 'white' }}>
-                  Import a Tavern JSON or XML:
-                </Typography>
-                <Button variant="contained" onClick={handleFileButtonClick} className="mt-2" sx={{ color: 'white' }}>
-                  Choose File
-                </Button>
-                <input
-                  type="file"
-                  accept=".json,.xml"
-                  onChange={handleFileChange}
-                  ref={fileInputRef}
-                  hidden
-                />
-                {file && (
-                  <Typography variant="body2" sx={{ color: 'white', mt: 2 }}>
-                    Selected file: {file.name}
-                  </Typography>
-                )}
-              </div>
-            )}
-            {activeTab === 1 && (
-              <div>
-                <FormControl fullWidth className="mb-4">
-                  <InputLabel id="ai-select-label" sx={{ color: 'white' }}>Select AI</InputLabel>
-                  <Select
-                    labelId="ai-select-label"
-                    id="ai-select"
-                    value={selectedAI}
-                    label="Select AI"
-                    onChange={handleAISelectionChange}
-                    sx={{ color: 'white' }}
-                  >
-                    {aiOptions.map((option, index) => (
-                      <MenuItem key={index} value={option.Website}>
-                        {option.Website}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                <Textarea
-                  label="Import a character using link (You are allowed to bulk import characters)"
-                  value={link}
-                  onChange={handleLinkChange}
-                  className="mt-2 w-full"
-                  placeholder={placeholder || "Enter link here"}
-                />
-              </div>
-            )}
+            <AISelectDropdown
+              options={aiOptions}
+              selectedAI={selectedAI}
+              placeholder={placeholder}
+              onAISelectionChange={handleAISelectionChange}
+            />
+            <Textarea
+              label="Import a character using link"
+              value={link}
+              onChange={handleLinkChange}
+              className="mt-2 w-full"
+              placeholder={placeholder || "Enter link here"}
+              maxLength={100}
+              require_link={true}
+            />
           </div>
           <div className="flex justify-end mt-4 space-x-2">
             <Button variant="outlined" onClick={onClose} sx={{ color: 'white', borderColor: 'white' }}>
               Cancel
             </Button>
-            <Button variant="contained" color="primary" onClick={handleImport}>
-              Import
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleImport}
+              disabled={loading || !link || !selectedAI}
+            >
+              {loading ? <CircularProgress size={24} sx={{ color: 'white' }} /> : 'Import'}
             </Button>
           </div>
         </motion.div>

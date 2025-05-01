@@ -24,14 +24,6 @@ posthog.init(posthogConfig.apiKey, {
   loaded: posthogConfig.loaded,
 });
 
-window.addEventListener('error', (event) => {
-  posthog.captureException(event.error);
-});
-
-window.addEventListener('unhandledrejection', (event) => {
-  posthog.captureException(event.reason);
-});
-
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <I18nextProvider i18n={i18n}>
