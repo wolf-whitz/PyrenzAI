@@ -9,7 +9,7 @@ const VITE_PUBLIC_POSTHOG_KEY = "phc_VzYgf0QQbnP8w3cco1l9atGPzZcrBpYwCNIglwnI5iE
 const POSTHOG_API_HOST = "https://us.i.posthog.com"
 
 // Check the environment variable for SERVER_API_URL
-const VITE_SERVER_API_URL = import.meta.env.SERVER_API_URL || 'http://localhost:8080';
+const SERVER_API_URL = import.meta.env.VITE_SERVER_API_URL || 'http://localhost:8080';
 
 const posthogConfig = {
   apiKey: VITE_PUBLIC_POSTHOG_KEY,
@@ -20,4 +20,4 @@ const posthogConfig = {
   },
 }; // Posthog Configs
 
-export { SUPABASE_URL, SUPABASE_ANON_KEY, VITE_PUBLIC_POSTHOG_KEY, posthogConfig, VITE_SERVER_API_URL as SERVER_API_URL };
+export { SUPABASE_URL, SUPABASE_ANON_KEY, VITE_PUBLIC_POSTHOG_KEY, posthogConfig, SERVER_API_URL };
