@@ -22,6 +22,11 @@
     "placeholder": "Search characters...",
     "ariaLabel": "Search characters"
   },
+  "LanguageModal": {
+    "selectLanguage": "Select Language",
+    "requestLanguage": "Request a Language",
+    "foundGrammarIssue": "Found a Grammar Issue"
+  },
   "features": {
     "smartFastFree": "Smart.",
     "smartFastFreeDescription": "Talk with characters anytime, no limitations, just fun—unlimited messages, all the time!",

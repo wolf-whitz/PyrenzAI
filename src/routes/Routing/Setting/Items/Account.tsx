@@ -10,28 +10,29 @@ import { useNavigate } from 'react-router-dom';
 import { Avatar, Button, Container, Typography, Box } from '@mui/material';
 
 export default function Account() {
-  const [languages, setLanguages] = useState<string[]>([]);
+  const [languages, setLanguages] = useState<{ code: string; name: string }[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch('/language.json')
+    fetch('/Languages/Languages.json')
       .then((response) => response.json())
       .then((data) => {
-        setLanguages(data.availableLanguages || []);
-      });
+        setLanguages(data.languages || []);
+      })
+      .catch((error) => console.error('Error fetching languages:', error));
 
     const fetchUser = async () => {
-      const { data, error } = await supabase.auth.getSession();
-      if (error || !data.session) {
-        console.error('Error fetching session:', error);
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError || !sessionData.session) {
+        console.error('Error fetching session:', sessionError);
       } else {
-        const userData = await supabase.auth.getUser();
-        if (userData.error) {
-          console.error('Error fetching user:', userData.error);
+        const { data: userData, error: userError } = await supabase.auth.getUser();
+        if (userError) {
+          console.error('Error fetching user:', userError);
         } else {
-          setUser(userData.data.user);
+          setUser(userData.user);
         }
       }
     };
@@ -70,7 +71,7 @@ export default function Account() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.4, ease: 'easeOut' }}
+      transition={{ duration: 0.6, ease: [0.42, 0, 0.58, 1] }}
       style={{ display: 'flex', flexDirection: 'column', gap: '1rem', justifyContent: 'center', alignItems: 'center', height: '100%', color: 'white' }}
     >
       <Box textAlign="center" mb={6}>
@@ -104,7 +105,7 @@ export default function Account() {
         <Typography variant="body1">
           Language
         </Typography>
-        <motion.div whileHover={{ scaleX: -1 }} transition={{ duration: 0.1 }}>
+        <motion.div whileHover={{ scaleX: -1 }} transition={{ duration: 0.3 }}>
           <Button
             onClick={toggleModal}
             style={{ color: '#fff', minWidth: 0 }}
@@ -126,7 +127,7 @@ export default function Account() {
         <Typography variant="body1">
           Log Out
         </Typography>
-        <motion.div whileHover={{ scaleX: -1 }} transition={{ duration: 0.1 }}>
+        <motion.div whileHover={{ scaleX: -1 }} transition={{ duration: 0.3 }}>
           <Button
             onClick={handleLogOut}
             style={{ color: '#fff', minWidth: 0 }}
@@ -148,7 +149,7 @@ export default function Account() {
         <Typography variant="body1">
           Delete Account
         </Typography>
-        <motion.div whileHover={{ scaleX: -1 }} transition={{ duration: 0.1 }}>
+        <motion.div whileHover={{ scaleX: -1 }} transition={{ duration: 0.3 }}>
           <Button
             onClick={handleDeleteAccount}
             style={{ color: '#fff', minWidth: 0 }}

@@ -36,7 +36,7 @@ export default function Persona() {
       }
 
       const mappedData = data.map(item => ({
-        id: item.persona_profile,
+        id: item.persona_profile || Math.random().toString(36).substr(2, 9),
         name: item.persona_name,
         description: item.persona_description,
         selected: item.selected,
@@ -70,7 +70,7 @@ export default function Persona() {
 
       if (data && data.length > 0) {
         const newPersona: PersonaCard = {
-          id: data[0].persona_profile,
+          id: data[0].persona_profile || Math.random().toString(36).substr(2, 9), // Ensure a unique ID
           name: data[0].persona_name,
           description: data[0].persona_description,
         };
@@ -92,6 +92,16 @@ export default function Persona() {
       ? `${description.slice(0, limit)}...`
       : description;
   };
+
+  if (!user_uuid) {
+    return (
+      <div className="flex flex-col gap-4">
+        <Typography variant="h6" className="text-white text-center">
+          Please log in to access your account settings.
+        </Typography>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-4">

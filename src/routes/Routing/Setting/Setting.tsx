@@ -14,6 +14,7 @@ export default function Setting() {
   const [activeTab, setActiveTab] = useState<'account' | 'profile' | 'preference' | 'persona'>('account');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -25,11 +26,13 @@ export default function Setting() {
         const userData = await supabase.auth.getUser();
         if (userData.error) {
           console.error('Error fetching user:', userData.error);
+          setIsAuthenticated(false);
         } else {
           setUser(userData.data.user);
           setIsAuthenticated(true);
         }
       }
+      setIsLoading(false);
     };
 
     fetchUser();
@@ -40,6 +43,14 @@ export default function Setting() {
   };
 
   const renderContent = () => {
+    if (isLoading) {
+      return (
+        <Box display="flex" justifyContent="center" alignItems="center" height="100%" minHeight="300px">
+          <CircularProgress />
+        </Box>
+      );
+    }
+
     if (!isAuthenticated && activeTab === 'account') {
       return (
         <Box display="flex" justifyContent="center" alignItems="center" height="100%" minHeight="300px">
