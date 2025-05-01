@@ -20,6 +20,20 @@ const theme = createTheme({
       secondary: isDarkMode ? '#d1d5db' : '#4b5563',
     },
   },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          minWidth: 'auto',
+          padding: '6px 12px',
+        },
+        sizeSmall: {
+          padding: '4px 8px',
+          fontSize: '0.875rem',
+        },
+      },
+    },
+  },
 });
 
 export default theme;

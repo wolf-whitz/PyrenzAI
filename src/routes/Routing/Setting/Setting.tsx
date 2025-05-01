@@ -8,9 +8,10 @@ import { Tabs, Tab, Box, Typography, CircularProgress } from '@mui/material';
 const Account = React.lazy(() => import('./Items/Account'));
 const Profile = React.lazy(() => import('./Items/Profile'));
 const Preference = React.lazy(() => import('./Items/Preference'));
+const Persona = React.lazy(() => import('./Items/Persona'));
 
 export default function Setting() {
-  const [activeTab, setActiveTab] = useState<'account' | 'profile' | 'preference'>('account');
+  const [activeTab, setActiveTab] = useState<'account' | 'profile' | 'preference' | 'persona'>('account');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
 
@@ -34,7 +35,7 @@ export default function Setting() {
     fetchUser();
   }, []);
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: 'account' | 'profile' | 'preference') => {
+  const handleTabChange = (event: React.SyntheticEvent, newValue: 'account' | 'profile' | 'preference' | 'persona') => {
     setActiveTab(newValue);
   };
 
@@ -56,6 +57,8 @@ export default function Setting() {
         return <Profile />;
       case 'preference':
         return <Preference />;
+      case 'persona':
+        return <Persona />;
       default:
         return <Account />;
     }
@@ -69,6 +72,7 @@ export default function Setting() {
           <Tab label="Account" value="account" />
           <Tab label="Profile" value="profile" />
           <Tab label="Preference" value="preference" />
+          <Tab label="Persona" value="persona" />
         </Tabs>
         <Suspense fallback={<Box display="flex" justifyContent="center" alignItems="center" height="100%"><CircularProgress /></Box>}>
           <motion.div

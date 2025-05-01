@@ -26,13 +26,13 @@
     {
       "src": "https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/Mobile.avif",
       "sizes": "658x971",
-      "type": "image/avif",
-      "form_factor": "wide"
+      "type": "image/avif"
     },
     {
       "src": "https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/Window.avif",
       "sizes": "1915x972",
-      "type": "image/avif"
+      "type": "image/avif",
+      "form_factor": "wide"
     }
   ]
 }

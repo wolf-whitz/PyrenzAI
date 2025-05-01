@@ -9,7 +9,6 @@ import FeaturesSection from '@layout/Sections/FeaturesSection';
 
 // Sidebar Components
 import Sidebar from '@layout/Sidebar/sidebar';
-import CharacterViewSidebar from '~/components/common/layout/Sidebar/CharacterViewSidebar.tsx';
 import MobileSidebar from '@layout/Sidebar/sidebar';
 import SettingsSidebar from '@layout/Sidebar/SettingsSidebar';
 import CommunityGuidelines from '@layout/Sidebar/GuidelineSidebar';
@@ -71,6 +70,7 @@ import DownloadModal from '@ui/Modal/DownloadsModal';
 import LanguageModal from '@ui/Modal/LanguageModal';
 import DraftsModal from '@ui/Modal/DraftsModal';
 import MoreButtonsModal from '@ui/Modal/MoreButtonsModal';
+import CreatePersonaModal from '@ui/Modal/CreatePersonaModal';
 
 // Card Components
 import { Card, CardContent, CardTitle, CardHeader } from '@ui/ShadCdn/card';
@@ -141,7 +141,6 @@ export {
 
   // Sidebar
   Sidebar,
-  CharacterViewSidebar,
   MobileSidebar,
   SettingsSidebar,
   CommunityGuidelines,
@@ -156,6 +155,7 @@ export {
   LanguageModal,
   DraftsModal,
   MoreButtonsModal,
+  CreatePersonaModal,
   
   // Cards
   Card,
