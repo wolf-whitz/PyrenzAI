@@ -14,7 +14,7 @@ const SERVER_API_URL = import.meta.env.VITE_SERVER_API_URL || 'http://localhost:
 const posthogConfig = {
   apiKey: VITE_PUBLIC_POSTHOG_KEY,
   apiHost: POSTHOG_API_HOST,
-  debug: import.meta.env.VITE_MODE === 'development',
+  debug: import.meta.env.MODE === 'development',
   loaded: (posthog: PostHog) => {
     console.log('PostHog loaded!', posthog);
   },
