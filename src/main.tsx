@@ -16,7 +16,8 @@ import * as Sentry from "@sentry/react";
 
 Sentry.init({
   dsn: "https://2bed6b35dd70e8068f61a53812a8a5fc@o4509146215284736.ingest.us.sentry.io/4509243214725120",
-  sendDefaultPii: true
+  sendDefaultPii: true,
+  tracesSampleRate: 1.0,
 });
 
 posthog.init(posthogConfig.apiKey, {
