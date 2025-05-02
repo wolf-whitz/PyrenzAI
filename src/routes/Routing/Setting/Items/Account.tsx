@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { LanguageModal } from '@components/index';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { ChevronLeft } from 'lucide-react';
 import { supabase } from '~/Utility/supabaseClient';
 import { Utils } from '~/Utility/Utility';
 import { User } from '@supabase/supabase-js';
@@ -122,7 +121,7 @@ export default function Account() {
           <Button
             onClick={toggleModal}
             style={{ color: '#fff', minWidth: 0 }}
-            startIcon={<FontAwesomeIcon icon={faChevronLeft} />}
+            startIcon={<ChevronLeft />}
           />
         </motion.div>
       </Box>
@@ -142,7 +141,7 @@ export default function Account() {
           <Button
             onClick={handleLogOut}
             style={{ color: '#fff', minWidth: 0 }}
-            startIcon={<FontAwesomeIcon icon={faChevronLeft} />}
+            startIcon={<ChevronLeft />}
           />
         </motion.div>
       </Box>
@@ -162,7 +161,7 @@ export default function Account() {
           <Button
             onClick={handleDeleteAccount}
             style={{ color: '#fff', minWidth: 0 }}
-            startIcon={<FontAwesomeIcon icon={faChevronLeft} />}
+            startIcon={<ChevronLeft />}
           />
         </motion.div>
       </Box>

@@ -10,20 +10,14 @@ export const useGenerateMessage = () => {
       user: any,
       char: any,
       conversation_id: string,
-      charIcon: string,
       setMessages: React.Dispatch<React.SetStateAction<Message[]>>,
       messageIdRef: React.MutableRefObject<{ charId: string | null, userId: string | null }>,
       setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>
     ): Promise<void> => {
-      console.log('generateMessage called with:', { text, user, char, conversation_id, charIcon });
+      console.log('generateMessage called with:', { text, user, char, conversation_id });
 
       if (!user || !char || !conversation_id) {
         console.error('Missing required parameters');
-        return;
-      }
-
-      if (!charIcon) {
-        toast.error('Character icon is missing.');
         return;
       }
 
@@ -36,7 +30,7 @@ export const useGenerateMessage = () => {
       const assistantMessage: Message = {
         name: char.name ?? 'Assistant',
         text: '',
-        icon: charIcon,
+        icon: char.icon,
         type: 'assistant',
         isGenerate: true,
       };
@@ -55,7 +49,6 @@ export const useGenerateMessage = () => {
           ConversationId: conversation_id,
           Message: { User: text },
           Engine: 'Mango Ube',
-          characterImageUrl: charIcon,
         });
 
         console.log('API response:', response);

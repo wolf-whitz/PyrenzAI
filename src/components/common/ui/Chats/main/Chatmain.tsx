@@ -73,7 +73,7 @@ export default function ChatMain({
 
     try {
       console.log(trimmedMessage)
-      await generateMessage(trimmedMessage, user, char, conversation_id, char?.icon || '', setMessages, messageIdRef, setIsGenerating);
+      await generateMessage(trimmedMessage, user, char, conversation_id, setMessages, messageIdRef, setIsGenerating);
     } catch (error) {
       console.error('Error:', error);
     }
