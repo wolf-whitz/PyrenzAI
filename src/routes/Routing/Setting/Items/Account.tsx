@@ -10,7 +10,9 @@ import { useNavigate } from 'react-router-dom';
 import { Avatar, Button, Container, Typography, Box } from '@mui/material';
 
 export default function Account() {
-  const [languages, setLanguages] = useState<{ code: string; name: string }[]>([]);
+  const [languages, setLanguages] = useState<{ code: string; name: string }[]>(
+    []
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
@@ -24,11 +26,13 @@ export default function Account() {
       .catch((error) => console.error('Error fetching languages:', error));
 
     const fetchUser = async () => {
-      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      const { data: sessionData, error: sessionError } =
+        await supabase.auth.getSession();
       if (sessionError || !sessionData.session) {
         console.error('Error fetching session:', sessionError);
       } else {
-        const { data: userData, error: userError } = await supabase.auth.getUser();
+        const { data: userData, error: userError } =
+          await supabase.auth.getUser();
         if (userError) {
           console.error('Error fetching user:', userError);
         } else {
@@ -72,13 +76,24 @@ export default function Account() {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.6, ease: [0.42, 0, 0.58, 1] }}
-      style={{ display: 'flex', flexDirection: 'column', gap: '1rem', justifyContent: 'center', alignItems: 'center', height: '100%', color: 'white' }}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1rem',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100%',
+        color: 'white',
+      }}
     >
       <Box textAlign="center" mb={6}>
         <Typography variant="h3" component="h1">
           Account
         </Typography>
-        <Typography variant="subtitle1" style={{ color: '#cbd5e0', marginTop: '0.5rem' }}>
+        <Typography
+          variant="subtitle1"
+          style={{ color: '#cbd5e0', marginTop: '0.5rem' }}
+        >
           Manage your login and account settings
         </Typography>
       </Box>
@@ -102,9 +117,7 @@ export default function Account() {
         maxWidth="md"
         width="100%"
       >
-        <Typography variant="body1">
-          Language
-        </Typography>
+        <Typography variant="body1">Language</Typography>
         <motion.div whileHover={{ scaleX: -1 }} transition={{ duration: 0.3 }}>
           <Button
             onClick={toggleModal}
@@ -124,9 +137,7 @@ export default function Account() {
         maxWidth="md"
         width="100%"
       >
-        <Typography variant="body1">
-          Log Out
-        </Typography>
+        <Typography variant="body1">Log Out</Typography>
         <motion.div whileHover={{ scaleX: -1 }} transition={{ duration: 0.3 }}>
           <Button
             onClick={handleLogOut}
@@ -146,9 +157,7 @@ export default function Account() {
         maxWidth="md"
         width="100%"
       >
-        <Typography variant="body1">
-          Delete Account
-        </Typography>
+        <Typography variant="body1">Delete Account</Typography>
         <motion.div whileHover={{ scaleX: -1 }} transition={{ duration: 0.3 }}>
           <Button
             onClick={handleDeleteAccount}

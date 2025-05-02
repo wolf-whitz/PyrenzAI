@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { useNavigate, useSearchParams } from '@remix-run/react';
+import React, { useEffect, useState, useCallback, memo } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Sidebar,
   Banner,
@@ -21,9 +21,13 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useTranslation } from 'react-i18next';
 
+// Memoize the CharacterCard component
+const MemoizedCharacterCard = memo(CharacterCard);
+
 export default function Home() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
   const {
     search,
     currentPage,
@@ -41,16 +45,18 @@ export default function Home() {
   const { user_uuid } = useUserStore();
   const { t } = useTranslation();
 
-  const [isClient, setIsClient] = useState<boolean>(false);
-
   const itemsPerPage = 10;
   const totalPages = Math.max(1, Math.ceil(total / itemsPerPage));
 
   useEffect(() => {
-    setIsClient(true);
-    setSearch(searchParams.get('search') || '');
-    setCurrentPage(Number(searchParams.get('page')) || 1);
-  }, [searchParams, setSearch, setCurrentPage]);
+    const currentSearch = searchParams.get('search') || '';
+    const currentPageParam = Number(searchParams.get('page')) || 1;
+
+    if (search !== currentSearch || currentPage !== currentPageParam) {
+      setSearch(currentSearch);
+      setCurrentPage(currentPageParam);
+    }
+  }, [searchParams, search, currentPage, setSearch, setCurrentPage]);
 
   const fetchCharactersData = useCallback(async () => {
     setLoading(true);
@@ -71,10 +77,7 @@ export default function Home() {
   }, [currentPage, search, itemsPerPage, user_uuid, setCharacters, setTotal, setLoading, t]);
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      fetchCharactersData();
-    }, 300);
-    return () => clearTimeout(timeout);
+    fetchCharactersData();
   }, [fetchCharactersData]);
 
   useEffect(() => {
@@ -124,11 +127,15 @@ export default function Home() {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <Container maxWidth={false} disableGutters className="flex flex-1 flex-col md:flex-row">
-        <Box className="hidden md:flex md:pl-[50px]">
+      <Container
+        maxWidth={false}
+        disableGutters
+        className="flex flex-1 flex-col md:flex-row"
+      >
+        <aside className="hidden md:flex md:pl-[50px]">
           <Sidebar />
-        </Box>
-        <Box className="p-6 flex-1">
+        </aside>
+        <main className="p-6 flex-1 flex flex-col items-center">
           <Banner />
           <SearchBar
             search={search}
@@ -143,54 +150,66 @@ export default function Home() {
           />
 
           <motion.div
-            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-2 p-4"
+            className="mx-auto grid w-full gap-x-6 gap-y-4 pb-4 min-h-[50vh]
+lg:gap-2
+grid-cols-2
+md:grid-cols-3
+lg:grid-cols-4
+xl:grid-cols-5
+2xl:grid-cols-6
+"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
             <AnimatePresence>
-              {loading ? (
-                Array.from({ length: itemsPerPage }).map((_, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    <SkeletonCard
+              {loading
+                ? Array.from({ length: itemsPerPage }).map((_, i) => (
+                    <motion.div
                       key={i}
-                      aria-label={t('ariaLabels.loadingCharacter', { index: i + 1 })}
-                    />
-                  </motion.div>
-                ))
-              ) : characters.length > 0 ? (
-                characters.map((char: Character) => (
-                  <Box
-                    key={char.id}
-                    data-character-uuid={char.input_char_uuid}
-                    data-character-id={char.id}
-                    className="transition-transform hover:scale-105"
-                    aria-labelledby={`character-${char.name}`}
-                    style={{ order: char.id }}
-                  >
-                    <CharacterCard {...char} />
-                  </Box>
-                ))
-              ) : (
-                <motion.div
-                  className="text-gray-500 text-center w-full"
-                  aria-live="polite"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <Typography variant="body1">
-                    {t('messages.noCharactersFound')}
-                  </Typography>
-                </motion.div>
-              )}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.5 }}
+                      className="w-full"
+                    >
+                      <SkeletonCard
+                        key={i}
+                        aria-label={t('ariaLabels.loadingCharacter', {
+                          index: i + 1,
+                        })}
+                      />
+                    </motion.div>
+                  ))
+                : characters.length > 0
+                ? characters.map((char: Character) => (
+                    <motion.div
+                      key={char.id}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.5 }}
+                      className="transition-transform hover:scale-105 p-2"
+                      aria-labelledby={`character-${char.name}`}
+                      style={{ order: char.id }}
+                    >
+                      <MemoizedCharacterCard {...char} isLoading={loading} is_public={char.is_public} />
+                    </motion.div>
+                  ))
+                : (
+                    <motion.div
+                      className="text-gray-500 text-center w-full"
+                      aria-live="polite"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <Typography variant="body1">
+                        {t('messages.noCharactersFound')}
+                      </Typography>
+                    </motion.div>
+                  )}
             </AnimatePresence>
           </motion.div>
 
@@ -201,13 +220,13 @@ export default function Home() {
             user_param_uuid={user_uuid || ''}
             onLoadMore={setCurrentPage}
           />
-        </Box>
+        </main>
       </Container>
-      <Box className="fixed bottom-0 left-0 w-full bg-gray-900 text-white flex justify-around p-2 shadow-lg z-50 md:hidden">
+      <aside className="fixed bottom-0 left-0 w-full bg-gray-900 text-white flex justify-around p-2 shadow-lg z-50 md:hidden">
         <Sidebar />
-      </Box>
+      </aside>
       <Box className="pb-16 px-4">
-        {isClient && <Footer />}
+        <Footer />
         <Typography variant="body2" className="text-center text-gray-500 mt-4">
           © 2025 Pyrenz AI. {t('messages.allRightsReserved')}
         </Typography>

@@ -1,5 +1,11 @@
 import React from 'react';
-import { FormControl, InputLabel, Select, MenuItem, SelectChangeEvent } from '@mui/material';
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  SelectChangeEvent,
+} from '@mui/material';
 
 interface AIOption {
   Website: string;
@@ -13,10 +19,17 @@ interface AISelectDropdownProps {
   onAISelectionChange: (event: SelectChangeEvent<string>) => void;
 }
 
-export default function AISelectDropdown({ options, selectedAI, placeholder, onAISelectionChange }: AISelectDropdownProps) {
+export default function AISelectDropdown({
+  options,
+  selectedAI,
+  placeholder,
+  onAISelectionChange,
+}: AISelectDropdownProps) {
   return (
     <FormControl fullWidth className="mb-4">
-      <InputLabel id="ai-select-label" sx={{ color: 'white' }}>Select AI</InputLabel>
+      <InputLabel id="ai-select-label" sx={{ color: 'white' }}>
+        Select AI
+      </InputLabel>
       <Select
         labelId="ai-select-label"
         id="ai-select"

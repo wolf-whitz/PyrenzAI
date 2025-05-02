@@ -7,7 +7,10 @@ interface HeroSectionProps {
   pyrenzAiRef: RefObject<HTMLElement>;
 }
 
-export default function HeroSection({ openModal, pyrenzAiRef }: HeroSectionProps) {
+export default function HeroSection({
+  openModal,
+  pyrenzAiRef,
+}: HeroSectionProps) {
   const { t } = useTranslation();
 
   return (

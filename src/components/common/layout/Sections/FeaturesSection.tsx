@@ -7,14 +7,16 @@ const cardData = [
   {
     cardNameKey: 'features.smartFastFree',
     cardDescriptionKey: 'features.smartFastFreeDescription',
-    cardImage: 'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/ChattingExample.avif',
+    cardImage:
+      'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/ChattingExample.avif',
     imageWidth: 400,
     imageHeight: 300,
   },
   {
     cardNameKey: 'features.helpfulCommunity',
     cardDescriptionKey: 'features.helpfulCommunityDescription',
-    cardImage: 'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/Pyrenz.avif',
+    cardImage:
+      'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/Pyrenz.avif',
     imageWidth: 400,
     imageHeight: 300,
   },
@@ -31,7 +33,9 @@ interface FeaturesSectionProps {
   discoverMoreRef: RefObject<HTMLElement>;
 }
 
-export default function FeaturesSection({ discoverMoreRef }: FeaturesSectionProps) {
+export default function FeaturesSection({
+  discoverMoreRef,
+}: FeaturesSectionProps) {
   const { t } = useTranslation();
 
   return (

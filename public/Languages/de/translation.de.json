@@ -1,116 +1,116 @@
 {
-    "hero": {
-      "title": "Pyrenz ai",
-      "description": "Chatten Sie mit unbegrenzten Charakteren, erstellen Sie Ihre eigenen und haben Sie eine absolute Explosion!"
+  "hero": {
+    "title": "Pyrenz ai",
+    "description": "Chatten Sie mit unbegrenzten Charakteren, erstellen Sie Ihre eigenen und haben Sie eine absolute Explosion!"
+  },
+  "buttons": {
+    "getStarted": "Fangen an",
+    "joinDiscord": "Treten Sie Discord bei",
+    "loadMore": "Laden mehr",
+    "signUp": "Melden Sie sich an",
+    "login": "Login",
+    "createAccount": "Ein Konto erstellen",
+    "register": "Registrieren"
+  },
+  "banner": {
+    "text": "Pyrenz ai",
+    "joinDiscordTitle": "Treten Sie dem Discord -Server bei oder sonst ..."
+  },
+  "search": {
+    "placeholder": "Suchzeichen ...",
+    "ariaLabel": "Suchzeichen"
+  },
+  "features": {
+    "smartFastFree": "Schlau. ",
+    "smartFastFreeDescription": "Sprechen Sie jederzeit mit Charakteren. ",
+    "helpfulCommunity": "Hilfreiche Community 👥",
+    "helpfulCommunityDescription": "Wir haben eine sehr hilfreiche Community, in der Sie Fragen stellen und vielleicht Spaß haben können!",
+    "openSourced": "OpenSourced 🖥️",
+    "openSourcedDescription": "Pyrenzai ist völlig kostenlos und offen und ermöglicht alle Formen lokaler Modifikationen und vielem mehr!"
+  },
+  "navigation": {
+    "home": "Heim",
+    "create": "Erstellen",
+    "chats": "Chats",
+    "settings": "Einstellungen",
+    "profile": "Profil",
+    "avatar": "Avatar",
+    "mainNavigation": "Hauptnavigation",
+    "navigateTo": "Navigieren zu {{name}}",
+    "toggleMenu": "Menü umschalten",
+    "scrollToTop": "Scrollen Sie nach oben"
+  },
+  "auth": {
+    "loginToAccount": "Melden Sie sich in Ihrem Konto an",
+    "createNewAccount": "Erstellen Sie ein neues Konto",
+    "signUpFailed": "Melden Sie sich an. ",
+    "oauthError": "Ich habe mich nicht bei OAuth anmelden.",
+    "loginWithGoogle": "Melden Sie sich bei Google an",
+    "signUpWithGoogle": "Melden Sie sich bei Google an",
+    "loginWithDiscord": "Melden Sie sich mit Zwietracht an",
+    "signUpWithDiscord": "Sich mit Discord anmelden",
+    "or": "ODER",
+    "email": "E-Mail",
+    "yourEmailAddress": "Ihre E-Mail-Adresse",
+    "password": "Passwort",
+    "yourPassword": "Ihr Passwort",
+    "confirm18": "Bestätigen Sie, dass Sie 18+ sind",
+    "loggingIn": "Anmeldung hinein",
+    "signingUp": "Anmelden",
+    "byContinuing": "Durch Fortsetzung akzeptieren Sie unsere",
+    "and": "Und",
+    "dontHaveAccount": "Sie haben kein Konto?",
+    "alreadyHaveAccount": "Haben Sie bereits ein Konto?"
+  },
+  "errors": {
+    "fetchingCharacters": "Fehler beim Abholen von Zeichen",
+    "callingRPCFunction": "Fehler aufrufen RPC -Funktion: ",
+    "unknown": "Ein unbekannter Fehler ist aufgetreten.",
+    "anErrorOccurred": "Es ist ein Fehler aufgetreten."
+  },
+  "ariaLabels": {
+    "homePage": "Startseite",
+    "customActionButton": "Benutzerdefinierte Aktionschaltfläche",
+    "loadingCharacter": "Charakter laden {{index}}",
+    "loadMore": "Laden Sie mehr Elemente"
+  },
+  "messages": {
+    "noCharactersFound": "Keine Charaktere gefunden. ",
+    "allRightsReserved": "Alle Rechte vorbehalten.",
+    "verifyNotBot": "Bitte überprüfen Sie, ob Sie kein Bot 🤖🚫 sind",
+    "loadingCaptcha": "Captcha laden ...",
+    "pyrenzAIDescription": "Pyrenzai ist eine KI -Chat -Plattform, mit der Benutzer kostenlos mit Bots chatten können. "
+  },
+  "platforms": {
+    "web": "Netz",
+    "windows": "Fenster",
+    "mobile": "Mobile",
+    "notUpYet": "{{label}} ist noch nicht vorbei, bitte überprüfen Sie bald."
+  },
+  "footer": {
+    "quickLinks": "Schnelle Links",
+    "links": {
+      "explore": "Erkunden",
+      "discord": "Zwietracht",
+      "guide": "Führung",
+      "botCreation": "Bot -Kreation",
+      "howTokenWorks": "Wie Token funktioniert",
+      "lorebooks": "Lorebooks"
     },
-    "buttons": {
-      "getStarted": "Fangen an",
-      "joinDiscord": "Treten Sie Discord bei",
-      "loadMore": "Laden mehr",
-      "signUp": "Melden Sie sich an",
-      "login": "Login",
-      "createAccount": "Ein Konto erstellen",
-      "register": "Registrieren"
+    "legal": {
+      "privacyPolicy": "Datenschutzrichtlinie",
+      "termsOfService": "Nutzungsbedingungen",
+      "rules": "Regeln"
     },
-    "banner": {
-      "text": "Pyrenz ai",
-      "joinDiscordTitle": "Treten Sie dem Discord -Server bei oder sonst ..."
-    },
-    "search": {
-      "placeholder": "Suchzeichen ...",
-      "ariaLabel": "Suchzeichen"
-    },
-    "features": {
-      "smartFastFree": "Schlau. ",
-      "smartFastFreeDescription": "Sprechen Sie jederzeit mit Charakteren. ",
-      "helpfulCommunity": "Hilfreiche Community 👥",
-      "helpfulCommunityDescription": "Wir haben eine sehr hilfreiche Community, in der Sie Fragen stellen und vielleicht Spaß haben können!",
-      "openSourced": "OpenSourced 🖥️",
-      "openSourcedDescription": "Pyrenzai ist völlig kostenlos und offen und ermöglicht alle Formen lokaler Modifikationen und vielem mehr!"
-    },
-    "navigation": {
-      "home": "Heim",
-      "create": "Erstellen",
-      "chats": "Chats",
-      "settings": "Einstellungen",
-      "profile": "Profil",
-      "avatar": "Avatar",
-      "mainNavigation": "Hauptnavigation",
-      "navigateTo": "Navigieren zu {{name}}",
-      "toggleMenu": "Menü umschalten",
-      "scrollToTop": "Scrollen Sie nach oben"
-    },
-    "auth": {
-      "loginToAccount": "Melden Sie sich in Ihrem Konto an",
-      "createNewAccount": "Erstellen Sie ein neues Konto",
-      "signUpFailed": "Melden Sie sich an. ",
-      "oauthError": "Ich habe mich nicht bei OAuth anmelden.",
-      "loginWithGoogle": "Melden Sie sich bei Google an",
-      "signUpWithGoogle": "Melden Sie sich bei Google an",
-      "loginWithDiscord": "Melden Sie sich mit Zwietracht an",
-      "signUpWithDiscord": "Sich mit Discord anmelden",
-      "or": "ODER",
-      "email": "E-Mail",
-      "yourEmailAddress": "Ihre E-Mail-Adresse",
-      "password": "Passwort",
-      "yourPassword": "Ihr Passwort",
-      "confirm18": "Bestätigen Sie, dass Sie 18+ sind",
-      "loggingIn": "Anmeldung hinein",
-      "signingUp": "Anmelden",
-      "byContinuing": "Durch Fortsetzung akzeptieren Sie unsere",
-      "and": "Und",
-      "dontHaveAccount": "Sie haben kein Konto?",
-      "alreadyHaveAccount": "Haben Sie bereits ein Konto?"
-    },
-    "errors": {
-      "fetchingCharacters": "Fehler beim Abholen von Zeichen",
-      "callingRPCFunction": "Fehler aufrufen RPC -Funktion: ",
-      "unknown": "Ein unbekannter Fehler ist aufgetreten.",
-      "anErrorOccurred": "Es ist ein Fehler aufgetreten."
-    },
-    "ariaLabels": {
-      "homePage": "Startseite",
-      "customActionButton": "Benutzerdefinierte Aktionschaltfläche",
-      "loadingCharacter": "Charakter laden {{index}}",
-      "loadMore": "Laden Sie mehr Elemente"
-    },
-    "messages": {
-      "noCharactersFound": "Keine Charaktere gefunden. ",
-      "allRightsReserved": "Alle Rechte vorbehalten.",
-      "verifyNotBot": "Bitte überprüfen Sie, ob Sie kein Bot 🤖🚫 sind",
-      "loadingCaptcha": "Captcha laden ...",
-      "pyrenzAIDescription": "Pyrenzai ist eine KI -Chat -Plattform, mit der Benutzer kostenlos mit Bots chatten können. "
-    },
-    "platforms": {
-      "web": "Netz",
-      "windows": "Fenster",
-      "mobile": "Mobile",
-      "notUpYet": "{{label}} ist noch nicht vorbei, bitte überprüfen Sie bald."
-    },
-    "footer": {
-      "quickLinks": "Schnelle Links",
-      "links": {
-        "explore": "Erkunden",
-        "discord": "Zwietracht",
-        "guide": "Führung",
-        "botCreation": "Bot -Kreation",
-        "howTokenWorks": "Wie Token funktioniert",
-        "lorebooks": "Lorebooks"
-      },
-      "legal": {
-        "privacyPolicy": "Datenschutzrichtlinie",
-        "termsOfService": "Nutzungsbedingungen",
-        "rules": "Regeln"
-      },
-      "pyrenzLogo": "Pyrenz Logo"
-    },
-    "HomePageMoreButtons": {
-      "btn": {
-        "latest": "Letzte",
-        "random": "Zufällig",
-        "hot": "Heiß",
-        "male": "Männlich",
-        "more": "Mehr"
-      }
+    "pyrenzLogo": "Pyrenz Logo"
+  },
+  "HomePageMoreButtons": {
+    "btn": {
+      "latest": "Letzte",
+      "random": "Zufällig",
+      "hot": "Heiß",
+      "male": "Männlich",
+      "more": "Mehr"
     }
   }
+}

@@ -47,14 +47,24 @@ export default function PersonaModal({
         exit={{ y: '100vh', scale: 0.8 }}
         transition={{ duration: 0.3 }}
       >
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={2}
+        >
           <Typography variant="h6" className="text-white">
             Personas
           </Typography>
         </Box>
 
         {loading ? (
-          <Box display="flex" justifyContent="center" alignItems="center" mt={4}>
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            mt={4}
+          >
             <CircularProgress />
           </Box>
         ) : (

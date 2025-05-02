@@ -10,7 +10,7 @@ import {
   RequiredFieldsPopup,
   ImageUpload,
 } from '~/components';
-import TextareaForm from "./Childrens/TextareaForm";
+import TextareaForm from './Childrens/TextareaForm';
 import posthog from 'posthog-js';
 import { CharacterData, Draft, ApiResponse } from '@shared-types/CharacterProp';
 
@@ -76,9 +76,8 @@ export default function CharacterForm() {
   const handleSave = async () => {
     setSaveLoading(true);
     try {
-      const { data, error } = await supabase
-        .from('draft_characters')
-        .upsert([{
+      const { data, error } = await supabase.from('draft_characters').upsert([
+        {
           user_uuid,
           persona: characterData.persona,
           name: characterData.name,
@@ -91,8 +90,9 @@ export default function CharacterForm() {
           is_public: characterData.is_public,
           is_nsfw: characterData.is_nsfw,
           textarea_token: characterData.textarea_token,
-          token_total: characterData.token_total
-        }]);
+          token_total: characterData.token_total,
+        },
+      ]);
 
       if (error) {
         alert('Error saving draft: ' + error.message);
@@ -105,7 +105,8 @@ export default function CharacterForm() {
       }
     } catch (error) {
       console.error('Unexpected error:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
       posthog.capture('Unexpected error saving draft', {
         error: errorMessage,
         user_uuid,
@@ -197,7 +198,8 @@ export default function CharacterForm() {
       }
     } catch (error) {
       console.error('Unexpected error:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
       posthog.capture('Unexpected error creating character', {
         error: errorMessage,
         user_uuid,
@@ -214,10 +216,7 @@ export default function CharacterForm() {
         className="bg-black p-8 rounded-lg shadow-lg w-full max-w-2xl space-y-6"
       >
         <ImageUpload onImageSelect={handleImageSelect} />
-        <TextareaForm
-          formState={characterData}
-          handleChange={handleChange}
-        />
+        <TextareaForm formState={characterData} handleChange={handleChange} />
         <GenderDropdown
           value={characterData.gender}
           onChange={handleDropdownChange}

@@ -1,5 +1,5 @@
 import { MessageSquare, Share2, Globe, Lock } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { CardContent, CharacterCardModal } from '~/components';
 import { CharacterCardProps } from '@shared-types/CharacterCardPropsTypes';
@@ -14,9 +14,10 @@ export default function CharacterCard({
   chat_messages_count,
   image_url,
   tags = [],
-  public: isPublic = false,
+  is_public: isPublic = false,
   token_total,
-}: CharacterCardProps) {
+  isLoading = false,
+}: CharacterCardProps & { isLoading: boolean }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState<CharacterCardProps | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -26,7 +27,7 @@ export default function CharacterCard({
     return () => clearTimeout(timer);
   }, []);
 
-  const handleCardClick = () => {
+  const handleCardClick = useCallback(() => {
     setModalData({
       id,
       input_char_uuid,
@@ -36,11 +37,15 @@ export default function CharacterCard({
       chat_messages_count,
       image_url,
       tags,
-      public: isPublic,
+      is_public: isPublic, 
       token_total,
     });
     setIsModalOpen(true);
-  };
+  }, [id, input_char_uuid, name, description, creator, chat_messages_count, image_url, tags, isPublic, token_total]);
+
+  if (isLoading) {
+    return null;
+  }
 
   return (
     <>
@@ -60,7 +65,7 @@ export default function CharacterCard({
           />
         </div>
 
-        <CardContent className="p-3">
+        <CardContent className="p-4">
           <Typography variant="h6" className="font-bold truncate">
             {name}
           </Typography>
@@ -68,17 +73,21 @@ export default function CharacterCard({
             @{creator}
           </Typography>
 
-          <Typography variant="body2" color="textSecondary" className="mt-2 line-clamp-4">
+          <Typography
+            variant="body2"
+            color="textSecondary"
+            className="mt-2 line-clamp-4"
+          >
             {description?.length > 120
               ? `${description.substring(0, 120)}...`
               : description || 'No description available.'}
           </Typography>
 
-          <Box className="mt-3 flex flex-wrap gap-1">
+          <Box className="mt-3 flex flex-wrap gap-2">
             {isPublic && (
               <Typography
                 component="span"
-                className="bg-black text-white text-[10px] font-semibold py-1 px-2 rounded-full flex items-center gap-1"
+                className="bg-black text-white text-xs font-semibold py-1 px-2 rounded-full flex items-center gap-1"
               >
                 <Globe size={12} />
                 Public
@@ -87,7 +96,7 @@ export default function CharacterCard({
             {!isPublic && (
               <Typography
                 component="span"
-                className="bg-black text-white text-[10px] font-semibold py-1 px-2 rounded-full flex items-center gap-1"
+                className="bg-black text-white text-xs font-semibold py-1 px-2 rounded-full flex items-center gap-1"
               >
                 <Lock size={12} />
                 Private
@@ -98,7 +107,7 @@ export default function CharacterCard({
                 <Typography
                   key={index}
                   component="span"
-                  className="bg-black text-white text-[10px] font-semibold py-1 px-2 rounded-full"
+                  className="bg-black text-white text-xs font-semibold py-1 px-2 rounded-full"
                 >
                   {tag}
                 </Typography>
@@ -121,7 +130,7 @@ export default function CharacterCard({
                     navigator.clipboard.writeText(
                       `${window.location.origin}/characters/${input_char_uuid}`
                     );
-                    alert('Saved')
+                    alert('Saved');
                   }}
                   aria-label={`Share ${name}`}
                   className="transition-colors duration-200 hover:text-blue-400"

@@ -117,7 +117,11 @@ export const handleOAuthSignIn = async (provider: 'google' | 'discord') => {
   }
 };
 
-export const handleSignUp = async (email: string, password: string, isAdult: boolean) => {
+export const handleSignUp = async (
+  email: string,
+  password: string,
+  isAdult: boolean
+) => {
   try {
     const { data, error } = await supabase.auth.signUp({
       email,

@@ -1,4 +1,4 @@
-import React, { useEffect, Suspense, lazy } from 'react';
+import React, { useEffect, Suspense, lazy, useState } from 'react';
 import { BrowserRouter as Router, useRoutes } from 'react-router-dom';
 import { supabase } from '~/Utility/supabaseClient';
 import { useUserStore } from '~/store';
@@ -11,6 +11,7 @@ const RoutesWrapper = lazy(() =>
 
 export default function App() {
   const { setHasHydrated, hasHydrated, setUserUUID } = useUserStore();
+  const [isSessionChecked, setIsSessionChecked] = useState(false);
 
   useEffect(() => {
     setHasHydrated(true);
@@ -23,46 +24,42 @@ export default function App() {
       'sb-dojdyydsanxoblgjmzmq-auth-token'
     );
 
-    const handleSession = () => {
-      if (!authDataString) return;
+    const handleSession = async () => {
+      if (!authDataString) {
+        setIsSessionChecked(true);
+        return;
+      }
 
-      const runAsync = async () => {
-        try {
-          const { access_token, refresh_token } = JSON.parse(authDataString);
+      try {
+        const { access_token, refresh_token } = JSON.parse(authDataString);
+        const { error } = await supabase.auth.setSession({
+          access_token,
+          refresh_token,
+        });
+        if (error) throw error;
 
-          const { error } = await supabase.auth.setSession({
-            access_token,
-            refresh_token,
-          });
-          if (error) throw error;
+        const { data, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError || !data.session) throw sessionError;
 
-          const { data, error: sessionError } = await supabase.auth.getSession();
-          if (sessionError || !data.session) throw sessionError;
-
-          setUserUUID(data.session.user.id);
-        } catch (error) {
-          console.error('Error handling session:', error);
-          localStorage.removeItem('sb-dojdyydsanxoblgjmzmq-auth-token');
-          setUserUUID(null);
-        }
-      };
-
-      if ('requestIdleCallback' in window) {
-        requestIdleCallback(runAsync);
-      } else {
-        setTimeout(runAsync, 1);
+        setUserUUID(data.session.user.id);
+      } catch (error) {
+        console.error('Error handling session:', error);
+        localStorage.removeItem('sb-dojdyydsanxoblgjmzmq-auth-token');
+        setUserUUID(null);
+      } finally {
+        setIsSessionChecked(true);
       }
     };
 
     handleSession();
   }, [hasHydrated, setUserUUID]);
 
-  if (!hasHydrated) {
+  if (!hasHydrated || !isSessionChecked) {
     return <Spinner />;
   }
 
   return (
-    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+    <Router>
       <Suspense fallback={<Spinner />}>
         <RoutesWrapper />
       </Suspense>

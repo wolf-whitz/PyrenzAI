@@ -53,12 +53,26 @@ export default function Footer() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.25rem', marginBottom: '2rem', fontFamily: 'Fredoka' }}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '1.25rem',
+        marginBottom: '2rem',
+        fontFamily: 'Fredoka',
+      }}
     >
       <motion.div
         whileHover={{ scale: 1.05 }}
         transition={{ duration: 0.3 }}
-        style={{ width: '90%', maxWidth: '650px', borderRadius: '1.25rem', overflow: 'hidden', border: 'none', background: 'transparent' }}
+        style={{
+          width: '90%',
+          maxWidth: '650px',
+          borderRadius: '1.25rem',
+          overflow: 'hidden',
+          border: 'none',
+          background: 'transparent',
+        }}
       >
         <CardContent
           className="bg-cover-container"
@@ -106,7 +120,11 @@ export default function Footer() {
               transition={{ duration: 0.3 }}
             />
           )}
-          <Typography variant="h4" component="h1" style={{ fontWeight: 'bold', textAlign: 'center' }}>
+          <Typography
+            variant="h4"
+            component="h1"
+            style={{ fontWeight: 'bold', textAlign: 'center' }}
+          >
             {t('banner.joinDiscordTitle')}
           </Typography>
         </CardContent>
@@ -123,7 +141,14 @@ export default function Footer() {
           rel="noopener noreferrer"
           variant="text"
           startIcon={<FaDiscord size={30} />}
-          style={{ color: '#fff', fontSize: '1.125rem', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '0.75rem' }}
+          style={{
+            color: '#fff',
+            fontSize: '1.125rem',
+            fontWeight: '600',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.75rem',
+          }}
         >
           {t('buttons.joinDiscord')}
         </Button>

@@ -1,8 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Box, Typography, Button, CircularProgress, Modal } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Button,
+  CircularProgress,
+  Modal,
+} from '@mui/material';
 import { PlusCircle } from 'lucide-react';
-import { Textarea } from "@components/index";
+import { Textarea } from '@components/index';
 
 interface CreatePersonaModalProps {
   isModalOpen: boolean;
@@ -34,10 +40,11 @@ export default function CreatePersonaModal({
       aria-labelledby="create-persona-modal"
       aria-describedby="create-persona-modal-description"
     >
-      <Box
-        className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-gray-900 text-white shadow-xl rounded-xl p-6"
-      >
-        <Typography variant="h6" className="text-center text-lg font-semibold mb-6">
+      <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-gray-900 text-white shadow-xl rounded-xl p-6">
+        <Typography
+          variant="h6"
+          className="text-center text-lg font-semibold mb-6"
+        >
           Create New Persona
         </Typography>
 

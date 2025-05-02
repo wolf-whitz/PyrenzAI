@@ -10,12 +10,14 @@ import { posthogConfig } from '~/config';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import { I18nextProvider } from 'react-i18next';
 import theme from '~/provider/ThemeProvider';
-import i18n from "~/provider/TranslationProvider.ts"
+import i18n from '~/provider/TranslationProvider.ts';
 
-import * as Sentry from "@sentry/react";
+import * as Sentry from '@sentry/react';
+
+import ErrorBoundary from './routes/ErrorBoundary.tsx';
 
 Sentry.init({
-  dsn: "https://2bed6b35dd70e8068f61a53812a8a5fc@o4509146215284736.ingest.us.sentry.io/4509243214725120",
+  dsn: 'https://2bed6b35dd70e8068f61a53812a8a5fc@o4509146215284736.ingest.us.sentry.io/4509243214725120',
   sendDefaultPii: true,
   tracesSampleRate: 1.0,
 });
@@ -30,7 +32,9 @@ createRoot(document.getElementById('root')!).render(
     <I18nextProvider i18n={i18n}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <App />
+        <ErrorBoundary>
+          <App />
+        </ErrorBoundary>
         <Analytics />
       </ThemeProvider>
     </I18nextProvider>

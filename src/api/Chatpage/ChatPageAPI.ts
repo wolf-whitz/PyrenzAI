@@ -7,7 +7,11 @@ export const fetchChatData = async (
   conversation_id: string,
   user_uuid?: string,
   auth_key?: string
-): Promise<{ character: Character; messages: Message[]; firstMessage: string }> => {
+): Promise<{
+  character: Character;
+  messages: Message[];
+  firstMessage: string;
+}> => {
   if (!conversation_id) {
     toast.error('Missing conversation_id 😬');
     throw new Error('Missing conversation_id 😬');

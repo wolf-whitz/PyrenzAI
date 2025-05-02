@@ -1,116 +1,116 @@
 {
-    "hero": {
-      "title": "Pyrenz AI",
-      "description": "無制限のキャラクターとチャットし、独自のキャラクターを作成し、絶対に爆発してください！"
+  "hero": {
+    "title": "Pyrenz AI",
+    "description": "無制限のキャラクターとチャットし、独自のキャラクターを作成し、絶対に爆発してください！"
+  },
+  "buttons": {
+    "getStarted": "始めましょう",
+    "joinDiscord": "Discordに参加してください",
+    "loadMore": "もっとロードします",
+    "signUp": "サインアップ",
+    "login": "ログイン",
+    "createAccount": "アカウントを作成する",
+    "register": "登録する"
+  },
+  "banner": {
+    "text": "Pyrenz AI",
+    "joinDiscordTitle": "Discord Serverまたはその他に参加してください..."
+  },
+  "search": {
+    "placeholder": "文字を検索...",
+    "ariaLabel": "検索文字"
+  },
+  "features": {
+    "smartFastFree": "頭いい。",
+    "smartFastFreeDescription": "いつでもキャラクターと話してください。",
+    "helpfulCommunity": "役立つコミュニティ👥",
+    "helpfulCommunityDescription": "私たちはあなたが質問することができ、おそらくいくつかの楽しみを持っている非常に役立つコミュニティを持っています！",
+    "openSourced": "openSourced🖥️",
+    "openSourcedDescription": "Pyrenzaiは完全に無料でオープンソースであり、あらゆる形態のローカル変更などを可能にします！"
+  },
+  "navigation": {
+    "home": "家",
+    "create": "作成する",
+    "chats": "チャット",
+    "settings": "設定",
+    "profile": "プロフィール",
+    "avatar": "アバター",
+    "mainNavigation": "メインナビゲーション",
+    "navigateTo": "に移動します {{name}}",
+    "toggleMenu": "トグルメニュー",
+    "scrollToTop": "上にスクロールします"
+  },
+  "auth": {
+    "loginToAccount": "アカウントにログインします",
+    "createNewAccount": "新しいアカウントを作成します",
+    "signUpFailed": "サインアップに失敗しました。",
+    "oauthError": "OAuthでサインインすることに失敗しました。",
+    "loginWithGoogle": "Googleでログインします",
+    "signUpWithGoogle": "Googleにサインアップしてください",
+    "loginWithDiscord": "Discordでログインします",
+    "signUpWithDiscord": "Discordにサインアップしてください",
+    "or": "または",
+    "email": "メール",
+    "yourEmailAddress": "あなたのメールアドレス",
+    "password": "パスワード",
+    "yourPassword": "パスワード",
+    "confirm18": "あなたが18歳以上であることを確認してください",
+    "loggingIn": "ログインします",
+    "signingUp": "サインアップ",
+    "byContinuing": "継続することで、あなたは私たちを受け入れます",
+    "and": "そして",
+    "dontHaveAccount": "アカウントを持っていませんか？",
+    "alreadyHaveAccount": "すでにアカウントを持っていますか？"
+  },
+  "errors": {
+    "fetchingCharacters": "文字の取得エラー",
+    "callingRPCFunction": "RPC関数を呼び出すエラー： ",
+    "unknown": "不明なエラーが発生しました。",
+    "anErrorOccurred": "エラーが発生しました。"
+  },
+  "ariaLabels": {
+    "homePage": "ホームページ",
+    "customActionButton": "カスタムアクションボタン",
+    "loadingCharacter": "文字の読み込み {{index}}",
+    "loadMore": "より多くのアイテムをロードします"
+  },
+  "messages": {
+    "noCharactersFound": "キャラクターは見つかりません。 ",
+    "allRightsReserved": "無断転載を禁じます。",
+    "verifyNotBot": "あなたがボットではないことを確認してください",
+    "loadingCaptcha": "キャプチャのロード...",
+    "pyrenzAIDescription": "Pyrenzaiは、ユーザーがボットと無料でチャットできるAIチャットプラットフォームです。"
+  },
+  "platforms": {
+    "web": "ウェブ",
+    "windows": "Windows",
+    "mobile": "携帯",
+    "notUpYet": "{{label}} まだ起きていないので、すぐにチェックしてください。"
+  },
+  "footer": {
+    "quickLinks": "クイックリンク",
+    "links": {
+      "explore": "探検する",
+      "discord": "不和",
+      "guide": "ガイド",
+      "botCreation": "ボット作成",
+      "howTokenWorks": "トークンの仕組み",
+      "lorebooks": "LoreBooks"
     },
-    "buttons": {
-      "getStarted": "始めましょう",
-      "joinDiscord": "Discordに参加してください",
-      "loadMore": "もっとロードします",
-      "signUp": "サインアップ",
-      "login": "ログイン",
-      "createAccount": "アカウントを作成する",
-      "register": "登録する"
+    "legal": {
+      "privacyPolicy": "プライバシーポリシー",
+      "termsOfService": "利用規約",
+      "rules": "ルール"
     },
-    "banner": {
-      "text": "Pyrenz AI",
-      "joinDiscordTitle": "Discord Serverまたはその他に参加してください..."
-    },
-    "search": {
-      "placeholder": "文字を検索...",
-      "ariaLabel": "検索文字"
-    },
-    "features": {
-      "smartFastFree": "頭いい。",
-      "smartFastFreeDescription": "いつでもキャラクターと話してください。",
-      "helpfulCommunity": "役立つコミュニティ👥",
-      "helpfulCommunityDescription": "私たちはあなたが質問することができ、おそらくいくつかの楽しみを持っている非常に役立つコミュニティを持っています！",
-      "openSourced": "openSourced🖥️",
-      "openSourcedDescription": "Pyrenzaiは完全に無料でオープンソースであり、あらゆる形態のローカル変更などを可能にします！"
-    },
-    "navigation": {
-      "home": "家",
-      "create": "作成する",
-      "chats": "チャット",
-      "settings": "設定",
-      "profile": "プロフィール",
-      "avatar": "アバター",
-      "mainNavigation": "メインナビゲーション",
-      "navigateTo": "に移動します {{name}}",
-      "toggleMenu": "トグルメニュー",
-      "scrollToTop": "上にスクロールします"
-    },
-    "auth": {
-      "loginToAccount": "アカウントにログインします",
-      "createNewAccount": "新しいアカウントを作成します",
-      "signUpFailed": "サインアップに失敗しました。",
-      "oauthError": "OAuthでサインインすることに失敗しました。",
-      "loginWithGoogle": "Googleでログインします",
-      "signUpWithGoogle": "Googleにサインアップしてください",
-      "loginWithDiscord": "Discordでログインします",
-      "signUpWithDiscord": "Discordにサインアップしてください",
-      "or": "または",
-      "email": "メール",
-      "yourEmailAddress": "あなたのメールアドレス",
-      "password": "パスワード",
-      "yourPassword": "パスワード",
-      "confirm18": "あなたが18歳以上であることを確認してください",
-      "loggingIn": "ログインします",
-      "signingUp": "サインアップ",
-      "byContinuing": "継続することで、あなたは私たちを受け入れます",
-      "and": "そして",
-      "dontHaveAccount": "アカウントを持っていませんか？",
-      "alreadyHaveAccount": "すでにアカウントを持っていますか？"
-    },
-    "errors": {
-      "fetchingCharacters": "文字の取得エラー",
-      "callingRPCFunction": "RPC関数を呼び出すエラー： ",
-      "unknown": "不明なエラーが発生しました。",
-      "anErrorOccurred": "エラーが発生しました。"
-    },
-    "ariaLabels": {
-      "homePage": "ホームページ",
-      "customActionButton": "カスタムアクションボタン",
-      "loadingCharacter": "文字の読み込み {{index}}",
-      "loadMore": "より多くのアイテムをロードします"
-    },
-    "messages": {
-      "noCharactersFound": "キャラクターは見つかりません。 ",
-      "allRightsReserved": "無断転載を禁じます。",
-      "verifyNotBot": "あなたがボットではないことを確認してください",
-      "loadingCaptcha": "キャプチャのロード...",
-      "pyrenzAIDescription": "Pyrenzaiは、ユーザーがボットと無料でチャットできるAIチャットプラットフォームです。"
-    },
-    "platforms": {
-      "web": "ウェブ",
-      "windows": "Windows",
-      "mobile": "携帯",
-      "notUpYet": "{{label}} まだ起きていないので、すぐにチェックしてください。"
-    },
-    "footer": {
-      "quickLinks": "クイックリンク",
-      "links": {
-        "explore": "探検する",
-        "discord": "不和",
-        "guide": "ガイド",
-        "botCreation": "ボット作成",
-        "howTokenWorks": "トークンの仕組み",
-        "lorebooks": "LoreBooks"
-      },
-      "legal": {
-        "privacyPolicy": "プライバシーポリシー",
-        "termsOfService": "利用規約",
-        "rules": "ルール"
-      },
-      "pyrenzLogo": "Pyrenzロゴ"
-    },
-    "HomePageMoreButtons": {
-      "btn": {
-        "latest": "最新",
-        "random": "ランダム",
-        "hot": "熱い",
-        "male": "男",
-        "more": "もっと"
-      }
+    "pyrenzLogo": "Pyrenzロゴ"
+  },
+  "HomePageMoreButtons": {
+    "btn": {
+      "latest": "最新",
+      "random": "ランダム",
+      "hot": "熱い",
+      "male": "男",
+      "more": "もっと"
     }
   }
+}

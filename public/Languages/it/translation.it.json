@@ -1,116 +1,116 @@
 {
-    "hero": {
-      "title": "Pyrenz AI",
-      "description": "Chatta con personaggi illimitati, crea il tuo e fai un'esplosione assoluta!"
+  "hero": {
+    "title": "Pyrenz AI",
+    "description": "Chatta con personaggi illimitati, crea il tuo e fai un'esplosione assoluta!"
+  },
+  "buttons": {
+    "getStarted": "Inizia",
+    "joinDiscord": "Unisciti a discordia",
+    "loadMore": "Carica di più",
+    "signUp": "Iscrizione",
+    "login": "Login",
+    "createAccount": "Creare un account",
+    "register": "Registro"
+  },
+  "banner": {
+    "text": "Pyrenz AI",
+    "joinDiscordTitle": "Unisciti al server discord o altro ..."
+  },
+  "search": {
+    "placeholder": "Personaggi di ricerca ...",
+    "ariaLabel": "Personaggi di ricerca"
+  },
+  "features": {
+    "smartFastFree": "Accorto. ",
+    "smartFastFreeDescription": "Parla con i personaggi in qualsiasi momento. ",
+    "helpfulCommunity": "Comunità utile 👥",
+    "helpfulCommunityDescription": "Abbiamo una comunità molto utile in cui puoi fare domande e, forse, divertirti!",
+    "openSourced": "OpenSourced 🖥️",
+    "openSourcedDescription": "Pyrenzai è completamente gratuito e open source, consentendo tutte le forme di modifiche locali e altro ancora!"
+  },
+  "navigation": {
+    "home": "Casa",
+    "create": "Creare",
+    "chats": "Chat",
+    "settings": "Impostazioni",
+    "profile": "Profilo",
+    "avatar": "Avatar",
+    "mainNavigation": "Navigazione principale",
+    "navigateTo": "Navigare a {{name}}",
+    "toggleMenu": "Menu a disattivazione",
+    "scrollToTop": "Scorri fino all'alto"
+  },
+  "auth": {
+    "loginToAccount": "Accedi al tuo account",
+    "createNewAccount": "Crea un nuovo account",
+    "signUpFailed": "Iscriviti non riuscita. ",
+    "oauthError": "Non è riuscito a accedere con Oauth.",
+    "loginWithGoogle": "Accedi con Google",
+    "signUpWithGoogle": "Iscriviti a Google",
+    "loginWithDiscord": "Accedi con discordia",
+    "signUpWithDiscord": "Iscriviti con discordia",
+    "or": "O",
+    "email": "E-mail",
+    "yourEmailAddress": "Il tuo indirizzo di posta elettronica",
+    "password": "Password",
+    "yourPassword": "La tua password",
+    "confirm18": "Conferma che hai 18+",
+    "loggingIn": "Accedere",
+    "signingUp": "Iscriversi",
+    "byContinuing": "Continuando, accetti il ​​nostro",
+    "and": "E",
+    "dontHaveAccount": "Non hai un account?",
+    "alreadyHaveAccount": "Hai già un account?"
+  },
+  "errors": {
+    "fetchingCharacters": "Errori che recupera caratteri",
+    "callingRPCFunction": "Errore che chiama la funzione RPC: ",
+    "unknown": "Si è verificato un errore sconosciuto.",
+    "anErrorOccurred": "Si è verificato un errore."
+  },
+  "ariaLabels": {
+    "homePage": "Home page",
+    "customActionButton": "Pulsante di azione personalizzato",
+    "loadingCharacter": "Carattere di caricamento {{index}}",
+    "loadMore": "Carica più elementi"
+  },
+  "messages": {
+    "noCharactersFound": "Nessun personaggio trovato. ",
+    "allRightsReserved": "Tutti i diritti riservati.",
+    "verifyNotBot": "Per favore verifica che tu non sia un bot 🤖🚫",
+    "loadingCaptcha": "Caricamento di captcha ...",
+    "pyrenzAIDescription": "Pyrenzai è una piattaforma di chat AI che consente agli utenti di chattare con i robot gratuitamente. "
+  },
+  "platforms": {
+    "web": "Web",
+    "windows": "Finestre",
+    "mobile": "Mobile",
+    "notUpYet": "{{label}} non è ancora sveglio, per favore controlla presto."
+  },
+  "footer": {
+    "quickLinks": "Collegamenti rapidi",
+    "links": {
+      "explore": "Esplorare",
+      "discord": "Discordia",
+      "guide": "Guida",
+      "botCreation": "Creazione di bot",
+      "howTokenWorks": "Come funziona il genere",
+      "lorebooks": "Lorebooks"
     },
-    "buttons": {
-      "getStarted": "Inizia",
-      "joinDiscord": "Unisciti a discordia",
-      "loadMore": "Carica di più",
-      "signUp": "Iscrizione",
-      "login": "Login",
-      "createAccount": "Creare un account",
-      "register": "Registro"
+    "legal": {
+      "privacyPolicy": "politica sulla riservatezza",
+      "termsOfService": "Termini di servizio",
+      "rules": "Regole"
     },
-    "banner": {
-      "text": "Pyrenz AI",
-      "joinDiscordTitle": "Unisciti al server discord o altro ..."
-    },
-    "search": {
-      "placeholder": "Personaggi di ricerca ...",
-      "ariaLabel": "Personaggi di ricerca"
-    },
-    "features": {
-      "smartFastFree": "Accorto. ",
-      "smartFastFreeDescription": "Parla con i personaggi in qualsiasi momento. ",
-      "helpfulCommunity": "Comunità utile 👥",
-      "helpfulCommunityDescription": "Abbiamo una comunità molto utile in cui puoi fare domande e, forse, divertirti!",
-      "openSourced": "OpenSourced 🖥️",
-      "openSourcedDescription": "Pyrenzai è completamente gratuito e open source, consentendo tutte le forme di modifiche locali e altro ancora!"
-    },
-    "navigation": {
-      "home": "Casa",
-      "create": "Creare",
-      "chats": "Chat",
-      "settings": "Impostazioni",
-      "profile": "Profilo",
-      "avatar": "Avatar",
-      "mainNavigation": "Navigazione principale",
-      "navigateTo": "Navigare a {{name}}",
-      "toggleMenu": "Menu a disattivazione",
-      "scrollToTop": "Scorri fino all'alto"
-    },
-    "auth": {
-      "loginToAccount": "Accedi al tuo account",
-      "createNewAccount": "Crea un nuovo account",
-      "signUpFailed": "Iscriviti non riuscita. ",
-      "oauthError": "Non è riuscito a accedere con Oauth.",
-      "loginWithGoogle": "Accedi con Google",
-      "signUpWithGoogle": "Iscriviti a Google",
-      "loginWithDiscord": "Accedi con discordia",
-      "signUpWithDiscord": "Iscriviti con discordia",
-      "or": "O",
-      "email": "E-mail",
-      "yourEmailAddress": "Il tuo indirizzo di posta elettronica",
-      "password": "Password",
-      "yourPassword": "La tua password",
-      "confirm18": "Conferma che hai 18+",
-      "loggingIn": "Accedere",
-      "signingUp": "Iscriversi",
-      "byContinuing": "Continuando, accetti il ​​nostro",
-      "and": "E",
-      "dontHaveAccount": "Non hai un account?",
-      "alreadyHaveAccount": "Hai già un account?"
-    },
-    "errors": {
-      "fetchingCharacters": "Errori che recupera caratteri",
-      "callingRPCFunction": "Errore che chiama la funzione RPC: ",
-      "unknown": "Si è verificato un errore sconosciuto.",
-      "anErrorOccurred": "Si è verificato un errore."
-    },
-    "ariaLabels": {
-      "homePage": "Home page",
-      "customActionButton": "Pulsante di azione personalizzato",
-      "loadingCharacter": "Carattere di caricamento {{index}}",
-      "loadMore": "Carica più elementi"
-    },
-    "messages": {
-      "noCharactersFound": "Nessun personaggio trovato. ",
-      "allRightsReserved": "Tutti i diritti riservati.",
-      "verifyNotBot": "Per favore verifica che tu non sia un bot 🤖🚫",
-      "loadingCaptcha": "Caricamento di captcha ...",
-      "pyrenzAIDescription": "Pyrenzai è una piattaforma di chat AI che consente agli utenti di chattare con i robot gratuitamente. "
-    },
-    "platforms": {
-      "web": "Web",
-      "windows": "Finestre",
-      "mobile": "Mobile",
-      "notUpYet": "{{label}} non è ancora sveglio, per favore controlla presto."
-    },
-    "footer": {
-      "quickLinks": "Collegamenti rapidi",
-      "links": {
-        "explore": "Esplorare",
-        "discord": "Discordia",
-        "guide": "Guida",
-        "botCreation": "Creazione di bot",
-        "howTokenWorks": "Come funziona il genere",
-        "lorebooks": "Lorebooks"
-      },
-      "legal": {
-        "privacyPolicy": "politica sulla riservatezza",
-        "termsOfService": "Termini di servizio",
-        "rules": "Regole"
-      },
-      "pyrenzLogo": "Logo Pyrenz"
-    },
-    "HomePageMoreButtons": {
-      "btn": {
-        "latest": "Ultimo",
-        "random": "Casuale",
-        "hot": "Caldo",
-        "male": "Maschio",
-        "more": "Di più"
-      }
+    "pyrenzLogo": "Logo Pyrenz"
+  },
+  "HomePageMoreButtons": {
+    "btn": {
+      "latest": "Ultimo",
+      "random": "Casuale",
+      "hot": "Caldo",
+      "male": "Maschio",
+      "more": "Di più"
     }
   }
+}

@@ -1,19 +1,23 @@
-import { sentryVitePlugin } from "@sentry/vite-plugin";
+import { sentryVitePlugin } from '@sentry/vite-plugin';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import tailwindcss from 'tailwindcss';
 import path from 'path';
 import { imagetools } from 'vite-imagetools';
-import headerDevPlugin from './Plugins/DevHeaderPlugin';
 
 export default defineConfig({
-  plugins: [react(), imagetools(), headerDevPlugin(), sentryVitePlugin({
-    org: "pyrenzai",
-    project: "pyrenzai"
-  }), sentryVitePlugin({
-    org: "pyrenzai",
-    project: "pyrenzai"
-  })],
+  plugins: [
+    react(),
+    imagetools(),
+    sentryVitePlugin({
+      org: 'pyrenzai',
+      project: 'pyrenzai',
+    }),
+    sentryVitePlugin({
+      org: 'pyrenzai',
+      project: 'pyrenzai',
+    }),
+  ],
   css: {
     postcss: {
       plugins: [tailwindcss()],

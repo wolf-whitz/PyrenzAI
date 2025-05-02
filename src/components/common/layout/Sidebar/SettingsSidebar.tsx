@@ -16,7 +16,10 @@ interface PersonaCard {
   description: string;
 }
 
-export default function SettingsSidebar({ settingsOpen, onClose }: SettingsSidebarProps) {
+export default function SettingsSidebar({
+  settingsOpen,
+  onClose,
+}: SettingsSidebarProps) {
   const [personaData, setPersonaData] = useState<PersonaCard[]>([]);
   const [loading, setLoading] = useState(false);
   const { user_uuid } = useUserStore();
@@ -34,7 +37,7 @@ export default function SettingsSidebar({ settingsOpen, onClose }: SettingsSideb
         throw error;
       }
 
-      const mappedData = data.map(item => ({
+      const mappedData = data.map((item) => ({
         id: item.persona_profile,
         name: item.persona_name,
         description: item.persona_description,

@@ -1,116 +1,116 @@
 {
-    "hero": {
-      "title": "pyrenz ai",
-      "description": "与无限角色聊天，创建自己的角色，并绝对爆炸！"
+  "hero": {
+    "title": "pyrenz ai",
+    "description": "与无限角色聊天，创建自己的角色，并绝对爆炸！"
+  },
+  "buttons": {
+    "getStarted": "开始",
+    "joinDiscord": "加入Discord",
+    "loadMore": "加载更多",
+    "signUp": "报名",
+    "login": "登录",
+    "createAccount": "创建一个帐户",
+    "register": "登记"
+  },
+  "banner": {
+    "text": "pyrenz ai",
+    "joinDiscordTitle": "加入Discord服务器否则..."
+  },
+  "search": {
+    "placeholder": "搜索字符...",
+    "ariaLabel": "搜索字符"
+  },
+  "features": {
+    "smartFastFree": "聪明的。",
+    "smartFastFreeDescription": "随时与角色交谈。",
+    "helpfulCommunity": "有帮助的社区👥",
+    "helpfulCommunityDescription": "我们有一个非常有用的社区，您可以在其中提出问题，也许会玩一些乐趣！",
+    "openSourced": "打开🖥️",
+    "openSourcedDescription": "Pyrenzai是完全免费和开源的，允许所有形式的局部修改等等！"
+  },
+  "navigation": {
+    "home": "家",
+    "create": "创造",
+    "chats": "聊天",
+    "settings": "设置",
+    "profile": "轮廓",
+    "avatar": "头像",
+    "mainNavigation": "主要导航",
+    "navigateTo": "导航到 {{name}}",
+    "toggleMenu": "切换菜单",
+    "scrollToTop": "滚动到顶部"
+  },
+  "auth": {
+    "loginToAccount": "登录到您的帐户",
+    "createNewAccount": "创建一个新帐户",
+    "signUpFailed": "注册失败。",
+    "oauthError": "未能与Oauth签名。",
+    "loginWithGoogle": "使用Google登录",
+    "signUpWithGoogle": "与Google注册",
+    "loginWithDiscord": "用不和谐登录",
+    "signUpWithDiscord": "与不和谐注册",
+    "or": "或者",
+    "email": "电子邮件",
+    "yourEmailAddress": "您的电子邮件地址",
+    "password": "密码",
+    "yourPassword": "您的密码",
+    "confirm18": "确认你是18岁以上",
+    "loggingIn": "登录",
+    "signingUp": "注册",
+    "byContinuing": "通过继续，您接受我们的",
+    "and": "和",
+    "dontHaveAccount": "没有帐户？",
+    "alreadyHaveAccount": "已经有一个帐户？"
+  },
+  "errors": {
+    "fetchingCharacters": "错误获取字符",
+    "callingRPCFunction": "错误调用RPC函数： ",
+    "unknown": "发生了未知错误。",
+    "anErrorOccurred": "发生错误。"
+  },
+  "ariaLabels": {
+    "homePage": "主页",
+    "customActionButton": "自定义动作按钮",
+    "loadingCharacter": "加载字符 {{index}}",
+    "loadMore": "加载更多项目"
+  },
+  "messages": {
+    "noCharactersFound": "找不到字符。 ",
+    "allRightsReserved": "版权所有。",
+    "verifyNotBot": "请验证您不是机器人🤖🚫",
+    "loadingCaptcha": "加载验证码...",
+    "pyrenzAIDescription": "Pyrenzai是一个AI聊天平台，允许用户免费与机器人聊天。"
+  },
+  "platforms": {
+    "web": "网络",
+    "windows": "视窗",
+    "mobile": "移动的",
+    "notUpYet": "{{label}} 还没有起床，请尽快检查。"
+  },
+  "footer": {
+    "quickLinks": "快速链接",
+    "links": {
+      "explore": "探索",
+      "discord": "不和谐",
+      "guide": "指导",
+      "botCreation": "机器人创建",
+      "howTokenWorks": "令牌如何工作",
+      "lorebooks": "lorebooks"
     },
-    "buttons": {
-      "getStarted": "开始",
-      "joinDiscord": "加入Discord",
-      "loadMore": "加载更多",
-      "signUp": "报名",
-      "login": "登录",
-      "createAccount": "创建一个帐户",
-      "register": "登记"
+    "legal": {
+      "privacyPolicy": "隐私政策",
+      "termsOfService": "服务条款",
+      "rules": "规则"
     },
-    "banner": {
-      "text": "pyrenz ai",
-      "joinDiscordTitle": "加入Discord服务器否则..."
-    },
-    "search": {
-      "placeholder": "搜索字符...",
-      "ariaLabel": "搜索字符"
-    },
-    "features": {
-      "smartFastFree": "聪明的。",
-      "smartFastFreeDescription": "随时与角色交谈。",
-      "helpfulCommunity": "有帮助的社区👥",
-      "helpfulCommunityDescription": "我们有一个非常有用的社区，您可以在其中提出问题，也许会玩一些乐趣！",
-      "openSourced": "打开🖥️",
-      "openSourcedDescription": "Pyrenzai是完全免费和开源的，允许所有形式的局部修改等等！"
-    },
-    "navigation": {
-      "home": "家",
-      "create": "创造",
-      "chats": "聊天",
-      "settings": "设置",
-      "profile": "轮廓",
-      "avatar": "头像",
-      "mainNavigation": "主要导航",
-      "navigateTo": "导航到 {{name}}",
-      "toggleMenu": "切换菜单",
-      "scrollToTop": "滚动到顶部"
-    },
-    "auth": {
-      "loginToAccount": "登录到您的帐户",
-      "createNewAccount": "创建一个新帐户",
-      "signUpFailed": "注册失败。",
-      "oauthError": "未能与Oauth签名。",
-      "loginWithGoogle": "使用Google登录",
-      "signUpWithGoogle": "与Google注册",
-      "loginWithDiscord": "用不和谐登录",
-      "signUpWithDiscord": "与不和谐注册",
-      "or": "或者",
-      "email": "电子邮件",
-      "yourEmailAddress": "您的电子邮件地址",
-      "password": "密码",
-      "yourPassword": "您的密码",
-      "confirm18": "确认你是18岁以上",
-      "loggingIn": "登录",
-      "signingUp": "注册",
-      "byContinuing": "通过继续，您接受我们的",
-      "and": "和",
-      "dontHaveAccount": "没有帐户？",
-      "alreadyHaveAccount": "已经有一个帐户？"
-    },
-    "errors": {
-      "fetchingCharacters": "错误获取字符",
-      "callingRPCFunction": "错误调用RPC函数： ",
-      "unknown": "发生了未知错误。",
-      "anErrorOccurred": "发生错误。"
-    },
-    "ariaLabels": {
-      "homePage": "主页",
-      "customActionButton": "自定义动作按钮",
-      "loadingCharacter": "加载字符 {{index}}",
-      "loadMore": "加载更多项目"
-    },
-    "messages": {
-      "noCharactersFound": "找不到字符。 ",
-      "allRightsReserved": "版权所有。",
-      "verifyNotBot": "请验证您不是机器人🤖🚫",
-      "loadingCaptcha": "加载验证码...",
-      "pyrenzAIDescription": "Pyrenzai是一个AI聊天平台，允许用户免费与机器人聊天。"
-    },
-    "platforms": {
-      "web": "网络",
-      "windows": "视窗",
-      "mobile": "移动的",
-      "notUpYet": "{{label}} 还没有起床，请尽快检查。"
-    },
-    "footer": {
-      "quickLinks": "快速链接",
-      "links": {
-        "explore": "探索",
-        "discord": "不和谐",
-        "guide": "指导",
-        "botCreation": "机器人创建",
-        "howTokenWorks": "令牌如何工作",
-        "lorebooks": "lorebooks"
-      },
-      "legal": {
-        "privacyPolicy": "隐私政策",
-        "termsOfService": "服务条款",
-        "rules": "规则"
-      },
-      "pyrenzLogo": "Pyrenz徽标"
-    },
-    "HomePageMoreButtons": {
-      "btn": {
-        "latest": "最新的",
-        "random": "随机的",
-        "hot": "热的",
-        "male": "男性",
-        "more": "更多的"
-      }
+    "pyrenzLogo": "Pyrenz徽标"
+  },
+  "HomePageMoreButtons": {
+    "btn": {
+      "latest": "最新的",
+      "random": "随机的",
+      "hot": "热的",
+      "male": "男性",
+      "more": "更多的"
     }
   }
+}

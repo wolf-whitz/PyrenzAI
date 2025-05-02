@@ -32,7 +32,11 @@ export default function LanguageModal({
       open={isOpen}
       onClose={onClose}
       className="bg-black bg-opacity-50"
-      style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
     >
       <motion.div
         className="bg-black p-6 rounded-lg max-w-lg w-full text-white font-baloo"
@@ -58,8 +62,12 @@ export default function LanguageModal({
                 borderRadius: '0.5rem',
                 transition: 'background-color 0.2s',
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#374151')}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#1F2937')}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor = '#374151')
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = '#1F2937')
+              }
             >
               {lang.name}
             </Button>
@@ -75,8 +83,12 @@ export default function LanguageModal({
               borderRadius: '0.5rem',
               transition: 'background-color 0.2s',
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#059669')}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#10B981')}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor = '#059669')
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = '#10B981')
+            }
           >
             {t('LanguageModal.requestLanguage')}
           </Button>
@@ -89,8 +101,12 @@ export default function LanguageModal({
               borderRadius: '0.5rem',
               transition: 'background-color 0.2s',
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#D97706')}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#F59E0B')}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor = '#D97706')
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = '#F59E0B')
+            }
           >
             {t('LanguageModal.foundGrammarIssue')}
           </Button>

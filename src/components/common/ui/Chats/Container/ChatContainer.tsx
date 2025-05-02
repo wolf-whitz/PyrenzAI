@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, Suspense, useCallback } from 'react';
-import { useParams } from '@remix-run/react';
+import { useParams } from 'react-router-dom';
 import { useChatStore } from '~/store';
 import { ChatMain } from '~/components';
 import {

@@ -3,12 +3,19 @@ import { MessageSquare, Globe, Lock, Info } from 'lucide-react';
 import { CharacterCardProps } from '@shared-types/CharacterCardPropsTypes';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from '@remix-run/react';
+import { useNavigate } from 'react-router-dom';
 import { Utils } from '~/Utility/Utility';
 import { useUserStore } from '~/store';
 import { WindowAlert } from '~/components';
 import posthog from 'posthog-js';
-import { Box, Typography, IconButton, Button, Tooltip, CircularProgress } from '@mui/material';
+import {
+  Box,
+  Typography,
+  IconButton,
+  Button,
+  Tooltip,
+  CircularProgress,
+} from '@mui/material';
 
 interface CharacterCardModalProps {
   isOpen: boolean;
@@ -46,7 +53,10 @@ export default function CharacterCardModal({
     };
 
     try {
-      const response = await Utils.post<{ chat_uuid: string }>('/api/Chats', requestData);
+      const response = await Utils.post<{ chat_uuid: string }>(
+        '/api/Chats',
+        requestData
+      );
 
       if (response?.chat_uuid) {
         navigate(`/chat/${response.chat_uuid}`);
@@ -57,7 +67,8 @@ export default function CharacterCardModal({
     } catch (error) {
       console.error('Error generating chat_uuid:', error);
 
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
 
       posthog.capture('Error generating chat_uuid', {
         error: errorMessage,
@@ -123,7 +134,11 @@ export default function CharacterCardModal({
                 @{character.creator}
               </Typography>
 
-              <Typography variant="body2" color="textSecondary" className="mt-4 px-2">
+              <Typography
+                variant="body2"
+                color="textSecondary"
+                className="mt-4 px-2"
+              >
                 {character.description || 'No description available.'}
               </Typography>
 
@@ -140,12 +155,14 @@ export default function CharacterCardModal({
                 </Button>
                 <Box className="flex items-center gap-1 ml-4">
                   <MessageSquare size={18} className="text-white" />
-                  <Typography variant="caption">{character.chat_messages_count}</Typography>
+                  <Typography variant="caption">
+                    {character.chat_messages_count}
+                  </Typography>
                 </Box>
               </Box>
 
               <Box className="mt-3 flex flex-wrap justify-start gap-2 w-full">
-                {character.public !== undefined && (
+                {character.is_public !== undefined && (
                   <motion.span
                     className="bg-black text-white text-xs font-semibold py-1 px-3 rounded-full flex items-center gap-1"
                     initial={{ opacity: 0, scale: 0.5 }}
@@ -155,7 +172,7 @@ export default function CharacterCardModal({
                       transition: { delay: 0 },
                     }}
                   >
-                    {character.public ? (
+                    {character.is_public ? (
                       <>
                         <Globe size={14} />
                         Public
@@ -223,13 +240,14 @@ export default function CharacterCardModal({
               <strong>Description:</strong> {character.description}
             </Typography>
             <Typography variant="body2">
-              <strong>Chat Messages Count:</strong> {character.chat_messages_count}
+              <strong>Chat Messages Count:</strong>{' '}
+              {character.chat_messages_count}
             </Typography>
             <Typography variant="body2">
               <strong>Tags:</strong> {character.tags.join(', ')}
             </Typography>
             <Typography variant="body2">
-              <strong>Public:</strong> {character.public ? 'Yes' : 'No'}
+              <strong>Public:</strong> {character.is_public ? 'Yes' : 'No'}
             </Typography>
             <Typography variant="body2">
               <strong>Token Total:</strong> {character.token_total}

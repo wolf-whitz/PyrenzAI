@@ -18,7 +18,9 @@ interface PersonaProps {
 
 export default function Persona({ personaData, loading }: PersonaProps) {
   const [isModalOpen, setModalOpen] = useState(false);
-  const [selectedPersona, setSelectedPersona] = useState<PersonaCard | null>(null);
+  const [selectedPersona, setSelectedPersona] = useState<PersonaCard | null>(
+    null
+  );
 
   const handleSelectPersona = (persona: PersonaCard) => {
     setSelectedPersona(persona);

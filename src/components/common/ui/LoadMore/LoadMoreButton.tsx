@@ -1,5 +1,5 @@
-import { useNavigate, useSearchParams } from '@remix-run/react';
-import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useState, useMemo } from 'react';
 import { supabase } from '~/Utility/supabaseClient';
 import { motion } from 'framer-motion';
 import { Button, CircularProgress } from '@mui/material';
@@ -21,7 +21,11 @@ export default function Pagination({
   onLoadMore,
 }: PaginationProps) {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const searchParams = useMemo(
+    () => new URLSearchParams(location.search),
+    [location.search]
+  );
   const searchQuery = searchParams.get('search') || '';
   const [isLoading, setIsLoading] = useState(false);
   const { t } = useTranslation();
@@ -56,7 +60,15 @@ export default function Pagination({
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem', marginTop: '2rem' }}>
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: '0.5rem',
+        marginTop: '2rem',
+      }}
+    >
       <motion.div
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
@@ -75,7 +87,11 @@ export default function Pagination({
           }}
           aria-label={t('ariaLabels.loadMore')}
         >
-          {isLoading ? <CircularProgress size={24} color="inherit" /> : t('buttons.loadMore')}
+          {isLoading ? (
+            <CircularProgress size={24} color="inherit" />
+          ) : (
+            t('buttons.loadMore')
+          )}
         </Button>
       </motion.div>
     </div>

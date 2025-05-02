@@ -74,7 +74,8 @@ export default function PreviewFooter() {
       </div>
 
       <div className="w-full text-center mt-12 pt-4 text-sm opacity-75">
-        © {new Date().getFullYear()} Pyrenz AI. {t('messages.allRightsReserved')}
+        © {new Date().getFullYear()} Pyrenz AI.{' '}
+        {t('messages.allRightsReserved')}
       </div>
     </footer>
   );

@@ -5,17 +5,19 @@ import { useUserStore } from '~/store/index';
 import { CreatePersonaModal } from '@components/index';
 
 interface PersonaCard {
-    id: string;
-    name: string;
-    description: string;
-    selected?: boolean;
+  id: string;
+  name: string;
+  description: string;
+  selected?: boolean;
 }
 
 export default function Persona() {
   const [personaData, setPersonaData] = useState<PersonaCard[]>([]);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
-  const [selectedPersona, setSelectedPersona] = useState<PersonaCard | null>(null);
+  const [selectedPersona, setSelectedPersona] = useState<PersonaCard | null>(
+    null
+  );
   const [newPersonaName, setNewPersonaName] = useState('');
   const [newPersonaDescription, setNewPersonaDescription] = useState('');
   const [creating, setCreating] = useState(false);
@@ -35,7 +37,7 @@ export default function Persona() {
         throw error;
       }
 
-      const mappedData = data.map(item => ({
+      const mappedData = data.map((item) => ({
         id: item.persona_profile || Math.random().toString(36).substr(2, 9),
         name: item.persona_name,
         description: item.persona_description,
@@ -61,8 +63,21 @@ export default function Persona() {
     try {
       const { data, error } = await supabase
         .from('personas')
-        .insert([{ persona_name: newPersonaName, persona_description: newPersonaDescription, user_uuid }])
-        .select<any, { persona_profile: string; persona_name: string; persona_description: string; }>();
+        .insert([
+          {
+            persona_name: newPersonaName,
+            persona_description: newPersonaDescription,
+            user_uuid,
+          },
+        ])
+        .select<
+          any,
+          {
+            persona_profile: string;
+            persona_name: string;
+            persona_description: string;
+          }
+        >();
 
       if (error) {
         throw error;
@@ -70,7 +85,8 @@ export default function Persona() {
 
       if (data && data.length > 0) {
         const newPersona: PersonaCard = {
-          id: data[0].persona_profile || Math.random().toString(36).substr(2, 9), // Ensure a unique ID
+          id:
+            data[0].persona_profile || Math.random().toString(36).substr(2, 9), // Ensure a unique ID
           name: data[0].persona_name,
           description: data[0].persona_description,
         };
@@ -117,13 +133,12 @@ export default function Persona() {
         <div className="mt-4 space-y-4">
           {personaData.length > 0 ? (
             personaData.map((persona) => (
-                <div
+              <div
                 key={persona.id}
                 className={`bg-gray-700 rounded-lg p-4 flex flex-col cursor-pointer border-2 ${
                   persona.selected ? 'border-blue-500' : 'border-transparent'
                 }`}
               >
-
                 <Typography variant="h6" className="text-white">
                   {persona.name}
                 </Typography>

@@ -3,7 +3,15 @@ import { motion } from 'framer-motion';
 import { Dropzone, GenerateButton, Textarea } from '~/components';
 import { FaMagic } from 'react-icons/fa';
 import { Utils } from '~/Utility/Utility';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography } from '@mui/material';
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Typography,
+} from '@mui/material';
 
 interface ImageUploaderProps {
   onImageSelect: (file: File | null, isAvatar: boolean) => void;
@@ -15,15 +23,21 @@ interface GenerateImageResponse {
 }
 
 export default function ImageUploader({ onImageSelect }: ImageUploaderProps) {
-  const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(null);
-  const [avatarImagePreview, setAvatarImagePreview] = useState<string | null>(null);
+  const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(
+    null
+  );
+  const [avatarImagePreview, setAvatarImagePreview] = useState<string | null>(
+    null
+  );
   const [prompt, setPrompt] = useState<string>('');
   const [negativePrompt, setNegativePrompt] = useState<string>(
     'blurry, low quality, low resolution, bad anatomy, extra fingers, mutated hands, deformed face, ugly, out of frame, poorly drawn'
   );
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
-  const [generatedImageUrl, setGeneratedImageUrl] = useState<string | null>(null);
+  const [generatedImageUrl, setGeneratedImageUrl] = useState<string | null>(
+    null
+  );
   const [loadingDots, setLoadingDots] = useState<string>('');
 
   useEffect(() => {

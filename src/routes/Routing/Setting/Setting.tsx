@@ -11,7 +11,9 @@ const Preference = React.lazy(() => import('./Items/Preference'));
 const Persona = React.lazy(() => import('./Items/Persona'));
 
 export default function Setting() {
-  const [activeTab, setActiveTab] = useState<'account' | 'profile' | 'preference' | 'persona'>('account');
+  const [activeTab, setActiveTab] = useState<
+    'account' | 'profile' | 'preference' | 'persona'
+  >('account');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -38,14 +40,23 @@ export default function Setting() {
     fetchUser();
   }, []);
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: 'account' | 'profile' | 'preference' | 'persona') => {
+  const handleTabChange = (
+    event: React.SyntheticEvent,
+    newValue: 'account' | 'profile' | 'preference' | 'persona'
+  ) => {
     setActiveTab(newValue);
   };
 
   const renderContent = () => {
     if (isLoading) {
       return (
-        <Box display="flex" justifyContent="center" alignItems="center" height="100%" minHeight="300px">
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="100%"
+          minHeight="300px"
+        >
           <CircularProgress />
         </Box>
       );
@@ -53,7 +64,13 @@ export default function Setting() {
 
     if (!isAuthenticated && activeTab === 'account') {
       return (
-        <Box display="flex" justifyContent="center" alignItems="center" height="100%" minHeight="300px">
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="100%"
+          minHeight="300px"
+        >
           <Typography variant="h6" color="textSecondary">
             Please log in to access your account settings.
           </Typography>
@@ -78,21 +95,43 @@ export default function Setting() {
   return (
     <Box display="flex">
       <Sidebar />
-      <Box flexGrow={1} p={3} display="flex" flexDirection="column" alignItems="center">
+      <Box
+        flexGrow={1}
+        p={3}
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+      >
         <Tabs value={activeTab} onChange={handleTabChange} centered>
           <Tab label="Account" value="account" />
           <Tab label="Profile" value="profile" />
           <Tab label="Preference" value="preference" />
           <Tab label="Persona" value="persona" />
         </Tabs>
-        <Suspense fallback={<Box display="flex" justifyContent="center" alignItems="center" height="100%"><CircularProgress /></Box>}>
+        <Suspense
+          fallback={
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              height="100%"
+            >
+              <CircularProgress />
+            </Box>
+          }
+        >
           <motion.div
             key={activeTab}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.4, ease: 'easeOut' }}
-            style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            style={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
           >
             <Box maxWidth="md" width="100%">
               {renderContent()}

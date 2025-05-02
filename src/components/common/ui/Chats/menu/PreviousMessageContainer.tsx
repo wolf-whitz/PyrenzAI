@@ -151,7 +151,11 @@ export default function PreviousChat({
                 className="w-12 h-12"
               />
               <div className="flex-1">
-                <Typography variant="body2" color="textSecondary" className="break-words">
+                <Typography
+                  variant="body2"
+                  color="textSecondary"
+                  className="break-words"
+                >
                   {truncateMessage(message.message)}
                 </Typography>
                 <Typography variant="caption" color="textSecondary">

@@ -27,9 +27,21 @@ export default function Sidebar({ className }: { className?: string }) {
 
   const menuItems = [
     { name: t('navigation.home'), icon: <FaHome size={20} />, path: '/Home' },
-    { name: t('navigation.create'), icon: <FaPlus size={20} />, path: '/Create' },
-    { name: t('navigation.chats'), icon: <FaComments size={20} />, path: '/Chats' },
-    { name: t('navigation.settings'), icon: <FaCog size={20} />, path: '/Settings' },
+    {
+      name: t('navigation.create'),
+      icon: <FaPlus size={20} />,
+      path: '/Create',
+    },
+    {
+      name: t('navigation.chats'),
+      icon: <FaComments size={20} />,
+      path: '/Chats',
+    },
+    {
+      name: t('navigation.settings'),
+      icon: <FaCog size={20} />,
+      path: '/Settings',
+    },
   ];
 
   const toggleModalMode = () => {
@@ -150,7 +162,12 @@ function SidebarItem({
 
   const handleClick = () => {
     if (
-      [t('navigation.settings'), t('navigation.profile'), t('navigation.chats'), t('navigation.create')].includes(item.name) &&
+      [
+        t('navigation.settings'),
+        t('navigation.profile'),
+        t('navigation.chats'),
+        t('navigation.create'),
+      ].includes(item.name) &&
       !user
     ) {
       setShowLoginModal(true);
@@ -191,7 +208,12 @@ function MobileNavItem({ item, navigate, setShowLoginModal, user }: any) {
 
   const handleClick = () => {
     if (
-      [t('navigation.settings'), t('navigation.profile'), t('navigation.chats'), t('navigation.create')].includes(item.name) &&
+      [
+        t('navigation.settings'),
+        t('navigation.profile'),
+        t('navigation.chats'),
+        t('navigation.create'),
+      ].includes(item.name) &&
       !user
     ) {
       setShowLoginModal(true);

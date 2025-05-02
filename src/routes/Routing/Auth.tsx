@@ -38,7 +38,10 @@ export default function Auth() {
         transition={{ duration: 0.6, ease: 'easeOut' }}
         className="w-full max-w-md p-10 rounded-2xl bg-gray-900 bg-opacity-70 shadow-2xl border border-gray-700"
       >
-        <Typography variant="h4" className="text-center text-white mb-8 font-baloo">
+        <Typography
+          variant="h4"
+          className="text-center text-white mb-8 font-baloo"
+        >
           {t('messages.verifyNotBot')}
         </Typography>
         <Box className="flex justify-center flex-col items-center">
@@ -61,7 +64,10 @@ export default function Auth() {
               <Typography>{t('messages.loadingCaptcha')}</Typography>
             </Box>
           )}
-          <Typography variant="body2" className="text-gray-300 text-center mt-4 text-sm font-light">
+          <Typography
+            variant="body2"
+            className="text-gray-300 text-center mt-4 text-sm font-light"
+          >
             {t('messages.pyrenzAIDescription')}
           </Typography>
         </Box>

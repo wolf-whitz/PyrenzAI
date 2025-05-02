@@ -1,7 +1,6 @@
 import React, { lazy } from 'react';
-import { RouteObject, Navigate, useLocation } from 'react-router-dom';
+import { RouteObject, Navigate } from 'react-router-dom';
 import { useUserStore } from '~/store';
-import ErrorBoundary from './ErrorBoundary';
 
 const Index = lazy(() => import('./Routing/Index'));
 const Auth = lazy(() => import('./Routing/Auth'));
@@ -10,6 +9,7 @@ const Create = lazy(() => import('./Routing/Create'));
 const Profile = lazy(() => import('./Routing/Profile'));
 const Chat = lazy(() => import('./Routing/Chat'));
 const Setting = lazy(() => import('./Routing/Setting/Setting'));
+const ErrorPage = lazy(() => import('./Routing/404page'));
 
 const ProtectedRoute = ({ element }: { element: JSX.Element }) => {
   const captcha_uuid = useUserStore((state) => state.captcha_uuid);
@@ -34,5 +34,5 @@ export const routes: RouteObject[] = [
     element: <ProtectedRoute element={<Chat />} />,
   },
   { path: '/Settings', element: <ProtectedRoute element={<Setting />} /> },
-  { path: '*', element: <ErrorBoundary /> },
+  { path: '*', element: <ErrorPage /> },
 ];

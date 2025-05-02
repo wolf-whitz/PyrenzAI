@@ -21,10 +21,11 @@ export default function FormActions({
   loading,
   saveLoading,
   onSelectDraft,
-  onImportCharacter
+  onImportCharacter,
 }: FormActionsProps) {
   const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
-  const [isImportCharacterModalOpen, setIsImportCharacterModalOpen] = useState(false);
+  const [isImportCharacterModalOpen, setIsImportCharacterModalOpen] =
+    useState(false);
 
   const handleOpenDraftModal = () => {
     setIsDraftModalOpen(true);
@@ -57,7 +58,7 @@ export default function FormActions({
           bgcolor: 'black',
           color: 'white',
           '&:hover': { bgcolor: 'gray.700' },
-          '&:focus': { outline: 'none', ring: '2px solid gray.500' }
+          '&:focus': { outline: 'none', ring: '2px solid gray.500' },
         }}
       >
         Clear
@@ -68,7 +69,13 @@ export default function FormActions({
         onClick={onSave}
         disabled={saveLoading}
         className="w-full sm:w-auto"
-        startIcon={saveLoading ? <CircularProgress size={20} color="inherit" /> : <FontAwesomeIcon icon={faSave} />}
+        startIcon={
+          saveLoading ? (
+            <CircularProgress size={20} color="inherit" />
+          ) : (
+            <FontAwesomeIcon icon={faSave} />
+          )
+        }
       >
         {saveLoading ? 'Saving...' : 'Save'}
       </Button>
@@ -95,7 +102,10 @@ export default function FormActions({
         <DraftsModal onClose={handleCloseDraftModal} onSelect={onSelectDraft} />
       )}
       {isImportCharacterModalOpen && (
-        <ImportCharacterModal onClose={handleCloseImportCharacterModal} onImport={onImportCharacter} />
+        <ImportCharacterModal
+          onClose={handleCloseImportCharacterModal}
+          onImport={onImportCharacter}
+        />
       )}
     </motion.div>
   );

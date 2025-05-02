@@ -5,11 +5,7 @@ import { useUserStore } from '~/store';
 import { useChatStore } from '~/store';
 import { fetchChatData } from '~/api';
 import { Utils } from '~/Utility/Utility';
-import {
-  Sidebar,
-  ChatContainer,
-  PreviousChat,
-} from '~/components';
+import { Sidebar, ChatContainer, PreviousChat } from '~/components';
 import { ChatPageSpinner } from '@ui/Spinner/Spinner';
 
 interface PersonaResponse {

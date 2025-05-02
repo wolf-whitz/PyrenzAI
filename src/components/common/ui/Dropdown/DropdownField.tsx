@@ -30,7 +30,10 @@ export default function DropdownField({
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      <Typography variant="body1" className="block text-white mb-2 animate-fade-in">
+      <Typography
+        variant="body1"
+        className="block text-white mb-2 animate-fade-in"
+      >
         {label}
       </Typography>
       <Select.Root

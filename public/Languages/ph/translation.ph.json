@@ -1,116 +1,116 @@
 {
-    "hero": {
-      "title": "Pyrenz ai",
-      "description": "Makipag -chat sa walang limitasyong mga character, lumikha ng iyong sariling, at magkaroon ng isang ganap na pagsabog!"
+  "hero": {
+    "title": "Pyrenz ai",
+    "description": "Makipag -chat sa walang limitasyong mga character, lumikha ng iyong sariling, at magkaroon ng isang ganap na pagsabog!"
+  },
+  "buttons": {
+    "getStarted": "Magsimula",
+    "joinDiscord": "Sumali sa Discord",
+    "loadMore": "Mag -load pa",
+    "signUp": "Mag -sign up",
+    "login": "Mag -login",
+    "createAccount": "Lumikha ng isang account",
+    "register": "Magrehistro"
+  },
+  "banner": {
+    "text": "Pyrenz ai",
+    "joinDiscordTitle": "Sumali sa discord server o kung hindi man ..."
+  },
+  "search": {
+    "placeholder": "Mga character sa paghahanap ...",
+    "ariaLabel": "Mga character sa paghahanap"
+  },
+  "features": {
+    "smartFastFree": "Matalino. ",
+    "smartFastFreeDescription": "Makipag -usap sa mga character anumang oras. ",
+    "helpfulCommunity": "Nakatutulong na pamayanan 👥",
+    "helpfulCommunityDescription": "Mayroon kaming isang napaka -kapaki -pakinabang na pamayanan kung saan maaari kang magtanong at, marahil, magsaya!",
+    "openSourced": "OpenSourced 🖥️",
+    "openSourcedDescription": "Ang Pyrenzai ay ganap na libre at bukas-mapagkukunan, na nagpapahintulot sa lahat ng mga anyo ng mga lokal na pagbabago at higit pa!"
+  },
+  "navigation": {
+    "home": "Home",
+    "create": "Lumikha",
+    "chats": "Chat",
+    "settings": "Mga setting",
+    "profile": "Profile",
+    "avatar": "Avatar",
+    "mainNavigation": "Pangunahing nabigasyon",
+    "navigateTo": "Mag -navigate sa {{name}}",
+    "toggleMenu": "Toggle menu",
+    "scrollToTop": "Mag -scroll sa itaas"
+  },
+  "auth": {
+    "loginToAccount": "Mag -login sa iyong account",
+    "createNewAccount": "Lumikha ng isang bagong account",
+    "signUpFailed": "Nabigo ang pag -sign up. ",
+    "oauthError": "Nabigong mag -sign in kasama si Oauth.",
+    "loginWithGoogle": "Mag -login sa Google",
+    "signUpWithGoogle": "Mag -sign up sa Google",
+    "loginWithDiscord": "Mag -login na may Discord",
+    "signUpWithDiscord": "Mag -sign up na may Discord",
+    "or": "O",
+    "email": "Email",
+    "yourEmailAddress": "Ang iyong email address",
+    "password": "Password",
+    "yourPassword": "Ang iyong password",
+    "confirm18": "Kumpirmahin na ikaw ay 18+",
+    "loggingIn": "Pag -log in",
+    "signingUp": "Pag -sign up",
+    "byContinuing": "Sa pagpapatuloy, tinatanggap mo ang aming",
+    "and": "at",
+    "dontHaveAccount": "Wala kang account?",
+    "alreadyHaveAccount": "Mayroon nang isang account?"
+  },
+  "errors": {
+    "fetchingCharacters": "Error sa pagkuha ng mga character",
+    "callingRPCFunction": "Error sa pagtawag sa RPC function: ",
+    "unknown": "Isang hindi kilalang error ang naganap.",
+    "anErrorOccurred": "May naganap na error."
+  },
+  "ariaLabels": {
+    "homePage": "Home page",
+    "customActionButton": "Pindutan ng pasadyang pagkilos",
+    "loadingCharacter": "Naglo -load ng character {{index}}",
+    "loadMore": "Mag -load ng higit pang mga item"
+  },
+  "messages": {
+    "noCharactersFound": "Walang nahanap na mga character. ",
+    "allRightsReserved": "Nakalaan ang lahat ng mga karapatan.",
+    "verifyNotBot": "Mangyaring i -verify hindi ka isang bot 🤖🚫",
+    "loadingCaptcha": "Naglo -load ng Captcha ...",
+    "pyrenzAIDescription": "Ang Pyrenzai ay isang platform ng AI chat na nagpapahintulot sa mga gumagamit na makipag -chat sa mga bot nang libre. "
+  },
+  "platforms": {
+    "web": "Web",
+    "windows": "Windows",
+    "mobile": "Mobile",
+    "notUpYet": "{{label}} ay hindi pa, mangyaring suriin sa lalong madaling panahon."
+  },
+  "footer": {
+    "quickLinks": "Mabilis na mga link",
+    "links": {
+      "explore": "Galugarin",
+      "discord": "Discord",
+      "guide": "Gabay",
+      "botCreation": "Paglikha ng Bot",
+      "howTokenWorks": "Paano gumagana ang token",
+      "lorebooks": "Lorebooks"
     },
-    "buttons": {
-      "getStarted": "Magsimula",
-      "joinDiscord": "Sumali sa Discord",
-      "loadMore": "Mag -load pa",
-      "signUp": "Mag -sign up",
-      "login": "Mag -login",
-      "createAccount": "Lumikha ng isang account",
-      "register": "Magrehistro"
+    "legal": {
+      "privacyPolicy": "Patakaran sa Pagkapribado",
+      "termsOfService": "Mga Tuntunin ng Serbisyo",
+      "rules": "Mga Batas"
     },
-    "banner": {
-      "text": "Pyrenz ai",
-      "joinDiscordTitle": "Sumali sa discord server o kung hindi man ..."
-    },
-    "search": {
-      "placeholder": "Mga character sa paghahanap ...",
-      "ariaLabel": "Mga character sa paghahanap"
-    },
-    "features": {
-      "smartFastFree": "Matalino. ",
-      "smartFastFreeDescription": "Makipag -usap sa mga character anumang oras. ",
-      "helpfulCommunity": "Nakatutulong na pamayanan 👥",
-      "helpfulCommunityDescription": "Mayroon kaming isang napaka -kapaki -pakinabang na pamayanan kung saan maaari kang magtanong at, marahil, magsaya!",
-      "openSourced": "OpenSourced 🖥️",
-      "openSourcedDescription": "Ang Pyrenzai ay ganap na libre at bukas-mapagkukunan, na nagpapahintulot sa lahat ng mga anyo ng mga lokal na pagbabago at higit pa!"
-    },
-    "navigation": {
-      "home": "Home",
-      "create": "Lumikha",
-      "chats": "Chat",
-      "settings": "Mga setting",
-      "profile": "Profile",
-      "avatar": "Avatar",
-      "mainNavigation": "Pangunahing nabigasyon",
-      "navigateTo": "Mag -navigate sa {{name}}",
-      "toggleMenu": "Toggle menu",
-      "scrollToTop": "Mag -scroll sa itaas"
-    },
-    "auth": {
-      "loginToAccount": "Mag -login sa iyong account",
-      "createNewAccount": "Lumikha ng isang bagong account",
-      "signUpFailed": "Nabigo ang pag -sign up. ",
-      "oauthError": "Nabigong mag -sign in kasama si Oauth.",
-      "loginWithGoogle": "Mag -login sa Google",
-      "signUpWithGoogle": "Mag -sign up sa Google",
-      "loginWithDiscord": "Mag -login na may Discord",
-      "signUpWithDiscord": "Mag -sign up na may Discord",
-      "or": "O",
-      "email": "Email",
-      "yourEmailAddress": "Ang iyong email address",
-      "password": "Password",
-      "yourPassword": "Ang iyong password",
-      "confirm18": "Kumpirmahin na ikaw ay 18+",
-      "loggingIn": "Pag -log in",
-      "signingUp": "Pag -sign up",
-      "byContinuing": "Sa pagpapatuloy, tinatanggap mo ang aming",
-      "and": "at",
-      "dontHaveAccount": "Wala kang account?",
-      "alreadyHaveAccount": "Mayroon nang isang account?"
-    },
-    "errors": {
-      "fetchingCharacters": "Error sa pagkuha ng mga character",
-      "callingRPCFunction": "Error sa pagtawag sa RPC function: ",
-      "unknown": "Isang hindi kilalang error ang naganap.",
-      "anErrorOccurred": "May naganap na error."
-    },
-    "ariaLabels": {
-      "homePage": "Home page",
-      "customActionButton": "Pindutan ng pasadyang pagkilos",
-      "loadingCharacter": "Naglo -load ng character {{index}}",
-      "loadMore": "Mag -load ng higit pang mga item"
-    },
-    "messages": {
-      "noCharactersFound": "Walang nahanap na mga character. ",
-      "allRightsReserved": "Nakalaan ang lahat ng mga karapatan.",
-      "verifyNotBot": "Mangyaring i -verify hindi ka isang bot 🤖🚫",
-      "loadingCaptcha": "Naglo -load ng Captcha ...",
-      "pyrenzAIDescription": "Ang Pyrenzai ay isang platform ng AI chat na nagpapahintulot sa mga gumagamit na makipag -chat sa mga bot nang libre. "
-    },
-    "platforms": {
-      "web": "Web",
-      "windows": "Windows",
-      "mobile": "Mobile",
-      "notUpYet": "{{label}} ay hindi pa, mangyaring suriin sa lalong madaling panahon."
-    },
-    "footer": {
-      "quickLinks": "Mabilis na mga link",
-      "links": {
-        "explore": "Galugarin",
-        "discord": "Discord",
-        "guide": "Gabay",
-        "botCreation": "Paglikha ng Bot",
-        "howTokenWorks": "Paano gumagana ang token",
-        "lorebooks": "Lorebooks"
-      },
-      "legal": {
-        "privacyPolicy": "Patakaran sa Pagkapribado",
-        "termsOfService": "Mga Tuntunin ng Serbisyo",
-        "rules": "Mga Batas"
-      },
-      "pyrenzLogo": "Pyrenz logo"
-    },
-    "HomePageMoreButtons": {
-      "btn": {
-        "latest": "Pinakabagong",
-        "random": "Random",
-        "hot": "Mainit",
-        "male": "Lalaki",
-        "more": "Higit pa"
-      }
+    "pyrenzLogo": "Pyrenz logo"
+  },
+  "HomePageMoreButtons": {
+    "btn": {
+      "latest": "Pinakabagong",
+      "random": "Random",
+      "hot": "Mainit",
+      "male": "Lalaki",
+      "more": "Higit pa"
     }
   }
+}

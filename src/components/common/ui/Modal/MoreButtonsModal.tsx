@@ -203,10 +203,16 @@ export default function MoreButtonsModal({
             <LoadingSpinner />
           ) : (
             filteredModalButtons.map((btn, index) => (
-              <motion.div key={index} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <motion.div
+                key={index}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
                 <Button
                   variant="outlined"
-                  startIcon={'icon' in btn ? <btn.icon size={24} /> : <Tag size={24} />}
+                  startIcon={
+                    'icon' in btn ? <btn.icon size={24} /> : <Tag size={24} />
+                  }
                   onClick={() => handleButtonClick(btn)}
                   fullWidth
                   sx={{

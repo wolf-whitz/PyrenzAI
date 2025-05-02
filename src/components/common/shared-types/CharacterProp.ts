@@ -7,7 +7,7 @@ export interface Character {
   chat_messages_count: number;
   image_url: string;
   tags: string[];
-  public: boolean;
+  is_public: boolean;
   token_total: number;
 }
 

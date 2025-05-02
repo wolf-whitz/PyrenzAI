@@ -61,7 +61,8 @@ export default function Textarea({
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
     if (require_link) {
-      const urlPattern = /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$/;
+      const urlPattern =
+        /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$/;
       setIsLinkValid(urlPattern.test(newValue));
       if (!urlPattern.test(newValue)) {
         return;
@@ -83,12 +84,20 @@ export default function Textarea({
       transition={{ duration: 0.5 }}
     >
       <div className="flex justify-between items-center mb-1">
-        <Typography variant="body1" component="label" htmlFor={textareaId} sx={{ color: 'white' }}>
+        <Typography
+          variant="body1"
+          component="label"
+          htmlFor={textareaId}
+          sx={{ color: 'white' }}
+        >
           {label}
         </Typography>
         {showTokenizer && (
           <MUITooltip title={`Token Count: ${tokenCount}`} arrow>
-            <Typography variant="body2" sx={{ color: 'gray', cursor: 'pointer' }}>
+            <Typography
+              variant="body2"
+              sx={{ color: 'gray', cursor: 'pointer' }}
+            >
               Tokens: {tokenCount}
             </Typography>
           </MUITooltip>

@@ -4,8 +4,20 @@ import { motion } from 'framer-motion';
 import { supabase } from '~/Utility/supabaseClient';
 import { useUserStore } from '~/store';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faChevronRight, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { Typography, IconButton, Button, CircularProgress, Card, CardContent, CardActions } from '@mui/material';
+import {
+  faChevronLeft,
+  faChevronRight,
+  faTrash,
+} from '@fortawesome/free-solid-svg-icons';
+import {
+  Typography,
+  IconButton,
+  Button,
+  CircularProgress,
+  Card,
+  CardContent,
+  CardActions,
+} from '@mui/material';
 
 interface Draft {
   id: number;
@@ -126,8 +138,10 @@ export default function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
         return;
       }
 
-      setDrafts(drafts.filter(draft => draft.id !== draftId));
-      setDisplayedDrafts(displayedDrafts.filter(draft => draft.id !== draftId));
+      setDrafts(drafts.filter((draft) => draft.id !== draftId));
+      setDisplayedDrafts(
+        displayedDrafts.filter((draft) => draft.id !== draftId)
+      );
     } catch (err) {
       console.error('Unexpected error:', err);
     }
@@ -179,14 +193,24 @@ export default function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
                     <FontAwesomeIcon icon={faTrash} />
                   </IconButton>
                 </CardActions>
-                <CardContent onClick={() => onSelect(draft)} className="cursor-pointer">
-                  <Typography variant="h6" component="h3" className="text-xl font-semibold mb-2">
+                <CardContent
+                  onClick={() => onSelect(draft)}
+                  className="cursor-pointer"
+                >
+                  <Typography
+                    variant="h6"
+                    component="h3"
+                    className="text-xl font-semibold mb-2"
+                  >
                     {draft.name || 'Untitled Draft'}
                   </Typography>
                   <Typography variant="body2" className="text-gray-400 mb-2">
                     {draft.description || 'No description available.'}
                   </Typography>
-                  <Typography variant="caption" className="text-gray-500 text-sm">
+                  <Typography
+                    variant="caption"
+                    className="text-gray-500 text-sm"
+                  >
                     Created at: {new Date(draft.created_at).toLocaleString()}
                   </Typography>
                 </CardContent>

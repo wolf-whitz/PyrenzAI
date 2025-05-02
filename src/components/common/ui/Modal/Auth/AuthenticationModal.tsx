@@ -14,7 +14,11 @@ interface AuthenticationModalProps {
   toggleMode: () => void;
 }
 
-export default function AuthenticationModal({ mode, onClose, toggleMode }: AuthenticationModalProps) {
+export default function AuthenticationModal({
+  mode,
+  onClose,
+  toggleMode,
+}: AuthenticationModalProps) {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [isAdult, setIsAdult] = useState<boolean>(false);
@@ -86,11 +90,15 @@ export default function AuthenticationModal({ mode, onClose, toggleMode }: Authe
               </button>
 
               <Dialog.Title className="text-2xl font-bold mb-6 text-center font-baloo">
-                {mode === 'login' ? t('buttons.login') : t('buttons.createAccount')}
+                {mode === 'login'
+                  ? t('buttons.login')
+                  : t('buttons.createAccount')}
               </Dialog.Title>
 
               <p id="dialog-description" className="sr-only">
-                {mode === 'login' ? t('auth.loginToAccount') : t('auth.createNewAccount')}
+                {mode === 'login'
+                  ? t('auth.loginToAccount')
+                  : t('auth.createNewAccount')}
               </p>
 
               {error && (
@@ -113,7 +121,9 @@ export default function AuthenticationModal({ mode, onClose, toggleMode }: Authe
                   disabled={loading}
                 >
                   <FcGoogle className="text-xl" />
-                  {mode === 'login' ? t('auth.loginWithGoogle') : t('auth.signUpWithGoogle')}
+                  {mode === 'login'
+                    ? t('auth.loginWithGoogle')
+                    : t('auth.signUpWithGoogle')}
                 </motion.button>
 
                 <motion.button
@@ -124,7 +134,9 @@ export default function AuthenticationModal({ mode, onClose, toggleMode }: Authe
                   disabled={loading}
                 >
                   <FaDiscord className="text-xl" />
-                  {mode === 'login' ? t('auth.loginWithDiscord') : t('auth.signUpWithDiscord')}
+                  {mode === 'login'
+                    ? t('auth.loginWithDiscord')
+                    : t('auth.signUpWithDiscord')}
                 </motion.button>
               </div>
 
@@ -182,7 +194,9 @@ export default function AuthenticationModal({ mode, onClose, toggleMode }: Authe
                         whileTap={{ scale: 0.9 }}
                         className="w-6 h-6 border-2 border-gray-600 rounded-md peer-checked:border-blue-500 flex items-center justify-center transition-all duration-200"
                       >
-                        <FaCheck className={`w-4 h-4 text-blue-500 ${isAdult ? 'block' : 'hidden'}`} />
+                        <FaCheck
+                          className={`w-4 h-4 text-blue-500 ${isAdult ? 'block' : 'hidden'}`}
+                        />
                       </motion.div>
                     </label>
                     <span
@@ -201,7 +215,11 @@ export default function AuthenticationModal({ mode, onClose, toggleMode }: Authe
                   className="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-bold transition-all font-baloo"
                   disabled={loading}
                 >
-                  {loading ? `${mode === 'login' ? t('auth.loggingIn') : t('auth.signingUp')}...` : mode === 'login' ? t('buttons.login') : t('buttons.signUp')}
+                  {loading
+                    ? `${mode === 'login' ? t('auth.loggingIn') : t('auth.signingUp')}...`
+                    : mode === 'login'
+                      ? t('buttons.login')
+                      : t('buttons.signUp')}
                 </motion.button>
               </form>
 
@@ -220,12 +238,16 @@ export default function AuthenticationModal({ mode, onClose, toggleMode }: Authe
               <hr className="mt-4 border-t-2 border-gray-700 w-4/5 mx-auto opacity-50" />
 
               <p className="text-gray-400 text-sm text-center mt-4 font-baloo">
-                {mode === 'login' ? t('auth.dontHaveAccount') : t('auth.alreadyHaveAccount')}{' '}
+                {mode === 'login'
+                  ? t('auth.dontHaveAccount')
+                  : t('auth.alreadyHaveAccount')}{' '}
                 <span
                   className="text-blue-500 cursor-pointer"
                   onClick={toggleMode}
                 >
-                  {mode === 'login' ? t('buttons.register') : t('buttons.login')}
+                  {mode === 'login'
+                    ? t('buttons.register')
+                    : t('buttons.login')}
                 </span>
               </p>
             </Dialog.Content>

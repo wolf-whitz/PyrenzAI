@@ -1,14 +1,14 @@
 import { useState } from 'react';
-import { useOutletContext } from '@remix-run/react';
 import type { User } from '@supabase/supabase-js';
 
-type OutletContextType = { user: User | null };
+type ProfileProps = {
+  user: User | null;
+};
 
-export default function Profile() {
-  const { user } = useOutletContext<OutletContextType>();
-  const [activeTab, setActiveTab] = useState<
-    'Account' | 'Profile' | 'Preferences'
-  >('Account');
+export default function Profile({ user }: ProfileProps) {
+  const [activeTab, setActiveTab] = useState<'Account' | 'Profile' | 'Preferences'>(
+    'Account'
+  );
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-black text-white p-6">

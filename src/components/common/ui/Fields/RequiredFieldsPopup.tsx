@@ -1,6 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Typography, Button, List, ListItem, ListItemText } from '@mui/material';
+import {
+  Typography,
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+} from '@mui/material';
 
 interface RequiredFieldsPopupProps {
   missingFields: string[];
@@ -40,10 +46,7 @@ export default function RequiredFieldsPopup({
         >
           🚨 Missing Fields Alert 🚨
         </Typography>
-        <List
-          id="missingFieldsList"
-          className="flex flex-col gap-2 text-base"
-        >
+        <List id="missingFieldsList" className="flex flex-col gap-2 text-base">
           {missingFields.map((field, index) => (
             <ListItem key={index} className="animate-slide-in">
               <ListItemText primary={field} />

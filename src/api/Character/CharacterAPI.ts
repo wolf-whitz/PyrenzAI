@@ -37,7 +37,7 @@ export const fetchCharacters = async (
       chat_messages_count: char.chat_messages_count,
       image_url: char.profile_image,
       tags: Object.keys(char.tags),
-      public: char.is_public,
+      is_public: char.is_public,
       input_char_uuid: char.input_char_uuid,
       token_total: char.token_total,
     }));

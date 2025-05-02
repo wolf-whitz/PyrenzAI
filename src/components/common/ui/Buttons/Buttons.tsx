@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, RefreshCw, Flame, Tag } from 'lucide-react';
-import { MoreButtonsModal } from "@components/index";
+import { MoreButtonsModal } from '@components/index';
 import { Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -50,7 +50,12 @@ const buttons: ButtonType[] = [
 ];
 
 type CustomButtonProps = {
-  onButtonClick: (rpcFunction: string, type: string, max_character: number, page: number) => void;
+  onButtonClick: (
+    rpcFunction: string,
+    type: string,
+    max_character: number,
+    page: number
+  ) => void;
 };
 
 export default function CustomButton({ onButtonClick }: CustomButtonProps) {
@@ -95,7 +100,15 @@ export default function CustomButton({ onButtonClick }: CustomButtonProps) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '8px', marginBottom: '1.5rem', padding: '1rem', borderRadius: '0.5rem' }}
+      style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        gap: '8px',
+        marginBottom: '1.5rem',
+        padding: '1rem',
+        borderRadius: '0.5rem',
+      }}
     >
       {buttons.map((btn, index) => (
         <motion.div

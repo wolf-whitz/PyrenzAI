@@ -28,7 +28,9 @@ const itemVariants = {
 export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const [languages, setLanguages] = useState<{ code: string; name: string }[]>([]);
+  const [languages, setLanguages] = useState<{ code: string; name: string }[]>(
+    []
+  );
   const [showMore, setShowMore] = useState(false);
   const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
   const languageButtonRef = useRef<HTMLButtonElement>(null);
@@ -44,7 +46,10 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
         if (data.languages && Array.isArray(data.languages)) {
           setLanguages(data.languages);
         } else {
-          console.error('Fetched data does not contain a valid languages array:', data);
+          console.error(
+            'Fetched data does not contain a valid languages array:',
+            data
+          );
         }
       })
       .catch((error) => console.error('Error fetching languages:', error));
@@ -106,14 +111,21 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           aria-label={t('navigation.scrollToTop')}
         >
-          <img src="/favicon.ico" alt={t('footer.pyrenzLogo')} className="h-8 w-8" />
+          <img
+            src="/favicon.ico"
+            alt={t('footer.pyrenzLogo')}
+            className="h-8 w-8"
+          />
           <h1 className="text-2xl font-bold text-white font-baloo-da-2 font-display: swap">
             Pyrenz<span className="text-redorange">AI</span>
           </h1>
         </motion.div>
 
         <nav aria-label={t('navigation.mainNavigation')}>
-          <motion.div className="hidden md:flex items-center space-x-6 relative" variants={menuVariants}>
+          <motion.div
+            className="hidden md:flex items-center space-x-6 relative"
+            variants={menuVariants}
+          >
             {menuItems.map(({ name, icon: Icon, link, external }) => (
               <motion.button
                 key={name}

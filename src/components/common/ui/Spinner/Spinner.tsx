@@ -8,7 +8,11 @@ type SpinnerBaseProps = {
   no_bg?: boolean;
 };
 
-const SpinnerBase = ({ message, subMessage, no_bg = false }: SpinnerBaseProps) => (
+const SpinnerBase = ({
+  message,
+  subMessage,
+  no_bg = false,
+}: SpinnerBaseProps) => (
   <motion.div
     style={{
       display: 'flex',
@@ -27,7 +31,10 @@ const SpinnerBase = ({ message, subMessage, no_bg = false }: SpinnerBaseProps) =
     transition={{ duration: 0.4 }}
   >
     <CircularProgress style={{ color: 'blue' }} />
-    <Typography variant="body1" style={{ marginTop: '16px', animation: 'pulse 2s infinite' }}>
+    <Typography
+      variant="body1"
+      style={{ marginTop: '16px', animation: 'pulse 2s infinite' }}
+    >
       {message}
     </Typography>
     {subMessage && (
@@ -42,7 +49,8 @@ const Spinner = () => (
   <SpinnerBase
     message={
       <>
-        Loading <span style={{ fontWeight: '600', color: 'blue' }}>Pyrenz</span>, Open Source, Free Alternative
+        Loading <span style={{ fontWeight: '600', color: 'blue' }}>Pyrenz</span>
+        , Open Source, Free Alternative
       </>
     }
   />
@@ -53,7 +61,8 @@ const ChatPageSpinner = () => (
     message={
       <>
         Loading.. Please Wait While{' '}
-        <span style={{ fontWeight: '600', color: 'blue' }}>Pyrenz</span> loads your chats.
+        <span style={{ fontWeight: '600', color: 'blue' }}>Pyrenz</span> loads
+        your chats.
       </>
     }
     subMessage="It may take a few seconds."
@@ -66,7 +75,8 @@ const SettingsPageLoader = () => (
     message={
       <>
         Loading.. Please Wait While{' '}
-        <span style={{ fontWeight: '600', color: 'blue' }}>Pyrenz</span> loads your settings.
+        <span style={{ fontWeight: '600', color: 'blue' }}>Pyrenz</span> loads
+        your settings.
       </>
     }
     subMessage="It may take a few seconds."
