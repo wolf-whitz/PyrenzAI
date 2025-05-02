@@ -1,14 +1,11 @@
 import { useState } from 'react';
-import type { User } from '@supabase/supabase-js';
 
 type ProfileProps = {
-  user: User | null;
+  user_uuid: string | null;
 };
 
-export default function Profile({ user }: ProfileProps) {
-  const [activeTab, setActiveTab] = useState<'Account' | 'Profile' | 'Preferences'>(
-    'Account'
-  );
+export default function Profile({ user_uuid }: ProfileProps) {
+  const [activeTab, setActiveTab] = useState<'Account' | 'Profile' | 'Preferences'>('Account');
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-black text-white p-6">
@@ -20,9 +17,7 @@ export default function Profile({ user }: ProfileProps) {
             className={`px-4 py-2 rounded-md transition ${
               activeTab === tab ? 'bg-red-600' : 'bg-gray-700 hover:bg-gray-600'
             }`}
-            onClick={() =>
-              setActiveTab(tab as 'Account' | 'Profile' | 'Preferences')
-            }
+            onClick={() => setActiveTab(tab as 'Account' | 'Profile' | 'Preferences')}
           >
             {tab}
           </button>
@@ -32,8 +27,8 @@ export default function Profile({ user }: ProfileProps) {
         {activeTab === 'Account' && (
           <div>
             <p>Manage your account settings here.</p>
-            {user ? (
-              <p>Logged in as: {user.email}</p>
+            {user_uuid ? (
+              <p>Logged in as: {user_uuid}</p>
             ) : (
               <p>You are not logged in.</p>
             )}
@@ -42,7 +37,9 @@ export default function Profile({ user }: ProfileProps) {
         {activeTab === 'Profile' && (
           <p>Update your profile information here.</p>
         )}
-        {activeTab === 'Preferences' && <p>Customize your preferences here.</p>}
+        {activeTab === 'Preferences' && (
+          <p>Customize your preferences here.</p>
+        )}
       </div>
     </div>
   );
