@@ -1,29 +1,28 @@
-import { useEffect, useRef, useState, Suspense, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect, useRef, useState, Suspense } from 'react';
 import { useChatStore } from '~/store';
 import { ChatMain } from '~/components';
 import {
   Message,
   ChatContainerProps,
-  GenerateResponse,
 } from '@shared-types/chatTypes';
-import { Utils } from '~/Utility/Utility';
 import { ChatPageSpinner } from '@ui/Spinner/Spinner';
+
+interface ChatContainerPropsExtended extends ChatContainerProps {
+  previous_message?: Message[];
+  className?: string;
+  conversation_id: string;
+}
 
 export default function ChatContainer({
   user,
   char,
   firstMessage,
-  onSend,
   previous_message = [],
   className = '',
-}: ChatContainerProps & { previous_message?: Message[]; className?: string }) {
+  conversation_id,
+}: ChatContainerPropsExtended) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { chatID } = useParams<{ chatID: string }>();
-  const messageIdRef = useRef<{
-    charId: string | null;
-    userId: string | null;
-  } | null>(null);
+  const messageIdRef = useRef<{ charId: string | null; userId: string | null }>({ charId: null, userId: null });
   const [charIcon, setCharIcon] = useState<string>(char?.icon ?? '');
   const { messages, setMessages } = useChatStore();
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
@@ -50,50 +49,6 @@ export default function ChatContainer({
     }
   }, [char, firstMessage, previous_message, setMessages, messages.length]);
 
-  const handleSend = useCallback(
-    async (text: string) => {
-      if (!user || !char || !chatID) return;
-      const userMessage: Message = {
-        name: user.name,
-        text,
-        icon: user.icon,
-        type: 'user',
-      };
-      const assistantMessage: Message = {
-        name: char.name ?? 'Assistant',
-        text: '',
-        icon: charIcon,
-        type: 'assistant',
-        isGenerate: true,
-      };
-      setMessages((prev) => [...prev, userMessage, assistantMessage]);
-      onSend(text);
-      setIsGenerating(true);
-      try {
-        const response = await Utils.post<GenerateResponse>('/api/Generate', {
-          Type: 'Generate',
-          ConversationId: chatID,
-          Message: { User: text },
-          Engine: 'Mango Ube',
-          characterImageUrl: charIcon,
-        });
-        if (!response?.data?.content)
-          throw new Error('No valid response from API');
-        const messageText = response.data.content;
-        const firstId = response.id?.[0] ?? {};
-        messageIdRef.current = {
-          charId: firstId.charMessageUuid ?? null,
-          userId: firstId.userMessageUuid ?? null,
-        };
-      } catch (error) {
-        console.error('Failed to send message:', error);
-      } finally {
-        setIsGenerating(false);
-      }
-    },
-    [user, char, chatID, charIcon, setMessages, onSend]
-  );
-
   return (
     <Suspense fallback={<ChatPageSpinner />}>
       <div
@@ -104,11 +59,11 @@ export default function ChatContainer({
           char={char}
           previous_message={messages}
           isGenerating={isGenerating}
-          messageIdRef={messageIdRef}
           messagesEndRef={messagesEndRef}
-          handleSend={handleSend}
-          firstMessage={firstMessage}
-          onSend={onSend}
+          setMessages={setMessages}
+          messageIdRef={messageIdRef}
+          setIsGenerating={setIsGenerating}
+          conversation_id={conversation_id}
         />
       </div>
     </Suspense>

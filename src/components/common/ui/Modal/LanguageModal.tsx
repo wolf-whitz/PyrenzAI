@@ -1,4 +1,3 @@
-import ReactDOM from 'react-dom';
 import { motion } from 'framer-motion';
 import { Modal, Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';

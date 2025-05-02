@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { X } from 'lucide-react';
 import {
   Typography,
   IconButton,
@@ -46,7 +45,7 @@ export default function CommunityGuidelines({
           onClick={handleRemove}
           className="text-white sm:absolute sm:right-6 sm:top-6"
         >
-          <FontAwesomeIcon icon={faTimes} />
+          <X />
         </IconButton>
       </div>
       <Divider className="border-gray-700 mb-6 w-full" />

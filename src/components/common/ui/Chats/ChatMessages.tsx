@@ -1,6 +1,8 @@
+import React from 'react';
 import TypingIndicator from '../Indicator/TypingIndicator';
 import CustomMarkdown from '../Markdown/CustomMarkdown';
 import { Box, Avatar } from '@mui/material';
+import { AlertCircle } from 'lucide-react';
 
 interface Message {
   name: string;
@@ -11,6 +13,7 @@ interface Message {
   type: 'user' | 'assistant';
   token?: number | null;
   role?: string | null;
+  error?: boolean;
 }
 
 interface ChatMessagesProps {
@@ -70,6 +73,13 @@ export default function ChatMessages({
                 char={msg.char_name || 'Anon'}
               />
             </Box>
+
+            {msg.error && (
+              <Box display="flex" alignItems="center" ml={1} mt={1}>
+                <AlertCircle color="red" size={16} />
+                <Box ml={1} color="red">Error</Box>
+              </Box>
+            )}
 
             {isUser && (
               <Avatar

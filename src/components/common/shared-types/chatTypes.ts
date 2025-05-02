@@ -12,6 +12,7 @@ export interface Message {
   token?: number | null;
   role?: string;
   conversation_id?: string;
+  error?: boolean;
 }
 
 export interface User {
@@ -32,8 +33,7 @@ export interface Character extends User {
 export interface ChatContainerProps {
   user: User | null;
   char?: Partial<Character>;
-  firstMessage: string | null;
-  onSend: (message: string) => void;
+  firstMessage?: string | null;
   previous_message?: Message[];
   isGenerating?: boolean;
   handleSend?: (text: string) => Promise<void>;

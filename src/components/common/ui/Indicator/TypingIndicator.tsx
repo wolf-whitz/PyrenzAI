@@ -1,16 +1,27 @@
+import { Box, styled } from '@mui/material';
+
+const Dot = styled('span')<{ delay: number }>(({ theme, delay }) => ({
+  width: '8px',
+  height: '8px',
+  borderRadius: '50%',
+  backgroundColor: 'white',
+  animation: `bounce 1.5s ease-in-out ${delay}s infinite`,
+  '@keyframes bounce': {
+    '0%, 100%': {
+      transform: 'translateY(-50%)',
+    },
+    '50%': {
+      transform: 'translateY(0)',
+    },
+  },
+}));
+
 export default function TypingIndicator() {
   return (
-    <div className="flex items-center space-x-1">
+    <Box display="flex" alignItems="center" gap={0.5}>
       {[0, 1, 2].map((i) => (
-        <span
-          key={i}
-          className="w-3 h-3 rounded-full"
-          style={{
-            animation: `bounce 1.5s ease-in-out ${i * 0.2}s infinite`,
-            backgroundColor: 'white',
-          }}
-        />
+        <Dot key={i} delay={i * 0.2} />
       ))}
-    </div>
+    </Box>
   );
 }

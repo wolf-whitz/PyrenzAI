@@ -6,7 +6,7 @@ import { useUserStore } from '~/store';
 import { Avatar, CircularProgress, Typography } from '@mui/material';
 
 interface Message {
-  id: string; // Ensure id is a string if that's what the API returns
+  id: string;
   conversation_id: string;
   message: string;
   character_image_url: string;

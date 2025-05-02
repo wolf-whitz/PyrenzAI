@@ -3,12 +3,7 @@ import ReactDOM from 'react-dom';
 import { motion } from 'framer-motion';
 import { supabase } from '~/Utility/supabaseClient';
 import { useUserStore } from '~/store';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faChevronLeft,
-  faChevronRight,
-  faTrash,
-} from '@fortawesome/free-solid-svg-icons';
+import { ChevronLeft, ChevronRight, Trash } from 'lucide-react';
 import {
   Typography,
   IconButton,
@@ -190,7 +185,7 @@ export default function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
                     }}
                     className="text-red-500 hover:text-red-600"
                   >
-                    <FontAwesomeIcon icon={faTrash} />
+                    <Trash />
                   </IconButton>
                 </CardActions>
                 <CardContent
@@ -221,13 +216,13 @@ export default function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
                 onClick={handlePrevPage}
                 disabled={currentPage === 0}
                 className="text-white p-2 rounded-lg bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50"
-                startIcon={<FontAwesomeIcon icon={faChevronLeft} />}
+                startIcon={<ChevronLeft />}
               />
               <Button
                 onClick={handleNextPage}
                 disabled={(currentPage + 1) * 3 >= drafts.length}
                 className="text-white p-2 rounded-lg bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50"
-                endIcon={<FontAwesomeIcon icon={faChevronRight} />}
+                endIcon={<ChevronRight />}
               />
             </div>
           </>

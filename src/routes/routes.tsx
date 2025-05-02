@@ -23,6 +23,11 @@ const ProtectedRoute = ({ element, ...props }: { element: JSX.Element, [key: str
   return React.cloneElement(element, props);
 };
 
+const ProfileWrapper = () => {
+  const user_uuid = useUserStore((state) => state.user_uuid);
+  return <Profile user_uuid={user_uuid} />;
+};
+
 export const routes: RouteObject[] = [
   { path: '/', element: <Index /> },
   { path: '/Auth', element: <Auth /> },
@@ -30,7 +35,7 @@ export const routes: RouteObject[] = [
   { path: '/Create', element: <ProtectedRoute element={<Create />} /> },
   {
     path: '/Profile',
-    element: <ProtectedRoute element={<Profile user_uuid={useUserStore((state) => state.user_uuid)} />} />,
+    element: <ProtectedRoute element={<ProfileWrapper />} />,
   },
   {
     path: '/Chat/:conversation_id',

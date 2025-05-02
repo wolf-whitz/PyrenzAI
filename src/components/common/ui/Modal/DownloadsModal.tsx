@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaGlobe, FaWindows, FaMobileAlt, FaTimes } from 'react-icons/fa';
+import { Globe, Laptop, Smartphone, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import posthog from 'posthog-js';
 import { useTranslation } from 'react-i18next';
@@ -20,7 +20,7 @@ export default function DownloadModal({
 
   const buttonsConfig = [
     {
-      icon: FaGlobe,
+      icon: Globe,
       label: t('platforms.web'),
       link: '/Home',
       is_up: true,
@@ -29,7 +29,7 @@ export default function DownloadModal({
         'flex flex-col items-center w-full bg-transparent hover:shadow-glow',
     },
     {
-      icon: FaWindows,
+      icon: Laptop,
       label: t('platforms.windows'),
       link: '/Windows',
       is_up: false,
@@ -38,7 +38,7 @@ export default function DownloadModal({
         'flex flex-col items-center bg-black bg-opacity-80 p-3 rounded-lg border-2 border-red-500 w-40 hover:shadow-glow',
     },
     {
-      icon: FaMobileAlt,
+      icon: Smartphone,
       label: t('platforms.mobile'),
       link: '/Mobile',
       is_up: false,
@@ -141,7 +141,7 @@ export default function DownloadModal({
                 whileTap={{ scale: 0.95 }}
                 transition={{ duration: 0.3 }}
               >
-                <FaTimes />
+                <X />
               </motion.button>
             </div>
           </motion.div>

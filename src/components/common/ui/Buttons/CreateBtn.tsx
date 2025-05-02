@@ -1,8 +1,7 @@
 import React from 'react';
 import { Button, CircularProgress } from '@mui/material';
 import classNames from 'classnames';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { Plus } from 'lucide-react';
 
 interface CreateButtonProps {
   loading: boolean;
@@ -24,7 +23,7 @@ export default function CreateButton({
         loading ? (
           <CircularProgress size={20} color="inherit" />
         ) : (
-          <FontAwesomeIcon icon={faPlus} className="mr-2" />
+          <Plus className="mr-2" />
         )
       }
     >

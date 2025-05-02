@@ -5,7 +5,7 @@ import { Menu } from '~/components';
 
 interface ChatInputProps {
   className?: string;
-  onSend?: (message: string, user: { name: string; icon: string }) => void;
+  handleSend: (message: string) => void; 
   user: { name: string; icon: string };
   char: { name: string };
 }
@@ -14,7 +14,7 @@ const MAX_CHAR_LIMIT = 280;
 
 export default function ChatInput({
   className,
-  onSend,
+  handleSend,
   user,
   char,
 }: ChatInputProps) {
@@ -22,11 +22,12 @@ export default function ChatInput({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
 
-  const handleSend = () => {
+  const sendMessage = () => {
     const trimmedMessage = message.trim();
     if (!trimmedMessage || trimmedMessage.length > MAX_CHAR_LIMIT) return;
-    onSend?.(trimmedMessage, user);
-    setMessage('');
+
+    handleSend(trimmedMessage);
+    setMessage(''); 
   };
 
   return (
@@ -63,7 +64,7 @@ export default function ChatInput({
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                handleSend();
+                sendMessage();
               }
             }}
             placeholder={`Chat with ${char.name}`}
@@ -72,7 +73,7 @@ export default function ChatInput({
           />
 
           <motion.button
-            onClick={message.trim().length > 0 ? handleSend : undefined}
+            onClick={message.trim().length > 0 ? sendMessage : undefined}
             className={`ml-2 flex items-center gap-1 text-gray-400 transition duration-200 px-4 py-2 rounded-full flex-shrink-0 ${
               message.length > MAX_CHAR_LIMIT
                 ? 'cursor-not-allowed opacity-50'

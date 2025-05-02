@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button, CircularProgress } from '@mui/material';
 import { CreateButton, DraftsModal, ImportCharacterModal } from '~/components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFileAlt, faSave, faUpload } from '@fortawesome/free-solid-svg-icons';
+import { Save, FileText, Upload } from 'lucide-react';
 import { CharacterData, Draft } from '@shared-types/CharacterProp';
 
 interface FormActionsProps {
@@ -73,7 +72,7 @@ export default function FormActions({
           saveLoading ? (
             <CircularProgress size={20} color="inherit" />
           ) : (
-            <FontAwesomeIcon icon={faSave} />
+            <Save className="text-xl" />
           )
         }
       >
@@ -84,7 +83,7 @@ export default function FormActions({
         color="primary"
         onClick={handleOpenDraftModal}
         className="w-full sm:w-auto"
-        startIcon={<FontAwesomeIcon icon={faFileAlt} />}
+        startIcon={<FileText className="text-xl" />}
       >
         Drafts
       </Button>
@@ -93,7 +92,7 @@ export default function FormActions({
         color="primary"
         onClick={handleOpenImportCharacterModal}
         className="w-full sm:w-auto"
-        startIcon={<FontAwesomeIcon icon={faUpload} />}
+        startIcon={<Upload className="text-xl" />}
       >
         Import Character
       </Button>

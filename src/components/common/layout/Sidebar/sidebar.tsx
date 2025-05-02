@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FaHome, FaPlus, FaCog, FaComments, FaUser } from 'react-icons/fa';
+import { Home, Plus, Settings, MessageSquare, User as LucideUser } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '~/Utility/supabaseClient';
-import type { User } from '@supabase/supabase-js';
+import type { User as SupabaseUser } from '@supabase/supabase-js';
 import { AuthenticationModal } from '@components/index';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { useTranslation } from 'react-i18next';
 
 export default function Sidebar({ className }: { className?: string }) {
   const [hovered, setHovered] = useState<string | null>(null);
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<SupabaseUser | null>(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [modalMode, setModalMode] = useState<'login' | 'register'>('login');
   const navigate = useNavigate();
@@ -26,20 +26,20 @@ export default function Sidebar({ className }: { className?: string }) {
   }, []);
 
   const menuItems = [
-    { name: t('navigation.home'), icon: <FaHome size={20} />, path: '/Home' },
+    { name: t('navigation.home'), icon: <Home size={20} />, path: '/Home' },
     {
       name: t('navigation.create'),
-      icon: <FaPlus size={20} />,
+      icon: <Plus size={20} />,
       path: '/Create',
     },
     {
       name: t('navigation.chats'),
-      icon: <FaComments size={20} />,
+      icon: <MessageSquare size={20} />,
       path: '/Chats',
     },
     {
       name: t('navigation.settings'),
-      icon: <FaCog size={20} />,
+      icon: <Settings size={20} />,
       path: '/Settings',
     },
   ];

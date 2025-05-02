@@ -1,11 +1,20 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { ChatContainerProps } from '@shared-types/chatTypes';
+import { ChatContainerProps, Message } from '@shared-types/chatTypes';
 import ChatInput from '../ChatInput';
 import ChatMessages from '../ChatMessages';
 import { motion } from 'framer-motion';
 import { Avatar, Typography, IconButton } from '@mui/material';
-import { Settings } from 'lucide-react';
+import { Settings, ChevronLeft } from 'lucide-react';
 import { SettingsSidebar } from '@components/index';
+import { useGenerateMessage } from '~/api/Chatpage/ChatContainerAPI';
+import { useNavigate } from 'react-router-dom';
+
+interface ChatMainProps extends ChatContainerProps {
+  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+  messageIdRef: React.MutableRefObject<{ charId: string | null; userId: string | null }>;
+  setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>;
+  conversation_id: string;
+}
 
 export default function ChatMain({
   user,
@@ -13,10 +22,15 @@ export default function ChatMain({
   previous_message = [],
   isGenerating,
   messagesEndRef,
-  handleSend,
-}: ChatContainerProps) {
+  setMessages,
+  messageIdRef,
+  setIsGenerating,
+  conversation_id,
+}: ChatMainProps) {
   const [bgImage, setBgImage] = useState<string | null>(null);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const generateMessage = useGenerateMessage();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedBgImage = localStorage.getItem('bgImage');
@@ -53,6 +67,22 @@ export default function ChatMain({
     setIsSettingsOpen((prev) => !prev);
   };
 
+  const handleSend = async (message: string) => {
+    const trimmedMessage = message.trim();
+    if (!trimmedMessage) return;
+
+    try {
+      console.log(trimmedMessage)
+      await generateMessage(trimmedMessage, user, char, conversation_id, char?.icon || '', setMessages, messageIdRef, setIsGenerating);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const handleGoHome = () => {
+    navigate('/home');
+  };
+
   return (
     <motion.div
       className="flex flex-col h-screen text-white p-4 relative w-full justify-center items-center"
@@ -74,12 +104,14 @@ export default function ChatMain({
         <Avatar
           alt={char?.name || 'Anon'}
           src={
-            char?.icon ||
-            `https://api.dicebear.com/9.x/adventurer/svg?seed=${char?.name?.split('@')[0] || 'Anon'}`
+            char?.icon || ''
           }
           className="w-16 h-16"
         />
         <div className="flex items-center mt-2">
+          <IconButton onClick={handleGoHome} className="mr-2 text-white">
+            <ChevronLeft className="w-6 h-6" />
+          </IconButton>
           <Typography variant="h6" className="text-lg font-bold">
             {char?.name || 'Anon'}
           </Typography>
@@ -110,14 +142,12 @@ export default function ChatMain({
         transition={{ duration: 0.5 }}
       >
         <ChatInput
-          onSend={handleSend}
           user={{
             name: user?.name || 'Anon',
-            icon:
-              user?.icon ||
-              `https://api.dicebear.com/9.x/adventurer/svg?seed=${user?.name?.split('@')[0] || 'Anon'}`,
+            icon: user?.icon || ''
           }}
           char={{ name: char?.name || 'Anon' }}
+          handleSend={handleSend}
         />
       </motion.div>
 

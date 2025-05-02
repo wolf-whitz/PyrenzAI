@@ -21,7 +21,6 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useTranslation } from 'react-i18next';
 
-// Memoize the CharacterCard component
 const MemoizedCharacterCard = memo(CharacterCard);
 
 export default function Home() {

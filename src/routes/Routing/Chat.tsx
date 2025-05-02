@@ -37,7 +37,13 @@ export default function ChatPage() {
             user_uuid,
             auth_key
           );
-          setChatData(result);
+
+          const updatedCharacter = {
+            ...result.character,
+            icon: result.character.icon || `https://api.dicebear.com/9.x/adventurer/svg?seed=${result.character.name || 'Anon'}`
+          };
+
+          setChatData({ ...result, character: updatedCharacter });
 
           if (
             result?.character?.first_message &&
@@ -67,7 +73,13 @@ export default function ChatPage() {
           user_uuid,
           auth_key,
         });
-        setUserData(response);
+
+        const updatedUserData = {
+          ...response,
+          icon: response.icon || `https://api.dicebear.com/9.x/adventurer/svg?seed=${response.name?.split('@')[0] || 'Anon'}`
+        };
+
+        setUserData(updatedUserData);
       } catch {}
     };
 
@@ -82,7 +94,7 @@ export default function ChatPage() {
     );
   }
 
-  if (fetchError || !chatData) {
+  if (fetchError || !chatData || !conversation_id) {
     return (
       <div className="text-center text-white">
         Unknown Chat or Character... Try again later.
@@ -108,8 +120,8 @@ export default function ChatPage() {
           user={userData}
           char={character}
           firstMessage={firstMessage || character.first_message}
-          onSend={() => {}}
           previous_message={messages}
+          conversation_id={conversation_id}
         />
       </main>
 
