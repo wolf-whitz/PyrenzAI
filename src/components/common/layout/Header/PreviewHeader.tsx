@@ -9,6 +9,7 @@ import {
 } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { supabase } from '~/Utility/supabaseClient';
 
 interface HeaderProps {
   setShowLogin: (value: boolean) => void;
@@ -33,6 +34,7 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
   );
   const [showMore, setShowMore] = useState(false);
   const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track login status
   const languageButtonRef = useRef<HTMLButtonElement>(null);
   const languageMenuRef = useRef<HTMLDivElement>(null);
   const { t, i18n } = useTranslation();
@@ -40,6 +42,7 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
   useEffect(() => {
     setIsMounted(true);
 
+    // Fetch languages
     fetch('/Languages/Languages.json')
       .then((response) => response.json())
       .then((data) => {
@@ -53,6 +56,17 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
         }
       })
       .catch((error) => console.error('Error fetching languages:', error));
+
+    const checkUserSession = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      if (data.session) {
+        setIsLoggedIn(true);
+      } else if (error) {
+        console.error('Error checking user session:', error);
+      }
+    };
+
+    checkUserSession();
   }, []);
 
   const menuItems = [
@@ -206,26 +220,30 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
               </AnimatePresence>
             </motion.div>
 
-            <motion.button
-              variants={itemVariants}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setShowLogin(true)}
-              className="text-white font-baloo-da-2 hover:text-[#E03201] transition-all"
-              aria-label={t('buttons.login')}
-            >
-              {t('buttons.login')}
-            </motion.button>
-            <motion.button
-              variants={itemVariants}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setShowRegister(true)}
-              className="bg-[#E03201] text-white px-4 py-2 rounded font-baloo-da-2 transition-all hover:bg-[#611600]"
-              aria-label={t('buttons.signUp')}
-            >
-              {t('buttons.signUp')}
-            </motion.button>
+            {!isLoggedIn && (
+              <>
+                <motion.button
+                  variants={itemVariants}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setShowLogin(true)}
+                  className="text-white font-baloo-da-2 hover:text-[#E03201] transition-all"
+                  aria-label={t('buttons.login')}
+                >
+                  {t('buttons.login')}
+                </motion.button>
+                <motion.button
+                  variants={itemVariants}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setShowRegister(true)}
+                  className="bg-[#E03201] text-white px-4 py-2 rounded font-baloo-da-2 transition-all hover:bg-[#611600]"
+                  aria-label={t('buttons.signUp')}
+                >
+                  {t('buttons.signUp')}
+                </motion.button>
+              </>
+            )}
           </motion.div>
         </nav>
 
@@ -287,28 +305,32 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
                   </button>
                 </motion.div>
 
-                <motion.button
-                  variants={itemVariants}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setShowLogin(true)}
-                  className="block w-full text-left px-4 py-2 hover:bg-gray-800 rounded text-white font-baloo-da-2 hover:text-[#E03201] transition-all mb-2"
-                  aria-label={t('buttons.login')}
-                  role="menuitem"
-                >
-                  {t('buttons.login')}
-                </motion.button>
-                <motion.button
-                  variants={itemVariants}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setShowRegister(true)}
-                  className="block w-full text-left bg-[#E03201] text-white px-4 py-2 rounded font-baloo-da-2 transition-all hover:bg-[#611600]"
-                  aria-label={t('buttons.signUp')}
-                  role="menuitem"
-                >
-                  {t('buttons.signUp')}
-                </motion.button>
+                {!isLoggedIn && (
+                  <>
+                    <motion.button
+                      variants={itemVariants}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => setShowLogin(true)}
+                      className="block w-full text-left px-4 py-2 hover:bg-gray-800 rounded text-white font-baloo-da-2 hover:text-[#E03201] transition-all mb-2"
+                      aria-label={t('buttons.login')}
+                      role="menuitem"
+                    >
+                      {t('buttons.login')}
+                    </motion.button>
+                    <motion.button
+                      variants={itemVariants}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => setShowRegister(true)}
+                      className="block w-full text-left bg-[#E03201] text-white px-4 py-2 rounded font-baloo-da-2 transition-all hover:bg-[#611600]"
+                      aria-label={t('buttons.signUp')}
+                      role="menuitem"
+                    >
+                      {t('buttons.signUp')}
+                    </motion.button>
+                  </>
+                )}
               </motion.div>
             )}
           </AnimatePresence>
