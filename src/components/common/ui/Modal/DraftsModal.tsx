@@ -13,25 +13,7 @@ import {
   CardContent,
   CardActions,
 } from '@mui/material';
-
-interface Draft {
-  id: number;
-  user_uuid: string;
-  persona: string;
-  name: string;
-  model_instructions: string;
-  scenario: string;
-  description: string;
-  first_message: string;
-  tags: string;
-  gender: string;
-  is_public: boolean;
-  is_nsfw: boolean;
-  textarea_token: { [key: string]: number };
-  token_total: number;
-  created_at: string;
-  updated_at: string;
-}
+import { Draft } from '@shared-types/CharacterProp';
 
 interface DraftsModalProps {
   onClose: () => void;
@@ -81,7 +63,7 @@ export default function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
           scenario: draft.scenario,
           description: draft.description,
           first_message: draft.first_message,
-          tags: draft.tags,
+          tags: draft.tags, // Ensure this is an array of strings
           gender: draft.gender,
           is_public: draft.is_public,
           is_nsfw: draft.is_nsfw,
