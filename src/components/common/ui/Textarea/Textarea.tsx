@@ -30,7 +30,7 @@ export default function Textarea({
 }: TextareaProps) {
   const [tokenCount, setTokenCount] = useState(0);
   const [isLinkValid, setIsLinkValid] = useState(true);
-  const characterCount = Math.round(value.length);
+  const characterCount = value.length;
   const isMaxLengthExceeded = characterCount > maxLength;
 
   const setCharacterData = useCharacterStore((state) => state.setCharacterData);
@@ -38,7 +38,7 @@ export default function Textarea({
   useEffect(() => {
     if (showTokenizer) {
       const tokens = llamaTokenizer.encode(value);
-      const tokenLength = Math.round(tokens.length);
+      const tokenLength = tokens.length;
       setTokenCount(tokenLength);
       setCharacterData({
         textarea_token: {

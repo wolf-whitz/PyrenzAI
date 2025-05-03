@@ -8,7 +8,6 @@ import {
   Typography,
   IconButton,
   Button,
-  CircularProgress,
   Card,
   CardContent,
   CardActions,
@@ -63,7 +62,7 @@ export default function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
           scenario: draft.scenario,
           description: draft.description,
           first_message: draft.first_message,
-          tags: draft.tags, // Ensure this is an array of strings
+          tags: Array.isArray(draft.tags) ? draft.tags.join(', ') : draft.tags ?? '',
           gender: draft.gender,
           is_public: draft.is_public,
           is_nsfw: draft.is_nsfw,

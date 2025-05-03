@@ -9,7 +9,7 @@ interface CharacterState {
   scenario: string;
   description: string;
   first_message: string;
-  tags: string[];
+  tags: string | string[];
   gender: string;
   textarea_token: { [key: string]: number };
   token_total: number;
@@ -25,7 +25,7 @@ export const useCharacterStore = create<CharacterState>((set) => ({
   scenario: '',
   description: '',
   first_message: '',
-  tags: [],
+  tags: '',
   gender: '',
   textarea_token: {
     persona: 0,
@@ -51,7 +51,12 @@ export const useCharacterStore = create<CharacterState>((set) => ({
       return {
         ...state,
         ...data,
-        tags: Array.isArray(data.tags) ? data.tags : [],
+        tags:
+          typeof data.tags === 'string'
+            ? data.tags
+            : Array.isArray(data.tags)
+            ? data.tags.join(', ')
+            : state.tags,
         textarea_token: newTextareaToken,
         token_total: newTokenTotal,
       };

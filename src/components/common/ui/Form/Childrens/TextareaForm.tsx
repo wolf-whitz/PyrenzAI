@@ -26,7 +26,6 @@ export default function TextareaForm({
         onChange={handleChange}
         label="Name"
         aria-label="Name"
-        showTokenizer={true}
       />
       <Textarea
         name="description"
@@ -34,7 +33,6 @@ export default function TextareaForm({
         onChange={handleChange}
         label="Description"
         aria-label="Description"
-        showTokenizer={true}
       />
       <Textarea
         name="persona"
@@ -42,7 +40,6 @@ export default function TextareaForm({
         onChange={handleChange}
         label="Persona"
         aria-label="Persona"
-        showTokenizer={true}
       />
       <Textarea
         name="scenario"
@@ -50,7 +47,6 @@ export default function TextareaForm({
         onChange={handleChange}
         label="Scenario"
         aria-label="Scenario"
-        showTokenizer={true}
       />
       <Textarea
         name="model_instructions"
@@ -58,7 +54,6 @@ export default function TextareaForm({
         onChange={handleChange}
         label="Model Instructions"
         aria-label="Model Instructions"
-        showTokenizer={true}
       />
       <Textarea
         name="first_message"
@@ -66,7 +61,6 @@ export default function TextareaForm({
         onChange={handleChange}
         label="First Message"
         aria-label="First Message"
-        showTokenizer={true}
       />
       <Textarea
         name="tags"
@@ -74,7 +68,6 @@ export default function TextareaForm({
         onChange={handleChange}
         label="Tags"
         aria-label="Tags"
-        showTokenizer={false}
       />
     </>
   );

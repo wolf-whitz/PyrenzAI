@@ -54,10 +54,6 @@ export default function CharacterForm() {
 
     if (type === 'checkbox' && e.target instanceof HTMLInputElement) {
       setCharacterData({ [name]: e.target.checked });
-    } else if (name === 'tags') {
-      const tagsValue = value as string;
-      const tagsArray = tagsValue ? tagsValue.split(',').map((tag) => tag.trim()) : [];
-      setCharacterData({ [name]: tagsArray });
     } else {
       setCharacterData({ [name]: value });
     }
@@ -71,7 +67,7 @@ export default function CharacterForm() {
       scenario: '',
       description: '',
       first_message: '',
-      tags: [],
+      tags: '',
       gender: '',
       is_public: false,
       is_nsfw: false,
@@ -91,9 +87,7 @@ export default function CharacterForm() {
           scenario: characterData.scenario,
           description: characterData.description,
           first_message: characterData.first_message,
-          tags: Array.isArray(characterData.tags)
-            ? characterData.tags.join(',')
-            : '',
+          tags: characterData.tags,
           gender: characterData.gender,
           is_public: characterData.is_public,
           is_nsfw: characterData.is_nsfw,
@@ -132,7 +126,7 @@ export default function CharacterForm() {
       scenario: draft.scenario,
       description: draft.description,
       first_message: draft.first_message,
-      tags: Array.isArray(draft.tags) ? draft.tags : (draft.tags as string)?.split(',').map((tag) => tag.trim()) || [],
+      tags: Array.isArray(draft.tags) ? draft.tags.join(', ') : draft.tags,
       gender: draft.gender,
       is_public: draft.is_public,
       is_nsfw: draft.is_nsfw,
@@ -143,7 +137,7 @@ export default function CharacterForm() {
 
   const handleImportCharacter = (data: CharacterData | null) => {
     if (data) {
-      const tags = Array.isArray(data.tags) ? data.tags : (data.tags as string)?.split(',').map((tag) => tag.trim()) || [];
+      const tags = Array.isArray(data.tags) ? data.tags.join(', ') : data.tags;
 
       setCharacterData({
         persona: data.persona || '',
@@ -191,9 +185,7 @@ export default function CharacterForm() {
     try {
       const response: ApiResponse = await Utils.post('/api/createCharacter', {
         ...characterData,
-        tags: Array.isArray(characterData.tags)
-          ? characterData.tags.join(',')
-          : '',
+        tags: characterData.tags,
         bannerImage,
         profileImage,
         user_uuid: user_uuid,
@@ -227,9 +219,13 @@ export default function CharacterForm() {
     }
   };
 
+  const tagsAsString = Array.isArray(characterData.tags)
+    ? characterData.tags.join(', ')
+    : characterData.tags;
+
   const formState = {
     ...characterData,
-    tags: Array.isArray(characterData.tags) ? characterData.tags.join(', ') : characterData.tags || '',
+    tags: tagsAsString,
   };
 
   return (

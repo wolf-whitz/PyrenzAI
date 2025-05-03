@@ -34,7 +34,7 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
   );
   const [showMore, setShowMore] = useState(false);
   const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track login status
+  const [isLoggedIn, setIsLoggedIn] = useState(false); 
   const languageButtonRef = useRef<HTMLButtonElement>(null);
   const languageMenuRef = useRef<HTMLDivElement>(null);
   const { t, i18n } = useTranslation();
@@ -42,7 +42,6 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
   useEffect(() => {
     setIsMounted(true);
 
-    // Fetch languages
     fetch('/Languages/Languages.json')
       .then((response) => response.json())
       .then((data) => {
