@@ -21,6 +21,14 @@ export default function TextareaForm({
   return (
     <>
       <Textarea
+        name="name"
+        value={formState.name}
+        onChange={handleChange}
+        label="Name"
+        aria-label="Name"
+        showTokenizer={true}
+      />
+      <Textarea
         name="description"
         value={formState.description}
         onChange={handleChange}
