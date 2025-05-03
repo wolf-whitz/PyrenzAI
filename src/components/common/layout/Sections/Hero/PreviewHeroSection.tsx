@@ -14,17 +14,19 @@ export default function HeroSection({
   const { t } = useTranslation();
 
   return (
-    <motion.section
+    <motion.main
       ref={pyrenzAiRef}
       data-aos="fade-up"
       className="flex flex-col justify-center items-center min-h-screen text-white -mt-16 px-4"
     >
-      <h1 className="text-7xl font-semibold mb-4 text-center">
-        {t('hero.title')}
-      </h1>
-      <p className="text-2xl opacity-80 text-center max-w-xl">
-        {t('hero.description')}
-      </p>
+      <article>
+        <h1 className="text-7xl font-semibold mb-4 text-center">
+          {t('hero.title')}
+        </h1>
+        <p className="text-2xl opacity-80 text-center max-w-xl">
+          {t('hero.description')}
+        </p>
+      </article>
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
@@ -34,6 +36,6 @@ export default function HeroSection({
       >
         {t('buttons.getStarted')}
       </motion.button>
-    </motion.section>
+    </motion.main>
   );
 }

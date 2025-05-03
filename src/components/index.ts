@@ -39,6 +39,9 @@ import Textarea from '@ui/Textarea/Textarea';
 // Image Uploader
 import ImageUploader from '@ui/ImageUploader/ImageUploader';
 
+//List
+import PersonaList from "@ui/Lists/PersonaList"
+
 // Dropzone
 import Dropzone from '@ui/Dropzone/Dropzone';
 
@@ -56,12 +59,14 @@ import TokenSummary from '@ui/Summary/TokenSummary';
 import VisibilityCheckboxes from '@ui/CheckBox/VisibilityCheckboxes';
 import GenderDropdown from '@ui/Dropdown/GenderDropdown';
 import ImageUpload from '@ui/ImageUploader/ImageUpload';
+
 // UI/UX Components
 import CharacterCard from '@ui/Cards/CharacterCard';
 import LoadMore from '@ui/LoadMore/LoadMoreButton';
 import SkeletonCard from '@ui/Skeleton/SkeletonCard';
 import CustomButton from '@ui/Buttons/Buttons';
 import FeatureCard from '@ui/Cards/FeaturesCard';
+import PersonaCard from '@ui/Cards/PersonaCard';
 
 // Modal Components
 import CharacterCardModal from '@ui/Modal/CharacterCardModal';
@@ -71,6 +76,8 @@ import LanguageModal from '@ui/Modal/LanguageModal';
 import DraftsModal from '@ui/Modal/DraftsModal';
 import MoreButtonsModal from '@ui/Modal/MoreButtonsModal';
 import CreatePersonaModal from '@ui/Modal/CreatePersonaModal';
+import CharacterCardImageModal from '@ui/Modal/CharacterCardImageModal';
+import CreateCharacterCardImageModal from '@ui/Modal/CreateCharacterCardImageModal'
 
 // Card Components
 import { Card, CardContent, CardTitle, CardHeader } from '@ui/ShadCdn/card';
@@ -124,7 +131,8 @@ export {
   SkeletonCard,
   CustomButton,
   FeatureCard,
-
+  PersonaCard,
+  
   //Fields
   CheckboxField,
   DropdownField,
@@ -138,6 +146,9 @@ export {
 
   //Dropzone
   Dropzone,
+
+  //List
+  PersonaList,
 
   // Sidebar
   Sidebar,
@@ -156,6 +167,8 @@ export {
   DraftsModal,
   MoreButtonsModal,
   CreatePersonaModal,
+  CharacterCardImageModal,
+  CreateCharacterCardImageModal,
 
   // Cards
   Card,

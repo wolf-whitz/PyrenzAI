@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Button, CircularProgress } from '@mui/material';
+import { Box, Typography, Button } from '@mui/material';
 import { supabase } from '~/Utility/supabaseClient';
 import { useUserStore } from '~/store/index';
-import { CreatePersonaModal } from '@components/index';
+import { CreatePersonaModal, PersonaList, CreateCharacterCardImageModal, CharacterCardImageModal } from '@components/index';
 
 interface PersonaCard {
   id: string;
@@ -15,12 +15,12 @@ export default function Persona() {
   const [personaData, setPersonaData] = useState<PersonaCard[]>([]);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
-  const [selectedPersona, setSelectedPersona] = useState<PersonaCard | null>(
-    null
-  );
   const [newPersonaName, setNewPersonaName] = useState('');
   const [newPersonaDescription, setNewPersonaDescription] = useState('');
   const [creating, setCreating] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isCreateCharacterCardImageModalOpen, setCreateCharacterCardImageModalOpen] = useState(false);
+  const [isCharacterCardImageModalOpen, setCharacterCardImageModalOpen] = useState(false);
   const { user_uuid } = useUserStore();
 
   const fetchPersona = async () => {
@@ -52,8 +52,29 @@ export default function Persona() {
     }
   };
 
+  const checkAdminStatus = async () => {
+    if (!user_uuid) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('user_data')
+        .select('is_admin')
+        .eq('user_uuid', user_uuid)
+        .single();
+
+      if (error) {
+        throw error;
+      }
+
+      setIsAdmin(data.is_admin);
+    } catch (error) {
+      console.error('Failed to check admin status', error);
+    }
+  };
+
   useEffect(() => {
     fetchPersona();
+    checkAdminStatus();
   }, [user_uuid]);
 
   const handleCreatePersona = async () => {
@@ -86,7 +107,7 @@ export default function Persona() {
       if (data && data.length > 0) {
         const newPersona: PersonaCard = {
           id:
-            data[0].persona_profile || Math.random().toString(36).substr(2, 9), // Ensure a unique ID
+            data[0].persona_profile || Math.random().toString(36).substr(2, 9),
           name: data[0].persona_name,
           description: data[0].persona_description,
         };
@@ -101,12 +122,6 @@ export default function Persona() {
     } finally {
       setCreating(false);
     }
-  };
-
-  const truncateDescription = (description: string, limit: number = 100) => {
-    return description.length > limit
-      ? `${description.slice(0, limit)}...`
-      : description;
   };
 
   if (!user_uuid) {
@@ -125,40 +140,7 @@ export default function Persona() {
         My Personas
       </Typography>
 
-      {loading ? (
-        <div className="flex justify-center items-center mt-4">
-          <CircularProgress />
-        </div>
-      ) : (
-        <div className="mt-4 space-y-4">
-          {personaData.length > 0 ? (
-            personaData.map((persona) => (
-              <div
-                key={persona.id}
-                className={`bg-gray-700 rounded-lg p-4 flex flex-col cursor-pointer border-2 ${
-                  persona.selected ? 'border-blue-500' : 'border-transparent'
-                }`}
-              >
-                <Typography variant="h6" className="text-white">
-                  {persona.name}
-                </Typography>
-                <Typography variant="body2" className="text-gray-300">
-                  {truncateDescription(persona.description)}
-                </Typography>
-                {persona.selected && (
-                  <Typography variant="body2" className="text-gray-400 mt-2">
-                    Default Persona
-                  </Typography>
-                )}
-              </div>
-            ))
-          ) : (
-            <Typography variant="body1" className="text-center text-white">
-              No persona data available. Perhaps create a few?
-            </Typography>
-          )}
-        </div>
-      )}
+      <PersonaList personaData={personaData} loading={loading} />
 
       <Button
         variant="contained"
@@ -170,6 +152,30 @@ export default function Persona() {
         Create New Persona
       </Button>
 
+      {isAdmin && (
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setCreateCharacterCardImageModalOpen(true)}
+          className="mx-auto mt-4 px-3 py-1 text-sm normal-case"
+          size="small"
+        >
+          Create Image Cards
+        </Button>
+      )}
+
+      {isAdmin && (
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setCharacterCardImageModalOpen(true)}
+          className="mx-auto mt-4 px-3 py-1 text-sm normal-case"
+          size="small"
+        >
+          View Image Cards
+        </Button>
+      )}
+
       <CreatePersonaModal
         isModalOpen={isModalOpen}
         setModalOpen={setModalOpen}
@@ -179,7 +185,22 @@ export default function Persona() {
         setNewPersonaDescription={setNewPersonaDescription}
         handleCreatePersona={handleCreatePersona}
         creating={creating}
+        setCharacterCardImageModalOpen={setCharacterCardImageModalOpen}
       />
+
+      {isCreateCharacterCardImageModalOpen && (
+        <CreateCharacterCardImageModal
+          isModalOpen={isCreateCharacterCardImageModalOpen}
+          setModalOpen={setCreateCharacterCardImageModalOpen}
+        />
+      )}
+
+      {isCharacterCardImageModalOpen && (
+        <CharacterCardImageModal
+          isModalOpen={isCharacterCardImageModalOpen}
+          setModalOpen={setCharacterCardImageModalOpen}
+        />
+      )}
     </div>
   );
 }

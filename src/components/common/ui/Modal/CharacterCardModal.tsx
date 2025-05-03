@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { Utils } from '~/Utility/Utility';
 import { useUserStore } from '~/store';
 import { WindowAlert } from '~/components';
-import posthog from 'posthog-js';
+import * as Sentry from '@sentry/react';
 import {
   Box,
   Typography,
@@ -67,14 +67,8 @@ export default function CharacterCardModal({
     } catch (error) {
       console.error('Error generating chat_uuid:', error);
 
-      const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error';
-
-      posthog.capture('Error generating chat_uuid', {
-        error: errorMessage,
-        character_uuid: character.input_char_uuid,
-        user_uuid: user_uuid,
-      });
+      error instanceof Error ? error.message : 'Unknown error';
+      Sentry.captureException(error);
 
       WindowAlert('error', 'Error: User is not logged in yet');
     } finally {

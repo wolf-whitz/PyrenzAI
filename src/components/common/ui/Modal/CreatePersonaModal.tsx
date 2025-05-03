@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import { PlusCircle } from 'lucide-react';
 import { Textarea } from '@components/index';
+import { useDropzone } from 'react-dropzone';
 
 interface CreatePersonaModalProps {
   isModalOpen: boolean;
@@ -19,6 +20,7 @@ interface CreatePersonaModalProps {
   setNewPersonaDescription: (description: string) => void;
   handleCreatePersona: () => void;
   creating: boolean;
+  setCharacterCardImageModalOpen: (open: boolean) => void;
 }
 
 export default function CreatePersonaModal({
@@ -30,8 +32,15 @@ export default function CreatePersonaModal({
   setNewPersonaDescription,
   handleCreatePersona,
   creating,
+  setCharacterCardImageModalOpen,
 }: CreatePersonaModalProps) {
   if (!isModalOpen) return null;
+
+  const onDrop = (acceptedFiles: File[]) => {
+    setCharacterCardImageModalOpen(true);
+  };
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   return ReactDOM.createPortal(
     <Modal
@@ -47,6 +56,27 @@ export default function CreatePersonaModal({
         >
           Create New Persona
         </Typography>
+
+        <div
+          {...getRootProps()}
+          className="mb-4 p-4 border-2 border-dashed border-gray-500 rounded-lg text-center cursor-pointer"
+        >
+          <input {...getInputProps()} />
+          {isDragActive ? (
+            <p>Drop the files here</p>
+          ) : (
+            <p>Drag & drop an image here, or click to select an image</p>
+          )}
+        </div>
+
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setCharacterCardImageModalOpen(true)}
+          className="mb-4 w-full bg-blue-600 hover:bg-blue-500 transition-colors"
+        >
+          Choose Premade Images
+        </Button>
 
         <Textarea
           label="Name"
