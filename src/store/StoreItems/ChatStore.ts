@@ -7,10 +7,17 @@ interface Message {
   type: 'assistant' | 'user';
 }
 
-interface UserData {
+export interface UserData {
   user_uuid: string;
   name: string;
   icon: string;
+}
+
+interface Character {
+  name: string;
+  icon: string;
+  first_message: string;
+  profile_image?: string;
 }
 
 interface ChatStore {
@@ -20,6 +27,9 @@ interface ChatStore {
   setMessages: (messages: Message[] | ((prev: Message[]) => Message[])) => void;
   userData: UserData | null;
   setUserData: (userData: UserData) => void;
+  character: Character | null;
+  setCharacter: (character: Character) => void;
+  clearData: () => void;
 }
 
 export const useChatStore = create<ChatStore>((set) => ({
@@ -35,4 +45,9 @@ export const useChatStore = create<ChatStore>((set) => ({
 
   userData: null,
   setUserData: (userData: UserData) => set({ userData }),
+
+  character: null,
+  setCharacter: (character: Character) => set({ character }),
+
+  clearData: () => set({ firstMessage: '', messages: [], userData: null, character: null }),
 }));

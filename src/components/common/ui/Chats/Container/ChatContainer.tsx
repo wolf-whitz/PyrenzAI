@@ -1,10 +1,7 @@
 import { useEffect, useRef, useState, Suspense } from 'react';
 import { useChatStore } from '~/store';
 import { ChatMain } from '~/components';
-import {
-  Message,
-  ChatContainerProps,
-} from '@shared-types/chatTypes';
+import { Message, ChatContainerProps } from '@shared-types/chatTypes';
 import { ChatPageSpinner } from '@ui/Spinner/Spinner';
 
 interface ChatContainerPropsExtended extends ChatContainerProps {
@@ -51,9 +48,7 @@ export default function ChatContainer({
 
   return (
     <Suspense fallback={<ChatPageSpinner />}>
-      <div
-        className={`flex justify-center items-center w-full h-full ${className}`}
-      >
+      <div className={`flex justify-center items-center w-full h-full ${className}`}>
         <ChatMain
           user={user}
           char={char}

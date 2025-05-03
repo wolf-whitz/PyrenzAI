@@ -25,23 +25,31 @@ export default function ChatPage() {
   const [chatDataFetched, setChatDataFetched] = useState(false);
   const [fetchError, setFetchError] = useState(false);
 
-  const { setFirstMessage } = useChatStore();
+  const { setFirstMessage, clearData } = useChatStore();
 
   useEffect(() => {
     const getChatData = async () => {
       if (conversation_id && user_uuid && auth_key && !chatDataFetched) {
         try {
+          clearData();
           setChatDataFetched(true);
-          const result = await fetchChatData(conversation_id, user_uuid, auth_key);
+          const result = await fetchChatData(
+            conversation_id,
+            user_uuid,
+            auth_key
+          );
 
           const updatedCharacter = {
             ...result.character,
-            icon: result.character.profile_image || `https://api.dicebear.com/9.x/adventurer/svg?seed=${result.character.name || 'Anon'}`
+            icon: result.character.profile_image,
           };
 
           setChatData({ ...result, character: updatedCharacter });
 
-          if (result?.character?.first_message && result?.character?.id === result?.character?.id) {
+          if (
+            result?.character?.first_message &&
+            result?.character?.id === result?.character?.id
+          ) {
             setFirstMessage(result.character.first_message);
           } else {
             setFirstMessage('');
@@ -57,7 +65,7 @@ export default function ChatPage() {
     };
 
     getChatData();
-  }, [conversation_id, user_uuid, auth_key, setFirstMessage, chatDataFetched]);
+  }, [conversation_id, user_uuid, auth_key, setFirstMessage, chatDataFetched, clearData]);
 
   useEffect(() => {
     const fetchUserData = async () => {

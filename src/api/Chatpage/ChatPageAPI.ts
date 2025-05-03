@@ -79,7 +79,7 @@ export const fetchChatData = async (
           id: msg.id,
           name: character.name || 'Assistant',
           text: msg.char_message,
-          icon: character.image_url,
+          icon: character.profile_image || `https://api.dicebear.com/9.x/adventurer/svg?seed=${character.name || 'Anon'}`,
           type: 'assistant',
           conversation_id,
         });
