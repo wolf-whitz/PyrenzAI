@@ -27,6 +27,7 @@ export default function CustomMarkdown({
       content
         .replace(/{{char}}/g, char || 'Anon')
         .replace(/{{user}}/g, user || 'User')
+        .replace(/{{you}}:/g, '')
         .replace(/{{ai_message}}/g, ai_message);
 
     setReplacedText(replacePlaceholders(text));
