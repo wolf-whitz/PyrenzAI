@@ -12,27 +12,22 @@ interface CreateCharacterCardImageModalProps {
   setModalOpen: (open: boolean) => void;
 }
 
-interface ApiResponse {
-  success: boolean;
-}
-
 export default function CreateCharacterCardImageModal({
   isModalOpen,
   setModalOpen,
 }: CreateCharacterCardImageModalProps) {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [file, setFile] = useState<File | null>(null);
+  const [image, setImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
   const onDrop = (acceptedFiles: File[]) => {
-    setFile(acceptedFiles[0]);
+    setImage(acceptedFiles[0]);
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   const handleSubmit = async () => {
-    // Validate input fields
     if (!name) {
       toast.error('Name is required');
       return;
@@ -41,47 +36,50 @@ export default function CreateCharacterCardImageModal({
       toast.error('Description is required');
       return;
     }
-    if (!file) {
-      toast.error('File is required');
+    if (!image) {
+      toast.error('Image is required');
       return;
     }
-  
+
     setLoading(true);
-    const formData = new FormData();
-    formData.append('card_name', name);
-    formData.append('card_description', description);
-    formData.append('file', file);
-  
-    try {
-      const response = await fetch('/api/ProfileCardsUpload', {
-        method: 'POST',
-        body: formData,
-      });
-  
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success) {
+
+    const reader = new FileReader();
+    reader.readAsDataURL(image);
+    reader.onloadend = async () => {
+      const base64Image = reader.result as string;
+
+      const data = {
+        card_name: name,
+        card_description: description,
+        card_image: base64Image,
+      };
+
+      try {
+        const response = await Utils.post<{ message: string; imageUrl: string }>(
+          '/api/ProfileCardsUpload',
+          data
+        );
+
+        console.log('API Response:', response);
+
+        if (response.message === 'Card uploaded') {
           setModalOpen(false);
           setName('');
           setDescription('');
-          setFile(null);
-  
+          setImage(null);
+
           toast.success('Profile card uploaded successfully');
         } else {
-          toast.error('Failed to upload profile card');
+          toast.error(response.message || 'Failed to upload profile card');
         }
-      } else {
+      } catch (error) {
+        console.error('Error uploading profile card:', error);
         toast.error('Error uploading profile card');
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error(error);
-      toast.error('Error uploading profile card');
-    } finally {
-      setLoading(false);
-    }
+    };
   };
-  
-  
 
   if (!isModalOpen) return null;
 
@@ -94,11 +92,11 @@ export default function CreateCharacterCardImageModal({
         <div {...getRootProps()} className="border-2 border-dashed border-gray-300 p-4 mb-4 text-center cursor-pointer">
           <input {...getInputProps()} />
           {isDragActive ? (
-            <p className="text-white">Drop the file here</p>
+            <p className="text-white">Drop the image here</p>
           ) : (
             <p className="text-white">Drag & drop an image here, or click to select one</p>
           )}
-          {file && <p className="mt-2 text-white">Selected file: {file.name}</p>}
+          {image && <p className="mt-2 text-white">Selected image: {image.name}</p>}
         </div>
         <Textarea
           label="Name"

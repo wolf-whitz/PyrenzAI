@@ -21,6 +21,7 @@ interface CreatePersonaModalProps {
   handleCreatePersona: () => void;
   creating: boolean;
   setCharacterCardImageModalOpen: (open: boolean) => void;
+  selectedImage: string;
 }
 
 export default function CreatePersonaModal({
@@ -33,6 +34,7 @@ export default function CreatePersonaModal({
   handleCreatePersona,
   creating,
   setCharacterCardImageModalOpen,
+  selectedImage,
 }: CreatePersonaModalProps) {
   if (!isModalOpen) return null;
 
@@ -59,13 +61,23 @@ export default function CreatePersonaModal({
 
         <div
           {...getRootProps()}
-          className="mb-4 p-4 border-2 border-dashed border-gray-500 rounded-lg text-center cursor-pointer"
+          className="mb-4 p-4 border-2 border-dashed border-gray-500 rounded-lg text-center cursor-pointer relative"
         >
           <input {...getInputProps()} />
-          {isDragActive ? (
-            <p>Drop the files here</p>
+          {selectedImage ? (
+            <img
+              src={selectedImage}
+              alt="Selected"
+              className="w-full h-auto max-h-60 object-cover rounded-lg"
+            />
           ) : (
-            <p>Drag & drop an image here, or click to select an image</p>
+            <>
+              {isDragActive ? (
+                <p>Drop the files here</p>
+              ) : (
+                <p>Drag & drop an image here, or click to select an image</p>
+              )}
+            </>
           )}
         </div>
 

@@ -10,8 +10,6 @@ export const AuthTokenName = 'sb-cqtbishpefnfvaxheyqu-auth-token';
 const pendingRequests = new Map<string, Promise<any>>();
 
 export const Utils = {
-  TIMEOUT: 50000,
-
   async request<T>(
     method: RequestMethod,
     endpoint: string,
@@ -73,24 +71,7 @@ export const Utils = {
         options.body = data instanceof FormData ? data : JSON.stringify(data);
       }
 
-      const fetchWithTimeout = (
-        url: string,
-        options: RequestInit,
-        timeout: number
-      ) => {
-        return Promise.race([
-          fetch(url, options),
-          new Promise<Response>((_, reject) =>
-            setTimeout(() => reject(new Error('Request timed out')), timeout)
-          ),
-        ]);
-      };
-
-      const response = await fetchWithTimeout(
-        url.toString(),
-        options,
-        this.TIMEOUT
-      );
+      const response = await fetch(url.toString(), options);
 
       if (!response.ok) {
         let errorMessage = `${response.status} ${response.statusText}`;

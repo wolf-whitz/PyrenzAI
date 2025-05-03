@@ -21,6 +21,7 @@ export default function Persona() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isCreateCharacterCardImageModalOpen, setCreateCharacterCardImageModalOpen] = useState(false);
   const [isCharacterCardImageModalOpen, setCharacterCardImageModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState('');
   const { user_uuid } = useUserStore();
 
   const fetchPersona = async () => {
@@ -89,6 +90,7 @@ export default function Persona() {
             persona_name: newPersonaName,
             persona_description: newPersonaDescription,
             user_uuid,
+            persona_image: selectedImage,
           },
         ])
         .select<
@@ -115,6 +117,7 @@ export default function Persona() {
         setPersonaData((prevData) => [...prevData, newPersona]);
         setNewPersonaName('');
         setNewPersonaDescription('');
+        setSelectedImage('');
         setModalOpen(false);
       }
     } catch (error) {
@@ -186,6 +189,7 @@ export default function Persona() {
         handleCreatePersona={handleCreatePersona}
         creating={creating}
         setCharacterCardImageModalOpen={setCharacterCardImageModalOpen}
+        selectedImage={selectedImage}
       />
 
       {isCreateCharacterCardImageModalOpen && (
@@ -199,6 +203,8 @@ export default function Persona() {
         <CharacterCardImageModal
           isModalOpen={isCharacterCardImageModalOpen}
           setModalOpen={setCharacterCardImageModalOpen}
+          setCreatePersonaModalOpen={setModalOpen}
+          setSelectedImage={setSelectedImage}
         />
       )}
     </div>
