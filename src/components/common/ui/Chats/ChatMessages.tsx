@@ -5,6 +5,7 @@ import { Box, Avatar } from '@mui/material';
 import { AlertCircle } from 'lucide-react';
 
 interface Message {
+  id?: string;
   name: string;
   user_name?: string;
   char_name?: string;
@@ -27,9 +28,6 @@ interface ChatMessagesProps {
 export default function ChatMessages({
   previous_message,
   isGenerating,
-  messageId,
-  token,
-  role,
 }: ChatMessagesProps) {
   return (
     <Box className="space-y-4 p-4 max-w-2xl mx-auto">
@@ -42,13 +40,10 @@ export default function ChatMessages({
 
         return (
           <Box
-            key={index}
+            key={msg.id || `temp-${index}`}
             display="flex"
             alignItems="start"
             justifyContent={isUser ? 'flex-end' : 'flex-start'}
-            data-message-id={messageId ?? undefined}
-            data-message-token={msg.token ?? token ?? undefined}
-            data-role-message={msg.role ?? role ?? undefined}
             className={`flex items-start ${isUser ? 'justify-end' : 'justify-start'}`}
           >
             {!isUser && (
@@ -61,7 +56,9 @@ export default function ChatMessages({
             )}
 
             <Box
-              className={`flex flex-col max-w-md p-3 rounded-lg shadow-md ${isUser ? 'bg-green-600 text-white' : 'bg-gray-700 text-white'}`}
+              className={`flex flex-col max-w-md p-3 rounded-lg shadow-md ${
+                isUser ? 'bg-green-600 text-white' : 'bg-gray-700 text-white'
+              }`}
               sx={{ marginLeft: !isUser ? 2 : 0, marginRight: isUser ? 2 : 0 }}
             >
               {isGenerating &&
@@ -77,7 +74,9 @@ export default function ChatMessages({
             {msg.error && (
               <Box display="flex" alignItems="center" ml={1} mt={1}>
                 <AlertCircle color="red" size={16} />
-                <Box ml={1} color="red">Error</Box>
+                <Box ml={1} color="red">
+                  Error
+                </Box>
               </Box>
             )}
 

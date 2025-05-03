@@ -83,6 +83,9 @@
     "loadingCharacter": "Loading character {{index}}",
     "loadMore": "Load more items"
   },
+  "labels": {
+    "showNsfwContent": "NSFW TOGGLE"
+  },
   "messages": {
     "noCharactersFound": "No characters found.",
     "allRightsReserved": "All rights reserved.",

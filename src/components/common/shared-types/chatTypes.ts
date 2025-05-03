@@ -3,6 +3,7 @@ import { MutableRefObject, RefObject } from 'react';
 export interface Message {
   name: string;
   text: string;
+  id?: string;
   icon: string;
   type: 'user' | 'assistant';
   user_name?: string;
@@ -24,10 +25,10 @@ export interface User {
 
 export interface Character extends User {
   id: number;
-  image_url: string;
   uuid: string;
   description: string;
   first_message: string;
+  profile_image?: string;
 }
 
 export interface ChatContainerProps {

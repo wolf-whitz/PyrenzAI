@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import * as Tooltip from '@radix-ui/react-tooltip';
 import llamaTokenizer from 'llama-tokenizer-js';
 import { useCharacterStore } from '~/store';
 import { motion } from 'framer-motion';

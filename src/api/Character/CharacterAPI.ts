@@ -36,7 +36,13 @@ export const fetchCharacters = async (
       creator: char.creator,
       chat_messages_count: char.chat_messages_count,
       image_url: char.profile_image,
-      tags: Object.keys(char.tags),
+      tags: Array.isArray(char.tags)
+        ? char.tags
+            .filter((tag: any) => typeof tag === 'string' || typeof tag === 'number')
+            .map((tag: any) => String(tag).trim())
+        : Object.keys(char.tags || {})
+            .filter((key: string) => key.trim() !== '')
+            .map((key: string) => key.trim()),
       is_public: char.is_public,
       input_char_uuid: char.input_char_uuid,
       token_total: char.token_total,

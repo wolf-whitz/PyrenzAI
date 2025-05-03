@@ -21,27 +21,19 @@ export default function TextareaForm({
   return (
     <>
       <Textarea
+        name="description"
+        value={formState.description}
+        onChange={handleChange}
+        label="Description"
+        aria-label="Description"
+        showTokenizer={true}
+      />
+      <Textarea
         name="persona"
         value={formState.persona}
         onChange={handleChange}
         label="Persona"
         aria-label="Persona"
-        showTokenizer={true}
-      />
-      <Textarea
-        name="name"
-        value={formState.name}
-        onChange={handleChange}
-        label="Name"
-        aria-label="Name"
-        showTokenizer={true}
-      />
-      <Textarea
-        name="model_instructions"
-        value={formState.model_instructions}
-        onChange={handleChange}
-        label="Model Instructions"
-        aria-label="Model Instructions"
         showTokenizer={true}
       />
       <Textarea
@@ -53,11 +45,11 @@ export default function TextareaForm({
         showTokenizer={true}
       />
       <Textarea
-        name="description"
-        value={formState.description}
+        name="model_instructions"
+        value={formState.model_instructions}
         onChange={handleChange}
-        label="Description"
-        aria-label="Description"
+        label="Model Instructions"
+        aria-label="Model Instructions"
         showTokenizer={true}
       />
       <Textarea

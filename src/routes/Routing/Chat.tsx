@@ -32,23 +32,16 @@ export default function ChatPage() {
       if (conversation_id && user_uuid && auth_key && !chatDataFetched) {
         try {
           setChatDataFetched(true);
-          const result = await fetchChatData(
-            conversation_id,
-            user_uuid,
-            auth_key
-          );
+          const result = await fetchChatData(conversation_id, user_uuid, auth_key);
 
           const updatedCharacter = {
             ...result.character,
-            icon: result.character.icon || `https://api.dicebear.com/9.x/adventurer/svg?seed=${result.character.name || 'Anon'}`
+            icon: result.character.profile_image || `https://api.dicebear.com/9.x/adventurer/svg?seed=${result.character.name || 'Anon'}`
           };
 
           setChatData({ ...result, character: updatedCharacter });
 
-          if (
-            result?.character?.first_message &&
-            result?.character?.id === result?.character?.id
-          ) {
+          if (result?.character?.first_message && result?.character?.id === result?.character?.id) {
             setFirstMessage(result.character.first_message);
           } else {
             setFirstMessage('');

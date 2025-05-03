@@ -37,7 +37,7 @@ export default function CharacterCard({
       chat_messages_count,
       image_url,
       tags,
-      is_public: isPublic, 
+      is_public: isPublic,
       token_total,
     });
     setIsModalOpen(true);
@@ -46,6 +46,12 @@ export default function CharacterCard({
   if (isLoading) {
     return null;
   }
+
+  const validTags = Array.isArray(tags)
+    ? tags
+        .filter((tag) => typeof tag === 'string' && tag.trim() !== '')
+        .map((tag) => tag.trim())
+    : [];
 
   return (
     <>
@@ -102,16 +108,17 @@ export default function CharacterCard({
                 Private
               </Typography>
             )}
-            {Array.isArray(tags) &&
-              tags.map((tag, index) => (
+
+            {validTags.map((tag, index) => (
+              <Tooltip title={tag} key={index}>
                 <Typography
-                  key={index}
                   component="span"
-                  className="bg-black text-white text-xs font-semibold py-1 px-2 rounded-full"
+                  className="bg-black text-white text-xs font-semibold py-1 px-2 rounded-full truncate max-w-[80px]"
                 >
-                  {tag}
+                  {tag.length > 12 ? `${tag.slice(0, 12)}...` : tag}
                 </Typography>
-              ))}
+              </Tooltip>
+            ))}
           </Box>
 
           <Box className="mt-4 flex items-center text-gray-400 text-xs">

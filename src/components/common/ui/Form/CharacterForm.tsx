@@ -13,8 +13,10 @@ import {
 import TextareaForm from './Childrens/TextareaForm';
 import posthog from 'posthog-js';
 import { CharacterData, Draft, ApiResponse } from '@shared-types/CharacterProp';
+import { useNavigate } from 'react-router-dom';
 
 export default function CharacterForm() {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
   const [showRequiredFieldsPopup, setShowRequiredFieldsPopup] = useState(false);
@@ -52,6 +54,10 @@ export default function CharacterForm() {
 
     if (type === 'checkbox' && e.target instanceof HTMLInputElement) {
       setCharacterData({ [name]: e.target.checked });
+    } else if (name === 'tags') {
+      const tagsValue = value as string;
+      const tagsArray = tagsValue ? tagsValue.split(',').map((tag) => tag.trim()) : [];
+      setCharacterData({ [name]: tagsArray });
     } else {
       setCharacterData({ [name]: value });
     }
@@ -65,7 +71,7 @@ export default function CharacterForm() {
       scenario: '',
       description: '',
       first_message: '',
-      tags: '',
+      tags: [],
       gender: '',
       is_public: false,
       is_nsfw: false,
@@ -85,7 +91,9 @@ export default function CharacterForm() {
           scenario: characterData.scenario,
           description: characterData.description,
           first_message: characterData.first_message,
-          tags: characterData.tags,
+          tags: Array.isArray(characterData.tags)
+            ? characterData.tags.join(',')
+            : '',
           gender: characterData.gender,
           is_public: characterData.is_public,
           is_nsfw: characterData.is_nsfw,
@@ -124,7 +132,7 @@ export default function CharacterForm() {
       scenario: draft.scenario,
       description: draft.description,
       first_message: draft.first_message,
-      tags: draft.tags,
+      tags: Array.isArray(draft.tags) ? draft.tags : (draft.tags as string)?.split(',').map((tag) => tag.trim()) || [],
       gender: draft.gender,
       is_public: draft.is_public,
       is_nsfw: draft.is_nsfw,
@@ -135,14 +143,16 @@ export default function CharacterForm() {
 
   const handleImportCharacter = (data: CharacterData | null) => {
     if (data) {
+      const tags = Array.isArray(data.tags) ? data.tags : (data.tags as string)?.split(',').map((tag) => tag.trim()) || [];
+
       setCharacterData({
-        persona: data.persona || '', // Ensure persona is a string
+        persona: data.persona || '',
         name: data.name || '',
         model_instructions: data.model_instructions || '',
         scenario: data.scenario || '',
         description: data.description || '',
         first_message: data.first_message || '',
-        tags: data.tags || '',
+        tags: tags,
         gender: data.gender || '',
         is_public: data.is_public || false,
         is_nsfw: data.is_nsfw || false,
@@ -181,6 +191,9 @@ export default function CharacterForm() {
     try {
       const response: ApiResponse = await Utils.post('/api/createCharacter', {
         ...characterData,
+        tags: Array.isArray(characterData.tags)
+          ? characterData.tags.join(',')
+          : '',
         bannerImage,
         profileImage,
         user_uuid: user_uuid,
@@ -194,7 +207,12 @@ export default function CharacterForm() {
           user_uuid,
         });
       } else {
-        console.log('Character created:', response.data);
+        const chatUuid = response.chat?.chat_uuid;
+        if (chatUuid) {
+          navigate(`/chat/${chatUuid}`);
+        } else {
+          alert('Character created but no chat UUID returned.');
+        }
       }
     } catch (error) {
       console.error('Unexpected error:', error);
@@ -209,6 +227,11 @@ export default function CharacterForm() {
     }
   };
 
+  const formState = {
+    ...characterData,
+    tags: Array.isArray(characterData.tags) ? characterData.tags.join(', ') : characterData.tags || '',
+  };
+
   return (
     <div className="flex flex-col items-center justify-center bg-gray-900 p-6 min-h-screen">
       <form
@@ -216,7 +239,7 @@ export default function CharacterForm() {
         className="bg-black p-8 rounded-lg shadow-lg w-full max-w-2xl space-y-6"
       >
         <ImageUpload onImageSelect={handleImageSelect} />
-        <TextareaForm formState={characterData} handleChange={handleChange} />
+        <TextareaForm formState={formState} handleChange={handleChange} />
         <GenderDropdown
           value={characterData.gender}
           onChange={handleDropdownChange}

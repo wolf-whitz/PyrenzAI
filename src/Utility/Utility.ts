@@ -10,7 +10,7 @@ export const AuthTokenName = 'sb-cqtbishpefnfvaxheyqu-auth-token';
 const pendingRequests = new Map<string, Promise<any>>();
 
 export const Utils = {
-  TIMEOUT: 10000,
+  TIMEOUT: 50000,
 
   async request<T>(
     method: RequestMethod,

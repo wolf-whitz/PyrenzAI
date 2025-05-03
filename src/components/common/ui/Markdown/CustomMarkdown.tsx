@@ -33,18 +33,21 @@ export default function CustomMarkdown({
   }, [text, char, user, ai_message]);
 
   return (
-    <ReactMarkdown
-      remarkPlugins={[remarkGfm]}
-      components={{
-        em: ({ children }) => <span className="italic-text">{children}</span>,
-        strong: ({ children }) => {
-          const content = React.Children.toArray(children).join('');
-          return <strong style={char ? { color: char } : {}}>{content}</strong>;
-        },
-        p: ({ children }) => <p>{children}</p>,
-      }}
-    >
-      {replacedText}
-    </ReactMarkdown>
+    <div className="text-styles">
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        components={{
+          em: ({ children }) => <span className="italic-text">{children}</span>,
+          strong: ({ children }) => (
+            <span className="bold-text" style={char ? { color: char } : {}}>
+              {children}
+            </span>
+          ),
+          p: ({ children }) => <p>{children}</p>,
+        }}
+      >
+        {replacedText}
+      </ReactMarkdown>
+    </div>
   );
 }

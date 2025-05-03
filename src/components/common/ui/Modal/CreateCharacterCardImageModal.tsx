@@ -12,10 +12,8 @@ interface CreateCharacterCardImageModalProps {
   setModalOpen: (open: boolean) => void;
 }
 
-// Define the expected response type
 interface ApiResponse {
   success: boolean;
-  // Add other fields if necessary
 }
 
 export default function CreateCharacterCardImageModal({
@@ -34,6 +32,7 @@ export default function CreateCharacterCardImageModal({
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   const handleSubmit = async () => {
+    // Validate input fields
     if (!name) {
       toast.error('Name is required');
       return;
@@ -46,35 +45,43 @@ export default function CreateCharacterCardImageModal({
       toast.error('File is required');
       return;
     }
-
+  
     setLoading(true);
     const formData = new FormData();
-    formData.append('name', name);
-    formData.append('description', description);
+    formData.append('card_name', name);
+    formData.append('card_description', description);
     formData.append('file', file);
-
+  
     try {
-      const response = await Utils.post<ApiResponse>('/api/ProfileCardsUpload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+      const response = await fetch('/api/ProfileCardsUpload', {
+        method: 'POST',
+        body: formData,
       });
-
-      if (response.success) {
-        setModalOpen(false);
-        setName('');
-        setDescription('');
-        setFile(null);
-        toast.success('Profile card uploaded successfully');
+  
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          setModalOpen(false);
+          setName('');
+          setDescription('');
+          setFile(null);
+  
+          toast.success('Profile card uploaded successfully');
+        } else {
+          toast.error('Failed to upload profile card');
+        }
       } else {
-        toast.error('Failed to upload profile card');
+        toast.error('Error uploading profile card');
       }
     } catch (error) {
+      console.error(error);
       toast.error('Error uploading profile card');
     } finally {
       setLoading(false);
     }
   };
+  
+  
 
   if (!isModalOpen) return null;
 

@@ -2,6 +2,15 @@ import { Utils } from '~/Utility/Utility';
 import { Character, Message } from '@shared-types/chatTypes';
 import { toast } from 'react-toastify';
 import * as Sentry from '@sentry/react';
+import { supabase } from '~/Utility/supabaseClient';
+
+interface ChatMessageWithId {
+  id: string;
+  user_message: string | null;
+  char_message: string | null;
+  conversation_id: string;
+  created_at: string;
+}
 
 export const fetchChatData = async (
   conversation_id: string,
@@ -9,7 +18,7 @@ export const fetchChatData = async (
   auth_key?: string
 ): Promise<{
   character: Character;
-  messages: Message[];
+  messages: (Message & { id?: string })[];
   firstMessage: string;
 }> => {
   if (!conversation_id) {
@@ -39,40 +48,44 @@ export const fetchChatData = async (
       throw new Error('Character not found.');
     }
 
-    const messagesPayload = {
-      conversation_id,
-      user_uuid,
-      auth_key,
-    };
+    const { data, error } = await supabase
+      .from('chat_messages')
+      .select('id, user_message, char_message, conversation_id, created_at')
+      .eq('conversation_id', conversation_id)
+      .order('created_at', { ascending: false });
 
-    const { messages: rawMessages } = await Utils.post<{ messages: any[] }>(
-      '/api/GetMessages',
-      messagesPayload
-    );
-
-    if (!Array.isArray(rawMessages)) {
-      toast.error('Messages came back cursed 😩 (invalid format)');
-      throw new Error('Messages came back cursed 😩 (invalid format)');
+    if (error) {
+      toast.error('Error fetching messages from Supabase: ' + error.message);
+      Sentry.captureException(error);
+      throw error;
     }
 
-    const formattedMessages: Message[] = rawMessages.flatMap((msg) => {
-      const userMsg = msg.user_message && {
-        name: 'User',
-        text: msg.user_message,
-        icon: '',
-        type: 'user',
-        conversation_id,
-      };
+    const formattedMessages = (data || []).flatMap((msg: ChatMessageWithId) => {
+      const messages: (Message & { id?: string })[] = [];
 
-      const aiMsg = msg.ai_message && {
-        name: character.name || 'Assistant',
-        text: msg.ai_message,
-        icon: character.image_url,
-        type: 'assistant',
-        conversation_id,
-      };
+      if (msg.user_message) {
+        messages.push({
+          id: msg.id,
+          name: 'User',
+          text: msg.user_message,
+          icon: '',
+          type: 'user',
+          conversation_id,
+        });
+      }
 
-      return [userMsg, aiMsg].filter(Boolean) as Message[];
+      if (msg.char_message) {
+        messages.push({
+          id: msg.id,
+          name: character.name || 'Assistant',
+          text: msg.char_message,
+          icon: character.image_url,
+          type: 'assistant',
+          conversation_id,
+        });
+      }
+
+      return messages;
     });
 
     return {

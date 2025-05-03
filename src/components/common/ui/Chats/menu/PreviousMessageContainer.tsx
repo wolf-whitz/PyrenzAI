@@ -1,100 +1,66 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Utils } from '~/Utility/Utility';
 import { useUserStore } from '~/store';
 import { Avatar, CircularProgress, Typography } from '@mui/material';
+import { supabase } from '~/Utility/supabaseClient';
 
-interface Message {
+interface Chat {
   id: string;
-  conversation_id: string;
-  message: string;
-  character_image_url: string;
-  created_at: string;
   user_uuid: string;
+  chat_uuid: string;
+  preview_message: string;
+  created_at: string;
 }
 
-interface ApiResponse {
-  messages: Message[] | {};
-  error?: string;
-}
-
-interface PreviousChatProps {
-  messages?: Message[] | {};
-}
-
-export default function PreviousChat({
-  messages: initialMessages = [],
-}: PreviousChatProps) {
-  const [messages, setMessages] = useState<Message[]>(
-    Array.isArray(initialMessages) ? initialMessages : []
-  );
-  const [loading, setLoading] = useState(messages.length === 0);
+export default function PreviousChat() {
+  const [chats, setChats] = useState<Chat[]>([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [dataFetched, setDataFetched] = useState(false);
 
   const { conversation_id } = useParams<{ conversation_id: string }>();
   const navigate = useNavigate();
-  const { user_uuid, auth_key } = useUserStore();
+  const { user_uuid } = useUserStore();
 
   useEffect(() => {
-    const fetchPreviousChat = async () => {
-      if (!user_uuid || !auth_key || !conversation_id) {
-        setError('User information or conversation ID is missing.');
+    const fetchPreviousChats = async () => {
+      if (!user_uuid) {
+        setError('User information is missing.');
         setLoading(false);
         return;
       }
 
       try {
-        const response: ApiResponse = await Utils.post('/api/GetPreviousChat', {
-          user_uuid,
-          auth_key,
-          page: 1,
-          limit: 32,
-          Type: 'GetPreviousChat',
-          conversation_id,
-        });
+        const { data, error } = await supabase
+          .from('chats')
+          .select('id, user_uuid, chat_uuid, preview_message, created_at')
+          .eq('user_uuid', user_uuid)
+          .order('created_at', { ascending: false });
 
-        if (response.error) {
-          setError(response.error);
-        } else if (Array.isArray(response.messages)) {
-          setMessages(response.messages);
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          setChats(data as Chat[]);
         } else {
-          setMessages([]);
+          setChats([]);
         }
-      } catch (error) {
-        console.error('Failed to fetch previous chat:', error);
-        setError('An unexpected error occurred. Please try again later.');
+      } catch (err: any) {
+        console.error('Failed to fetch previous chats:', err);
+        setError('Failed to load previous chats. Please try again later.');
       } finally {
         setLoading(false);
-        setDataFetched(true);
       }
     };
 
-    if (!dataFetched) {
-      fetchPreviousChat();
-    }
-  }, [conversation_id, user_uuid, auth_key, dataFetched]);
-
-  useEffect(() => {
-    const handlePopState = () => {
-      window.location.reload();
-    };
-
-    window.addEventListener('popstate', handlePopState);
-
-    return () => {
-      window.removeEventListener('popstate', handlePopState);
-    };
-  }, [conversation_id]);
+    fetchPreviousChats();
+  }, [user_uuid]);
 
   const truncateMessage = (text: string, maxLength = 50) => {
-    if (!text) return 'No message content';
-    return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
+    return text?.length > maxLength ? text.slice(0, maxLength) + '...' : text || '';
   };
 
-  const handleMessageClick = (conversation_id: string) => {
-    navigate(`/chat/${conversation_id}`);
+  const handleMessageClick = (chatUuid: string) => {
+    navigate(`/chat/${chatUuid}`);
     window.location.reload();
   };
 
@@ -121,7 +87,7 @@ export default function PreviousChat({
               {error}
             </Typography>
           </div>
-        ) : messages.length === 0 ? (
+        ) : chats.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-4 space-y-4">
             <motion.img
               src="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MascotCrying.avif"
@@ -135,19 +101,19 @@ export default function PreviousChat({
             </Typography>
           </div>
         ) : (
-          messages.slice(0, 11).map((message) => (
+          chats.slice(0, 11).map((chat) => (
             <motion.div
-              key={message.id}
-              data-message-id={message.conversation_id}
+              key={chat.id}
+              data-chat-id={chat.chat_uuid}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="flex items-start space-x-4 p-4 border-b border-gray-700 cursor-pointer"
-              onClick={() => handleMessageClick(message.conversation_id)}
+              className="flex items-start space-x-4 p-4 border-b border-gray-700 cursor-pointer hover:bg-gray-700"
+              onClick={() => handleMessageClick(chat.chat_uuid)}
             >
               <Avatar
-                src={message.character_image_url}
-                alt="Avatar"
+                src="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MascotSmiling.avif"
+                alt="Chat avatar"
                 className="w-12 h-12"
               />
               <div className="flex-1">
@@ -156,10 +122,10 @@ export default function PreviousChat({
                   color="textSecondary"
                   className="break-words"
                 >
-                  {truncateMessage(message.message)}
+                  {truncateMessage(chat.preview_message)}
                 </Typography>
                 <Typography variant="caption" color="textSecondary">
-                  {new Date(message.created_at).toLocaleString()}
+                  {new Date(chat.created_at).toLocaleString()}
                 </Typography>
               </div>
             </motion.div>
