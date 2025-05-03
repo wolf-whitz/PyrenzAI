@@ -12,6 +12,21 @@ export interface Character {
   token_total: number;
 }
 
+export interface CharacterCardProps {
+  id: string;
+  input_char_uuid: string;
+  name: string;
+  description: string;
+  creator: string | null;
+  chat_messages_count: number;
+  image_url: string;
+  tags: string[];
+  profile_image: string;
+  is_public: boolean;
+  token_total: number;
+  isLoading: boolean;
+}
+
 export interface CharacterData {
   persona: string;
   name: string;

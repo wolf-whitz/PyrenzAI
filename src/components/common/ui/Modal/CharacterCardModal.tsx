@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MessageSquare, Globe, Lock, Info } from 'lucide-react';
+import { MessageSquare, Globe, Lock } from 'lucide-react';
 import { CharacterCardProps } from '@shared-types/CharacterCardPropsTypes';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -11,9 +11,7 @@ import * as Sentry from '@sentry/react';
 import {
   Box,
   Typography,
-  IconButton,
   Button,
-  Tooltip,
   CircularProgress,
 } from '@mui/material';
 
@@ -23,6 +21,11 @@ interface CharacterCardModalProps {
   character: CharacterCardProps | null;
 }
 
+const truncateText = (text: string, maxLength: number): string => {
+  if (text.length <= maxLength) return text;
+  return text.substring(0, maxLength) + '...';
+};
+
 export default function CharacterCardModal({
   isOpen,
   onClose,
@@ -31,7 +34,6 @@ export default function CharacterCardModal({
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const { user_uuid, auth_key } = useUserStore();
-  const [isInfoOpen, setIsInfoOpen] = useState(false);
 
   if (!character) return null;
 
@@ -114,15 +116,6 @@ export default function CharacterCardModal({
                 <Typography variant="h6" className="mt-3 font-bold">
                   {character.name}
                 </Typography>
-                <Tooltip title="Character Info">
-                  <IconButton
-                    className="ml-2 text-gray-400 hover:text-white"
-                    onClick={() => setIsInfoOpen(!isInfoOpen)}
-                    size="small"
-                  >
-                    <Info size={18} />
-                  </IconButton>
-                </Tooltip>
               </Box>
               <Typography variant="caption" color="textSecondary">
                 @{character.creator}
@@ -133,7 +126,7 @@ export default function CharacterCardModal({
                 color="textSecondary"
                 className="mt-4 px-2"
               >
-                {character.description || 'No description available.'}
+                {truncateText(character.description || 'No description available.', 100)}
               </Typography>
 
               <Box className="flex items-center mt-4 w-full">
@@ -197,55 +190,6 @@ export default function CharacterCardModal({
                   ))}
               </Box>
             </Box>
-          </motion.div>
-        </motion.div>
-      )}
-      {isInfoOpen && (
-        <motion.div
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-          onClick={() => setIsInfoOpen(false)}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0, transition: { duration: 0.4, ease: 'easeOut' } }}
-        >
-          <motion.div
-            className="bg-gray-900 text-white p-6 rounded-2xl shadow-2xl flex flex-col items-start relative"
-            onClick={(e) => e.stopPropagation()}
-            initial={{ opacity: 0, y: 50, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{
-              opacity: 0,
-              y: 40,
-              scale: 0.8,
-              rotate: -8,
-              transition: { duration: 0.35, ease: 'easeInOut' },
-            }}
-          >
-            <Typography variant="h6" className="mb-4">
-              Character Info
-            </Typography>
-            <Typography variant="body2">
-              <strong>Name:</strong> {character.name}
-            </Typography>
-            <Typography variant="body2">
-              <strong>Creator:</strong> {character.creator}
-            </Typography>
-            <Typography variant="body2">
-              <strong>Description:</strong> {character.description}
-            </Typography>
-            <Typography variant="body2">
-              <strong>Chat Messages Count:</strong>{' '}
-              {character.chat_messages_count}
-            </Typography>
-            <Typography variant="body2">
-              <strong>Tags:</strong> {character.tags.join(', ')}
-            </Typography>
-            <Typography variant="body2">
-              <strong>Public:</strong> {character.is_public ? 'Yes' : 'No'}
-            </Typography>
-            <Typography variant="body2">
-              <strong>Token Total:</strong> {character.token_total}
-            </Typography>
           </motion.div>
         </motion.div>
       )}

@@ -108,17 +108,6 @@ export default function CharacterCard({
                 Private
               </Typography>
             )}
-
-            {validTags.map((tag, index) => (
-              <Tooltip title={tag} key={index}>
-                <Typography
-                  component="span"
-                  className="bg-black text-white text-xs font-semibold py-1 px-2 rounded-full truncate max-w-[80px]"
-                >
-                  {tag.length > 12 ? `${tag.slice(0, 12)}...` : tag}
-                </Typography>
-              </Tooltip>
-            ))}
           </Box>
 
           <Box className="mt-4 flex items-center text-gray-400 text-xs">

@@ -72,7 +72,7 @@ export default function CharacterForm() {
       is_public: false,
       is_nsfw: false,
     };
-    setCharacterData({ ...emptyData, textarea_token: {} });
+    setCharacterData({ ...emptyData, textarea_token: {}, token_total: 0 });
   };
 
   const handleSave = async () => {
