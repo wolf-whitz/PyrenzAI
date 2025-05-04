@@ -1,5 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Textarea } from '~/components';
+import { Menu, MenuItem, Typography } from '@mui/material';
+import { supabase } from '~/Utility/supabaseClient';
+
+interface Tag {
+  id: string;
+  name: string;
+}
 
 interface TextareaFormProps {
   formState: {
@@ -18,6 +25,36 @@ export default function TextareaForm({
   formState,
   handleChange,
 }: TextareaFormProps) {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [tags, setTags] = useState<Tag[]>([]);
+
+  const handleOpenDropdown = async (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+    const { data, error } = await supabase.from('tags').select('*');
+    if (data) {
+      setTags(data);
+    }
+    if (error) {
+      console.error('Error fetching tags:', error);
+    }
+  };
+
+  const handleCloseDropdown = () => {
+    setAnchorEl(null);
+  };
+
+  const handleTagClick = (tag: string) => {
+    const newValue = formState.tags ? `${formState.tags}${formState.tags.trim().endsWith(',') ? '' : ', '}${tag}` : tag;
+    const event = {
+      target: {
+        value: newValue,
+        name: 'tags',
+      },
+    } as React.ChangeEvent<HTMLTextAreaElement>;
+    handleChange(event);
+    handleCloseDropdown();
+  };
+
   return (
     <>
       <Textarea
@@ -73,7 +110,33 @@ export default function TextareaForm({
         onChange={handleChange}
         label="Tags"
         aria-label="Tags"
+        is_tag
+        onTagPressed={handleOpenDropdown}
       />
+
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleCloseDropdown}
+        PaperProps={{
+          style: {
+            maxHeight: 400,
+            width: '20ch',
+          },
+        }}
+      >
+        <div className="p-2 max-h-96 overflow-y-auto">
+          {tags.map((tag) => (
+            <MenuItem
+              key={tag.id}
+              onClick={() => handleTagClick(tag.name)}
+              className="rounded-md hover:bg-blue-500 hover:text-white"
+            >
+              <Typography variant="body1">{tag.name}</Typography>
+            </MenuItem>
+          ))}
+        </div>
+      </Menu>
     </>
   );
 }

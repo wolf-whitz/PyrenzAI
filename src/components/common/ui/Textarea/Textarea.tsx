@@ -15,6 +15,8 @@ interface TextareaProps {
   className?: string;
   maxLength?: number;
   require_link?: boolean;
+  is_tag?: boolean;
+  onTagPressed?: (event: React.MouseEvent<HTMLElement>) => void;
 }
 
 export default function Textarea({
@@ -27,11 +29,13 @@ export default function Textarea({
   className = '',
   maxLength = 15000,
   require_link = false,
+  is_tag = false,
+  onTagPressed,
 }: TextareaProps) {
   const [tokenCount, setTokenCount] = useState(0);
   const [isLinkValid, setIsLinkValid] = useState(true);
-  const characterCount = value.length;
-  const isMaxLengthExceeded = characterCount > maxLength;
+  const [characterCount, setCharacterCount] = useState(value.length);
+  const [isMaxLengthExceeded, setIsMaxLengthExceeded] = useState(characterCount > maxLength);
 
   const setCharacterData = useCharacterStore((state) => state.setCharacterData);
 
@@ -57,6 +61,11 @@ export default function Textarea({
     }
   }, [value, showTokenizer, setCharacterData, name]);
 
+  useEffect(() => {
+    setCharacterCount(value.length);
+    setIsMaxLengthExceeded(value.length > maxLength);
+  }, [value, maxLength]);
+
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
     if (require_link) {
@@ -70,6 +79,17 @@ export default function Textarea({
     if (newValue.length <= maxLength) {
       onChange(e);
     }
+  };
+
+  const handleTagClick = (tag: string) => {
+    const newValue = value ? `${value.trim()}${value.trim().endsWith(',') ? '' : ', '}${tag}` : tag;
+    const event = {
+      target: {
+        value: newValue,
+        name: name,
+      },
+    } as React.ChangeEvent<HTMLTextAreaElement>;
+    onChange(event);
   };
 
   const textareaId =
@@ -87,7 +107,7 @@ export default function Textarea({
           variant="body1"
           component="label"
           htmlFor={textareaId}
-          sx={{ color: 'white' }}
+          className="text-white"
         >
           {label}
         </Typography>
@@ -95,7 +115,7 @@ export default function Textarea({
           <MUITooltip title={`Token Count: ${tokenCount}`} arrow>
             <Typography
               variant="body2"
-              sx={{ color: 'gray', cursor: 'pointer' }}
+              className="text-gray-500 cursor-pointer"
             >
               Tokens: {tokenCount}
             </Typography>
@@ -116,7 +136,7 @@ export default function Textarea({
         helperText={!isLinkValid ? 'Please enter a valid link.' : ''}
         InputProps={{
           className: classNames(
-            'text-white bg-gray-800 border-none focus:outline-none focus:ring-2 shadow-md transition-all duration-300 ease-in-out',
+            'text-white bg-gray-800 border-none focus:outline-none focus:ring-2 shadow-md transition-all duration-300 ease-in-out rounded-md',
             {
               'ring-red-500': isMaxLengthExceeded,
               'focus:ring-gray-600 hover:ring-gray-700': !isMaxLengthExceeded,
@@ -128,14 +148,21 @@ export default function Textarea({
           maxLength: maxLength,
         }}
       />
+      {is_tag && (
+        <Typography
+          variant="body2"
+          onClick={onTagPressed}
+          className="absolute bottom-2 left-2 text-gray-500 cursor-pointer text-lg font-semibold p-2 bg-gray-800 rounded-md"
+        >
+          Tags
+        </Typography>
+      )}
       <Typography
         variant="caption"
-        sx={{
-          position: 'absolute',
-          right: '8px',
-          bottom: '8px',
-          color: isMaxLengthExceeded ? 'red' : 'gray',
-        }}
+        className={classNames('absolute right-2 bottom-2', {
+          'text-red-500': isMaxLengthExceeded,
+          'text-gray-500': !isMaxLengthExceeded,
+        })}
       >
         {characterCount}/{maxLength}
       </Typography>
