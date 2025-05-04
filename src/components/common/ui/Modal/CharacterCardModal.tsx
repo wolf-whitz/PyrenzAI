@@ -8,12 +8,7 @@ import { Utils } from '~/Utility/Utility';
 import { useUserStore } from '~/store';
 import { WindowAlert } from '~/components';
 import * as Sentry from '@sentry/react';
-import {
-  Box,
-  Typography,
-  Button,
-  CircularProgress,
-} from '@mui/material';
+import { Box, Typography, Button, CircularProgress } from '@mui/material';
 
 interface CharacterCardModalProps {
   isOpen: boolean;
@@ -102,7 +97,7 @@ export default function CharacterCardModal({
             }}
           >
             <motion.img
-              src={character.image_url}
+              src={character.profile_image}
               alt={character.name}
               className="w-24 h-32 object-cover rounded-lg border-2 border-gray-700 shadow-lg sm:mr-4"
               initial={{ scale: 0.8 }}
@@ -126,7 +121,10 @@ export default function CharacterCardModal({
                 color="textSecondary"
                 className="mt-4 px-2"
               >
-                {truncateText(character.description || 'No description available.', 100)}
+                {truncateText(
+                  character.description || 'No description available.',
+                  100
+                )}
               </Typography>
 
               <Box className="flex items-center mt-4 w-full">

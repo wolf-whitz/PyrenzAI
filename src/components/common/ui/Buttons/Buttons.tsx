@@ -12,6 +12,7 @@ type ButtonType = {
   type: string;
   max_character: number;
   page: number;
+  tag?: string;
 };
 
 const buttons: ButtonType[] = [
@@ -43,9 +44,10 @@ const buttons: ButtonType[] = [
     icon: Tag,
     label: 'HomePageMoreButtons.btn.male',
     rpcFunction: 'get_characters_with_tags',
-    type: 'GetMaleCharacter',
+    type: 'GetTaggedCharacters',
     max_character: 10,
     page: 1,
+    tag: 'male',
   },
 ];
 
@@ -54,7 +56,8 @@ type CustomButtonProps = {
     rpcFunction: string,
     type: string,
     max_character: number,
-    page: number
+    page: number,
+    tag?: string
   ) => void;
 };
 
@@ -110,11 +113,8 @@ export default function CustomButton({ onButtonClick }: CustomButtonProps) {
         borderRadius: '0.5rem',
       }}
     >
-      {buttons.map((btn, index) => (
-        <motion.div
-          key={index}
-          style={{ display: index < visibleButtons.length ? 'flex' : 'none' }}
-        >
+      {visibleButtons.map((btn, index) => (
+        <motion.div key={index}>
           <Button
             variant="outlined"
             startIcon={<btn.icon size={18} />}
@@ -123,7 +123,8 @@ export default function CustomButton({ onButtonClick }: CustomButtonProps) {
                 btn.rpcFunction,
                 btn.type,
                 btn.max_character,
-                btn.page
+                btn.page,
+                btn.tag
               )
             }
             sx={{

@@ -96,7 +96,15 @@ export default function SkeletonCard() {
           ))}
         </Box>
 
-        <Box sx={{ mt: 4, display: 'flex', alignItems: 'center', color: '#9ca3af', fontSize: '12px' }}>
+        <Box
+          sx={{
+            mt: 4,
+            display: 'flex',
+            alignItems: 'center',
+            color: '#9ca3af',
+            fontSize: '12px',
+          }}
+        >
           <motion.div
             style={{
               height: '20px',
@@ -108,7 +116,9 @@ export default function SkeletonCard() {
             animate={{ width: isLoaded ? '48px' : 0 }}
             transition={{ delay: 1.6, duration: 0.5 }}
           ></motion.div>
-          <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Box
+            sx={{ ml: 'auto', display: 'flex', alignItems: 'center', gap: 2 }}
+          >
             <motion.div
               style={{
                 height: '20px',

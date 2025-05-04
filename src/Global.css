@@ -129,8 +129,6 @@
   animation: slideIn 0.5s ease-out;
 }
 
- 
- 
 @keyframes shimmer {
   0%,
   100% {

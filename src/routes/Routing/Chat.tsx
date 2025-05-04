@@ -65,7 +65,14 @@ export default function ChatPage() {
     };
 
     getChatData();
-  }, [conversation_id, user_uuid, auth_key, setFirstMessage, chatDataFetched, clearData]);
+  }, [
+    conversation_id,
+    user_uuid,
+    auth_key,
+    setFirstMessage,
+    chatDataFetched,
+    clearData,
+  ]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -77,7 +84,9 @@ export default function ChatPage() {
 
         const updatedUserData = {
           ...response,
-          icon: response.icon || `https://api.dicebear.com/9.x/adventurer/svg?seed=${response.name?.split('@')[0] || 'Anon'}`
+          icon:
+            response.icon ||
+            `https://api.dicebear.com/9.x/adventurer/svg?seed=${response.name?.split('@')[0] || 'Anon'}`,
         };
 
         setUserData(updatedUserData);

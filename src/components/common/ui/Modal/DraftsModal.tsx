@@ -62,7 +62,9 @@ export default function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
           scenario: draft.scenario,
           description: draft.description,
           first_message: draft.first_message,
-          tags: Array.isArray(draft.tags) ? draft.tags.join(', ') : draft.tags ?? '',
+          tags: Array.isArray(draft.tags)
+            ? draft.tags.join(', ')
+            : (draft.tags ?? ''),
           gender: draft.gender,
           is_public: draft.is_public,
           is_nsfw: draft.is_nsfw,
@@ -70,6 +72,7 @@ export default function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
           token_total: draft.token_total,
           created_at: draft.created_at,
           updated_at: draft.updated_at,
+          creator: '',
         }));
 
         setDrafts(mappedDrafts);

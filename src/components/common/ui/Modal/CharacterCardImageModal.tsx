@@ -156,7 +156,9 @@ export default function CharacterCardImageModal({
                       onError={() => handleImageError(card.id)}
                     />
                     <CardContent>
-                      <Typography variant="subtitle1">{card.card_name}</Typography>
+                      <Typography variant="subtitle1">
+                        {card.card_name}
+                      </Typography>
                       <Typography variant="body2">
                         {card.card_description}
                       </Typography>

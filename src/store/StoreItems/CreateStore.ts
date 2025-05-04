@@ -57,8 +57,8 @@ export const useCharacterStore = create<CharacterState>((set) => ({
           typeof data.tags === 'string'
             ? data.tags
             : Array.isArray(data.tags)
-            ? data.tags.join(', ')
-            : state.tags,
+              ? data.tags.join(', ')
+              : state.tags,
         textarea_token: newTextareaToken,
         token_total: newTokenTotal,
       };

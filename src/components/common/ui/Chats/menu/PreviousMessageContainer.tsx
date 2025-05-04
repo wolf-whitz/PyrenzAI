@@ -56,7 +56,9 @@ export default function PreviousChat() {
   }, [user_uuid]);
 
   const truncateMessage = (text: string, maxLength = 50) => {
-    return text?.length > maxLength ? text.slice(0, maxLength) + '...' : text || '';
+    return text?.length > maxLength
+      ? text.slice(0, maxLength) + '...'
+      : text || '';
   };
 
   const handleMessageClick = (chatUuid: string) => {

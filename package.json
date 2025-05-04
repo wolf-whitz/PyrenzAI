@@ -8,7 +8,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "dev": "concurrently \"vite dev --port 8800\" \"tsc --watch\"",
-    "preview": "vite preview"
+    "prod": "vite prod",
+    "docs-build": "eleventy"
   },
   "dependencies": {
     "@datadog/browser-rum-react": "^6.6.3",
@@ -84,6 +85,7 @@
     "zustand": "^5.0.3"
   },
   "devDependencies": {
+    "@eslint/js": "^9.26.0",
     "@svgr/webpack": "^8.1.0",
     "@types/aos": "^3.0.7",
     "@types/lodash": "^4.17.16",
@@ -92,17 +94,19 @@
     "@typescript-eslint/eslint-plugin": "^6.7.4",
     "@typescript-eslint/parser": "^6.7.4",
     "autoprefixer": "^10.4.19",
-    "eslint": "^8.38.0",
+    "eslint": "^8.57.1",
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.28.1",
     "eslint-plugin-jsx-a11y": "^6.7.1",
-    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "globals": "^16.0.0",
     "postcss": "^8.4.38",
     "prettier": "^3.5.3",
     "tailwindcss": "^3.4.17",
     "tsc-alias": "^1.8.15",
     "typescript": "^5.8.2",
+    "typescript-eslint": "^8.31.1",
     "vite": "^5.4.18",
     "vite-imagetools": "^7.0.5",
     "vite-plugin-compression": "^0.5.1",

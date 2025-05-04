@@ -12,7 +12,7 @@ export default function CharacterCard({
   description,
   creator,
   chat_messages_count,
-  image_url,
+  profile_image,
   tags = [],
   is_public: isPublic = false,
   token_total,
@@ -35,13 +35,24 @@ export default function CharacterCard({
       description,
       creator,
       chat_messages_count,
-      image_url,
+      profile_image,
       tags,
       is_public: isPublic,
       token_total,
     });
     setIsModalOpen(true);
-  }, [id, input_char_uuid, name, description, creator, chat_messages_count, image_url, tags, isPublic, token_total]);
+  }, [
+    id,
+    input_char_uuid,
+    name,
+    description,
+    creator,
+    chat_messages_count,
+    profile_image,
+    tags,
+    isPublic,
+    token_total,
+  ]);
 
   if (isLoading) {
     return null;
@@ -65,7 +76,7 @@ export default function CharacterCard({
       >
         <div className="relative w-full h-48">
           <img
-            src={image_url}
+            src={profile_image}
             alt={name}
             className="absolute inset-0 w-full h-full object-cover rounded-t-xl"
           />

@@ -35,7 +35,9 @@ export default function Textarea({
   const [tokenCount, setTokenCount] = useState(0);
   const [isLinkValid, setIsLinkValid] = useState(true);
   const [characterCount, setCharacterCount] = useState(value.length);
-  const [isMaxLengthExceeded, setIsMaxLengthExceeded] = useState(characterCount > maxLength);
+  const [isMaxLengthExceeded, setIsMaxLengthExceeded] = useState(
+    characterCount > maxLength
+  );
 
   const setCharacterData = useCharacterStore((state) => state.setCharacterData);
 
@@ -82,7 +84,9 @@ export default function Textarea({
   };
 
   const handleTagClick = (tag: string) => {
-    const newValue = value ? `${value.trim()}${value.trim().endsWith(',') ? '' : ', '}${tag}` : tag;
+    const newValue = value
+      ? `${value.trim()}${value.trim().endsWith(',') ? '' : ', '}${tag}`
+      : tag;
     const event = {
       target: {
         value: newValue,

@@ -2,7 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import { supabase } from '~/Utility/supabaseClient';
 import { useUserStore } from '~/store/index';
-import { CreatePersonaModal, PersonaList, CreateCharacterCardImageModal, CharacterCardImageModal } from '@components/index';
+import {
+  CreatePersonaModal,
+  PersonaList,
+  CreateCharacterCardImageModal,
+  CharacterCardImageModal,
+} from '@components/index';
 
 interface PersonaCard {
   id: string;
@@ -19,8 +24,12 @@ export default function Persona() {
   const [newPersonaDescription, setNewPersonaDescription] = useState('');
   const [creating, setCreating] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [isCreateCharacterCardImageModalOpen, setCreateCharacterCardImageModalOpen] = useState(false);
-  const [isCharacterCardImageModalOpen, setCharacterCardImageModalOpen] = useState(false);
+  const [
+    isCreateCharacterCardImageModalOpen,
+    setCreateCharacterCardImageModalOpen,
+  ] = useState(false);
+  const [isCharacterCardImageModalOpen, setCharacterCardImageModalOpen] =
+    useState(false);
   const [selectedImage, setSelectedImage] = useState('');
   const { user_uuid } = useUserStore();
 

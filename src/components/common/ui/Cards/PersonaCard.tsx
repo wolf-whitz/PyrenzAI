@@ -7,7 +7,12 @@ interface PersonaCardProps {
   selected?: boolean;
 }
 
-export default function PersonaCard({ id, name, description, selected }: PersonaCardProps) {
+export default function PersonaCard({
+  id,
+  name,
+  description,
+  selected,
+}: PersonaCardProps) {
   const truncateDescription = (description: string, limit: number = 100) => {
     return description.length > limit
       ? `${description.slice(0, limit)}...`

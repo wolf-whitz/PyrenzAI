@@ -47,7 +47,9 @@ export default function TextareaForm({
   };
 
   const handleTagClick = (tag: string) => {
-    const newValue = formState.tags ? `${formState.tags}${formState.tags.trim().endsWith(',') ? '' : ', '}${tag}` : tag;
+    const newValue = formState.tags
+      ? `${formState.tags}${formState.tags.trim().endsWith(',') ? '' : ', '}${tag}`
+      : tag;
     const event = {
       target: {
         value: newValue,

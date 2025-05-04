@@ -5,7 +5,7 @@ export interface CharacterCardProps {
   description: string;
   creator: string | null;
   chat_messages_count: number;
-  image_url: string;
+  profile_image: string;
   tags: string[];
   is_public: boolean;
   token_total: number;

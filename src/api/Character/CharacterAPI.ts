@@ -35,10 +35,12 @@ export const fetchCharacters = async (
       description: char.description,
       creator: char.creator,
       chat_messages_count: char.chat_messages_count,
-      image_url: char.profile_image,
+      profile_image: char.profile_image,
       tags: Array.isArray(char.tags)
         ? char.tags
-            .filter((tag: any) => typeof tag === 'string' || typeof tag === 'number')
+            .filter(
+              (tag: any) => typeof tag === 'string' || typeof tag === 'number'
+            )
             .map((tag: any) => String(tag).trim())
         : Object.keys(char.tags || {})
             .filter((key: string) => key.trim() !== '')

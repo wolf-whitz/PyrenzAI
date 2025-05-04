@@ -55,10 +55,10 @@ export default function CreateCharacterCardImageModal({
       };
 
       try {
-        const response = await Utils.post<{ message: string; imageUrl: string }>(
-          '/api/ProfileCardsUpload',
-          data
-        );
+        const response = await Utils.post<{
+          message: string;
+          imageUrl: string;
+        }>('/api/ProfileCardsUpload', data);
 
         console.log('API Response:', response);
 
@@ -89,14 +89,21 @@ export default function CreateCharacterCardImageModal({
         <Typography variant="h6" className="mb-4 text-white">
           Create Character Card Image
         </Typography>
-        <div {...getRootProps()} className="border-2 border-dashed border-gray-300 p-4 mb-4 text-center cursor-pointer">
+        <div
+          {...getRootProps()}
+          className="border-2 border-dashed border-gray-300 p-4 mb-4 text-center cursor-pointer"
+        >
           <input {...getInputProps()} />
           {isDragActive ? (
             <p className="text-white">Drop the image here</p>
           ) : (
-            <p className="text-white">Drag & drop an image here, or click to select one</p>
+            <p className="text-white">
+              Drag & drop an image here, or click to select one
+            </p>
           )}
-          {image && <p className="mt-2 text-white">Selected image: {image.name}</p>}
+          {image && (
+            <p className="mt-2 text-white">Selected image: {image.name}</p>
+          )}
         </div>
         <Textarea
           label="Name"

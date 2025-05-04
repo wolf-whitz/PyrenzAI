@@ -11,10 +11,18 @@ export const useGenerateMessage = () => {
       char: any,
       conversation_id: string,
       setMessages: React.Dispatch<React.SetStateAction<Message[]>>,
-      messageIdRef: React.MutableRefObject<{ charId: string | null, userId: string | null }>,
+      messageIdRef: React.MutableRefObject<{
+        charId: string | null;
+        userId: string | null;
+      }>,
       setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>
     ): Promise<void> => {
-      console.log('generateMessage called with:', { text, user, char, conversation_id });
+      console.log('generateMessage called with:', {
+        text,
+        user,
+        char,
+        conversation_id,
+      });
 
       if (!user || !char || !conversation_id) {
         console.error('Missing required parameters');
@@ -65,7 +73,9 @@ export const useGenerateMessage = () => {
 
         setMessages((prevMessages) => {
           const updatedMessages = prevMessages.map((msg) =>
-            msg.type === 'assistant' && msg.isGenerate ? { ...msg, text: response.data.content, isGenerate: false } : msg
+            msg.type === 'assistant' && msg.isGenerate
+              ? { ...msg, text: response.data.content, isGenerate: false }
+              : msg
           );
           console.log('Messages after API response:', updatedMessages);
           return updatedMessages;
@@ -75,7 +85,14 @@ export const useGenerateMessage = () => {
 
         setMessages((prevMessages) => {
           const updatedMessages = prevMessages.map((msg) =>
-            msg.type === 'assistant' && msg.isGenerate ? { ...msg, text: 'Failed to generate response.', isGenerate: false, error: true } : msg
+            msg.type === 'assistant' && msg.isGenerate
+              ? {
+                  ...msg,
+                  text: 'Failed to generate response.',
+                  isGenerate: false,
+                  error: true,
+                }
+              : msg
           );
           console.log('Messages after error:', updatedMessages);
           return updatedMessages;

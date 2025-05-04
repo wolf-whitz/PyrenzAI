@@ -25,7 +25,11 @@ const MemoizedCharacterCard = memo(CharacterCard);
 
 const transformCharacter = (char: Character): CharacterCardProps => ({
   ...char,
-  tags: Array.isArray(char.tags) ? char.tags : typeof char.tags === 'string' ? char.tags.split(',').map(tag => tag.trim()) : [],
+  tags: Array.isArray(char.tags)
+    ? char.tags
+    : typeof char.tags === 'string'
+      ? char.tags.split(',').map((tag) => tag.trim())
+      : [],
   isLoading: false,
 });
 
@@ -79,7 +83,16 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, search, itemsPerPage, user_uuid, setCharacters, setTotal, setLoading, t]);
+  }, [
+    currentPage,
+    search,
+    itemsPerPage,
+    user_uuid,
+    setCharacters,
+    setTotal,
+    setLoading,
+    t,
+  ]);
 
   useEffect(() => {
     fetchCharactersData();
@@ -137,7 +150,10 @@ export default function Home() {
         disableGutters
         className="flex flex-1 flex-col md:flex-row"
       >
-        <nav className="hidden md:flex md:pl-[50px]" aria-label={t('ariaLabels.mainNavigation')}>
+        <nav
+          className="hidden md:flex md:pl-[50px]"
+          aria-label={t('ariaLabels.mainNavigation')}
+        >
           <Sidebar />
         </nav>
 
@@ -146,8 +162,13 @@ export default function Home() {
             <Banner />
           </header>
 
-          <section aria-labelledby="search-heading" className="mb-6 w-full max-w-lg">
-            <h2 id="search-heading" className="sr-only">{t('ariaLabels.searchCharacters')}</h2>
+          <section
+            aria-labelledby="search-heading"
+            className="mb-6 w-full max-w-lg"
+          >
+            <h2 id="search-heading" className="sr-only">
+              {t('ariaLabels.searchCharacters')}
+            </h2>
             <SearchBar
               search={search}
               setSearch={setSearch}
@@ -186,50 +207,53 @@ export default function Home() {
               transition={{ duration: 0.5 }}
             >
               <AnimatePresence>
-                {loading
-                  ? Array.from({ length: itemsPerPage }).map((_, i) => (
-                      <motion.article
-                        key={i}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.5 }}
-                        className="w-full"
-                        aria-label={t('ariaLabels.loadingCharacter', {
-                          index: i + 1,
-                        })}
-                      >
-                        <SkeletonCard key={i} />
-                      </motion.article>
-                    ))
-                  : characters.length > 0
-                  ? characters.map((char: Character) => (
-                      <motion.article
-                        key={char.id}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.5 }}
-                        className="transition-transform hover:scale-105 p-2"
-                        aria-labelledby={`character-${char.name}`}
-                      >
-                        <MemoizedCharacterCard {...transformCharacter(char)} isLoading={loading} />
-                      </motion.article>
-                    ))
-                  : (
-                      <motion.div
-                        className="text-gray-500 text-center w-full"
-                        aria-live="polite"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.5 }}
-                      >
-                        <Typography variant="body1">
-                          {t('messages.noCharactersFound')}
-                        </Typography>
-                      </motion.div>
-                    )}
+                {loading ? (
+                  Array.from({ length: itemsPerPage }).map((_, i) => (
+                    <motion.article
+                      key={i}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.5 }}
+                      className="w-full"
+                      aria-label={t('ariaLabels.loadingCharacter', {
+                        index: i + 1,
+                      })}
+                    >
+                      <SkeletonCard key={i} />
+                    </motion.article>
+                  ))
+                ) : characters.length > 0 ? (
+                  characters.map((char: Character) => (
+                    <motion.article
+                      key={char.id}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.5 }}
+                      className="transition-transform hover:scale-105 p-2"
+                      aria-labelledby={`character-${char.name}`}
+                    >
+                      <MemoizedCharacterCard
+                        {...transformCharacter(char)}
+                        isLoading={loading}
+                      />
+                    </motion.article>
+                  ))
+                ) : (
+                  <motion.div
+                    className="text-gray-500 text-center w-full"
+                    aria-live="polite"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <Typography variant="body1">
+                      {t('messages.noCharactersFound')}
+                    </Typography>
+                  </motion.div>
+                )}
               </AnimatePresence>
             </motion.div>
           </section>
@@ -249,7 +273,10 @@ export default function Home() {
         </main>
       </Container>
 
-      <nav className="fixed bottom-0 left-0 w-full bg-gray-900 text-white flex justify-around p-2 shadow-lg z-50 md:hidden" aria-label={t('ariaLabels.mobileNavigation')}>
+      <nav
+        className="fixed bottom-0 left-0 w-full bg-gray-900 text-white flex justify-around p-2 shadow-lg z-50 md:hidden"
+        aria-label={t('ariaLabels.mobileNavigation')}
+      >
         <Sidebar />
       </nav>
 

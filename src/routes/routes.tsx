@@ -11,7 +11,13 @@ const Chat = lazy(() => import('./Routing/Chat'));
 const Setting = lazy(() => import('./Routing/Setting/Setting'));
 const ErrorPage = lazy(() => import('./Routing/404page'));
 
-const ProtectedRoute = ({ element, ...props }: { element: JSX.Element, [key: string]: any }) => {
+const ProtectedRoute = ({
+  element,
+  ...props
+}: {
+  element: JSX.Element;
+  [key: string]: any;
+}) => {
   const captcha_uuid = useUserStore((state) => state.captcha_uuid);
   const captcha_expiration = useUserStore((state) => state.captcha_expiration);
   const isAuthenticated = captcha_uuid && captcha_expiration;

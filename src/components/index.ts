@@ -40,7 +40,7 @@ import Textarea from '@ui/Textarea/Textarea';
 import ImageUploader from '@ui/ImageUploader/ImageUploader';
 
 //List
-import PersonaList from "@ui/Lists/PersonaList"
+import PersonaList from '@ui/Lists/PersonaList';
 
 // Dropzone
 import Dropzone from '@ui/Dropzone/Dropzone';
@@ -77,7 +77,7 @@ import DraftsModal from '@ui/Modal/DraftsModal';
 import MoreButtonsModal from '@ui/Modal/MoreButtonsModal';
 import CreatePersonaModal from '@ui/Modal/CreatePersonaModal';
 import CharacterCardImageModal from '@ui/Modal/CharacterCardImageModal';
-import CreateCharacterCardImageModal from '@ui/Modal/CreateCharacterCardImageModal'
+import CreateCharacterCardImageModal from '@ui/Modal/CreateCharacterCardImageModal';
 
 // Card Components
 import { Card, CardContent, CardTitle, CardHeader } from '@ui/ShadCdn/card';
@@ -132,7 +132,7 @@ export {
   CustomButton,
   FeatureCard,
   PersonaCard,
-  
+
   //Fields
   CheckboxField,
   DropdownField,

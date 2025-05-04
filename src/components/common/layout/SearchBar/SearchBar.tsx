@@ -24,7 +24,9 @@ export default function SearchBar({
 
   useEffect(() => {
     const fetchNSFWSetting = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) return;
 
       const { data, error } = await supabase
@@ -59,7 +61,9 @@ export default function SearchBar({
 
   const toggleNSFW = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const newNsfwState = event.target.checked;
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) return;
 
     const { error } = await supabase

@@ -49,5 +49,6 @@ export const useChatStore = create<ChatStore>((set) => ({
   character: null,
   setCharacter: (character: Character) => set({ character }),
 
-  clearData: () => set({ firstMessage: '', messages: [], userData: null, character: null }),
+  clearData: () =>
+    set({ firstMessage: '', messages: [], userData: null, character: null }),
 }));

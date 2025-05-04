@@ -11,7 +11,10 @@ import { useNavigate } from 'react-router-dom';
 
 interface ChatMainProps extends ChatContainerProps {
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
-  messageIdRef: React.MutableRefObject<{ charId: string | null; userId: string | null }>;
+  messageIdRef: React.MutableRefObject<{
+    charId: string | null;
+    userId: string | null;
+  }>;
   setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>;
   conversation_id: string;
 }
@@ -72,8 +75,16 @@ export default function ChatMain({
     if (!trimmedMessage) return;
 
     try {
-      console.log(trimmedMessage)
-      await generateMessage(trimmedMessage, user, char, conversation_id, setMessages, messageIdRef, setIsGenerating);
+      console.log(trimmedMessage);
+      await generateMessage(
+        trimmedMessage,
+        user,
+        char,
+        conversation_id,
+        setMessages,
+        messageIdRef,
+        setIsGenerating
+      );
     } catch (error) {
       console.error('Error:', error);
     }
@@ -103,9 +114,7 @@ export default function ChatMain({
       >
         <Avatar
           alt={char?.name || 'Anon'}
-          src={
-            char?.icon || ''
-          }
+          src={char?.icon || ''}
           className="w-16 h-16"
         />
         <div className="flex items-center mt-2">
@@ -144,7 +153,7 @@ export default function ChatMain({
         <ChatInput
           user={{
             name: user?.name || 'Anon',
-            icon: user?.icon || ''
+            icon: user?.icon || '',
           }}
           char={{ name: char?.name || 'Anon' }}
           handleSend={handleSend}

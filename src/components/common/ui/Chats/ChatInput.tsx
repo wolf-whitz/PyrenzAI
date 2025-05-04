@@ -5,7 +5,7 @@ import { Menu } from '~/components';
 
 interface ChatInputProps {
   className?: string;
-  handleSend: (message: string) => void; 
+  handleSend: (message: string) => void;
   user: { name: string; icon: string };
   char: { name: string };
 }
@@ -27,7 +27,7 @@ export default function ChatInput({
     if (!trimmedMessage || trimmedMessage.length > MAX_CHAR_LIMIT) return;
 
     handleSend(trimmedMessage);
-    setMessage(''); 
+    setMessage('');
   };
 
   return (
