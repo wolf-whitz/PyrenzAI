@@ -11,6 +11,7 @@ interface CharacterState {
   first_message: string;
   tags: string | string[];
   gender: string;
+  creator: string | null;
   textarea_token: { [key: string]: number };
   token_total: number;
   setCharacterData: (data: Partial<CharacterState>) => void;
@@ -27,6 +28,7 @@ export const useCharacterStore = create<CharacterState>((set) => ({
   first_message: '',
   tags: '',
   gender: '',
+  creator: null,
   textarea_token: {
     persona: 0,
     name: 0,

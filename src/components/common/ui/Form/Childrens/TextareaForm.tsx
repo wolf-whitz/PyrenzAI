@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Textarea } from '~/components';
-import { Menu, MenuItem, Typography } from '@mui/material';
+import { Menu, MenuItem, Typography, TextField } from '@mui/material';
 import { supabase } from '~/Utility/supabaseClient';
 
 interface Tag {
@@ -27,12 +27,15 @@ export default function TextareaForm({
 }: TextareaFormProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [tags, setTags] = useState<Tag[]>([]);
+  const [filteredTags, setFilteredTags] = useState<Tag[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   const handleOpenDropdown = async (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
     const { data, error } = await supabase.from('tags').select('*');
     if (data) {
       setTags(data);
+      setFilteredTags(data);
     }
     if (error) {
       console.error('Error fetching tags:', error);
@@ -53,6 +56,14 @@ export default function TextareaForm({
     } as React.ChangeEvent<HTMLTextAreaElement>;
     handleChange(event);
     handleCloseDropdown();
+  };
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const query = event.target.value;
+    setSearchQuery(query);
+    setFilteredTags(
+      tags.filter((tag) => tag.name.toLowerCase().includes(query.toLowerCase()))
+    );
   };
 
   return (
@@ -125,16 +136,26 @@ export default function TextareaForm({
           },
         }}
       >
-        <div className="p-2 max-h-96 overflow-y-auto">
-          {tags.map((tag) => (
-            <MenuItem
-              key={tag.id}
-              onClick={() => handleTagClick(tag.name)}
-              className="rounded-md hover:bg-blue-500 hover:text-white"
-            >
-              <Typography variant="body1">{tag.name}</Typography>
-            </MenuItem>
-          ))}
+        <div className="p-2">
+          <TextField
+            label="Search Tags"
+            variant="outlined"
+            fullWidth
+            value={searchQuery}
+            onChange={handleSearchChange}
+            className="mb-2"
+          />
+          <div className="max-h-96 overflow-y-auto">
+            {filteredTags.map((tag) => (
+              <MenuItem
+                key={tag.id}
+                onClick={() => handleTagClick(tag.name)}
+                className="rounded-md hover:bg-blue-500 hover:text-white"
+              >
+                <Typography variant="body1">{tag.name}</Typography>
+              </MenuItem>
+            ))}
+          </div>
         </div>
       </Menu>
     </>

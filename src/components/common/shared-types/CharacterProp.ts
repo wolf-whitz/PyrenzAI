@@ -36,6 +36,7 @@ export interface CharacterData {
   first_message: string;
   tags: string;
   gender: string;
+  creator: string | null;
   is_public: boolean;
   is_nsfw: boolean;
   textarea_token: Record<string, number>;
@@ -53,6 +54,7 @@ export interface Draft {
   first_message: string;
   tags: string;
   gender: string;
+  creator: string | null;
   is_public: boolean;
   is_nsfw: boolean;
   textarea_token: Record<string, number>;
@@ -60,7 +62,6 @@ export interface Draft {
   created_at: string;
   updated_at: string;
 }
-
 
 export interface ApiResponse {
   error?: any;
