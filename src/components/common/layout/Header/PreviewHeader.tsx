@@ -125,7 +125,7 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
           aria-label={t('navigation.scrollToTop')}
         >
           <img
-            src="/favicon.ico"
+            src="/favicon.png"
             alt={t('footer.pyrenzLogo')}
             className="h-8 w-8"
           />

@@ -42,7 +42,7 @@ const buttons: ButtonType[] = [
   {
     icon: Tag,
     label: 'HomePageMoreButtons.btn.male',
-    rpcFunction: 'get_male_characters',
+    rpcFunction: 'get_characters_with_tags',
     type: 'GetMaleCharacter',
     max_character: 10,
     page: 1,
