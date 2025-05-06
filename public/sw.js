@@ -56,24 +56,3 @@ self.addEventListener('activate', (event) => {
   );
   self.clients.claim();
 });
-
-/**
- * Intercepting network requests what does it do?
- * @Intercepting network requests allows you to control how your application interacts with the network.
- * This can be useful for a variety of reasons, such as:
- * - Serving cached resources when the network is unavailable or slow.
- * - Modifying requests or responses before they are sent or received.
- * - Logging network activity for debugging or analytics purposes.
- * And many more
- * @see https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers#intercepting_network_requests
-*/
-
-self.addEventListener('fetch', (event) => {
-  console.log('🎣 Intercepting fetch for:', event.request.url);
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        return response || fetch(event.request);
-      })
-  );
-});
