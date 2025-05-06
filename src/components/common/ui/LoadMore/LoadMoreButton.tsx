@@ -17,9 +17,7 @@ interface PaginationProps {
 
 export default function Pagination({
   currentPage,
-  totalPages,
   itemsPerPage,
-  user_uuid,
   onLoadMore,
 }: PaginationProps) {
   const location = useLocation();
@@ -40,8 +38,7 @@ export default function Pagination({
         'character',
         searchQuery || null,
         currentPage + 1,
-        itemsPerPage,
-        user_uuid
+        itemsPerPage
       );
 
       if (characters.length > 0) {
