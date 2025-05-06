@@ -90,7 +90,6 @@ export default function Home() {
         currentPage,
         itemsPerPage,
         search,
-        userUUID
       );
       setCharacters(characters);
       setTotal(total);

@@ -1,6 +1,5 @@
 import { supabase } from '~/Utility/supabaseClient';
 import { v4 as uuidv4 } from 'uuid';
-import { GetUserUUID } from '~/functions';
 
 interface CreateChatResponse {
   error?: string;
@@ -16,15 +15,14 @@ interface SupabaseError {
 
 export default async function CreateNewChat(
   characterUuid: string,
+  userUUID: string
 ): Promise<CreateChatResponse> {
   const chatUuid = uuidv4();
 
   try {
-    const userUuid = await GetUserUUID();
-
     const { error: insertError } = await supabase
       .from('chats')
-      .insert([{ chat_uuid: chatUuid, char_uuid: characterUuid, user_uuid: userUuid }]);
+      .insert([{ chat_uuid: chatUuid, char_uuid: characterUuid, user_uuid: userUUID }]);
 
     if (insertError) {
       throw insertError;

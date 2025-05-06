@@ -7,7 +7,6 @@ export const fetchCharacters = async (
   currentPage: number,
   itemsPerPage: number,
   search: string,
-  user_uuid: string
 ): Promise<{ characters: Character[]; total: number }> => {
   try {
     const data = await fetchCharactersFunction(
@@ -15,7 +14,6 @@ export const fetchCharacters = async (
       search || null,
       currentPage,
       itemsPerPage,
-      user_uuid
     );
 
     if (!data || !data.characters || data.characters.length === 0) {

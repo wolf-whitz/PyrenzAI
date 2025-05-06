@@ -23,8 +23,7 @@ export async function fetchCharacters(
     requestType: string,
     searchTerm: string | null = null,
     page: number = 1,
-    itemsPerPage: number = 10,
-    user_uuid: string | null = null
+    itemsPerPage: number = 10
 ): Promise<FetchCharactersResponse> {
     if (requestType !== 'character') {
         throw new Error(`Invalid request_type: ${requestType}`);
