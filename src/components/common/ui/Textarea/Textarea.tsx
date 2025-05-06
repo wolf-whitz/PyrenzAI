@@ -4,6 +4,7 @@ import { useCharacterStore } from '~/store';
 import { motion } from 'framer-motion';
 import { TextField, Tooltip as MUITooltip, Typography } from '@mui/material';
 import clsx from 'clsx';
+import { z } from 'zod';
 
 interface TextareaProps {
   name?: string;
@@ -68,13 +69,14 @@ export default function Textarea({
     setIsMaxLengthExceeded(value.length > maxLength);
   }, [value, maxLength]);
 
+  const urlSchema = z.string().url();
+
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
     if (require_link) {
-      const urlPattern =
-        /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$/;
-      setIsLinkValid(urlPattern.test(newValue));
-      if (!urlPattern.test(newValue)) {
+      const validationResult = urlSchema.safeParse(newValue);
+      setIsLinkValid(validationResult.success);
+      if (!validationResult.success) {
         return;
       }
     }
@@ -156,7 +158,7 @@ export default function Textarea({
         <Typography
           variant="body2"
           onClick={onTagPressed}
-          className="absolute bottom-2 left-2 text-gray-500 cursor-pointer text-lg font-semibold p-2 bg-gray-800 rounded-md"
+          className="absolute bottom-2 left-2 text-gray-500 cursor-pointer text-lg font-semibold p-2 rounded-md"
         >
           Tags
         </Typography>
