@@ -13,7 +13,7 @@ import App from './App.tsx';
 import './Global.css';
 
 import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from "@vercel/speed-insights/next"
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import posthog from 'posthog-js';
 import { posthogConfig } from '~/config';
 
