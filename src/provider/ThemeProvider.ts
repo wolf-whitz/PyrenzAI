@@ -48,6 +48,26 @@ export default function createCustomTheme() {
           },
         },
       },
+      MuiIconButton: {
+        styleOverrides: {
+          root: {
+            borderRadius: '4px',
+            '&:hover': {
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            },
+          },
+        },
+      },
+      MuiTooltip: {
+        styleOverrides: {
+          tooltip: {
+            borderRadius: '4px',
+            backgroundColor: isDarkMode ? '#333' : '#fff',
+            color: isDarkMode ? '#fff' : '#000',
+            fontFamily: `'Baloo Da 2', cursive`,
+          },
+        },
+      },
     },
   });
 

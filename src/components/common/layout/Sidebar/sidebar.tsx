@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
-  Home,
-  Plus,
-  Settings,
-  MessageSquare,
-  User as LucideUser,
-} from 'lucide-react';
+  Home as HomeIcon,
+  Add as PlusIcon,
+  Settings as SettingsIcon,
+  Chat as MessageSquareIcon,
+  AccountCircle as UserIcon,
+} from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '~/Utility/supabaseClient';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 import { AuthenticationModal } from '@components/index';
-import * as Tooltip from '@radix-ui/react-tooltip';
+import { Tooltip, IconButton } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 export default function Sidebar({ className }: { className?: string }) {
@@ -32,20 +32,20 @@ export default function Sidebar({ className }: { className?: string }) {
   }, []);
 
   const menuItems = [
-    { name: t('navigation.home'), icon: <Home size={20} />, path: '/Home' },
+    { name: t('navigation.home'), icon: <HomeIcon fontSize="small" />, path: '/Home' },
     {
       name: t('navigation.create'),
-      icon: <Plus size={20} />,
+      icon: <PlusIcon fontSize="small" />,
       path: '/Create',
     },
     {
       name: t('navigation.chats'),
-      icon: <MessageSquare size={20} />,
+      icon: <MessageSquareIcon fontSize="small" />,
       path: '/Chats',
     },
     {
       name: t('navigation.settings'),
-      icon: <Settings size={20} />,
+      icon: <SettingsIcon fontSize="small" />,
       path: '/Settings',
     },
   ];
@@ -183,29 +183,16 @@ function SidebarItem({
   };
 
   return (
-    <Tooltip.Provider delayDuration={0}>
-      <Tooltip.Root>
-        <Tooltip.Trigger asChild>
-          <motion.div
-            className="relative flex items-center justify-center w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 rounded-lg hover:bg-gray-800 cursor-pointer"
-            onClick={handleClick}
-            onMouseEnter={() => setHovered(item.name)}
-            onMouseLeave={() => setHovered(null)}
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.3 }}
-          >
-            {item.icon}
-          </motion.div>
-        </Tooltip.Trigger>
-        <Tooltip.Content
-          className="bg-gray-800 text-white px-3 py-1 rounded-lg text-xs shadow-md z-50 pointer-events-auto"
-          side="right"
-          align="center"
-        >
-          {item.name}
-        </Tooltip.Content>
-      </Tooltip.Root>
-    </Tooltip.Provider>
+    <Tooltip title={item.name} placement="right" arrow>
+      <IconButton
+        className="relative flex items-center justify-center w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 rounded-lg hover:bg-gray-800 cursor-pointer"
+        onClick={handleClick}
+        onMouseEnter={() => setHovered(item.name)}
+        onMouseLeave={() => setHovered(null)}
+      >
+        {item.icon}
+      </IconButton>
+    </Tooltip>
   );
 }
 

@@ -1,10 +1,9 @@
-import { useState, ChangeEvent, KeyboardEvent, useEffect } from 'react';
+import { useState, ChangeEvent, KeyboardEvent } from 'react';
 import TextField from '@mui/material/TextField';
-import Switch from '@mui/material/Switch';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormGroup from '@mui/material/FormGroup';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import SearchIcon from '@mui/icons-material/Search';
 import { useTranslation } from 'react-i18next';
-import { supabase } from '~/Utility/supabaseClient';
 
 interface SearchBarProps {
   search: string;
@@ -18,35 +17,7 @@ export default function SearchBar({
   setCurrentPage,
 }: SearchBarProps) {
   const [inputValue, setInputValue] = useState(search);
-  const [nsfwEnabled, setNsfwEnabled] = useState(false);
-  const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
-
-  useEffect(() => {
-    const fetchNSFWSetting = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { data, error } = await supabase
-        .from('user_data')
-        .select('show_nsfw_content')
-        .eq('user_uuid', user.id)
-        .single();
-
-      if (error) {
-        console.error('Error fetching NSFW setting:', error);
-        setLoading(false);
-        return;
-      }
-
-      setNsfwEnabled(!!data?.show_nsfw_content);
-      setLoading(false);
-    };
-
-    fetchNSFWSetting();
-  }, []);
 
   const handleSearch = () => {
     setSearch(inputValue);
@@ -57,26 +28,6 @@ export default function SearchBar({
     if (e.key === 'Enter') {
       handleSearch();
     }
-  };
-
-  const toggleNSFW = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newNsfwState = event.target.checked;
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return;
-
-    const { error } = await supabase
-      .from('user_data')
-      .update({ show_nsfw_content: newNsfwState })
-      .eq('user_uuid', user.id);
-
-    if (error) {
-      console.error('Error updating NSFW setting:', error);
-      return;
-    }
-
-    setNsfwEnabled(newNsfwState);
   };
 
   return (
@@ -90,79 +41,35 @@ export default function SearchBar({
             setInputValue(e.target.value)
           }
           onKeyDown={handleKeyDown}
-          placeholder={t('search.placeholder')}
-          inputProps={{ className: 'text-white placeholder-gray-400' }}
-          sx={{
-            '& .MuiOutlinedInput-root': {
+          placeholder="Who do you want to chat with?"
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start" sx={{ marginRight: '8px' }}>
+                <IconButton onClick={handleSearch} edge="start" sx={{ padding: '8px', color: 'grey' }}>
+                  <SearchIcon />
+                </IconButton>
+              </InputAdornment>
+            ),
+            sx: {
               borderRadius: '9999px',
               backgroundColor: '#1F2937',
               color: 'white',
-              paddingLeft: '2.75rem',
               '& fieldset': { border: 'none' },
               '&:hover fieldset': { border: 'none' },
               '&.Mui-focused fieldset': {
                 border: '2px solid #3B82F6',
               },
             },
+          }}
+          sx={{
             input: {
-              padding: '0.75rem 1rem',
+              padding: '0.75rem 0.75rem 0.75rem 0',
               fontSize: '1rem',
             },
           }}
           className="w-full sm:w-auto"
         />
-        <button
-          className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer"
-          onClick={handleSearch}
-          aria-label={t('ariaLabels.search')}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            />
-          </svg>
-        </button>
       </div>
-
-      {!loading && (
-        <FormGroup className="flex items-center">
-          <FormControlLabel
-            control={
-              <Switch
-                checked={nsfwEnabled}
-                onChange={toggleNSFW}
-                color="primary"
-                aria-label={t('ariaLabels.nsfwToggle')}
-                sx={{
-                  '& .MuiSwitch-switchBase.Mui-checked': {
-                    color: '#ec4899',
-                  },
-                  '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-                    backgroundColor: '#ec4899',
-                  },
-                }}
-              />
-            }
-            label={t('labels.showNsfwContent')}
-            labelPlacement="start"
-            sx={{
-              margin: 0,
-              color: 'white',
-              fontSize: '0.875rem',
-              whiteSpace: 'nowrap',
-            }}
-          />
-        </FormGroup>
-      )}
     </div>
   );
 }

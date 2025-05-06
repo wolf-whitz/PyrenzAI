@@ -19,6 +19,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@hcaptcha/react-hcaptcha": "^1.12.0",
+    "@mui/icons-material": "^7.1.0",
     "@mui/material": "^7.0.2",
     "@radix-ui/react-avatar": "^1.1.7",
     "@radix-ui/react-checkbox": "^1.1.4",

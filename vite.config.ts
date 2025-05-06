@@ -76,7 +76,7 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', 'react-redux', '@reduxjs/toolkit'],
+    include: ['react', 'react-dom'],
   },
   assetsInclude: ['**/*.png', '**/*.jpg'],
 });
