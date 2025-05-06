@@ -17,7 +17,6 @@ export interface Message {
 }
 
 export interface User {
-  user_uuid: string;
   name: string;
   user_name: string;
   icon: string;
@@ -29,6 +28,11 @@ export interface Character extends User {
   description: string;
   first_message: string;
   profile_image?: string;
+  persona?: string;
+  scenario?: string;
+  gender?: string;
+  tags?: string[];
+  token_total?: number;
 }
 
 export interface ChatContainerProps {

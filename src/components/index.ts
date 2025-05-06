@@ -1,3 +1,13 @@
+/**
+ * @fileoverview This file is the main entry point for all components in the project.
+ * It exports all components, making them available for import in other parts of the application.
+ * @example
+ * import { Button } from '~/components';
+ * <Button label="Click Me" onClick={handleClick} />
+ * @see https://reactjs.org/docs/code-splitting.html
+ * @see https://reactjs.org/docs/optimizing-performance.html#code-splitting
+*/
+
 // Layout Components
 import Banner from '@layout/Banner/Banner';
 import Footer from '@layout/Footer/Footer';
@@ -32,6 +42,11 @@ import DropdownField from '@ui/Dropdown/DropdownField';
 import CheckboxField from '@ui/Input/CheckBox';
 import InputField from '@ui/Input/InputField';
 import AISelectDropdown from '@ui/Dropdown/AISelectDropdown';
+import RequiredFieldsPopup from '@ui/Fields/RequiredFieldsPopup';
+import CustomModelFields from '@ui/Fields/CustomFields';
+
+//Selectors
+import ModelSelection from '@ui/Selectors/ModelSelection';
 
 // Textrea
 import Textarea from '@ui/Textarea/Textarea';
@@ -53,7 +68,6 @@ import ChatMain from '@ui/Chats/main/Chatmain';
 
 // Create Component
 import CharacterForm from '@ui/Form/CharacterForm';
-import RequiredFieldsPopup from '@ui/Fields/RequiredFieldsPopup';
 import FormActions from '@ui/Actions/FormActions';
 import TokenSummary from '@ui/Summary/TokenSummary';
 import VisibilityCheckboxes from '@ui/CheckBox/VisibilityCheckboxes';
@@ -78,6 +92,10 @@ import MoreButtonsModal from '@ui/Modal/MoreButtonsModal';
 import CreatePersonaModal from '@ui/Modal/CreatePersonaModal';
 import CharacterCardImageModal from '@ui/Modal/CharacterCardImageModal';
 import CreateCharacterCardImageModal from '@ui/Modal/CreateCharacterCardImageModal';
+import ProviderModals from '@ui/Modal/ProvidersModal';
+
+// Slider
+import SliderComponent from '@ui/Slider/SliderComponent';
 
 // Card Components
 import { Card, CardContent, CardTitle, CardHeader } from '@ui/ShadCdn/card';
@@ -103,7 +121,6 @@ export {
 
   //Create
   CharacterForm,
-  RequiredFieldsPopup,
   FormActions,
   TokenSummary,
   VisibilityCheckboxes,
@@ -125,6 +142,9 @@ export {
   Menu,
   ChatMain,
 
+  //Slider 
+  SliderComponent, 
+  
   // UI/UX components
   CharacterCard,
   LoadMore,
@@ -136,6 +156,11 @@ export {
   //Fields
   CheckboxField,
   DropdownField,
+  CustomModelFields,
+  RequiredFieldsPopup,
+
+  //Selectors
+  ModelSelection,
 
   //Inputs
   InputField,
@@ -163,6 +188,7 @@ export {
   CharacterCardModal,
   AuthenticationModal,
   DownloadModal,
+  ProviderModals,
   LanguageModal,
   DraftsModal,
   MoreButtonsModal,

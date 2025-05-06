@@ -37,7 +37,7 @@ export default function CharacterForm() {
     <div className="flex flex-col items-center justify-center bg-gray-900 p-6 min-h-screen">
       <form
         onSubmit={handleSubmit}
-        className="bg-black p-8 rounded-lg shadow-lg w-full max-w-2xl space-y-6"
+        className="bg-black p-8 rounded-lg shadow-lg w-full flex flex-col space-y-6"
       >
         <ImageUpload onImageSelect={handleImageSelect} />
         <TextareaForm formState={formState} handleChange={handleChange} />

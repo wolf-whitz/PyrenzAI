@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import { CreateNewChat, GetUserUUID } from '~/functions';
+import React, { useState, useEffect } from 'react';
 import { MessageSquare, Globe, Lock } from 'lucide-react';
 import { CharacterCardProps } from '@shared-types/CharacterCardPropsTypes';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Utils } from '~/Utility/Utility';
-import { useUserStore } from '~/store';
 import { WindowAlert } from '~/components';
 import * as Sentry from '@sentry/react';
 import { Box, Typography, Button, CircularProgress } from '@mui/material';
@@ -28,32 +27,36 @@ export default function CharacterCardModal({
 }: CharacterCardModalProps) {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const { user_uuid, auth_key } = useUserStore();
+  const [userUUID, setUserUUID] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUserUUID = async () => {
+      try {
+        const uuid = await GetUserUUID();
+        setUserUUID(uuid);
+      } catch (error) {
+        console.error('Error fetching user UUID:', error);
+        Sentry.captureException(error);
+      }
+    };
+
+    fetchUserUUID();
+  }, []);
 
   if (!character) return null;
 
   const handleChatNow = async () => {
     if (isLoading || !character?.input_char_uuid) return;
 
-    if (!user_uuid || !auth_key) {
+    if (!userUUID) {
       WindowAlert('error', 'Error: User is not logged in yet');
       return;
     }
 
     setIsLoading(true);
 
-    const requestData = {
-      type: 'createchat',
-      character_uuid: character.input_char_uuid,
-      user_uuid,
-      auth_key,
-    };
-
     try {
-      const response = await Utils.post<{ chat_uuid: string }>(
-        '/api/Chats',
-        requestData
-      );
+      const response = await CreateNewChat(character.input_char_uuid);
 
       if (response?.chat_uuid) {
         navigate(`/chat/${response.chat_uuid}`);
@@ -63,10 +66,7 @@ export default function CharacterCardModal({
       }
     } catch (error) {
       console.error('Error generating chat_uuid:', error);
-
-      error instanceof Error ? error.message : 'Unknown error';
       Sentry.captureException(error);
-
       WindowAlert('error', 'Error: User is not logged in yet');
     } finally {
       setIsLoading(false);

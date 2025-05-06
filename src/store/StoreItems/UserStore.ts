@@ -2,13 +2,9 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 interface UserState {
-  user_uuid: string | null;
-  auth_key: string | null;
   captcha_uuid: string | null;
   captcha_expiration: number | null;
   hasHydrated: boolean;
-  setUserUUID: (uuid: string | null) => void;
-  setAuthKey: (key: string | null) => void;
   setCaptcha: (token: string, expiration: number) => void;
   clearCaptcha: () => void;
   setHasHydrated: (state: boolean) => void;
@@ -17,13 +13,9 @@ interface UserState {
 export const useUserStore = create<UserState>()(
   persist(
     (set) => ({
-      user_uuid: null,
-      auth_key: null,
       captcha_uuid: null,
       captcha_expiration: null,
       hasHydrated: false,
-      setUserUUID: (uuid: string | null) => set({ user_uuid: uuid }),
-      setAuthKey: (key: string | null) => set({ auth_key: key }),
       setCaptcha: (token: string, expiration: number) =>
         set({ captcha_uuid: token, captcha_expiration: expiration }),
       clearCaptcha: () => set({ captcha_uuid: null, captcha_expiration: null }),

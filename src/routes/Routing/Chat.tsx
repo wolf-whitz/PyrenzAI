@@ -1,10 +1,9 @@
+import { GetUserUUID, GetUserData } from '~/functions';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useParams } from 'react-router-dom';
-import { useUserStore } from '~/store';
 import { useChatStore } from '~/store';
 import { fetchChatData } from '~/api';
-import { Utils } from '~/Utility/Utility';
 import { Sidebar, ChatContainer, PreviousChat } from '~/components';
 import { ChatPageSpinner } from '@ui/Spinner/Spinner';
 
@@ -16,28 +15,33 @@ interface PersonaResponse {
 }
 
 export default function ChatPage() {
-  const { user_uuid, auth_key } = useUserStore();
   const { conversation_id } = useParams<{ conversation_id: string }>();
 
   const [chatData, setChatData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState<PersonaResponse | null>(null);
+  const [userUuid, setUserUuid] = useState<string | null>(null);
   const [chatDataFetched, setChatDataFetched] = useState(false);
   const [fetchError, setFetchError] = useState(false);
 
   const { setFirstMessage, clearData } = useChatStore();
 
   useEffect(() => {
+    const fetchUserUuid = async () => {
+      const uuid = await GetUserUUID();
+      setUserUuid(uuid);
+    };
+
+    fetchUserUuid();
+  }, []);
+
+  useEffect(() => {
     const getChatData = async () => {
-      if (conversation_id && user_uuid && auth_key && !chatDataFetched) {
+      if (conversation_id && userUuid && !chatDataFetched) {
         try {
           clearData();
           setChatDataFetched(true);
-          const result = await fetchChatData(
-            conversation_id,
-            user_uuid,
-            auth_key
-          );
+          const result = await fetchChatData(conversation_id);
 
           const updatedCharacter = {
             ...result.character,
@@ -65,36 +69,34 @@ export default function ChatPage() {
     };
 
     getChatData();
-  }, [
-    conversation_id,
-    user_uuid,
-    auth_key,
-    setFirstMessage,
-    chatDataFetched,
-    clearData,
-  ]);
+  }, [conversation_id, userUuid, setFirstMessage, chatDataFetched, clearData]);
 
   useEffect(() => {
     const fetchUserData = async () => {
-      try {
-        const response = await Utils.post<PersonaResponse>('/api/getPersona', {
-          user_uuid,
-          auth_key,
-        });
+      if (!userUuid) return;
 
-        const updatedUserData = {
-          ...response,
-          icon:
-            response.icon ||
-            `https://api.dicebear.com/9.x/adventurer/svg?seed=${response.name?.split('@')[0] || 'Anon'}`,
+      try {
+        const response = await GetUserData();
+        if ('error' in response) {
+          console.error('Error fetching user data:', response.error);
+          return;
+        }
+
+        const updatedUserData: PersonaResponse = {
+          user_uuid: userUuid,
+          name: response.persona_name,
+          user_name: response.persona_name,
+          icon: `https://api.dicebear.com/9.x/adventurer/svg?seed=${response.persona_name.split('@')[0] || 'Anon'}`,
         };
 
         setUserData(updatedUserData);
-      } catch {}
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
     };
 
     fetchUserData();
-  }, [user_uuid, auth_key]);
+  }, [userUuid]);
 
   if (loading) {
     return (

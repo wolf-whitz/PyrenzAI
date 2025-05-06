@@ -1,6 +1,4 @@
 import { useEffect, useState, useRef } from 'react';
-import { supabase } from '~/Utility/supabaseClient';
-import { useUserStore as UserStore } from '~/store';
 import {
   PreviewHeader,
   PreviewFooter as Footer,
@@ -19,61 +17,6 @@ export default function Preview() {
   const pyrenzAiRef = useRef<HTMLElement>(null);
   const discoverMoreRef = useRef<HTMLElement>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const setUserUUID = UserStore((state) => state.setUserUUID);
-  const setAuthKey = UserStore((state) => state.setAuthKey);
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const {
-        data: { session },
-        error,
-      } = await supabase.auth.getSession();
-
-      if (error) {
-        console.error('Error fetching session:', error.message);
-        return;
-      }
-
-      if (session) {
-        const user_uuid = session.user.id;
-        setUserUUID(user_uuid);
-
-        const user_data = {
-          email: session.user.email,
-          full_name: session.user.user_metadata.full_name,
-          avatar_url: session.user.user_metadata.avatar_url,
-          phone: session.user.phone,
-          last_sign_in_at: session.user.last_sign_in_at,
-          user_uuid,
-        };
-
-        const { data, error } = await supabase.rpc(
-          'handle_user_authentication',
-          { user_data }
-        );
-
-        if (error) {
-          console.error('Error during authentication:', error.message);
-          return;
-        }
-
-        const authResponse = data;
-
-        if (authResponse.success) {
-          if (authResponse.auth_key) {
-            setAuthKey(authResponse.auth_key);
-          } else {
-            console.error('[ERROR]: Auth Key not provided in the response');
-          }
-        } else {
-          console.error('[ERROR]: Authentication failed:', authResponse.error);
-        }
-      }
-    };
-
-    fetchUserData();
-  }, [setUserUUID, setAuthKey]);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);

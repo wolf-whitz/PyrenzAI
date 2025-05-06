@@ -1,70 +1,12 @@
+import React from 'react';
 import { motion } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { supabase } from '~/Utility/supabaseClient';
-import { useUserStore } from '~/store/index';
-import { Sparkles, RefreshCw, Flame, Tag } from 'lucide-react';
 import { Button, TextField, CircularProgress, Box, Modal } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-
-type ButtonType = {
-  icon: React.ElementType;
-  label: string;
-  rpcFunction: string;
-  type: string;
-  max_character: number;
-  page: number;
-};
-
-type ModalResultType = {
-  name: string;
-};
-
-type MoreButtonsModalProps = {
-  isOpen: boolean;
-  onClose: () => void;
-  onButtonClick: (
-    rpcFunction: string,
-    type: string,
-    max_character: number,
-    page: number
-  ) => void;
-};
-
-const buttons: ButtonType[] = [
-  {
-    icon: Sparkles,
-    label: 'HomePageMoreButtons.btn.latest',
-    rpcFunction: 'get_latest_characters',
-    type: 'GetLatestCharacter',
-    max_character: 10,
-    page: 1,
-  },
-  {
-    icon: RefreshCw,
-    label: 'HomePageMoreButtons.btn.random',
-    rpcFunction: 'get_random_characters',
-    type: 'GetRandomCharacter',
-    max_character: 10,
-    page: 1,
-  },
-  {
-    icon: Flame,
-    label: 'HomePageMoreButtons.btn.hot',
-    rpcFunction: 'get_hot_characters',
-    type: 'GetHotCharacter',
-    max_character: 10,
-    page: 1,
-  },
-  {
-    icon: Tag,
-    label: 'HomePageMoreButtons.btn.male',
-    rpcFunction: 'get_male_characters',
-    type: 'GetMaleCharacter',
-    max_character: 10,
-    page: 1,
-  },
-];
+import { GetCharactersWithTags } from '~/functions';
+import { ButtonType, ModalResultType, MoreButtonsModalProps } from '@shared-types/MoreButtonsTypes';
+import { Tag } from 'lucide-react';
 
 const LoadingSpinner = () => (
   <Box display="flex" justifyContent="center" alignItems="center">
@@ -76,15 +18,13 @@ export default function MoreButtonsModal({
   isOpen,
   onClose,
   onButtonClick,
+  buttons,
 }: MoreButtonsModalProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [modalResults, setModalResults] = useState<ModalResultType[]>([]);
   const [loading, setLoading] = useState(false);
   const modalRef = useRef<HTMLDivElement | null>(null);
-  const user_uuid = useUserStore((state) => state.user_uuid);
-  const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(
-    null
-  );
+  const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
   const { t } = useTranslation();
 
   const handleSearch = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -96,13 +36,14 @@ export default function MoreButtonsModal({
     if (query.trim()) {
       setLoading(true);
       const timeout = setTimeout(async () => {
-        const { data } = await supabase.rpc('search_tag', {
-          search: query,
-          type: 'SearchTags',
-          user_uuid: user_uuid,
-        });
-        setModalResults(data || []);
-        setLoading(false);
+        try {
+          const data = await GetCharactersWithTags(10, 1, 'GetTaggedCharacters', query);
+          setModalResults(data || []);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        } finally {
+          setLoading(false);
+        }
       }, 500);
 
       setTypingTimeout(timeout);
@@ -113,10 +54,7 @@ export default function MoreButtonsModal({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        modalRef.current &&
-        !modalRef.current.contains(event.target as Node)
-      ) {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
         onClose();
       }
     };
@@ -138,19 +76,21 @@ export default function MoreButtonsModal({
         );
 
   const handleButtonClick = async (btn: ModalResultType | ButtonType) => {
-    if ('rpcFunction' in btn && 'type' in btn) {
+    if ('Function' in btn && 'type' in btn) {
       onButtonClick(
-        btn.rpcFunction,
+        btn.Function,
         btn.type,
         btn.max_character || 10,
-        btn.page || 1
+        btn.page || 1,
+        btn.tag
       );
     } else {
-      const { data } = await supabase.rpc('get_tagged_characters', {
-        type: 'GetTaggedCharacters',
-        item: btn.name,
-      });
-      setModalResults(data || []);
+      try {
+        const data = await GetCharactersWithTags(10, 1, 'GetTaggedCharacters', btn.name);
+        setModalResults(data || []);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
     }
     onClose();
   };
@@ -211,7 +151,7 @@ export default function MoreButtonsModal({
                 <Button
                   variant="outlined"
                   startIcon={
-                    'icon' in btn ? <btn.icon size={24} /> : <Tag size={24} />
+                    'icon' in btn && btn.icon ? React.createElement(btn.icon, { size: 24 }) : <Tag size={24} />
                   }
                   onClick={() => handleButtonClick(btn)}
                   fullWidth

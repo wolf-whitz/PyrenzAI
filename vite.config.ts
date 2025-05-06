@@ -3,16 +3,10 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import tailwindcss from 'tailwindcss';
 import path from 'path';
-import { imagetools } from 'vite-imagetools';
 
 export default defineConfig({
   plugins: [
     react(),
-    imagetools(),
-    sentryVitePlugin({
-      org: 'pyrenzai',
-      project: 'pyrenzai',
-    }),
     sentryVitePlugin({
       org: 'pyrenzai',
       project: 'pyrenzai',
@@ -78,6 +72,8 @@ export default defineConfig({
       ),
       '@store': path.resolve(__dirname, 'src/store'),
       '@libs': path.resolve(__dirname, 'src/lib'),
+      '@functions': path.resolve(__dirname, 'src/functions'),
+
     },
   },
   optimizeDeps: {

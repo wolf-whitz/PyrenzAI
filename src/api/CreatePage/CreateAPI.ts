@@ -1,7 +1,8 @@
+import { GetUserUUID, CreateNewChat } from '~/functions';
 import { useState, useEffect } from 'react';
 import { useUserStore, useCharacterStore } from '~/store';
 import { supabase } from '~/Utility/supabaseClient';
-import posthog from 'posthog-js';
+import * as Sentry from '@sentry/react';
 import { CharacterData, Draft, ApiResponse } from '@shared-types/CharacterProp';
 import { Utils } from '~/Utility/Utility';
 
@@ -10,12 +11,10 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
   const [saveLoading, setSaveLoading] = useState(false);
   const [showRequiredFieldsPopup, setShowRequiredFieldsPopup] = useState(false);
   const [missingFields, setMissingFields] = useState<string[]>([]);
+  const [userUuid, setUserUuid] = useState<string | null>(null);
 
   const characterData = useCharacterStore((state) => state);
   const setCharacterData = useCharacterStore((state) => state.setCharacterData);
-
-  const user_uuid = useUserStore((state) => state.user_uuid);
-  const auth_key = useUserStore((state) => state.auth_key);
 
   const requiredFields = [
     'persona',
@@ -29,25 +28,35 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
   ];
 
   useEffect(() => {
+    const fetchUserUuid = async () => {
+      const uuid = await GetUserUUID();
+      setUserUuid(uuid);
+    };
+
+    fetchUserUuid();
+  }, []);
+
+  useEffect(() => {
     const getUserName = async () => {
-      if (user_uuid) {
-        const name = await fetchUserName(user_uuid);
+      if (userUuid) {
+        const name = await fetchUserName(userUuid);
         setCharacterData({ creator: name });
       }
     };
 
     getUserName();
-  }, [user_uuid, setCharacterData]);
+  }, [userUuid, setCharacterData]);
 
-  const fetchUserName = async (user_uuid: string): Promise<string> => {
+  const fetchUserName = async (userUuid: string): Promise<string> => {
     const { data, error } = await supabase
       .from('user_data')
       .select('persona_name, full_name')
-      .eq('user_uuid', user_uuid)
+      .eq('user_uuid', userUuid)
       .single();
 
     if (error) {
       console.error('Error fetching user data:', error);
+      Sentry.captureException(error);
       return '';
     }
 
@@ -82,7 +91,7 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
       scenario: '',
       description: '',
       first_message: '',
-      tags: '',
+      tags: [],
       gender: '',
       is_public: false,
       is_nsfw: false,
@@ -94,36 +103,37 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
   const handleSave = async () => {
     setSaveLoading(true);
     try {
+      const tags = Array.isArray(characterData.tags)
+        ? characterData.tags
+        : (characterData.tags as string).split(',').map((tag: string) => tag.trim());
+
       const { data, error } = await supabase.from('draft_characters').upsert([
         {
-          user_uuid,
+          user_uuid: userUuid,
           ...characterData,
+          tags,
         },
       ]);
 
       if (error) {
         alert('Error saving draft: ' + error.message);
-        posthog.capture('Error saving draft', {
-          error: error.message,
-          user_uuid,
-        });
+        Sentry.captureException(error);
       } else {
         alert('Saved');
       }
     } catch (error) {
       console.error('Unexpected error:', error);
-      const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error';
-      posthog.capture('Unexpected error saving draft', {
-        error: errorMessage,
-        user_uuid,
-      });
+      Sentry.captureException(error);
     } finally {
       setSaveLoading(false);
     }
   };
 
   const handleSelectDraft = (draft: Draft) => {
+    const tags = Array.isArray(draft.tags)
+      ? draft.tags
+      : (draft.tags as string).split(',').map((tag: string) => tag.trim());
+
     setCharacterData({
       persona: draft.persona,
       name: draft.name,
@@ -131,7 +141,7 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
       scenario: draft.scenario,
       description: draft.description,
       first_message: draft.first_message,
-      tags: Array.isArray(draft.tags) ? draft.tags.join(', ') : draft.tags,
+      tags,
       gender: draft.gender,
       is_public: draft.is_public,
       is_nsfw: draft.is_nsfw,
@@ -143,7 +153,9 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
 
   const handleImportCharacter = (data: CharacterData | null) => {
     if (data) {
-      const tags = Array.isArray(data.tags) ? data.tags.join(', ') : data.tags;
+      const tags = Array.isArray(data.tags)
+        ? data.tags
+        : (data.tags as string).split(',').map((tag: string) => tag.trim());
 
       setCharacterData({
         persona: data.persona || '',
@@ -152,7 +164,7 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
         scenario: data.scenario || '',
         description: data.description || '',
         first_message: data.first_message || '',
-        tags: tags,
+        tags,
         gender: data.gender || '',
         is_public: data.is_public || false,
         is_nsfw: data.is_nsfw || false,
@@ -190,49 +202,53 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
     }
 
     try {
+      const tags = Array.isArray(characterData.tags)
+        ? characterData.tags
+        : (characterData.tags as string).split(',').map((tag: string) => tag.trim());
+
       const response: ApiResponse = await Utils.post('/api/createCharacter', {
         ...characterData,
-        tags: characterData.tags,
+        tags,
         bannerImage,
         profileImage,
-        user_uuid: user_uuid,
-        auth_key: auth_key,
+        user_uuid: userUuid,
       });
 
       if (response.error) {
         console.error('Error creating character:', response.error);
-        posthog.capture('Error creating character', {
-          error: response.error,
-          user_uuid,
-        });
+        Sentry.captureException(new Error(response.error));
       } else {
-        const chatUuid = response.chat?.chat_uuid;
-        if (chatUuid) {
-          navigate(`/chat/${chatUuid}`);
+        const characterUuid = response.character_uuid;
+        if (characterUuid) {
+          const chatResponse = await CreateNewChat(characterUuid);
+          if (chatResponse.error) {
+            console.error('Error creating chat:', chatResponse.error);
+            Sentry.captureException(new Error(chatResponse.error));
+          } else {
+            const chatUuid = chatResponse.chat_uuid;
+            if (chatUuid) {
+              navigate(`/chat/${chatUuid}`);
+            } else {
+              console.error('Chat created but no chat UUID returned.');
+              Sentry.captureException(new Error('Chat created but no chat UUID returned.'));
+            }
+          }
         } else {
-          alert('Character created but no chat UUID returned.');
+          console.error('Character created but no character UUID returned.');
+          Sentry.captureException(new Error('Character created but no character UUID returned.'));
         }
       }
     } catch (error) {
       console.error('Unexpected error:', error);
-      const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error';
-      posthog.capture('Unexpected error creating character', {
-        error: errorMessage,
-        user_uuid,
-      });
+      Sentry.captureException(error);
     } finally {
       setLoading(false);
     }
   };
 
-  const tagsAsString = Array.isArray(characterData.tags)
-    ? characterData.tags.join(', ')
-    : characterData.tags;
-
   const formState = {
     ...characterData,
-    tags: tagsAsString,
+    tags: Array.isArray(characterData.tags) ? characterData.tags.join(', ') : characterData.tags,
   };
 
   return {

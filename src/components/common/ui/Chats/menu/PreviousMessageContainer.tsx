@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useUserStore } from '~/store';
 import { Avatar, CircularProgress, Typography } from '@mui/material';
 import { supabase } from '~/Utility/supabaseClient';
+import { GetUserUUID } from '~/functions';
 
 interface Chat {
   id: string;
-  user_uuid: string;
   chat_uuid: string;
   preview_message: string;
   created_at: string;
+  preview_image: string;
 }
 
 export default function PreviousChat() {
@@ -20,21 +20,22 @@ export default function PreviousChat() {
 
   const { conversation_id } = useParams<{ conversation_id: string }>();
   const navigate = useNavigate();
-  const { user_uuid } = useUserStore();
 
   useEffect(() => {
     const fetchPreviousChats = async () => {
-      if (!user_uuid) {
-        setError('User information is missing.');
-        setLoading(false);
-        return;
-      }
-
       try {
+        const userUUID = await GetUserUUID();
+
+        if (!userUUID) {
+          setError('User information is missing.');
+          setLoading(false);
+          return;
+        }
+
         const { data, error } = await supabase
           .from('chats')
-          .select('id, user_uuid, chat_uuid, preview_message, created_at')
-          .eq('user_uuid', user_uuid)
+          .select('id, chat_uuid, preview_message, created_at, preview_image')
+          .eq('user_uuid', userUUID)
           .order('created_at', { ascending: false });
 
         if (error) throw error;
@@ -53,7 +54,7 @@ export default function PreviousChat() {
     };
 
     fetchPreviousChats();
-  }, [user_uuid]);
+  }, []);
 
   const truncateMessage = (text: string, maxLength = 50) => {
     return text?.length > maxLength
@@ -114,8 +115,8 @@ export default function PreviousChat() {
               onClick={() => handleMessageClick(chat.chat_uuid)}
             >
               <Avatar
-                src="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MascotSmiling.avif"
-                alt="Chat avatar"
+                src={chat.preview_image}
+                alt="Chat preview"
                 className="w-12 h-12"
               />
               <div className="flex-1">

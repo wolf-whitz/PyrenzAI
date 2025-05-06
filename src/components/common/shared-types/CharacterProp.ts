@@ -5,8 +5,7 @@ export interface Character {
   description: string;
   creator: string | null;
   chat_messages_count: number;
-  image_url: string;
-  tags: string;
+  tags: string[];
   profile_image: string;
   is_public: boolean;
   token_total: number;
@@ -19,7 +18,6 @@ export interface CharacterCardProps {
   description: string;
   creator: string | null;
   chat_messages_count: number;
-  image_url: string;
   tags: string[];
   profile_image: string;
   is_public: boolean;
@@ -34,7 +32,7 @@ export interface CharacterData {
   scenario: string;
   description: string;
   first_message: string;
-  tags: string;
+  tags: string[];
   gender: string;
   creator: string | null;
   is_public: boolean;
@@ -52,7 +50,7 @@ export interface Draft {
   scenario: string;
   description: string;
   first_message: string;
-  tags: string;
+  tags: string[];
   gender: string;
   creator: string | null;
   is_public: boolean;

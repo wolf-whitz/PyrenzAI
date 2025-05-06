@@ -1,15 +1,17 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useState, useMemo } from 'react';
-import { supabase } from '~/Utility/supabaseClient';
 import { motion } from 'framer-motion';
 import { Button, CircularProgress } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { fetchCharacters } from '~/functions';
+import { toast } from 'react-toastify';
+import * as Sentry from '@sentry/react';
 
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
   itemsPerPage: number;
-  user_param_uuid: string;
+  user_uuid: string;
   onLoadMore: (page: number) => void;
 }
 
@@ -17,10 +19,9 @@ export default function Pagination({
   currentPage,
   totalPages,
   itemsPerPage,
-  user_param_uuid,
+  user_uuid,
   onLoadMore,
 }: PaginationProps) {
-  const navigate = useNavigate();
   const location = useLocation();
   const searchParams = useMemo(
     () => new URLSearchParams(location.search),
@@ -35,25 +36,23 @@ export default function Pagination({
 
     setIsLoading(true);
     try {
-      const { data, error } = await supabase.rpc('fetch_characters', {
-        request_type: 'character',
-        page: currentPage + 1,
-        items_per_page: itemsPerPage,
-        search_term: searchQuery || null,
-        user_param_uuid: user_param_uuid,
-      });
+      const { characters } = await fetchCharacters(
+        'character',
+        searchQuery || null,
+        currentPage + 1,
+        itemsPerPage,
+        user_uuid
+      );
 
-      if (error) {
-        throw error;
-      }
-
-      if (data.length > 0) {
+      if (characters.length > 0) {
         onLoadMore(currentPage + 1);
       } else {
-        console.log('No more characters to load.');
+        toast.info('No more characters to load.');
       }
     } catch (error) {
       console.error('Error fetching characters:', error);
+      Sentry.captureException(error);
+      toast.error('Error fetching characters.');
     } finally {
       setIsLoading(false);
     }

@@ -1,8 +1,8 @@
-import { Utils } from '~/Utility/Utility';
 import { Character, Message } from '@shared-types/chatTypes';
 import { toast } from 'react-toastify';
 import * as Sentry from '@sentry/react';
 import { supabase } from '~/Utility/supabaseClient';
+import GetChatData from '~/functions/Chats/GetChatData';
 
 interface ChatMessageWithId {
   id: string;
@@ -13,9 +13,7 @@ interface ChatMessageWithId {
 }
 
 export const fetchChatData = async (
-  conversation_id: string,
-  user_uuid?: string,
-  auth_key?: string
+  conversation_id: string
 ): Promise<{
   character: Character;
   messages: (Message & { id?: string })[];
@@ -25,28 +23,30 @@ export const fetchChatData = async (
     toast.error('Missing conversation_id 😬');
     throw new Error('Missing conversation_id 😬');
   }
-  if (!user_uuid || !auth_key) {
-    toast.error('Auth info missing. Who even are you? 👀');
-    throw new Error('Auth info missing. Who even are you? 👀');
-  }
-
-  const chatPayload = {
-    type: 'getchatid',
-    conversation_id,
-    user_uuid,
-    auth_key,
-  };
 
   try {
-    const { character } = await Utils.post<{ character: Character }>(
-      '/api/Chats',
-      chatPayload
-    );
+    const characterData = await GetChatData(conversation_id);
 
-    if (!character) {
-      toast.error('Character not found.');
-      throw new Error('Character not found.');
+    if (characterData.error) {
+      toast.error(characterData.error);
+      throw new Error(characterData.error);
     }
+
+    const character: Character = {
+      name: characterData.name || '',
+      persona: characterData.persona || '',
+      scenario: characterData.scenario || '',
+      gender: characterData.gender || '',
+      description: characterData.description || '',
+      first_message: characterData.first_message || '',
+      tags: characterData.tags || [],
+      profile_image: characterData.profile_image || '',
+      token_total: characterData.token_total || 0,
+      id: 0,
+      uuid: '',
+      user_name: '',
+      icon: '',
+    };
 
     const { data, error } = await supabase
       .from('chat_messages')

@@ -1,65 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, RefreshCw, Flame, Tag } from 'lucide-react';
 import { MoreButtonsModal } from '@components/index';
 import { Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { buttons, CustomButtonProps } from '@shared-types/MoreButtonsTypes';
 
-type ButtonType = {
-  icon: React.ElementType;
-  label: string;
-  rpcFunction: string;
-  type: string;
-  max_character: number;
-  page: number;
-  tag?: string;
-};
 
-const buttons: ButtonType[] = [
-  {
-    icon: Sparkles,
-    label: 'HomePageMoreButtons.btn.latest',
-    rpcFunction: 'get_latest_characters',
-    type: 'GetLatestCharacter',
-    max_character: 10,
-    page: 1,
-  },
-  {
-    icon: RefreshCw,
-    label: 'HomePageMoreButtons.btn.random',
-    rpcFunction: 'get_random_characters',
-    type: 'GetRandomCharacter',
-    max_character: 10,
-    page: 1,
-  },
-  {
-    icon: Flame,
-    label: 'HomePageMoreButtons.btn.hot',
-    rpcFunction: 'get_hot_characters',
-    type: 'GetHotCharacter',
-    max_character: 10,
-    page: 1,
-  },
-  {
-    icon: Tag,
-    label: 'HomePageMoreButtons.btn.male',
-    rpcFunction: 'get_characters_with_tags',
-    type: 'GetTaggedCharacters',
-    max_character: 10,
-    page: 1,
-    tag: 'male',
-  },
-];
-
-type CustomButtonProps = {
-  onButtonClick: (
-    rpcFunction: string,
-    type: string,
-    max_character: number,
-    page: number,
-    tag?: string
-  ) => void;
-};
 
 export default function CustomButton({ onButtonClick }: CustomButtonProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -120,7 +66,7 @@ export default function CustomButton({ onButtonClick }: CustomButtonProps) {
             startIcon={<btn.icon size={18} />}
             onClick={() =>
               onButtonClick(
-                btn.rpcFunction,
+                btn.Function,
                 btn.type,
                 btn.max_character,
                 btn.page,
@@ -171,6 +117,7 @@ export default function CustomButton({ onButtonClick }: CustomButtonProps) {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onButtonClick={onButtonClick}
+        buttons={buttons}
       />
     </motion.div>
   );

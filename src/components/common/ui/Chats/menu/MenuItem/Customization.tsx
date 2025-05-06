@@ -1,20 +1,33 @@
-import React, { useState } from 'react';
-import * as Slider from '@radix-ui/react-slider';
-import { Utils } from '~/Utility/Utility';
-import { motion } from 'framer-motion';
-import { useUserStore } from '~/store';
-import { FaQuestionCircle } from 'react-icons/fa';
+import React, { useState, Dispatch, SetStateAction } from 'react';
+import { supabase } from '~/Utility/supabaseClient';
+import { GetUserUUID } from '~/functions';
+import * as Sentry from '@sentry/react';
+import toast from 'react-hot-toast';
+import { Button } from '@mui/material';
+import { ProviderModals } from '@components/index';
+import { CustomModelFields, ModelSelection, SliderComponent } from '@components/index';
+
+interface Provider {
+  provider_name: string;
+  provider_website: string;
+  provider_api_link: string;
+  provider_description: string;
+}
 
 const sliderDescriptions = {
   maxTokens: 'Controls the maximum number of tokens in the response.',
-  temperature:
-    'Controls the randomness of the output. Higher values make the output more random.',
+  temperature: 'Controls the randomness of the output. Higher values make the output more random.',
   topP: 'Controls the diversity of the output. Higher values make the output more diverse.',
-  presencePenalty:
-    'Penalizes new tokens based on their presence in the input. Higher values make the output more different from the input.',
-  frequencyPenalty:
-    'Penalizes new tokens based on their frequency in the input. Higher values make the output less repetitive.',
+  presencePenalty: 'Penalizes new tokens based on their presence in the input. Higher values make the output more different from the input.',
+  frequencyPenalty: 'Penalizes new tokens based on their frequency in the input. Higher values make the output less repetitive.',
 };
+
+const modelOptions = [
+  { value: 'Mango Ube', label: 'Mango Ube' },
+  { value: 'Ube Deluxe', label: 'Ube Deluxe' },
+  { value: 'Banana Munch', label: 'Banana Munch' },
+  { value: 'Custom', label: 'Custom' },
+];
 
 export default function Customization() {
   const [maxTokens, setMaxTokens] = useState(100);
@@ -22,9 +35,12 @@ export default function Customization() {
   const [topP, setTopP] = useState(100);
   const [presencePenalty, setPresencePenalty] = useState(100);
   const [frequencyPenalty, setFrequencyPenalty] = useState(100);
-  const [showPopover, setShowPopover] = useState<
-    keyof typeof sliderDescriptions | null
-  >(null);
+  const [preferredModel, setPreferredModel] = useState(modelOptions[0].value);
+  const [apiKey, setApiKey] = useState('');
+  const [customModelName, setCustomModelName] = useState('');
+  const [provider, setProvider] = useState<Provider | null>(null);
+  const [showPopover, setShowPopover] = useState<keyof typeof sliderDescriptions | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const stateSetters = {
     maxTokens: setMaxTokens,
@@ -41,66 +57,49 @@ export default function Customization() {
       topP,
       presencePenalty,
       frequencyPenalty,
+      preferred_model: preferredModel,
+      ...(preferredModel === 'Custom' && { api_key: apiKey, custom_model_name: customModelName, provider }),
     };
 
     try {
-      const response = await Utils.post('/persona', data);
-      console.log('Response:', response);
+      const userUUID = GetUserUUID();
+      const { error } = await supabase
+        .from('user_data')
+        .update(data)
+        .eq('user_uuid', userUUID);
+
+      if (error) {
+        throw error;
+      }
+
+      toast.success('Customization data submitted successfully!');
     } catch (error) {
-      console.error('Error submitting data:', error);
-      window.alert('Error submitting data. Please try again.');
+      Sentry.captureException(error);
+      toast.error('Error submitting data. Please try again.');
     }
+  };
+
+  const handleProviderSelect = (selectedProvider: Provider) => {
+    setProvider(selectedProvider);
+    setModalOpen(false);
   };
 
   return (
     <div className="p-4 space-y-4 relative">
       {Object.keys(sliderDescriptions).map((key) => {
         const sliderKey = key as keyof typeof sliderDescriptions;
-        const stateValue = {
-          maxTokens,
-          temperature,
-          topP,
-          presencePenalty,
-          frequencyPenalty,
-        }[sliderKey];
+        const stateValue = { maxTokens, temperature, topP, presencePenalty, frequencyPenalty }[sliderKey] as number;
+        const stateSetter = stateSetters[sliderKey];
 
         return (
-          <div key={sliderKey}>
-            <div className="flex items-center justify-between">
-              <label className="block text-sm font-medium text-gray-300">
-                {sliderKey.charAt(0).toUpperCase() +
-                  sliderKey.slice(1).replace(/([A-Z])/g, ' $1')}
-              </label>
-              <button
-                onClick={() => setShowPopover(sliderKey)}
-                className="text-gray-400 hover:text-gray-300 focus:outline-none"
-              >
-                <FaQuestionCircle />
-              </button>
-            </div>
-            <Slider.Root
-              className="relative flex items-center h-5"
-              value={[stateValue]}
-              onValueChange={(value) => stateSetters[sliderKey](value[0])}
-              max={
-                sliderKey === 'maxTokens' ? 4000 : sliderKey === 'topP' ? 1 : 2
-              }
-              min={sliderKey.includes('Penalty') ? -2 : 0}
-              step={
-                sliderKey === 'maxTokens'
-                  ? 1
-                  : sliderKey === 'topP'
-                    ? 0.01
-                    : 0.1
-              }
-            >
-              <Slider.Track className="relative h-1 w-full grow rounded-full bg-gray-600">
-                <Slider.Range className="absolute h-full rounded-full bg-blue-500" />
-              </Slider.Track>
-              <Slider.Thumb className="block h-5 w-5 rounded-full bg-white shadow transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" />
-            </Slider.Root>
-            <span className="text-sm text-gray-400">{stateValue}</span>
-          </div>
+          <SliderComponent
+            key={sliderKey}
+            sliderKey={sliderKey}
+            stateValue={stateValue}
+            stateSetter={stateSetter}
+            sliderDescriptions={sliderDescriptions}
+            setShowPopover={setShowPopover as Dispatch<SetStateAction<string | null>>}
+          />
         );
       })}
 
@@ -119,14 +118,38 @@ export default function Customization() {
         </div>
       )}
 
-      <motion.button
+      <ModelSelection
+        preferredModel={preferredModel}
+        setPreferredModel={setPreferredModel}
+        modelOptions={modelOptions}
+      />
+
+      {preferredModel === 'Custom' && (
+        <CustomModelFields
+          apiKey={apiKey}
+          setApiKey={setApiKey}
+          customModelName={customModelName}
+          setCustomModelName={setCustomModelName}
+          provider={provider}
+          setProvider={setProvider}
+          setModalOpen={setModalOpen}
+        />
+      )}
+
+      <Button
+        variant="contained"
+        color="primary"
         onClick={handleSubmit}
-        className="w-full px-4 py-2 mt-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+        className="w-full mt-4"
       >
         Submit
-      </motion.button>
+      </Button>
+
+      <ProviderModals
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSelect={handleProviderSelect}
+      />
     </div>
   );
 }

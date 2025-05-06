@@ -26,7 +26,8 @@
       "@layout/*": ["src/components/common/layout/*"],
       "@shared-types/*": ["src/components/common/shared-types/*"],
       "@store/*": ["src/store/*"],
-      "@libs/*": ["src/lib/*"]
+      "@libs/*": ["src/lib/*"],
+      "@functions/*": ["src/functions/*"]
     }
   },
   "include": ["src/**/*"]

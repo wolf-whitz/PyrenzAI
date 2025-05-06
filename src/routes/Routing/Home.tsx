@@ -11,15 +11,14 @@ import {
   SkeletonCard,
 } from '~/components';
 import { useHomeStore } from '~/store';
-import { useUserStore } from '~/store';
 import { fetchCharacters } from '~/api';
 import { motion, AnimatePresence } from 'framer-motion';
-import { supabase } from '~/Utility/supabaseClient';
 import { Character, CharacterCardProps } from '@shared-types/CharacterProp';
 import { Box, Typography, Container } from '@mui/material';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useTranslation } from 'react-i18next';
+import { GetHotCharacters, GetUserUUID, GetLatestCharacters, GetRandomCharacters, GetCharactersWithTags } from '~/functions';
 
 const MemoizedCharacterCard = memo(CharacterCard);
 
@@ -28,8 +27,8 @@ const transformCharacter = (char: Character): CharacterCardProps => ({
   tags: Array.isArray(char.tags)
     ? char.tags
     : typeof char.tags === 'string'
-      ? char.tags.split(',').map((tag) => tag.trim())
-      : [],
+    ? char.tags.split(',').map((tag) => tag.trim())
+    : [],
   isLoading: false,
 });
 
@@ -51,11 +50,21 @@ export default function Home() {
     setLoading,
   } = useHomeStore();
 
-  const { user_uuid } = useUserStore();
   const { t } = useTranslation();
+
+  const [userUUID, setUserUUID] = useState<string | null>(null);
 
   const itemsPerPage = 10;
   const totalPages = Math.max(1, Math.ceil(total / itemsPerPage));
+
+  useEffect(() => {
+    const fetchUserUUID = async () => {
+      const uuid = await GetUserUUID();
+      setUserUUID(uuid);
+    };
+
+    fetchUserUUID();
+  }, []);
 
   useEffect(() => {
     const currentSearch = searchParams.get('search') || '';
@@ -68,13 +77,15 @@ export default function Home() {
   }, [searchParams, search, currentPage, setSearch, setCurrentPage]);
 
   const fetchCharactersData = useCallback(async () => {
+    if (!userUUID) return;
+
     setLoading(true);
     try {
       const { characters, total } = await fetchCharacters(
         currentPage,
         itemsPerPage,
         search,
-        user_uuid || ''
+        userUUID
       );
       setCharacters(characters);
       setTotal(total);
@@ -83,16 +94,7 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
-  }, [
-    currentPage,
-    search,
-    itemsPerPage,
-    user_uuid,
-    setCharacters,
-    setTotal,
-    setLoading,
-    t,
-  ]);
+  }, [currentPage, search, itemsPerPage, userUUID, setCharacters, setTotal, setLoading, t]);
 
   useEffect(() => {
     fetchCharactersData();
@@ -105,21 +107,48 @@ export default function Home() {
   }, [currentPage, search, navigate]);
 
   const handleButtonClick = async (
-    rpcFunction: string,
+    functionName: string,
     type: string,
-    max_character: number,
+    maxCharacter: number,
     page: number
   ) => {
     setLoading(true);
     setCharacters([]);
+
     try {
-      const { data, error } = await supabase.rpc(rpcFunction, {
-        type,
-        max_character,
-        page,
-      });
-      if (error) throw error;
-      setCharacters(data);
+      let rawCharacters: any[] = [];
+      switch (functionName) {
+        case 'GetHotCharacters':
+          rawCharacters = await GetHotCharacters(type, maxCharacter, page);
+          break;
+        case 'GetLatestCharacters':
+          rawCharacters = await GetLatestCharacters(type, maxCharacter, page);
+          break;
+        case 'GetRandomCharacters':
+          rawCharacters = await GetRandomCharacters(type, maxCharacter, page);
+          break;
+        case 'GetCharactersWithTags':
+          rawCharacters = await GetCharactersWithTags(maxCharacter, page, type, search);
+          break;
+        default:
+          throw new Error('Invalid function name');
+      }
+
+      const characters: Character[] = rawCharacters.map(char => ({
+        id: char.id,
+        input_char_uuid: char.input_char_uuid,
+        name: char.name,
+        description: char.description,
+        creator: char.creator,
+        chat_messages_count: char.chat_messages_count,
+        image_url: char.image_url,
+        tags: char.tags,
+        profile_image: char.profile_image,
+        is_public: char.is_public,
+        token_total: char.token_total,
+      }));
+
+      setCharacters(characters);
     } catch (error) {
       if (error instanceof Error) {
         toast.error(t('errors.callingRPCFunction') + error.message);
@@ -266,7 +295,7 @@ export default function Home() {
               currentPage={currentPage}
               totalPages={totalPages}
               itemsPerPage={itemsPerPage}
-              user_param_uuid={user_uuid || ''}
+              user_uuid={userUUID || ''}
               onLoadMore={setCurrentPage}
             />
           </section>
