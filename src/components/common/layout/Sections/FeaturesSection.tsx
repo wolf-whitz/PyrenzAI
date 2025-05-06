@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { RefObject } from 'react';
 import { FeatureCard } from '@components/index';
 import { useTranslation } from 'react-i18next';
+import { Container, Typography, Box, Grid } from '@mui/material';
 
 const cardData = [
   {
@@ -42,35 +43,61 @@ export default function FeaturesSection({
     <motion.section
       ref={discoverMoreRef}
       data-aos="fade-up"
-      className="p-10 text-white pb-32 md:pb-16"
+      style={{ padding: '2.5rem 1rem', paddingBottom: '8rem', color: 'white' }}
     >
-      <h2 className="text-4xl font-bold mb-6 text-center bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-        Why Choose Pyrenz<span className="text-red-500">AI</span>?
-      </h2>
-      <div className="mt-8 space-y-12 md:space-y-16">
-        {cardData.map((card, index) => (
-          <div
-            key={index}
-            className={`flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center space-y-8 md:space-y-0 md:space-x-8`}
-          >
-            <div className="md:order-2 flex flex-col items-center md:items-start space-y-4">
-              <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent text-center md:text-left">
-                {t(card.cardNameKey)}
-              </h3>
-              <p className="opacity-90 max-w-prose text-center md:text-left">
-                {t(card.cardDescriptionKey)}
-              </p>
-            </div>
-            <FeatureCard
-              cardName={t(card.cardNameKey)}
-              cardImage={card.cardImage}
-              imageWidth={card.imageWidth}
-              imageHeight={card.imageHeight}
-              className="md:order-1 mt-4 md:mt-0"
-            />
-          </div>
-        ))}
-      </div>
+      <Container maxWidth="lg">
+        <Typography
+          variant="h2"
+          component="h2"
+          sx={{
+            fontWeight: 'bold',
+            mb: 3,
+            textAlign: 'center',
+            background: 'linear-gradient(to right, #fff, #9ca3af)',
+            WebkitBackgroundClip: 'text',
+            color: 'transparent',
+          }}
+        >
+          Why Choose Pyrenz<span style={{ color: '#ef4444' }}>AI</span>?
+        </Typography>
+        <Box mt={4}>
+          {cardData.map((card, index) => (
+            <Grid
+              container
+              key={index}
+              spacing={4}
+              direction={index % 2 === 0 ? 'row' : 'row-reverse'}
+              alignItems="center"
+              sx={{ mb: index < cardData.length - 1 ? 6 : 0 }}
+            >
+              <Grid  size={{ xs:12, md: 6}} component="div">
+                <Box textAlign={{ xs: 'center', md: 'left' }}>
+                  <Typography
+                    variant="h4"
+                    component="h3"
+                    sx={{
+                      fontWeight: 'bold',
+                      background: 'linear-gradient(to right, #fff, #9ca3af)',
+                      WebkitBackgroundClip: 'text',
+                      color: 'transparent',
+                    }}
+                  >
+                    {t(card.cardNameKey)}
+                  </Typography>
+                  <Typography variant="body1" sx={{ opacity: 0.9, mt: 2 }}>
+                    {t(card.cardDescriptionKey)}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid size={{ xs:12, md: 6}} component="div">
+                <FeatureCard
+                  cardImage={card.cardImage}
+                />
+              </Grid>
+            </Grid>
+          ))}
+        </Box>
+      </Container>
     </motion.section>
   );
 }

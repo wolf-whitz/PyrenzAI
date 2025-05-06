@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, CircularProgress } from '@mui/material';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { Plus } from 'lucide-react';
 
 interface CreateButtonProps {
@@ -18,7 +18,7 @@ export default function CreateButton({
       disabled={loading}
       variant="contained"
       color="primary"
-      className={classNames('flex items-center', className)}
+      className={clsx('flex items-center', className)}
       startIcon={
         loading ? (
           <CircularProgress size={20} color="inherit" />

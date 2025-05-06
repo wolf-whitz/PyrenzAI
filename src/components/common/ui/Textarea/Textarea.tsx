@@ -3,7 +3,7 @@ import llamaTokenizer from 'llama-tokenizer-js';
 import { useCharacterStore } from '~/store';
 import { motion } from 'framer-motion';
 import { TextField, Tooltip as MUITooltip, Typography } from '@mui/material';
-import classNames from 'classnames';
+import clsx from 'clsx';
 
 interface TextareaProps {
   name?: string;
@@ -101,7 +101,7 @@ export default function Textarea({
 
   return (
     <motion.div
-      className={classNames('w-full mb-4 relative', className)}
+      className={clsx('w-full mb-4 relative', className)}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
@@ -139,7 +139,7 @@ export default function Textarea({
         error={!isLinkValid}
         helperText={!isLinkValid ? 'Please enter a valid link.' : ''}
         InputProps={{
-          className: classNames(
+          className: clsx(
             'text-white bg-gray-800 border-none focus:outline-none focus:ring-2 shadow-md transition-all duration-300 ease-in-out rounded-md',
             {
               'ring-red-500': isMaxLengthExceeded,
@@ -163,7 +163,7 @@ export default function Textarea({
       )}
       <Typography
         variant="caption"
-        className={classNames('absolute right-2 bottom-2', {
+        className={clsx('absolute right-2 bottom-2', {
           'text-red-500': isMaxLengthExceeded,
           'text-gray-500': !isMaxLengthExceeded,
         })}
