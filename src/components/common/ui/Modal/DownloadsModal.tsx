@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Globe, Laptop, Smartphone, X } from 'lucide-react';
@@ -17,6 +17,20 @@ export default function DownloadModal({
 }: DownloadModalProps) {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e: any) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
 
   const buttonsConfig = [
     {
@@ -54,7 +68,19 @@ export default function DownloadModal({
     if (is_up) {
       navigate(link);
     } else {
-      window.alert(t('platforms.notUpYet', { label }));
+      if (deferredPrompt && (label === t('platforms.mobile') || label === t('platforms.windows'))) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult: any) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('User accepted the install prompt');
+          } else {
+            console.log('User dismissed the install prompt');
+          }
+          setDeferredPrompt(null);
+        });
+      } else {
+        window.alert(t('platforms.notUpYet', { label }));
+      }
     }
   };
 
