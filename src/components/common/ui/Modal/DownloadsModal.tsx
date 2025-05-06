@@ -69,13 +69,16 @@ export default function DownloadModal({
       navigate(link);
     } else {
       if (deferredPrompt && (label === t('platforms.mobile') || label === t('platforms.windows'))) {
+        // Show the install prompt
         deferredPrompt.prompt();
+        // Wait for the user to respond to the prompt
         deferredPrompt.userChoice.then((choiceResult: any) => {
           if (choiceResult.outcome === 'accepted') {
             console.log('User accepted the install prompt');
           } else {
             console.log('User dismissed the install prompt');
           }
+          // Clear the deferredPrompt after use
           setDeferredPrompt(null);
         });
       } else {
