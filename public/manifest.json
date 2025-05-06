@@ -34,5 +34,9 @@
       "type": "image/avif",
       "form_factor": "wide"
     }
+  ],
+  "categories": [
+    "entertainment",
+    "social"
   ]
 }
