@@ -69,7 +69,10 @@ export default function SliderComponent({
           onClose={handlePopoverClose}
           disableRestoreFocus
         >
-          <Typography sx={{ p: 1 }} className="bg-black text-white p-2 rounded shadow-md">
+          <Typography
+            sx={{ p: 1 }}
+            className="bg-black text-white p-2 rounded shadow-md"
+          >
             {sliderDescriptions[sliderKey]}
           </Typography>
         </Popover>

@@ -5,8 +5,6 @@ import { Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { buttons, CustomButtonProps } from '@shared-types/MoreButtonsTypes';
 
-
-
 export default function CustomButton({ onButtonClick }: CustomButtonProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [visibleButtons, setVisibleButtons] = useState(buttons);

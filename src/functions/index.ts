@@ -1,7 +1,7 @@
 /**
  * The application's function index file
  * This file serves as a central export point for all the database fetch functions that are used in the application itself.
-*/
+ */
 
 //Tags
 import { GetHotCharacters } from './Character/GetHotCharacters';
@@ -18,13 +18,13 @@ import { GetUserData } from './persona/GetUserPersona';
 import { GetUserUUID } from './General/GetUserUUID';
 
 export {
-    GetHotCharacters,
-    GetLatestCharacters,
-    GetRandomCharacters,
-    GetCharactersWithTags,
-    CreateNewChat,
-    GetChatData,
-    fetchCharacters,
-    GetUserData,
-    GetUserUUID,
-}
+  GetHotCharacters,
+  GetLatestCharacters,
+  GetRandomCharacters,
+  GetCharactersWithTags,
+  CreateNewChat,
+  GetChatData,
+  fetchCharacters,
+  GetUserData,
+  GetUserUUID,
+};

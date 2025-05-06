@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Card, CardContent, Typography } from '@mui/material';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Card,
+  CardContent,
+  Typography,
+} from '@mui/material';
 import ReactDOM from 'react-dom';
 import { supabase } from '~/Utility/supabaseClient';
 
@@ -16,7 +25,11 @@ interface ProviderModalsProps {
   onSelect: (provider: Provider) => void;
 }
 
-export default function ProviderModals({ open, onClose, onSelect }: ProviderModalsProps) {
+export default function ProviderModals({
+  open,
+  onClose,
+  onSelect,
+}: ProviderModalsProps) {
   const [providers, setProviders] = useState<Provider[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -25,7 +38,9 @@ export default function ProviderModals({ open, onClose, onSelect }: ProviderModa
       try {
         const { data, error } = await supabase
           .from('providers')
-          .select('provider_name, provider_website, provider_api_link, provider_description');
+          .select(
+            'provider_name, provider_website, provider_api_link, provider_description'
+          );
 
         if (error) {
           throw error;
@@ -58,27 +73,72 @@ export default function ProviderModals({ open, onClose, onSelect }: ProviderModa
   }
 
   return ReactDOM.createPortal(
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" className="p-4">
-      <DialogTitle className="text-2xl font-bold">Premade Providers</DialogTitle>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullWidth
+      maxWidth="md"
+      className="p-4"
+    >
+      <DialogTitle className="text-2xl font-bold">
+        Premade Providers
+      </DialogTitle>
       <DialogContent>
         {loading ? (
-          <Typography className="text-gray-600">Loading providers...</Typography>
+          <Typography className="text-gray-600">
+            Loading providers...
+          </Typography>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {providers.map((provider) => (
-              <Card key={provider.provider_name} className="shadow-md rounded-lg">
+              <Card
+                key={provider.provider_name}
+                className="shadow-md rounded-lg"
+              >
                 <CardContent className="p-4">
-                  <Typography variant="h5" component="div" className="text-xl font-semibold">
+                  <Typography
+                    variant="h5"
+                    component="div"
+                    className="text-xl font-semibold"
+                  >
                     {provider.provider_name}
                   </Typography>
-                  <Typography variant="body2" color="textSecondary" className="text-gray-600">
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    className="text-gray-600"
+                  >
                     {provider.provider_description}
                   </Typography>
-                  <Typography variant="body2" color="textSecondary" className="text-gray-600">
-                    Website: <a href={provider.provider_website} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">{provider.provider_website}</a>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    className="text-gray-600"
+                  >
+                    Website:{' '}
+                    <a
+                      href={provider.provider_website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-500 underline"
+                    >
+                      {provider.provider_website}
+                    </a>
                   </Typography>
-                  <Typography variant="body2" color="textSecondary" className="text-gray-600">
-                    API Link: <a href={provider.provider_api_link} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">{provider.provider_api_link}</a>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    className="text-gray-600"
+                  >
+                    API Link:{' '}
+                    <a
+                      href={provider.provider_api_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-500 underline"
+                    >
+                      {provider.provider_api_link}
+                    </a>
                   </Typography>
                   <Button
                     variant="contained"
@@ -96,7 +156,11 @@ export default function ProviderModals({ open, onClose, onSelect }: ProviderModa
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="primary" className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+        <Button
+          onClick={onClose}
+          color="primary"
+          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+        >
           Cancel
         </Button>
       </DialogActions>

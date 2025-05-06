@@ -5,7 +5,11 @@ import * as Sentry from '@sentry/react';
 import toast from 'react-hot-toast';
 import { Button } from '@mui/material';
 import { ProviderModals } from '@components/index';
-import { CustomModelFields, ModelSelection, SliderComponent } from '@components/index';
+import {
+  CustomModelFields,
+  ModelSelection,
+  SliderComponent,
+} from '@components/index';
 
 interface Provider {
   provider_name: string;
@@ -16,10 +20,13 @@ interface Provider {
 
 const sliderDescriptions = {
   maxTokens: 'Controls the maximum number of tokens in the response.',
-  temperature: 'Controls the randomness of the output. Higher values make the output more random.',
+  temperature:
+    'Controls the randomness of the output. Higher values make the output more random.',
   topP: 'Controls the diversity of the output. Higher values make the output more diverse.',
-  presencePenalty: 'Penalizes new tokens based on their presence in the input. Higher values make the output more different from the input.',
-  frequencyPenalty: 'Penalizes new tokens based on their frequency in the input. Higher values make the output less repetitive.',
+  presencePenalty:
+    'Penalizes new tokens based on their presence in the input. Higher values make the output more different from the input.',
+  frequencyPenalty:
+    'Penalizes new tokens based on their frequency in the input. Higher values make the output less repetitive.',
 };
 
 const modelOptions = [
@@ -39,7 +46,9 @@ export default function Customization() {
   const [apiKey, setApiKey] = useState('');
   const [customModelName, setCustomModelName] = useState('');
   const [provider, setProvider] = useState<Provider | null>(null);
-  const [showPopover, setShowPopover] = useState<keyof typeof sliderDescriptions | null>(null);
+  const [showPopover, setShowPopover] = useState<
+    keyof typeof sliderDescriptions | null
+  >(null);
   const [modalOpen, setModalOpen] = useState(false);
 
   const stateSetters = {
@@ -58,7 +67,11 @@ export default function Customization() {
       presencePenalty,
       frequencyPenalty,
       preferred_model: preferredModel,
-      ...(preferredModel === 'Custom' && { api_key: apiKey, custom_model_name: customModelName, provider }),
+      ...(preferredModel === 'Custom' && {
+        api_key: apiKey,
+        custom_model_name: customModelName,
+        provider,
+      }),
     };
 
     try {
@@ -88,7 +101,13 @@ export default function Customization() {
     <div className="p-4 space-y-4 relative">
       {Object.keys(sliderDescriptions).map((key) => {
         const sliderKey = key as keyof typeof sliderDescriptions;
-        const stateValue = { maxTokens, temperature, topP, presencePenalty, frequencyPenalty }[sliderKey] as number;
+        const stateValue = {
+          maxTokens,
+          temperature,
+          topP,
+          presencePenalty,
+          frequencyPenalty,
+        }[sliderKey] as number;
         const stateSetter = stateSetters[sliderKey];
 
         return (
@@ -98,7 +117,9 @@ export default function Customization() {
             stateValue={stateValue}
             stateSetter={stateSetter}
             sliderDescriptions={sliderDescriptions}
-            setShowPopover={setShowPopover as Dispatch<SetStateAction<string | null>>}
+            setShowPopover={
+              setShowPopover as Dispatch<SetStateAction<string | null>>
+            }
           />
         );
       })}

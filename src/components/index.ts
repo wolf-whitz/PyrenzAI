@@ -6,7 +6,7 @@
  * <Button label="Click Me" onClick={handleClick} />
  * @see https://reactjs.org/docs/code-splitting.html
  * @see https://reactjs.org/docs/optimizing-performance.html#code-splitting
-*/
+ */
 
 // Layout Components
 import Banner from '@layout/Banner/Banner';
@@ -142,9 +142,9 @@ export {
   Menu,
   ChatMain,
 
-  //Slider 
-  SliderComponent, 
-  
+  //Slider
+  SliderComponent,
+
   // UI/UX components
   CharacterCard,
   LoadMore,

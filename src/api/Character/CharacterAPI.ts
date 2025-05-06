@@ -6,14 +6,14 @@ import { fetchCharacters as fetchCharactersFunction } from '~/functions';
 export const fetchCharacters = async (
   currentPage: number,
   itemsPerPage: number,
-  search: string,
+  search: string
 ): Promise<{ characters: Character[]; total: number }> => {
   try {
     const data = await fetchCharactersFunction(
       'character',
       search || null,
       currentPage,
-      itemsPerPage,
+      itemsPerPage
     );
 
     if (!data || !data.characters || data.characters.length === 0) {
@@ -40,7 +40,9 @@ export const fetchCharacters = async (
         profile_image: char.profile_image,
         tags: parsedTags.map((tag: any) =>
           typeof tag === 'string' || typeof tag === 'number'
-            ? String(tag).trim().replace(/[\[\]"]/g, '')
+            ? String(tag)
+                .trim()
+                .replace(/[\[\]"]/g, '')
             : ''
         ),
         is_public: char.is_public,

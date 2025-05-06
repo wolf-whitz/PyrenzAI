@@ -49,7 +49,12 @@ export default function CustomModelFields({
         variant="outlined"
         fullWidth
         value={provider?.provider_name || ''}
-        onChange={(e) => setProvider({ ...provider, provider_name: e.target.value } as Provider)}
+        onChange={(e) =>
+          setProvider({
+            ...provider,
+            provider_name: e.target.value,
+          } as Provider)
+        }
         className="mb-4"
       />
       <Button

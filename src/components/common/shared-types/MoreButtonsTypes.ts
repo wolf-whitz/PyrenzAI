@@ -1,30 +1,30 @@
 import { Sparkles, RefreshCw, Flame, Tag } from 'lucide-react';
 
 export type ButtonType = {
-    icon: React.ElementType;
-    label: string;
-    Function: string;
-    type: string;
-    max_character: number;
-    page: number;
-    tag?: string;
-  };
-  
-export type ModalResultType = {
-    name: string;
+  icon: React.ElementType;
+  label: string;
+  Function: string;
+  type: string;
+  max_character: number;
+  page: number;
+  tag?: string;
 };
-  
+
+export type ModalResultType = {
+  name: string;
+};
+
 export type MoreButtonsModalProps = {
-    isOpen: boolean;
-    onClose: () => void;
-    onButtonClick: (
-      Function: string,
-      type: string,
-      max_character: number,
-      page: number,
-      tag?: string
-    ) => void;
-    buttons: ButtonType[]; 
+  isOpen: boolean;
+  onClose: () => void;
+  onButtonClick: (
+    Function: string,
+    type: string,
+    max_character: number,
+    page: number,
+    tag?: string
+  ) => void;
+  buttons: ButtonType[];
 };
 
 export const buttons: ButtonType[] = [

@@ -39,18 +39,37 @@ export default function CustomMarkdown({
         remarkPlugins={[remarkGfm]}
         components={{
           em: ({ children }) => (
-            <Typography component="span" sx={{ color: 'gray', fontStyle: 'italic', fontWeight: 'bold' }}>
+            <Typography
+              component="span"
+              sx={{ color: 'gray', fontStyle: 'italic', fontWeight: 'bold' }}
+            >
               {children}
             </Typography>
           ),
           strong: ({ children }) => (
-            <Typography component="span" sx={{ color: 'white', fontWeight: 'bold', ...(char ? { color: char } : {}) }}>
+            <Typography
+              component="span"
+              sx={{
+                color: 'white',
+                fontWeight: 'bold',
+                ...(char ? { color: char } : {}),
+              }}
+            >
               {children}
             </Typography>
           ),
-          p: ({ children }) => <Typography component="p">{children}</Typography>,
+          p: ({ children }) => (
+            <Typography component="p">{children}</Typography>
+          ),
           a: ({ children, href }) => (
-            <Link href={href} sx={{ color: 'blue', textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>
+            <Link
+              href={href}
+              sx={{
+                color: 'blue',
+                textDecoration: 'none',
+                '&:hover': { textDecoration: 'underline' },
+              }}
+            >
               {children}
             </Link>
           ),
@@ -72,13 +91,27 @@ export default function CustomMarkdown({
           blockquote: ({ children }) => (
             <Typography
               component="blockquote"
-              sx={{ borderLeft: 4, borderColor: 'gray', pl: 2, color: 'gray', fontStyle: 'italic' }}
+              sx={{
+                borderLeft: 4,
+                borderColor: 'gray',
+                pl: 2,
+                color: 'gray',
+                fontStyle: 'italic',
+              }}
             >
               {children}
             </Typography>
           ),
-          ul: ({ children }) => <Typography component="ul" sx={{ listStyleType: 'disc', pl: 4 }}>{children}</Typography>,
-          li: ({ children }) => <Typography component="li" sx={{ mb: 1 }}>{children}</Typography>,
+          ul: ({ children }) => (
+            <Typography component="ul" sx={{ listStyleType: 'disc', pl: 4 }}>
+              {children}
+            </Typography>
+          ),
+          li: ({ children }) => (
+            <Typography component="li" sx={{ mb: 1 }}>
+              {children}
+            </Typography>
+          ),
         }}
       >
         {replacedText}

@@ -9,8 +9,7 @@
  *   if (error) console.error('Error fetching data:', error);
  *  else console.log('Data:', data);
  * });
-*/
-
+ */
 
 import { createClient } from '@supabase/supabase-js';
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from '~/config';

@@ -7,7 +7,7 @@ import {
   sendUserDataToSupabase,
   extractTokensFromLocalStorage,
 } from './Modals/AuthenticationAPI';
-import { useCreateAPI } from "./CreatePage/CreateAPI";
+import { useCreateAPI } from './CreatePage/CreateAPI';
 
 export {
   fetchCharacters,
@@ -17,5 +17,5 @@ export {
   handleSignUp,
   sendUserDataToSupabase,
   extractTokensFromLocalStorage,
-  useCreateAPI
+  useCreateAPI,
 };

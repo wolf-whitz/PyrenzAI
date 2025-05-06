@@ -1,3 +1,10 @@
+REM This script is used to start up the entire application using the appropriate commands rather than using npm run dev which isnt suitable for production. 
+REM It is designed to be run in a Windows environment and will execute the necessary commands to install dependencies, format the code, build the application, and start the production server.
+
+REM Usage: Run this script in the command prompt to start the application.
+
+REM Note: Ensure that you have Node.js and npm installed on your system before running this script.
+
 @echo off
 setlocal EnableDelayedExpansion
 

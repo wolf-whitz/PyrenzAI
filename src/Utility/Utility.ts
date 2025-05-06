@@ -7,11 +7,11 @@
  * Utils.request('GET', '/api/endpoint', { param1: 'value1' })
  *   .then(response => console.log(response))
  *  .catch(error => console.error(error));
-*/
+ */
 
 /**
  * For ease in development future dev can use this utility to make API calls without the need of a dedicated fetch function and having to paste the same baseurl for every request.
-*/
+ */
 
 import { useUserStore as UserStore } from '~/store';
 import { supabase } from '~/Utility/supabaseClient';
@@ -118,20 +118,11 @@ export const Utils = {
     }
   },
 
-  useFetch<T>(
-    endpoint: string,
-    params: Record<string, any> = {}
-  ) {
+  useFetch<T>(endpoint: string, params: Record<string, any> = {}) {
     const { data, error, mutate } = useSWR<T>(
       `${BASE_URL}${endpoint}?${new URLSearchParams(params).toString()}`,
       async () => {
-        return await this.request<T>(
-          'GET',
-          endpoint,
-          {},
-          params,
-          false
-        );
+        return await this.request<T>('GET', endpoint, {}, params, false);
       }
     );
 
@@ -159,10 +150,7 @@ export const Utils = {
     return this.request<T>('PATCH', endpoint, data, params, false);
   },
 
-  delete<T>(
-    endpoint: string,
-    params: Record<string, any> = {}
-  ): Promise<T> {
+  delete<T>(endpoint: string, params: Record<string, any> = {}): Promise<T> {
     return this.request<T>('DELETE', endpoint, {}, params, false);
   },
 };

@@ -10,8 +10,12 @@ interface UserDataResponse {
   };
 }
 
-export async function GetUserData(): Promise<UserDataResponse | { error: string }> {
-  const { data: { user } } = await supabase.auth.getUser();
+export async function GetUserData(): Promise<
+  UserDataResponse | { error: string }
+> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
     return { error: 'User not authenticated' };

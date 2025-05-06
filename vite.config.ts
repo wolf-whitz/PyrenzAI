@@ -73,7 +73,6 @@ export default defineConfig({
       '@store': path.resolve(__dirname, 'src/store'),
       '@libs': path.resolve(__dirname, 'src/lib'),
       '@functions': path.resolve(__dirname, 'src/functions'),
-
     },
   },
   optimizeDeps: {

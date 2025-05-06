@@ -29,8 +29,13 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
 
   useEffect(() => {
     const fetchUserUuid = async () => {
-      const uuid = await GetUserUUID();
-      setUserUuid(uuid);
+      try {
+        const uuid = await GetUserUUID();
+        setUserUuid(uuid);
+      } catch (error) {
+        console.error('Error fetching user UUID:', error);
+        Sentry.captureException(error);
+      }
     };
 
     fetchUserUuid();
@@ -103,9 +108,17 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
   const handleSave = async () => {
     setSaveLoading(true);
     try {
+      if (!userUuid) {
+        alert('User UUID is missing.');
+        setSaveLoading(false);
+        return;
+      }
+
       const tags = Array.isArray(characterData.tags)
         ? characterData.tags
-        : (characterData.tags as string).split(',').map((tag: string) => tag.trim());
+        : (characterData.tags as string)
+            .split(',')
+            .map((tag: string) => tag.trim());
 
       const { data, error } = await supabase.from('draft_characters').upsert([
         {
@@ -202,9 +215,17 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
     }
 
     try {
+      if (!userUuid) {
+        alert('User UUID is missing.');
+        setLoading(false);
+        return;
+      }
+
       const tags = Array.isArray(characterData.tags)
         ? characterData.tags
-        : (characterData.tags as string).split(',').map((tag: string) => tag.trim());
+        : (characterData.tags as string)
+            .split(',')
+            .map((tag: string) => tag.trim());
 
       const response: ApiResponse = await Utils.post('/api/createCharacter', {
         ...characterData,
@@ -220,7 +241,7 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
       } else {
         const characterUuid = response.character_uuid;
         if (characterUuid) {
-          const chatResponse = await CreateNewChat(characterUuid);
+          const chatResponse = await CreateNewChat(characterUuid, userUuid);
           if (chatResponse.error) {
             console.error('Error creating chat:', chatResponse.error);
             Sentry.captureException(new Error(chatResponse.error));
@@ -230,12 +251,16 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
               navigate(`/chat/${chatUuid}`);
             } else {
               console.error('Chat created but no chat UUID returned.');
-              Sentry.captureException(new Error('Chat created but no chat UUID returned.'));
+              Sentry.captureException(
+                new Error('Chat created but no chat UUID returned.')
+              );
             }
           }
         } else {
           console.error('Character created but no character UUID returned.');
-          Sentry.captureException(new Error('Character created but no character UUID returned.'));
+          Sentry.captureException(
+            new Error('Character created but no character UUID returned.')
+          );
         }
       }
     } catch (error) {
@@ -248,7 +273,9 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
 
   const formState = {
     ...characterData,
-    tags: Array.isArray(characterData.tags) ? characterData.tags.join(', ') : characterData.tags,
+    tags: Array.isArray(characterData.tags)
+      ? characterData.tags.join(', ')
+      : characterData.tags,
   };
 
   return {
@@ -269,3 +296,4 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
     formState,
   };
 };
+ 

@@ -2,10 +2,10 @@
  * @file main.tsx
  * Main entry point for the application and where we also set up the global providers such as:
  * @ThemeProvider
- * @I18nextProvider 
+ * @I18nextProvider
  * @ErrorBoundary
  * And such.
-*/
+ */
 
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';

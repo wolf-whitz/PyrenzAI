@@ -5,7 +5,11 @@ import { createPortal } from 'react-dom';
 import { Button, TextField, CircularProgress, Box, Modal } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { GetCharactersWithTags } from '~/functions';
-import { ButtonType, ModalResultType, MoreButtonsModalProps } from '@shared-types/MoreButtonsTypes';
+import {
+  ButtonType,
+  ModalResultType,
+  MoreButtonsModalProps,
+} from '@shared-types/MoreButtonsTypes';
 import { Tag } from 'lucide-react';
 
 const LoadingSpinner = () => (
@@ -24,7 +28,9 @@ export default function MoreButtonsModal({
   const [modalResults, setModalResults] = useState<ModalResultType[]>([]);
   const [loading, setLoading] = useState(false);
   const modalRef = useRef<HTMLDivElement | null>(null);
-  const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(
+    null
+  );
   const { t } = useTranslation();
 
   const handleSearch = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,7 +43,12 @@ export default function MoreButtonsModal({
       setLoading(true);
       const timeout = setTimeout(async () => {
         try {
-          const data = await GetCharactersWithTags(10, 1, 'GetTaggedCharacters', query);
+          const data = await GetCharactersWithTags(
+            10,
+            1,
+            'GetTaggedCharacters',
+            query
+          );
           setModalResults(data || []);
         } catch (error) {
           console.error('Error fetching data:', error);
@@ -54,7 +65,10 @@ export default function MoreButtonsModal({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
         onClose();
       }
     };
@@ -86,7 +100,12 @@ export default function MoreButtonsModal({
       );
     } else {
       try {
-        const data = await GetCharactersWithTags(10, 1, 'GetTaggedCharacters', btn.name);
+        const data = await GetCharactersWithTags(
+          10,
+          1,
+          'GetTaggedCharacters',
+          btn.name
+        );
         setModalResults(data || []);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -151,7 +170,11 @@ export default function MoreButtonsModal({
                 <Button
                   variant="outlined"
                   startIcon={
-                    'icon' in btn && btn.icon ? React.createElement(btn.icon, { size: 24 }) : <Tag size={24} />
+                    'icon' in btn && btn.icon ? (
+                      React.createElement(btn.icon, { size: 24 })
+                    ) : (
+                      <Tag size={24} />
+                    )
                   }
                   onClick={() => handleButtonClick(btn)}
                   fullWidth

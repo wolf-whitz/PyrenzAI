@@ -35,8 +35,5 @@
       "form_factor": "wide"
     }
   ],
-  "categories": [
-    "entertainment",
-    "social"
-  ]
+  "categories": ["entertainment", "social"]
 }

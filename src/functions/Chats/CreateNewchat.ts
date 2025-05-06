@@ -22,7 +22,9 @@ export default async function CreateNewChat(
   try {
     const { error: insertError } = await supabase
       .from('chats')
-      .insert([{ chat_uuid: chatUuid, char_uuid: characterUuid, user_uuid: userUUID }]);
+      .insert([
+        { chat_uuid: chatUuid, char_uuid: characterUuid, user_uuid: userUUID },
+      ]);
 
     if (insertError) {
       throw insertError;

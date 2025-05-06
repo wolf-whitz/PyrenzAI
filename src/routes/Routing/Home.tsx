@@ -18,7 +18,13 @@ import { Box, Typography, Container } from '@mui/material';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useTranslation } from 'react-i18next';
-import { GetHotCharacters, GetUserUUID, GetLatestCharacters, GetRandomCharacters, GetCharactersWithTags } from '~/functions';
+import {
+  GetHotCharacters,
+  GetUserUUID,
+  GetLatestCharacters,
+  GetRandomCharacters,
+  GetCharactersWithTags,
+} from '~/functions';
 
 const MemoizedCharacterCard = memo(CharacterCard);
 
@@ -26,8 +32,8 @@ const transformCharacter = (char: Character): CharacterCardProps => {
   const tagsArray = Array.isArray(char.tags)
     ? char.tags.map((tag) => tag.trim())
     : typeof char.tags === 'string'
-    ? char.tags.split(',').map((tag) => tag.trim())
-    : [];
+      ? char.tags.split(',').map((tag) => tag.trim())
+      : [];
 
   return {
     ...char,
@@ -35,7 +41,6 @@ const transformCharacter = (char: Character): CharacterCardProps => {
     isLoading: false,
   };
 };
-
 
 export default function Home() {
   const navigate = useNavigate();
@@ -89,7 +94,7 @@ export default function Home() {
       const { characters, total } = await fetchCharacters(
         currentPage,
         itemsPerPage,
-        search,
+        search
       );
       setCharacters(characters);
       setTotal(total);
@@ -98,7 +103,16 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, search, itemsPerPage, userUUID, setCharacters, setTotal, setLoading, t]);
+  }, [
+    currentPage,
+    search,
+    itemsPerPage,
+    userUUID,
+    setCharacters,
+    setTotal,
+    setLoading,
+    t,
+  ]);
 
   useEffect(() => {
     fetchCharactersData();
@@ -132,13 +146,18 @@ export default function Home() {
           rawCharacters = await GetRandomCharacters(type, maxCharacter, page);
           break;
         case 'GetCharactersWithTags':
-          rawCharacters = await GetCharactersWithTags(maxCharacter, page, type, search);
+          rawCharacters = await GetCharactersWithTags(
+            maxCharacter,
+            page,
+            type,
+            search
+          );
           break;
         default:
           throw new Error('Invalid function name');
       }
 
-      const characters: Character[] = rawCharacters.map(char => ({
+      const characters: Character[] = rawCharacters.map((char) => ({
         id: char.id,
         input_char_uuid: char.input_char_uuid,
         name: char.name,

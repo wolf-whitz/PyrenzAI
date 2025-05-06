@@ -6,7 +6,7 @@ import { supabase } from '~/Utility/supabaseClient';
  * @throws Will throw an error if the Supabase client fails to fetch the session.
  * @example
  * const userUUID = await GetUserUUID();
-*/
+ */
 
 export const GetUserUUID = async (): Promise<string | null> => {
   try {

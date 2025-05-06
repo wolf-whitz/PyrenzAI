@@ -85,7 +85,10 @@ export default function CharacterCardModal({
               onClick={onClose}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              exit={{ opacity: 0, transition: { duration: 0.4, ease: 'easeOut' } }}
+              exit={{
+                opacity: 0,
+                transition: { duration: 0.4, ease: 'easeOut' },
+              }}
             >
               <motion.div
                 className="bg-gray-900 text-white p-6 rounded-2xl shadow-2xl flex flex-col sm:flex-row items-start sm:items-center relative"
@@ -138,7 +141,9 @@ export default function CharacterCardModal({
                       className="flex-1"
                       onClick={handleChatNow}
                       disabled={isLoading}
-                      startIcon={isLoading ? <CircularProgress size={24} /> : null}
+                      startIcon={
+                        isLoading ? <CircularProgress size={24} /> : null
+                      }
                     >
                       {isLoading ? 'Processing...' : 'Chat Now'}
                     </Button>

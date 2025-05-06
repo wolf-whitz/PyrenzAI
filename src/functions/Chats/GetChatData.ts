@@ -31,7 +31,8 @@ export default async function getChatData(
 
   const { data: characterData, error: characterError } = await supabase
     .from('characters')
-    .select(`
+    .select(
+      `
       name,
       persona,
       scenario,
@@ -42,7 +43,8 @@ export default async function getChatData(
       profile_image,
       banner_image,
       token_total
-    `)
+    `
+    )
     .eq('char_uuid', inputCharUuid)
     .single();
 
