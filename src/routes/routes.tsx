@@ -1,5 +1,6 @@
-import React, { lazy } from 'react';
+import React, { lazy, useEffect, useState } from 'react';
 import { RouteObject, Navigate } from 'react-router-dom';
+import { GetUserUUID } from '~/functions';
 import { useUserStore } from '~/store';
 
 const Index = lazy(() => import('./Routing/Index'));
@@ -30,8 +31,22 @@ const ProtectedRoute = ({
 };
 
 const ProfileWrapper = () => {
-  const user_uuid = useUserStore((state) => state.user_uuid);
-  return <Profile user_uuid={user_uuid} />;
+  const [userUuid, setUserUuid] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUserUuid = async () => {
+      const uuid = await GetUserUUID();
+      setUserUuid(uuid);
+    };
+
+    fetchUserUuid();
+  }, []);
+
+  if (userUuid === null) {
+    return;
+  }
+
+  return <Profile user_uuid={userUuid} />;
 };
 
 export const routes: RouteObject[] = [

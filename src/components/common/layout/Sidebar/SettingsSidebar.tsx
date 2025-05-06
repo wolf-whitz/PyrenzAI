@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 import { Persona } from '~/components';
 import { supabase } from '~/Utility/supabaseClient';
 import { useEffect, useState } from 'react';
-import { useUserStore } from '~/store/index';
+import { GetUserUUID } from '~/functions';
 
 interface SettingsSidebarProps {
   settingsOpen: boolean;
@@ -22,10 +22,19 @@ export default function SettingsSidebar({
 }: SettingsSidebarProps) {
   const [personaData, setPersonaData] = useState<PersonaCard[]>([]);
   const [loading, setLoading] = useState(false);
-  const { user_uuid } = useUserStore();
+  const [userUuid, setUserUuid] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUserUuid = async () => {
+      const uuid = await GetUserUUID();
+      setUserUuid(uuid);
+    };
+
+    fetchUserUuid();
+  }, []);
 
   const fetchPersona = async () => {
-    if (!user_uuid) return;
+    if (!userUuid) return;
 
     setLoading(true);
     try {
@@ -52,10 +61,10 @@ export default function SettingsSidebar({
   };
 
   useEffect(() => {
-    if (settingsOpen && user_uuid) {
+    if (settingsOpen && userUuid) {
       fetchPersona();
     }
-  }, [settingsOpen, user_uuid]);
+  }, [settingsOpen, userUuid]);
 
   const updatePersonaData = (newPersona: PersonaCard) => {
     setPersonaData((prevData) => [...prevData, newPersona]);

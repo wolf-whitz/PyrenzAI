@@ -10,7 +10,7 @@ const RoutesWrapper = lazy(() =>
 );
 
 export default function App() {
-  const { setHasHydrated, hasHydrated, setUserUUID } = useUserStore();
+  const { setHasHydrated, hasHydrated } = useUserStore();
   const [isSessionChecked, setIsSessionChecked] = useState(false);
 
   useEffect(() => {
@@ -40,19 +40,16 @@ export default function App() {
 
         const { data, error: sessionError } = await supabase.auth.getSession();
         if (sessionError || !data.session) throw sessionError;
-
-        setUserUUID(data.session.user.id);
       } catch (error) {
         console.error('Error handling session:', error);
         localStorage.removeItem('sb-dojdyydsanxoblgjmzmq-auth-token');
-        setUserUUID(null);
       } finally {
         setIsSessionChecked(true);
       }
     };
 
     handleSession();
-  }, [hasHydrated, setUserUUID]);
+  }, [hasHydrated]);
 
   if (!hasHydrated || !isSessionChecked) {
     return <Spinner />;

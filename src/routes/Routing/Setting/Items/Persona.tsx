@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import { supabase } from '~/Utility/supabaseClient';
-import { useUserStore } from '~/store/index';
+import { GetUserUUID } from '~/functions';
 import {
   CreatePersonaModal,
   PersonaList,
@@ -31,17 +31,26 @@ export default function Persona() {
   const [isCharacterCardImageModalOpen, setCharacterCardImageModalOpen] =
     useState(false);
   const [selectedImage, setSelectedImage] = useState('');
-  const { user_uuid } = useUserStore();
+  const [userUuid, setUserUuid] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUserUuid = async () => {
+      const uuid = await GetUserUUID();
+      setUserUuid(uuid);
+    };
+
+    fetchUserUuid();
+  }, []);
 
   const fetchPersona = async () => {
-    if (!user_uuid) return;
+    if (!userUuid) return;
 
     setLoading(true);
     try {
       const { data, error } = await supabase
         .from('personas')
         .select('persona_name, persona_description, persona_profile, selected')
-        .eq('user_uuid', user_uuid);
+        .eq('user_uuid', userUuid);
 
       if (error) {
         throw error;
@@ -63,13 +72,13 @@ export default function Persona() {
   };
 
   const checkAdminStatus = async () => {
-    if (!user_uuid) return;
+    if (!userUuid) return;
 
     try {
       const { data, error } = await supabase
         .from('user_data')
         .select('is_admin')
-        .eq('user_uuid', user_uuid)
+        .eq('user_uuid', userUuid)
         .single();
 
       if (error) {
@@ -83,12 +92,14 @@ export default function Persona() {
   };
 
   useEffect(() => {
-    fetchPersona();
-    checkAdminStatus();
-  }, [user_uuid]);
+    if (userUuid) {
+      fetchPersona();
+      checkAdminStatus();
+    }
+  }, [userUuid]);
 
   const handleCreatePersona = async () => {
-    if (!newPersonaName || !newPersonaDescription || !user_uuid) return;
+    if (!newPersonaName || !newPersonaDescription || !userUuid) return;
 
     setCreating(true);
     try {
@@ -98,7 +109,7 @@ export default function Persona() {
           {
             persona_name: newPersonaName,
             persona_description: newPersonaDescription,
-            user_uuid,
+            user_uuid: userUuid,
             persona_image: selectedImage,
           },
         ])
@@ -136,7 +147,7 @@ export default function Persona() {
     }
   };
 
-  if (!user_uuid) {
+  if (!userUuid) {
     return (
       <div className="flex flex-col gap-4">
         <Typography variant="h6" className="text-white text-center">

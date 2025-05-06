@@ -5,7 +5,7 @@ export interface Character {
   description: string;
   creator: string | null;
   chat_messages_count: number;
-  tags: string[];
+  tags: string[] | string;
   profile_image: string;
   is_public: boolean;
   token_total: number;

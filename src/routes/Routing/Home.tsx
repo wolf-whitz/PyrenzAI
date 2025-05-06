@@ -22,15 +22,20 @@ import { GetHotCharacters, GetUserUUID, GetLatestCharacters, GetRandomCharacters
 
 const MemoizedCharacterCard = memo(CharacterCard);
 
-const transformCharacter = (char: Character): CharacterCardProps => ({
-  ...char,
-  tags: Array.isArray(char.tags)
-    ? char.tags
+const transformCharacter = (char: Character): CharacterCardProps => {
+  const tagsArray = Array.isArray(char.tags)
+    ? char.tags.map((tag) => tag.trim())
     : typeof char.tags === 'string'
     ? char.tags.split(',').map((tag) => tag.trim())
-    : [],
-  isLoading: false,
-});
+    : [];
+
+  return {
+    ...char,
+    tags: tagsArray,
+    isLoading: false,
+  };
+};
+
 
 export default function Home() {
   const navigate = useNavigate();

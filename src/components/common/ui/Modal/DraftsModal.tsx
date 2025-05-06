@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { motion } from 'framer-motion';
 import { supabase } from '~/Utility/supabaseClient';
-import { useUserStore } from '~/store';
+import { GetUserUUID } from '~/functions';
 import { ChevronLeft, ChevronRight, Trash } from 'lucide-react';
 import {
   Typography,
@@ -34,19 +34,28 @@ export default function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
   const [displayedDrafts, setDisplayedDrafts] = useState<Draft[]>([]);
-  const user_uuid = useUserStore((state) => state.user_uuid);
+  const [userUuid, setUserUuid] = useState<string | null>(null);
   const hasFetched = useRef(false);
 
   useEffect(() => {
+    const fetchUserUuid = async () => {
+      const uuid = await GetUserUUID();
+      setUserUuid(uuid);
+    };
+
+    fetchUserUuid();
+  }, []);
+
+  useEffect(() => {
     const fetchDrafts = async () => {
-      if (hasFetched.current) return;
+      if (hasFetched.current || !userUuid) return;
       hasFetched.current = true;
 
       try {
         const { data, error } = await supabase
           .from('draft_characters')
           .select('*')
-          .eq('user_uuid', user_uuid);
+          .eq('user_uuid', userUuid);
 
         if (error) {
           console.error('Error fetching drafts:', error);
@@ -85,7 +94,7 @@ export default function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
     };
 
     fetchDrafts();
-  }, [user_uuid]);
+  }, [userUuid]);
 
   const handleNextPage = () => {
     const nextPage = currentPage + 1;
