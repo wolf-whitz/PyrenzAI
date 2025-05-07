@@ -1,11 +1,11 @@
 export interface Character {
   id: string;
-  input_char_uuid: string;
+  char_uuid: string;
   name: string;
   description: string;
   creator: string | null;
   chat_messages_count: number;
-  tags: string[] | string;
+  tags: string[];
   profile_image: string;
   is_public: boolean;
   token_total: number;
@@ -13,7 +13,7 @@ export interface Character {
 
 export interface CharacterCardProps {
   id: string;
-  input_char_uuid: string;
+  char_uuid: string;
   name: string;
   description: string;
   creator: string | null;

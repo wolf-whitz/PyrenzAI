@@ -7,7 +7,7 @@ import { Box, Typography, IconButton, Tooltip } from '@mui/material';
 
 export default function CharacterCard({
   id,
-  input_char_uuid,
+  char_uuid,
   name,
   description,
   creator,
@@ -30,7 +30,7 @@ export default function CharacterCard({
   const handleCardClick = useCallback(() => {
     setModalData({
       id,
-      input_char_uuid,
+      char_uuid,
       name,
       description,
       creator,
@@ -43,7 +43,7 @@ export default function CharacterCard({
     setIsModalOpen(true);
   }, [
     id,
-    input_char_uuid,
+    char_uuid,
     name,
     description,
     creator,
@@ -135,7 +135,7 @@ export default function CharacterCard({
                   onClick={(e) => {
                     e.stopPropagation();
                     navigator.clipboard.writeText(
-                      `${window.location.origin}/characters/${input_char_uuid}`
+                      `${window.location.origin}/characters/${char_uuid}`
                     );
                     alert('Saved');
                   }}

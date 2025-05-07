@@ -6,7 +6,6 @@ interface UseFetchCharactersProps {
   currentPage: number;
   search: string;
   itemsPerPage: number;
-  userUUID: string | null;
   setCharacters: (characters: any[]) => void;
   setTotal: (total: number) => void;
   setLoading: (loading: boolean) => void;
@@ -17,15 +16,12 @@ export default function useFetchCharacters({
   currentPage,
   search,
   itemsPerPage,
-  userUUID,
   setCharacters,
   setTotal,
   setLoading,
   t,
 }: UseFetchCharactersProps) {
   const fetchCharactersData = useCallback(async () => {
-    if (!userUUID) return;
-
     setLoading(true);
     try {
       const { characters, total } = await fetchCharacters(
@@ -44,7 +40,6 @@ export default function useFetchCharacters({
     currentPage,
     search,
     itemsPerPage,
-    userUUID,
     setCharacters,
     setTotal,
     setLoading,

@@ -48,7 +48,7 @@ export default function CharacterCardModal({
   if (!character) return null;
 
   const handleChatNow = async () => {
-    if (isLoading || !character?.input_char_uuid) return;
+    if (isLoading || !character?.char_uuid) return;
 
     if (!userUUID) {
       setShowAuthModal(true);
@@ -58,7 +58,7 @@ export default function CharacterCardModal({
     setIsLoading(true);
 
     try {
-      const response = await CreateNewChat(character.input_char_uuid, userUUID);
+      const response = await CreateNewChat(character.char_uuid, userUUID);
 
       if (response?.chat_uuid) {
         navigate(`/chat/${response.chat_uuid}`);

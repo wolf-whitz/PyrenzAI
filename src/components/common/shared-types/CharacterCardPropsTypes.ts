@@ -1,6 +1,6 @@
 export interface CharacterCardProps {
   id: string;
-  input_char_uuid: string;
+  char_uuid: string;
   name: string;
   description: string;
   creator: string | null;

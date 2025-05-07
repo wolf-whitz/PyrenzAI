@@ -1,35 +1,12 @@
 import React, { memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SkeletonCard, CharacterCard } from '~/components';
-import { Character } from '@shared-types/CharacterProp';
 import { Typography } from '@mui/material';
 
 const MemoizedCharacterCard = memo(CharacterCard);
 
-const transformCharacter = (char: Character): CharacterCardProps => {
-  const tagsArray = Array.isArray(char.tags)
-    ? char.tags.map((tag) => tag.trim())
-    : typeof char.tags === 'string'
-      ? char.tags.split(',').map((tag) => tag.trim())
-      : [];
-
-  return {
-    id: char.id,
-    input_char_uuid: char.input_char_uuid,
-    name: char.name,
-    description: char.description,
-    creator: char.creator,
-    chat_messages_count: char.chat_messages_count,
-    profile_image: char.profile_image,
-    tags: tagsArray,
-    is_public: char.is_public ?? false,
-    token_total: char.token_total,
-    isLoading: false,
-  };
-};
-
 interface CharacterListProps {
-  characters: Character[];
+  characters: CharacterCardProps[];
   loading: boolean;
   itemsPerPage: number;
   t: (key: string, options?: Record<string, any>) => string;
@@ -37,7 +14,7 @@ interface CharacterListProps {
 
 interface CharacterCardProps {
   id: string;
-  input_char_uuid: string;
+  char_uuid: string;
   name: string;
   description: string;
   creator: string | null;
@@ -95,10 +72,7 @@ export default function CharacterList({
               className="transition-transform hover:scale-105 p-2"
               aria-labelledby={`character-${char.name}`}
             >
-              <MemoizedCharacterCard
-                {...transformCharacter(char)}
-                isLoading={loading}
-              />
+              <MemoizedCharacterCard {...char} />
             </motion.article>
           ))
         ) : (
@@ -118,4 +92,4 @@ export default function CharacterList({
       </AnimatePresence>
     </motion.div>
   );
-};
+}

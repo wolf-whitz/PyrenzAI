@@ -26,6 +26,20 @@ import {
   Pagination
 } from '~/components';
 
+interface CharacterCardProps {
+  id: string;
+  char_uuid: string;
+  name: string;
+  description: string;
+  creator: string | null;
+  chat_messages_count: number;
+  profile_image: string;
+  tags: string[];
+  is_public: boolean;
+  token_total: number;
+  isLoading: boolean;
+}
+
 export default function Home() {
   const navigate = useNavigate();
   const {
@@ -53,7 +67,6 @@ export default function Home() {
     currentPage,
     search,
     itemsPerPage,
-    userUUID,
     setCharacters,
     setTotal,
     setLoading,
@@ -101,19 +114,23 @@ export default function Home() {
 
       const characters: Character[] = rawCharacters.map((char) => ({
         id: char.id,
-        input_char_uuid: char.input_char_uuid,
+        char_uuid: char.char_uuid,
         name: char.name,
         description: char.description,
         creator: char.creator,
         chat_messages_count: char.chat_messages_count,
-        image_url: char.image_url,
-        tags: char.tags,
         profile_image: char.profile_image,
+        tags: Array.isArray(char.tags)
+        ? char.tags.map((tag: string) =>
+            tag.replace(/[\[\]"]/g, '').trim().toLowerCase()
+          )
+        : [],
         is_public: char.is_public,
         token_total: char.token_total,
       }));
 
       setCharacters(characters);
+      console.log('Fetched characters:', characters);
     } catch (error) {
       if (error instanceof Error) {
         toast.error(t('errors.callingRPCFunction') + error.message);
@@ -124,6 +141,20 @@ export default function Home() {
       setLoading(false);
     }
   };
+
+  const transformCharacter = (char: Character): CharacterCardProps => ({
+    id: char.id,
+    char_uuid: char.char_uuid,
+    name: char.name,
+    description: char.description,
+    creator: char.creator,
+    chat_messages_count: char.chat_messages_count,
+    profile_image: char.profile_image,
+    tags: char.tags,
+    is_public: char.is_public ?? false,
+    token_total: char.token_total,
+    isLoading: false,
+  });
 
   return (
     <motion.section
@@ -189,7 +220,7 @@ export default function Home() {
               {t('ariaLabels.characterList')}
             </h2>
             <CharacterList
-              characters={characters}
+              characters={characters.map(transformCharacter)}
               loading={loading}
               itemsPerPage={itemsPerPage}
               t={t}

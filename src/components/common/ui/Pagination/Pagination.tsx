@@ -1,7 +1,6 @@
 import React from 'react';
 import { LoadMore } from '~/components';
 
-// Define the types for the props
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
