@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button, CircularProgress } from '@mui/material';
 import { CreateButton, DraftsModal, ImportCharacterModal } from '~/components';
-import { Save, FileText, Upload } from 'lucide-react';
+import SaveIcon from '@mui/icons-material/Save';
+import DescriptionIcon from '@mui/icons-material/Description';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { CharacterData, Draft } from '@shared-types/CharacterProp';
 
 interface FormActionsProps {
@@ -72,7 +74,7 @@ export default function FormActions({
           saveLoading ? (
             <CircularProgress size={20} color="inherit" />
           ) : (
-            <Save className="text-xl" />
+            <SaveIcon className="text-xl" />
           )
         }
       >
@@ -83,7 +85,7 @@ export default function FormActions({
         color="primary"
         onClick={handleOpenDraftModal}
         className="w-full sm:w-auto"
-        startIcon={<FileText className="text-xl" />}
+        startIcon={<DescriptionIcon className="text-xl" />}
       >
         Drafts
       </Button>
@@ -92,7 +94,7 @@ export default function FormActions({
         color="primary"
         onClick={handleOpenImportCharacterModal}
         className="w-full sm:w-auto"
-        startIcon={<Upload className="text-xl" />}
+        startIcon={<UploadFileIcon className="text-xl" />}
       >
         Import Character
       </Button>

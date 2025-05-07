@@ -192,13 +192,14 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
     e.preventDefault();
     setLoading(true);
 
+    // Check for missing required fields
     const missing = requiredFields.filter(
       (field) => !characterData[field as keyof CharacterData]
     );
 
     if (missing.length > 0) {
       setMissingFields(missing);
-      setShowRequiredFieldsPopup(true);
+      setShowRequiredFieldsPopup(true); // Trigger the popup
       setLoading(false);
       return;
     }
@@ -282,6 +283,7 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
     loading,
     saveLoading,
     showRequiredFieldsPopup,
+    setShowRequiredFieldsPopup,
     missingFields,
     characterData,
     setCharacterData,

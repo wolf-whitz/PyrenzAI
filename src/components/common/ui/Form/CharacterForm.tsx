@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   GenderDropdown,
   VisibilityCheckboxes,
@@ -29,9 +29,19 @@ export default function CharacterForm() {
     handleImportCharacter,
     handleSubmit,
     formState,
+    setShowRequiredFieldsPopup,
   } = useCreateAPI(navigate);
 
-  const [showPopup, setShowPopup] = useState(showRequiredFieldsPopup);
+  const [showPopup, setShowPopup] = useState(false);
+
+  useEffect(() => {
+    setShowPopup(showRequiredFieldsPopup);
+  }, [showRequiredFieldsPopup]);
+
+  const handleClosePopup = () => {
+    setShowPopup(false);
+    setShowRequiredFieldsPopup(false);
+  };
 
   return (
     <div className="flex flex-col items-center justify-center bg-gray-900 p-6 min-h-screen">
@@ -63,7 +73,7 @@ export default function CharacterForm() {
       {showPopup && (
         <RequiredFieldsPopup
           missingFields={missingFields}
-          onClose={() => setShowPopup(false)}
+          onClose={handleClosePopup}
         />
       )}
     </div>

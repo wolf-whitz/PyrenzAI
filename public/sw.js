@@ -18,7 +18,7 @@ const urlsToCache = [
   '/',
   '/index.html',
   '/main.js',
-  '/favicon.ico',
+  '/favicon.png',
 ];
 
 /**

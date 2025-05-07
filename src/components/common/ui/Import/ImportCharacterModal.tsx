@@ -20,7 +20,22 @@ interface ImportCharacterModalProps {
 interface ImportCharacterResponse {
   success: boolean;
   data: {
-    error: string;
+    data?: {
+      first_message?: string;
+      tags?: { name: string }[];
+      char_name?: string;
+      char_persona?: string;
+      title?: string;
+      char_greeting?: string;
+      world_scenario?: string;
+      example_dialogue?: string;
+      name?: string;
+      description?: string;
+      scenario?: string;
+      mes_example?: string;
+      personality?: string;
+    };
+    error?: string;
   };
 }
 
@@ -111,18 +126,15 @@ export default function ImportCharacterModal({
       toast.error('Please complete all required fields.');
       return;
     }
-
+  
     setLoading(true);
     try {
       const response = await Utils.post<ImportCharacterResponse>(
         '/api/CharacterExtract',
         { type: selectedAI, url: link }
       );
-      if (
-        response.success &&
-        response.data.error &&
-        response.data.error !== ''
-      ) {
+  
+      if (response.success && response.data.error) {
         toast.error('Error importing character: ' + response.data.error);
         Sentry.captureMessage('Error importing character', {
           extra: {
@@ -130,7 +142,22 @@ export default function ImportCharacterModal({
           },
         });
       } else {
-        onImport(response.data);
+        const data = response.data.data;
+        if (!data) {
+          throw new Error('Invalid response data');
+        }
+  
+        const extractedData = {
+          first_message: data.first_message || data.char_greeting || '',
+          tags: data.tags ? data.tags.map(tag => tag.name) : [],
+          persona: data.char_persona || data.personality || '',
+          scenario: data.world_scenario || data.scenario || '',
+          example_dialogue: data.example_dialogue || data.mes_example || '',
+          name: data.name || data.char_name || data.title ||'',
+          description: data.description || '',
+        };
+  
+        onImport(extractedData);
         toast.success('Character imported successfully!');
         onClose();
       }
@@ -143,6 +170,7 @@ export default function ImportCharacterModal({
       setLoading(false);
     }
   };
+  
 
   return (
     <>
