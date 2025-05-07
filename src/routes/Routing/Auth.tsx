@@ -25,14 +25,14 @@ export default function Auth() {
   };
 
   return (
-    <div
+    <main
       className="min-h-screen flex justify-center items-center bg-cover bg-center bg-no-repeat font-baloo"
       style={{
         backgroundImage:
           "linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif')",
       }}
     >
-      <motion.div
+      <motion.section
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
@@ -46,7 +46,7 @@ export default function Auth() {
         </Typography>
         <Box className="flex justify-center flex-col items-center">
           {isLoaded ? (
-            <motion.div
+            <motion.article
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.2, duration: 0.4 }}
@@ -57,7 +57,7 @@ export default function Auth() {
                 onVerify={handleCaptcha}
                 theme="dark"
               />
-            </motion.div>
+            </motion.article>
           ) : (
             <Box className="text-white animate-pulse flex items-center mb-6">
               <CircularProgress size={24} className="mr-2" />
@@ -71,7 +71,7 @@ export default function Auth() {
             {t('messages.pyrenzAIDescription')}
           </Typography>
         </Box>
-      </motion.div>
-    </div>
+      </motion.section>
+    </main>
   );
 }

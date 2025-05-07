@@ -68,6 +68,17 @@ export default function createCustomTheme() {
           },
         },
       },
+      MuiListItemText: {
+        styleOverrides: {
+          root: {
+            color: '#ffffff',
+            fontFamily: `'Baloo Da 2', cursive`,
+            '&:hover': {
+              textDecoration: 'none',
+            },
+          },
+        },
+      },
     },
   });
 

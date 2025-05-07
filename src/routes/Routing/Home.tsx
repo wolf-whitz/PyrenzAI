@@ -1,51 +1,33 @@
-import React, { useEffect, useState, useCallback, memo } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import {
-  Sidebar,
-  Banner,
-  SearchBar,
-  CharacterCard,
-  LoadMore,
-  Footer,
-  CustomButton,
-  SkeletonCard,
-} from '~/components';
+import React, { useEffect, memo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useHomeStore } from '~/store';
-import { fetchCharacters } from '~/api';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Character, CharacterCardProps } from '@shared-types/CharacterProp';
+import { motion } from 'framer-motion';
+import { Character } from '@shared-types/CharacterProp';
 import { Box, Typography, Container } from '@mui/material';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useTranslation } from 'react-i18next';
 import {
   GetHotCharacters,
-  GetUserUUID,
   GetLatestCharacters,
   GetRandomCharacters,
   GetCharactersWithTags,
 } from '~/functions';
-
-const MemoizedCharacterCard = memo(CharacterCard);
-
-const transformCharacter = (char: Character): CharacterCardProps => {
-  const tagsArray = Array.isArray(char.tags)
-    ? char.tags.map((tag) => tag.trim())
-    : typeof char.tags === 'string'
-      ? char.tags.split(',').map((tag) => tag.trim())
-      : [];
-
-  return {
-    ...char,
-    tags: tagsArray,
-    isLoading: false,
-  };
-};
+import {
+  Sidebar,
+  Banner,
+  SearchBar,
+  Footer,
+  CustomButton,
+  useFetchUserUUID,
+  useSyncSearchParams,
+  useFetchCharacters,
+  CharacterList,
+  Pagination
+} from '~/components';
 
 export default function Home() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
   const {
     search,
     currentPage,
@@ -61,49 +43,13 @@ export default function Home() {
   } = useHomeStore();
 
   const { t } = useTranslation();
-
-  const [userUUID, setUserUUID] = useState<string | null>(null);
-
+  const userUUID = useFetchUserUUID();
   const itemsPerPage = 10;
   const totalPages = Math.max(1, Math.ceil(total / itemsPerPage));
 
-  useEffect(() => {
-    const fetchUserUUID = async () => {
-      const uuid = await GetUserUUID();
-      setUserUUID(uuid);
-    };
+  useSyncSearchParams({ search, currentPage, setSearch, setCurrentPage });
 
-    fetchUserUUID();
-  }, []);
-
-  useEffect(() => {
-    const currentSearch = searchParams.get('search') || '';
-    const currentPageParam = Number(searchParams.get('page')) || 1;
-
-    if (search !== currentSearch || currentPage !== currentPageParam) {
-      setSearch(currentSearch);
-      setCurrentPage(currentPageParam);
-    }
-  }, [searchParams, search, currentPage, setSearch, setCurrentPage]);
-
-  const fetchCharactersData = useCallback(async () => {
-    if (!userUUID) return;
-
-    setLoading(true);
-    try {
-      const { characters, total } = await fetchCharacters(
-        currentPage,
-        itemsPerPage,
-        search
-      );
-      setCharacters(characters);
-      setTotal(total);
-    } catch (error) {
-      toast.error(t('errors.fetchingCharacters'));
-    } finally {
-      setLoading(false);
-    }
-  }, [
+  useFetchCharacters({
     currentPage,
     search,
     itemsPerPage,
@@ -112,11 +58,7 @@ export default function Home() {
     setTotal,
     setLoading,
     t,
-  ]);
-
-  useEffect(() => {
-    fetchCharactersData();
-  }, [fetchCharactersData]);
+  });
 
   useEffect(() => {
     navigate(`?page=${currentPage}&search=${encodeURIComponent(search)}`, {
@@ -246,82 +188,22 @@ export default function Home() {
             <h2 id="characters-heading" className="sr-only">
               {t('ariaLabels.characterList')}
             </h2>
-
-            <motion.div
-              className="grid w-full gap-x-6 gap-y-4 pb-4 min-h-[50vh]
-                grid-cols-2
-                md:grid-cols-3
-                lg:grid-cols-4
-                xl:grid-cols-5
-                2xl:grid-cols-6"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
-            >
-              <AnimatePresence>
-                {loading ? (
-                  Array.from({ length: itemsPerPage }).map((_, i) => (
-                    <motion.article
-                      key={i}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.5 }}
-                      className="w-full"
-                      aria-label={t('ariaLabels.loadingCharacter', {
-                        index: i + 1,
-                      })}
-                    >
-                      <SkeletonCard key={i} />
-                    </motion.article>
-                  ))
-                ) : characters.length > 0 ? (
-                  characters.map((char: Character) => (
-                    <motion.article
-                      key={char.id}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.5 }}
-                      className="transition-transform hover:scale-105 p-2"
-                      aria-labelledby={`character-${char.name}`}
-                    >
-                      <MemoizedCharacterCard
-                        {...transformCharacter(char)}
-                        isLoading={loading}
-                      />
-                    </motion.article>
-                  ))
-                ) : (
-                  <motion.div
-                    className="text-gray-500 text-center w-full"
-                    aria-live="polite"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    <Typography variant="body1">
-                      {t('messages.noCharactersFound')}
-                    </Typography>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          </section>
-
-          <section aria-labelledby="pagination-heading" className="mt-6">
-            <h2 id="pagination-heading" className="sr-only">
-              {t('ariaLabels.paginationControls')}
-            </h2>
-            <LoadMore
-              currentPage={currentPage}
-              totalPages={totalPages}
+            <CharacterList
+              characters={characters}
+              loading={loading}
               itemsPerPage={itemsPerPage}
-              user_uuid={userUUID || ''}
-              onLoadMore={setCurrentPage}
+              t={t}
             />
           </section>
+
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            itemsPerPage={itemsPerPage}
+            userUUID={userUUID}
+            setCurrentPage={setCurrentPage}
+            t={t}
+          />
         </main>
       </Container>
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Globe, Laptop, Smartphone, X } from 'lucide-react';
+import { Language as Globe, Laptop, Smartphone, Close as X } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import posthog from 'posthog-js';
 import { useTranslation } from 'react-i18next';
