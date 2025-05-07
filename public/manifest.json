@@ -4,7 +4,7 @@
   "description": "PyrenzAI: Open-source, free alternative AI chatting.",
   "start_url": "/?form_factor=wide",
   "id": "/?form_factor=wide",
-  "display": "standalone",
+  "display": "fullscreen",
   "background_color": "#000000",
   "theme_color": "#1a1a1a",
   "orientation": "portrait",
