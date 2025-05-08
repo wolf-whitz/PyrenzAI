@@ -4,15 +4,13 @@ import { GenerateResponse, Message } from '@shared-types/chatTypes';
 import toast from 'react-hot-toast';
 import { GetUserUUID } from '~/functions';
 import { supabase } from '~/Utility/supabaseClient';
-import { useChatStore } from '~/store';
 
 interface GenerateMessageResponse {
   remainingMessages: number;
 }
 
 export const useGenerateMessage = () => {
-  const adWatchKey = useChatStore(state => state.adWatchKey);
-  console.log('adWatchKey:', adWatchKey);
+  const adWatchKey = localStorage.getItem('ad_watch_token');
 
   const generateMessage = useCallback(
     async (
@@ -66,15 +64,20 @@ export const useGenerateMessage = () => {
 
         const { inference_settings } = userData;
 
-        const response = await Utils.post<GenerateResponse>('/api/Generate', {
+        const payload: any = {
           Type: 'Generate',
           ConversationId: conversation_id,
           Message: { User: text },
           Engine: 'b234e3de-7dbb-4a4c-b7c0-d8d4dce4f3c5',
           user_uuid,
           inference_settings,
-          ad_watch_key: adWatchKey,
-        });
+        };
+
+        if (adWatchKey) {
+          payload.ad_watch_key = adWatchKey;
+        }
+
+        const response = await Utils.post<GenerateResponse>('/api/Generate', payload);
 
         if (!response?.data?.content) {
           throw new Error('No valid response from API');

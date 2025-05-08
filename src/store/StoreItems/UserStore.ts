@@ -22,7 +22,7 @@ export const useUserStore = create<UserState>()(
       setHasHydrated: (state: boolean) => set({ hasHydrated: state }),
     }),
     {
-      name: 'user-storage',
+      name: 'user-store',
       storage: {
         getItem: (name) => {
           const value = localStorage.getItem(name);

@@ -4,7 +4,6 @@ import CoffeeIcon from '@mui/icons-material/Coffee';
 import Confetti from 'react-confetti';
 import { Utils } from '~/Utility/Utility';
 import { GetUserUUID } from '~/functions';
-import { useChatStore } from '~/store';
 
 interface AdModalProps {
   isOpen: boolean;
@@ -20,7 +19,6 @@ export default function AdModal({ isOpen, onClose }: AdModalProps) {
   const [countdown, setCountdown] = useState(15);
   const [showExplosion, setShowExplosion] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const setAdWatchKey = useChatStore(state => state.setAdWatchKey);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -63,7 +61,7 @@ export default function AdModal({ isOpen, onClose }: AdModalProps) {
       const apiResponse = response as ApiResponse;
 
       if (apiResponse.success && apiResponse.ad_watch_token) {
-        setAdWatchKey(apiResponse.ad_watch_token);
+        localStorage.setItem('ad_watch_token', apiResponse.ad_watch_token);
       }
       onClose();
     } catch (error) {
