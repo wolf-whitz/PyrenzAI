@@ -32,7 +32,11 @@ export default function Sidebar({ className }: { className?: string }) {
   }, []);
 
   const menuItems = [
-    { name: t('navigation.home'), icon: <HomeIcon fontSize="small" />, path: '/Home' },
+    {
+      name: t('navigation.home'),
+      icon: <HomeIcon fontSize="small" />,
+      path: '/Home',
+    },
     {
       name: t('navigation.create'),
       icon: <PlusIcon fontSize="small" />,

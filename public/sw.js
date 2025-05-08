@@ -11,31 +11,25 @@
  * In the future we can add more functionality, but this works for now.
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
  * If you need more information about service workers, check the link above.
-*/
+ */
 
 const CACHE_NAME = 'v1';
-const urlsToCache = [
-  '/',
-  '/index.html',
-  '/main.js',
-  '/favicon.png',
-];
+const urlsToCache = ['/', '/index.html', '/main.js', '/favicon.png'];
 
 /**
  * Cache, What is it?
  * @Cache is a storage mechanism that allows you to store resources (like HTML, CSS, JS, images, etc.) in the browser.
  * This allows you to serve these resources from the cache instead of fetching them from the network, which can improve performance and enable offline functionality.
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Cache
-*/
+ */
 
 self.addEventListener('install', (event) => {
   console.log('🛠️ Service Worker installing.');
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('📦 Caching app shell...');
-        return cache.addAll(urlsToCache);
-      })
+    caches.open(CACHE_NAME).then((cache) => {
+      console.log('📦 Caching app shell...');
+      return cache.addAll(urlsToCache);
+    })
   );
   self.skipWaiting();
 });

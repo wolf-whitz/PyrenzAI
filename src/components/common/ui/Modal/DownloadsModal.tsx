@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Language as Globe, Laptop, Smartphone, Close as X } from '@mui/icons-material';
+import {
+  Language as Globe,
+  Laptop,
+  Smartphone,
+  Close as X,
+} from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import posthog from 'posthog-js';
 import { useTranslation } from 'react-i18next';
@@ -28,7 +33,10 @@ export default function DownloadModal({
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
     return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener(
+        'beforeinstallprompt',
+        handleBeforeInstallPrompt
+      );
     };
   }, []);
 
@@ -68,7 +76,10 @@ export default function DownloadModal({
     if (is_up) {
       navigate(link);
     } else {
-      if (deferredPrompt && (label === t('platforms.mobile') || label === t('platforms.windows'))) {
+      if (
+        deferredPrompt &&
+        (label === t('platforms.mobile') || label === t('platforms.windows'))
+      ) {
         deferredPrompt.prompt();
         deferredPrompt.userChoice.then((choiceResult: any) => {
           if (choiceResult.outcome === 'accepted') {

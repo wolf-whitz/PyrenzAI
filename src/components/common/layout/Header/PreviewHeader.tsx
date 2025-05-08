@@ -123,9 +123,8 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
                 <Icon size={18} /> {name}
               </motion.button>
             ))}
-
-            <LanguageDropdown languages={languages} /> {/* Use the new component */}
-
+            <LanguageDropdown languages={languages} />{' '}
+            {/* Use the new component */}
             {!isLoggedIn && (
               <>
                 <motion.button

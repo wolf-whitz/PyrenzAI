@@ -23,7 +23,7 @@ import {
   useSyncSearchParams,
   useFetchCharacters,
   CharacterList,
-  Pagination
+  Pagination,
 } from '~/components';
 
 interface CharacterCardProps {
@@ -121,10 +121,13 @@ export default function Home() {
         chat_messages_count: char.chat_messages_count,
         profile_image: char.profile_image,
         tags: Array.isArray(char.tags)
-        ? char.tags.map((tag: string) =>
-            tag.replace(/[\[\]"]/g, '').trim().toLowerCase()
-          )
-        : [],
+          ? char.tags.map((tag: string) =>
+              tag
+                .replace(/[\[\]"]/g, '')
+                .trim()
+                .toLowerCase()
+            )
+          : [],
         is_public: char.is_public,
         token_total: char.token_total,
       }));

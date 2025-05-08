@@ -70,7 +70,7 @@ export default function FeaturesSection({
               alignItems="center"
               sx={{ mb: index < cardData.length - 1 ? 6 : 0 }}
             >
-              <Grid  size={{ xs:12, md: 6}} component="div">
+              <Grid size={{ xs: 12, md: 6 }} component="div">
                 <Box textAlign={{ xs: 'center', md: 'left' }}>
                   <Typography
                     variant="h4"
@@ -89,10 +89,8 @@ export default function FeaturesSection({
                   </Typography>
                 </Box>
               </Grid>
-              <Grid size={{ xs:12, md: 6}} component="div">
-                <FeatureCard
-                  cardImage={card.cardImage}
-                />
+              <Grid size={{ xs: 12, md: 6 }} component="div">
+                <FeatureCard cardImage={card.cardImage} />
               </Grid>
             </Grid>
           ))}

@@ -1,6 +1,6 @@
 import { GetUserUUID, CreateNewChat } from '~/functions';
 import { useState, useEffect } from 'react';
-import { useUserStore, useCharacterStore } from '~/store';
+import { useCharacterStore } from '~/store';
 import { supabase } from '~/Utility/supabaseClient';
 import * as Sentry from '@sentry/react';
 import { CharacterData, Draft, ApiResponse } from '@shared-types/CharacterProp';

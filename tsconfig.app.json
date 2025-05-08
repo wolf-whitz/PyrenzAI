@@ -28,7 +28,7 @@
       "@store/*": ["src/store/*"],
       "@libs/*": ["src/lib/*"],
       "@functions/*": ["src/functions/*"],
-      "@hooks/*": ["src/components/common/hooks/*"],
+      "@hooks/*": ["src/components/common/hooks/*"]
     }
   },
   "include": ["src/**/*"]

@@ -31,13 +31,15 @@ export const fetchCharacters = async (
           : JSON.parse(char.tags)
         : [];
 
-      const cleanedTags = parsedTags.map((tag: any) =>
-        typeof tag === 'string' || typeof tag === 'number'
-          ? String(tag)
-              .replace(/[\[\]"]/g, '')
-              .trim()
-          : ''
-      ).filter(Boolean);
+      const cleanedTags = parsedTags
+        .map((tag: any) =>
+          typeof tag === 'string' || typeof tag === 'number'
+            ? String(tag)
+                .replace(/[\[\]"]/g, '')
+                .trim()
+            : ''
+        )
+        .filter(Boolean);
 
       return {
         id: char.id,

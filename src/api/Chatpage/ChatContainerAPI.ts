@@ -2,6 +2,8 @@ import { useCallback } from 'react';
 import { Utils } from '~/Utility/Utility';
 import { GenerateResponse, Message } from '@shared-types/chatTypes';
 import toast from 'react-hot-toast';
+import { GetUserUUID } from '~/functions';
+import { supabase } from '~/Utility/supabaseClient'; // Import the supabase client
 
 export const useGenerateMessage = () => {
   const generateMessage = useCallback(
@@ -52,11 +54,28 @@ export const useGenerateMessage = () => {
       setIsGenerating(true);
 
       try {
+        const user_uuid = await GetUserUUID();
+
+        // Fetch inference_settings from user_data table using supabase
+        const { data: userData, error: userDataError } = await supabase
+          .from('user_data')
+          .select('inference_settings')
+          .eq('user_uuid', user_uuid)
+          .single();
+
+        if (userDataError) {
+          throw new Error('Failed to fetch inference settings');
+        }
+
+        const { inference_settings } = userData;
+
         const response = await Utils.post<GenerateResponse>('/api/Generate', {
           Type: 'Generate',
           ConversationId: conversation_id,
           Message: { User: text },
-          Engine: 'Mango Ube',
+          Engine: 'b234e3de-7dbb-4a4c-b7c0-d8d4dce4f3c5',
+          user_uuid,
+          inference_settings,
         });
 
         console.log('API response:', response);

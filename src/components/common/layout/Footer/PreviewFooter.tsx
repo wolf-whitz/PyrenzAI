@@ -1,6 +1,13 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Container, Typography, List, ListItem, ListItemText, Link } from '@mui/material';
+import {
+  Container,
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+  Link,
+} from '@mui/material';
 
 export default function PreviewFooter() {
   const { t } = useTranslation();
@@ -12,7 +19,10 @@ export default function PreviewFooter() {
       <Container maxWidth="lg">
         <div className="flex flex-wrap justify-between items-start">
           <div className="w-full md:w-1/3 px-6">
-            <Typography variant="h6" className="font-bold text-white border-b-2 border-[#E03201] pb-1">
+            <Typography
+              variant="h6"
+              className="font-bold text-white border-b-2 border-[#E03201] pb-1"
+            >
               {t('footer.quickLinks')}
             </Typography>
             <List>
@@ -20,7 +30,10 @@ export default function PreviewFooter() {
                 { name: t('navigation.home'), path: '/Home' },
                 { name: t('footer.links.explore'), path: '/Explore' },
                 { name: t('navigation.chats'), path: '/Chats' },
-                { name: t('footer.links.discord'), path: 'https://discord.com' },
+                {
+                  name: t('footer.links.discord'),
+                  path: 'https://discord.com',
+                },
               ].map((item, index) => (
                 <ListItem className="group" key={index}>
                   <Link
@@ -35,7 +48,10 @@ export default function PreviewFooter() {
           </div>
 
           <div className="w-full md:w-1/3 px-6 mt-8 md:mt-0">
-            <Typography variant="h6" className="font-bold text-white border-b-2 border-[#E03201] pb-1">
+            <Typography
+              variant="h6"
+              className="font-bold text-white border-b-2 border-[#E03201] pb-1"
+            >
               {t('footer.links.guide')}
             </Typography>
             <List>
@@ -57,7 +73,10 @@ export default function PreviewFooter() {
           </div>
 
           <div className="w-full md:w-1/3 px-6 mt-8 md:mt-0">
-            <Typography variant="h6" className="font-bold text-white border-b-2 border-[#E03201] pb-1">
+            <Typography
+              variant="h6"
+              className="font-bold text-white border-b-2 border-[#E03201] pb-1"
+            >
               Legal
             </Typography>
             <List>
@@ -76,7 +95,8 @@ export default function PreviewFooter() {
         </div>
 
         <div className="w-full text-center mt-12 pt-4 text-sm text-white opacity-75">
-          © {new Date().getFullYear()} Pyrenz AI. {t('messages.allRightsReserved')}
+          © {new Date().getFullYear()} Pyrenz AI.{' '}
+          {t('messages.allRightsReserved')}
         </div>
       </Container>
     </footer>

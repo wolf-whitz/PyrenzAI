@@ -13,7 +13,7 @@ import App from './App.tsx';
 import './Global.css';
 
 import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from "@vercel/speed-insights/react";
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import posthog from 'posthog-js';
 import { posthogConfig } from '~/config';
 
@@ -49,7 +49,7 @@ createRoot(document.getElementById('root')!).render(
           <App />
         </ErrorBoundary>
         <Analytics />
-        <SpeedInsights/>
+        <SpeedInsights />
         <Toaster position="top-right" reverseOrder={false} />
       </ThemeProvider>
     </I18nextProvider>

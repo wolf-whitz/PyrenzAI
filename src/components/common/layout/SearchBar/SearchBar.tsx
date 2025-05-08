@@ -45,7 +45,11 @@ export default function SearchBar({
           InputProps={{
             startAdornment: (
               <InputAdornment position="start" sx={{ marginRight: '8px' }}>
-                <IconButton onClick={handleSearch} edge="start" sx={{ padding: '8px', color: 'grey' }}>
+                <IconButton
+                  onClick={handleSearch}
+                  edge="start"
+                  sx={{ padding: '8px', color: 'grey' }}
+                >
                   <SearchIcon />
                 </IconButton>
               </InputAdornment>
