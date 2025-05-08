@@ -12,6 +12,7 @@ interface GenerateMessageResponse {
 
 export const useGenerateMessage = () => {
   const adWatchKey = useChatStore(state => state.adWatchKey);
+  console.log('adWatchKey:', adWatchKey);
 
   const generateMessage = useCallback(
     async (

@@ -20,8 +20,8 @@ export const fetchChatData = async (
   firstMessage: string;
 }> => {
   if (!conversation_id) {
-    toast.error('Missing conversation_id 😬');
-    throw new Error('Missing conversation_id 😬');
+    toast.error('Missing conversation_id');
+    throw new Error('Missing conversation_id');
   }
 
   try {
