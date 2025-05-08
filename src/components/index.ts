@@ -97,6 +97,7 @@ import CreatePersonaModal from '@ui/Modal/CreatePersonaModal';
 import CharacterCardImageModal from '@ui/Modal/CharacterCardImageModal';
 import CreateCharacterCardImageModal from '@ui/Modal/CreateCharacterCardImageModal';
 import ProviderModals from '@ui/Modal/ProvidersModal';
+import AdModal from '@ui/Modal/AdModal';
 
 // Slider
 import SliderComponent from '@ui/Slider/SliderComponent';
@@ -219,7 +220,8 @@ export {
   CreatePersonaModal,
   CharacterCardImageModal,
   CreateCharacterCardImageModal,
-
+  AdModal,
+  
   // Cards
   Card,
   CardContent,

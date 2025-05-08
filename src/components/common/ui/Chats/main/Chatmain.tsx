@@ -5,7 +5,7 @@ import ChatMessages from '../ChatMessages';
 import { motion } from 'framer-motion';
 import { Avatar, Typography, IconButton } from '@mui/material';
 import { Settings, ChevronLeft } from 'lucide-react';
-import { SettingsSidebar } from '@components/index';
+import { SettingsSidebar, AdModal } from '@components/index';
 import { useGenerateMessage } from '~/api/Chatpage/ChatContainerAPI';
 import { useNavigate } from 'react-router-dom';
 
@@ -32,6 +32,7 @@ export default function ChatMain({
 }: ChatMainProps) {
   const [bgImage, setBgImage] = useState<string | null>(null);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isAdModalOpen, setIsAdModalOpen] = useState(false);
   const generateMessage = useGenerateMessage();
   const navigate = useNavigate();
 
@@ -76,7 +77,7 @@ export default function ChatMain({
 
     try {
       console.log(trimmedMessage);
-      await generateMessage(
+      const response = await generateMessage(
         trimmedMessage,
         user,
         char,
@@ -85,6 +86,10 @@ export default function ChatMain({
         messageIdRef,
         setIsGenerating
       );
+
+      if (response.remainingMessages === 0) {
+        setIsAdModalOpen(true);
+      }
     } catch (error) {
       console.error('Error:', error);
     }
@@ -161,6 +166,8 @@ export default function ChatMain({
       </motion.div>
 
       <SettingsSidebar settingsOpen={isSettingsOpen} onClose={toggleSettings} />
+
+      <AdModal isOpen={isAdModalOpen} onClose={() => setIsAdModalOpen(false)} />
     </motion.div>
   );
 }

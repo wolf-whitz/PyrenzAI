@@ -29,6 +29,8 @@ interface ChatStore {
   setUserData: (userData: UserData) => void;
   character: Character | null;
   setCharacter: (character: Character) => void;
+  adWatchKey: string | null;
+  setAdWatchKey: (adWatchKey: string) => void;
   clearData: () => void;
 }
 
@@ -49,6 +51,9 @@ export const useChatStore = create<ChatStore>((set) => ({
   character: null,
   setCharacter: (character: Character) => set({ character }),
 
+  adWatchKey: null,
+  setAdWatchKey: (adWatchKey: string) => set({ adWatchKey }),
+
   clearData: () =>
-    set({ firstMessage: '', messages: [], userData: null, character: null }),
+    set({ firstMessage: '', messages: [], userData: null, character: null, adWatchKey: null }),
 }));

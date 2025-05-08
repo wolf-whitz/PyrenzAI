@@ -60,4 +60,5 @@ export interface GenerateResponse {
     userMessageUuid: string;
     charMessageUuid: string;
   }>;
+  remainingMessages: number;
 }

@@ -3,9 +3,16 @@ import { Utils } from '~/Utility/Utility';
 import { GenerateResponse, Message } from '@shared-types/chatTypes';
 import toast from 'react-hot-toast';
 import { GetUserUUID } from '~/functions';
-import { supabase } from '~/Utility/supabaseClient'; // Import the supabase client
+import { supabase } from '~/Utility/supabaseClient';
+import { useChatStore } from '~/store';
+
+interface GenerateMessageResponse {
+  remainingMessages: number;
+}
 
 export const useGenerateMessage = () => {
+  const adWatchKey = useChatStore(state => state.adWatchKey);
+
   const generateMessage = useCallback(
     async (
       text: string,
@@ -18,17 +25,9 @@ export const useGenerateMessage = () => {
         userId: string | null;
       }>,
       setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>
-    ): Promise<void> => {
-      console.log('generateMessage called with:', {
-        text,
-        user,
-        char,
-        conversation_id,
-      });
-
+    ): Promise<GenerateMessageResponse> => {
       if (!user || !char || !conversation_id) {
-        console.error('Missing required parameters');
-        return;
+        return { remainingMessages: 0 };
       }
 
       const userMessage: Message = {
@@ -46,9 +45,7 @@ export const useGenerateMessage = () => {
       };
 
       setMessages((prevMessages) => {
-        console.log('Messages before update:', prevMessages);
         const newMessages = [...prevMessages, userMessage, assistantMessage];
-        console.log('Messages after update:', newMessages);
         return newMessages;
       });
       setIsGenerating(true);
@@ -56,7 +53,6 @@ export const useGenerateMessage = () => {
       try {
         const user_uuid = await GetUserUUID();
 
-        // Fetch inference_settings from user_data table using supabase
         const { data: userData, error: userDataError } = await supabase
           .from('user_data')
           .select('inference_settings')
@@ -76,9 +72,8 @@ export const useGenerateMessage = () => {
           Engine: 'b234e3de-7dbb-4a4c-b7c0-d8d4dce4f3c5',
           user_uuid,
           inference_settings,
+          ad_watch_key: adWatchKey,
         });
-
-        console.log('API response:', response);
 
         if (!response?.data?.content) {
           throw new Error('No valid response from API');
@@ -96,12 +91,12 @@ export const useGenerateMessage = () => {
               ? { ...msg, text: response.data.content, isGenerate: false }
               : msg
           );
-          console.log('Messages after API response:', updatedMessages);
           return updatedMessages;
         });
-      } catch (error) {
-        console.error('Failed to send message:', error);
 
+        const remainingMessages = response.remainingMessages || 0;
+        return { remainingMessages };
+      } catch (error) {
         setMessages((prevMessages) => {
           const updatedMessages = prevMessages.map((msg) =>
             msg.type === 'assistant' && msg.isGenerate
@@ -113,16 +108,16 @@ export const useGenerateMessage = () => {
                 }
               : msg
           );
-          console.log('Messages after error:', updatedMessages);
           return updatedMessages;
         });
 
         toast.error('Failed to generate response.');
+        return { remainingMessages: 0 };
       } finally {
         setIsGenerating(false);
       }
     },
-    []
+    [adWatchKey]
   );
 
   return generateMessage;
