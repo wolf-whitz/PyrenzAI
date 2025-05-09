@@ -62,35 +62,37 @@ export const fetchChatData = async (
 
     const reversedMessages = (data || []).reverse();
 
-    const formattedMessages = reversedMessages.flatMap((msg: ChatMessageWithId) => {
-      const messages: (Message & { id?: string })[] = [];
+    const formattedMessages = reversedMessages.flatMap(
+      (msg: ChatMessageWithId) => {
+        const messages: (Message & { id?: string })[] = [];
 
-      if (msg.user_message) {
-        messages.push({
-          id: msg.id,
-          name: 'User',
-          text: msg.user_message,
-          icon: '',
-          type: 'user',
-          conversation_id,
-        });
+        if (msg.user_message) {
+          messages.push({
+            id: msg.id,
+            name: 'User',
+            text: msg.user_message,
+            icon: '',
+            type: 'user',
+            conversation_id,
+          });
+        }
+
+        if (msg.char_message) {
+          messages.push({
+            id: msg.id,
+            name: character.name || 'Assistant',
+            text: msg.char_message,
+            icon:
+              character.profile_image ||
+              `https://api.dicebear.com/9.x/adventurer/svg?seed=${character.name || 'Anon'}`,
+            type: 'assistant',
+            conversation_id,
+          });
+        }
+
+        return messages;
       }
-
-      if (msg.char_message) {
-        messages.push({
-          id: msg.id,
-          name: character.name || 'Assistant',
-          text: msg.char_message,
-          icon:
-            character.profile_image ||
-            `https://api.dicebear.com/9.x/adventurer/svg?seed=${character.name || 'Anon'}`,
-          type: 'assistant',
-          conversation_id,
-        });
-      }
-
-      return messages;
-    });
+    );
 
     return {
       character,

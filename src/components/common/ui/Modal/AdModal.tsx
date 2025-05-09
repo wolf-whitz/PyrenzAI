@@ -57,7 +57,10 @@ export default function AdModal({ isOpen, onClose }: AdModalProps) {
     }
 
     try {
-      const response = await Utils.post('/api/Getadtoken', { user_uuid, pressed_at });
+      const response = await Utils.post('/api/Getadtoken', {
+        user_uuid,
+        pressed_at,
+      });
       const apiResponse = response as ApiResponse;
 
       if (apiResponse.success && apiResponse.ad_watch_token) {
@@ -88,11 +91,17 @@ export default function AdModal({ isOpen, onClose }: AdModalProps) {
             onClick={handleCoffeeClick}
           />
         </div>
-        <Typography id="modal-modal-title" variant="h6" component="h2" className="text-white">
+        <Typography
+          id="modal-modal-title"
+          variant="h6"
+          component="h2"
+          className="text-white"
+        >
           Support PyrenzAI Now!
         </Typography>
         <Typography variant="body1" className="text-white mb-4">
-          ☕️ Help keep PyrenzAI awake! Your support = more caffeine = more late-night coding sessions 🙌
+          ☕️ Help keep PyrenzAI awake! Your support = more caffeine = more
+          late-night coding sessions 🙌
         </Typography>
         <Typography variant="caption" className="text-gray-400 mb-4 block">
           PS: If you wanna donate press the coffee icon ;3
@@ -110,7 +119,13 @@ export default function AdModal({ isOpen, onClose }: AdModalProps) {
           }}
           className="mt-4"
         >
-          {isLoading ? <CircularProgress size={24} color="inherit" /> : countdown > 0 ? `Please wait (${countdown})` : 'Close'}
+          {isLoading ? (
+            <CircularProgress size={24} color="inherit" />
+          ) : countdown > 0 ? (
+            `Please wait (${countdown})`
+          ) : (
+            'Close'
+          )}
         </Button>
       </div>
     </div>

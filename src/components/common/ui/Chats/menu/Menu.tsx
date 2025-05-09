@@ -1,6 +1,13 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { Box, Button, MenuItem, MenuList, Paper, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  MenuItem,
+  MenuList,
+  Paper,
+  Typography,
+} from '@mui/material';
 import { ExpandMore, ExpandLess } from '@mui/icons-material';
 import { Customization, Cosmetic } from './MenuItem';
 

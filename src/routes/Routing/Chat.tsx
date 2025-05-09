@@ -119,9 +119,20 @@ export default function ChatPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
-        style={{ display: 'flex', minHeight: '100vh', width: '100vw', color: 'white', backgroundColor: '#111827' }}
+        style={{
+          display: 'flex',
+          minHeight: '100vh',
+          width: '100vw',
+          color: 'white',
+          backgroundColor: '#111827',
+        }}
       >
-        <Box component="aside" display={{ xs: 'none', lg: 'flex' }} flexDirection="column" width="256px">
+        <Box
+          component="aside"
+          display={{ xs: 'none', lg: 'flex' }}
+          flexDirection="column"
+          width="256px"
+        >
           <Sidebar />
         </Box>
 
@@ -154,13 +165,29 @@ export default function ChatPage() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
-      style={{ display: 'flex', minHeight: '100vh', width: '100vw', color: 'white', backgroundColor: '#111827' }}
+      style={{
+        display: 'flex',
+        minHeight: '100vh',
+        width: '100vw',
+        color: 'white',
+        backgroundColor: '#111827',
+      }}
     >
-      <Box component="aside" display={{ xs: 'none', lg: 'flex' }} flexDirection="column" width="256px">
+      <Box
+        component="aside"
+        display={{ xs: 'none', lg: 'flex' }}
+        flexDirection="column"
+        width="256px"
+      >
         <Sidebar />
       </Box>
 
-      <Box component="main" flex={1} overflow="auto" sx={{ scrollbarWidth: 'none' }}>
+      <Box
+        component="main"
+        flex={1}
+        overflow="auto"
+        sx={{ scrollbarWidth: 'none' }}
+      >
         <ChatContainer
           user={userData}
           char={character}

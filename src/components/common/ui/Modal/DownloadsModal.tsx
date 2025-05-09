@@ -72,7 +72,7 @@ export default function DownloadModal({
 
   const handleButtonClick = (link: string, label: string, is_up: boolean) => {
     posthog.capture(`${label} Button Clicked`);
-  
+
     if (is_up) {
       navigate(link);
     } else {
@@ -94,7 +94,6 @@ export default function DownloadModal({
       }
     }
   };
-  
 
   return ReactDOM.createPortal(
     <AnimatePresence>

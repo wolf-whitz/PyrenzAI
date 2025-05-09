@@ -56,10 +56,13 @@ export default function Customization() {
 
   const stateSetters = {
     maxTokens: (value: number) => setMaxTokens(Math.min(value, 1000)),
-    temperature: (value: number) => setTemperature(Math.min(Math.max(value, 0), 2)),
+    temperature: (value: number) =>
+      setTemperature(Math.min(Math.max(value, 0), 2)),
     topP: (value: number) => setTopP(Math.min(Math.max(value, 0), 1)),
-    presencePenalty: (value: number) => setPresencePenalty(Math.min(Math.max(value, -2), 2)),
-    frequencyPenalty: (value: number) => setFrequencyPenalty(Math.min(Math.max(value, -2), 2)),
+    presencePenalty: (value: number) =>
+      setPresencePenalty(Math.min(Math.max(value, -2), 2)),
+    frequencyPenalty: (value: number) =>
+      setFrequencyPenalty(Math.min(Math.max(value, -2), 2)),
   };
 
   useEffect(() => {
@@ -195,7 +198,9 @@ export default function Customization() {
               stateValue={stateValue}
               stateSetter={stateSetter}
               sliderDescriptions={sliderDescriptions}
-              setShowPopover={setShowPopover as Dispatch<SetStateAction<string | null>>}
+              setShowPopover={
+                setShowPopover as Dispatch<SetStateAction<string | null>>
+              }
               maxValue={maxValue}
             />
           );

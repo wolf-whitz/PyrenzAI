@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Avatar, CircularProgress, Typography, Menu, MenuItem } from '@mui/material';
+import {
+  Avatar,
+  CircularProgress,
+  Typography,
+  Menu,
+  MenuItem,
+} from '@mui/material';
 import { supabase } from '~/Utility/supabaseClient';
 import { GetUserUUID } from '~/functions';
 
@@ -81,7 +87,7 @@ export default function PreviousChat() {
             mouseY: event.clientY - 6,
             chatId,
           }
-        : null,
+        : null
     );
   };
 
@@ -93,14 +99,11 @@ export default function PreviousChat() {
     if (!chatId) return;
 
     try {
-      const { error } = await supabase
-        .from('chats')
-        .delete()
-        .eq('id', chatId);
+      const { error } = await supabase.from('chats').delete().eq('id', chatId);
 
       if (error) throw error;
 
-      setChats(chats.filter(chat => chat.id !== chatId));
+      setChats(chats.filter((chat) => chat.id !== chatId));
     } catch (err: any) {
       console.error('Failed to delete chat:', err);
       setError('Failed to delete chat. Please try again later.');
@@ -111,7 +114,7 @@ export default function PreviousChat() {
 
   const handleExport = (chatId: string | null | undefined) => {
     if (!chatId) return;
-    const chatToExport = chats.find(chat => chat.id === chatId);
+    const chatToExport = chats.find((chat) => chat.id === chatId);
     if (chatToExport) {
       const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(chatToExport))}`;
       const downloadAnchorNode = document.createElement('a');
@@ -202,8 +205,12 @@ export default function PreviousChat() {
               : undefined
           }
         >
-          <MenuItem onClick={() => handleExport(contextMenu?.chatId)}>Export</MenuItem>
-          <MenuItem onClick={() => handleDelete(contextMenu?.chatId)}>Delete</MenuItem>
+          <MenuItem onClick={() => handleExport(contextMenu?.chatId)}>
+            Export
+          </MenuItem>
+          <MenuItem onClick={() => handleDelete(contextMenu?.chatId)}>
+            Delete
+          </MenuItem>
         </Menu>
       </div>
     </aside>
