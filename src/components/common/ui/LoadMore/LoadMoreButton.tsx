@@ -44,7 +44,7 @@ export default function Pagination({
       if (characters.length > 0) {
         onLoadMore(currentPage + 1);
       } else {
-        toast.info('No more characters to load.');
+        toast.success('No more characters to load.');
       }
     } catch (error) {
       console.error('Error fetching characters:', error);
