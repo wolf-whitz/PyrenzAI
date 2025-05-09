@@ -1,11 +1,11 @@
 import { GetUserUUID, GetUserData } from '~/functions';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useChatStore } from '~/store';
 import { fetchChatData } from '~/api';
 import { Sidebar, ChatContainer, PreviousChat } from '~/components';
-import { ChatPageSpinner } from '@ui/Spinner/Spinner';
+import { Box, Typography, CircularProgress } from '@mui/material';
 
 interface PersonaResponse {
   user_uuid: string;
@@ -16,6 +16,7 @@ interface PersonaResponse {
 
 export default function ChatPage() {
   const { conversation_id } = useParams<{ conversation_id: string }>();
+  const navigate = useNavigate();
 
   const [chatData, setChatData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -100,17 +101,49 @@ export default function ChatPage() {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen">
-        <ChatPageSpinner />
-      </div>
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="100vh"
+        width="100vw"
+      >
+        <CircularProgress />
+      </Box>
     );
   }
 
   if (fetchError || !chatData || !conversation_id) {
     return (
-      <div className="text-center text-white">
-        Unknown Chat or Character... Try again later.
-      </div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
+        style={{ display: 'flex', minHeight: '100vh', width: '100vw', color: 'white', backgroundColor: '#111827' }}
+      >
+        <Box component="aside" display={{ xs: 'none', lg: 'flex' }} flexDirection="column" width="256px">
+          <Sidebar />
+        </Box>
+
+        <Box
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          flex={1}
+        >
+          <img
+            src="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MascotCrying.avif"
+            alt="Mascot Crying"
+            loading="lazy"
+            className="w-24 h-24 mb-5 animate-bounce cursor-pointer"
+            onClick={() => navigate('/Home')}
+          />
+          <Typography variant="body1" color="textWhite">
+            Unknown Chat or Character... Try again later.
+          </Typography>
+        </Box>
+      </motion.div>
     );
   }
 
@@ -121,13 +154,13 @@ export default function ChatPage() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
-      className="flex min-h-screen w-full text-white bg-gray-900"
+      style={{ display: 'flex', minHeight: '100vh', width: '100vw', color: 'white', backgroundColor: '#111827' }}
     >
-      <aside className="hidden lg:flex flex-col w-64">
+      <Box component="aside" display={{ xs: 'none', lg: 'flex' }} flexDirection="column" width="256px">
         <Sidebar />
-      </aside>
+      </Box>
 
-      <main className="flex-1 overflow-y-auto scrollbar-transparent">
+      <Box component="main" flex={1} overflow="auto" sx={{ scrollbarWidth: 'none' }}>
         <ChatContainer
           user={userData}
           char={character}
@@ -135,7 +168,7 @@ export default function ChatPage() {
           previous_message={messages}
           conversation_id={conversation_id}
         />
-      </main>
+      </Box>
 
       <PreviousChat />
     </motion.div>

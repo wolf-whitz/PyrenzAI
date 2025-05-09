@@ -10,8 +10,6 @@ interface GenerateMessageResponse {
 }
 
 export const useGenerateMessage = () => {
-  const adWatchKey = localStorage.getItem('ad_watch_token');
-
   const generateMessage = useCallback(
     async (
       text: string,
@@ -64,6 +62,7 @@ export const useGenerateMessage = () => {
 
         const { inference_settings } = userData;
 
+        const adWatchKey = localStorage.getItem('ad_watch_token');
         const connectionParams = new URLSearchParams();
         connectionParams.append('user_uuid', user_uuid as string);
         if (adWatchKey) {
@@ -101,6 +100,10 @@ export const useGenerateMessage = () => {
           return updatedMessages;
         });
 
+        if (adWatchKey) {
+          localStorage.removeItem('ad_watch_token');
+        }
+
         const remainingMessages = response.remainingMessages || 0;
         return { remainingMessages };
       } catch (error) {
@@ -124,7 +127,7 @@ export const useGenerateMessage = () => {
         setIsGenerating(false);
       }
     },
-    [adWatchKey]
+    []
   );
 
   return generateMessage;

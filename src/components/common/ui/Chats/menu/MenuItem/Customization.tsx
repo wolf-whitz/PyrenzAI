@@ -1,4 +1,4 @@
-import React, { useState, Dispatch, SetStateAction } from 'react';
+import React, { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import { supabase } from '~/Utility/supabaseClient';
 import { GetUserUUID } from '~/functions';
 import * as Sentry from '@sentry/react';
@@ -52,6 +52,7 @@ export default function Customization() {
     keyof typeof sliderDescriptions | null
   >(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [modelId, setModelId] = useState<string | null>(null);
 
   const stateSetters = {
     maxTokens: (value: number) => setMaxTokens(Math.min(value, 1000)),
@@ -61,9 +62,34 @@ export default function Customization() {
     frequencyPenalty: (value: number) => setFrequencyPenalty(Math.min(Math.max(value, -2), 2)),
   };
 
+  useEffect(() => {
+    const fetchModelId = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('model_identifiers')
+          .select('identifier')
+          .eq('subscription_plan', preferredModel)
+          .single();
+
+        if (error) {
+          throw error;
+        }
+
+        if (data) {
+          setModelId(data.identifier);
+        }
+      } catch (error) {
+        Sentry.captureException(error);
+        toast.error('Error fetching model identifier. Please try again.');
+      }
+    };
+
+    fetchModelId();
+  }, [preferredModel]);
+
   const handleSubmit = async () => {
     const inferenceSettings = {
-      model: preferredModel,
+      model: modelId || preferredModel,
       maxTokens,
       temperature,
       topP,
@@ -110,6 +136,18 @@ export default function Customization() {
         setPreferredModel={setPreferredModel}
         modelOptions={modelOptions}
       />
+
+      {preferredModel === 'Custom' && (
+        <CustomModelFields
+          apiKey={apiKey}
+          setApiKey={setApiKey}
+          customModelName={customModelName}
+          setCustomModelName={setCustomModelName}
+          provider={provider}
+          setProvider={setProvider}
+          setModalOpen={setModalOpen}
+        />
+      )}
 
       <div className="border p-4 rounded-lg shadow-sm">
         <div className="flex items-center mb-4">
@@ -163,18 +201,6 @@ export default function Customization() {
           );
         })}
       </div>
-
-      {preferredModel === 'Custom' && (
-        <CustomModelFields
-          apiKey={apiKey}
-          setApiKey={setApiKey}
-          customModelName={customModelName}
-          setCustomModelName={setCustomModelName}
-          provider={provider}
-          setProvider={setProvider}
-          setModalOpen={setModalOpen}
-        />
-      )}
 
       <Button
         variant="contained"
