@@ -60,7 +60,9 @@ export const fetchChatData = async (
       throw error;
     }
 
-    const formattedMessages = (data || []).flatMap((msg: ChatMessageWithId) => {
+    const reversedMessages = (data || []).reverse();
+
+    const formattedMessages = reversedMessages.flatMap((msg: ChatMessageWithId) => {
       const messages: (Message & { id?: string })[] = [];
 
       if (msg.user_message) {
