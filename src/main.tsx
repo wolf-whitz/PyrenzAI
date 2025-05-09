@@ -21,7 +21,7 @@ import { ThemeProvider, CssBaseline } from '@mui/material';
 import { I18nextProvider } from 'react-i18next';
 import createCustomTheme from '~/provider/ThemeProvider';
 import i18n from '~/provider/TranslationProvider.ts';
-import { Toaster } from 'react-hot-toast';
+import ToastProvider from '~/provider/ToastProvider.tsx';
 
 import * as Sentry from '@sentry/react';
 
@@ -50,7 +50,7 @@ createRoot(document.getElementById('root')!).render(
         </ErrorBoundary>
         <Analytics />
         <SpeedInsights />
-        <Toaster position="top-right" reverseOrder={false} />
+        <ToastProvider />
       </ThemeProvider>
     </I18nextProvider>
   </StrictMode>

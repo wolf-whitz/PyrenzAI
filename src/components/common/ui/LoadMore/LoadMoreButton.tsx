@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Button, CircularProgress } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { fetchCharacters } from '~/functions';
-import { toast } from 'react-toastify';
+import toast from 'react-hot-toast';
 import * as Sentry from '@sentry/react';
 
 interface PaginationProps {

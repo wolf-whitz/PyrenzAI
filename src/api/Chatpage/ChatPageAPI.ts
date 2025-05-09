@@ -1,5 +1,5 @@
 import { Character, Message } from '@shared-types/chatTypes';
-import { toast } from 'react-toastify';
+import toast from 'react-hot-toast';
 import * as Sentry from '@sentry/react';
 import { supabase } from '~/Utility/supabaseClient';
 import GetChatData from '~/functions/Chats/GetChatData';

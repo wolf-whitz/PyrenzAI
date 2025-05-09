@@ -3,13 +3,15 @@ import { supabase } from '~/Utility/supabaseClient';
 import { GetUserUUID } from '~/functions';
 import * as Sentry from '@sentry/react';
 import toast from 'react-hot-toast';
-import { Button } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import { ProviderModals } from '@components/index';
 import {
   CustomModelFields,
   ModelSelection,
   SliderComponent,
 } from '@components/index';
+import InfoIcon from '@mui/icons-material/Info';
+import BuildIcon from '@mui/icons-material/Build';
 
 interface Provider {
   provider_name: string;
@@ -38,10 +40,10 @@ const modelOptions = [
 
 export default function Customization() {
   const [maxTokens, setMaxTokens] = useState(100);
-  const [temperature, setTemperature] = useState(100);
-  const [topP, setTopP] = useState(100);
-  const [presencePenalty, setPresencePenalty] = useState(100);
-  const [frequencyPenalty, setFrequencyPenalty] = useState(100);
+  const [temperature, setTemperature] = useState(1);
+  const [topP, setTopP] = useState(1);
+  const [presencePenalty, setPresencePenalty] = useState(0);
+  const [frequencyPenalty, setFrequencyPenalty] = useState(0);
   const [preferredModel, setPreferredModel] = useState(modelOptions[0].value);
   const [apiKey, setApiKey] = useState('');
   const [customModelName, setCustomModelName] = useState('');
@@ -52,21 +54,21 @@ export default function Customization() {
   const [modalOpen, setModalOpen] = useState(false);
 
   const stateSetters = {
-    maxTokens: setMaxTokens,
-    temperature: setTemperature,
-    topP: setTopP,
-    presencePenalty: setPresencePenalty,
-    frequencyPenalty: setFrequencyPenalty,
+    maxTokens: (value: number) => setMaxTokens(Math.min(value, 1000)),
+    temperature: (value: number) => setTemperature(Math.min(Math.max(value, 0), 2)),
+    topP: (value: number) => setTopP(Math.min(Math.max(value, 0), 1)),
+    presencePenalty: (value: number) => setPresencePenalty(Math.min(Math.max(value, -2), 2)),
+    frequencyPenalty: (value: number) => setFrequencyPenalty(Math.min(Math.max(value, -2), 2)),
   };
 
   const handleSubmit = async () => {
-    const data = {
+    const inferenceSettings = {
+      model: preferredModel,
       maxTokens,
       temperature,
       topP,
       presencePenalty,
       frequencyPenalty,
-      preferred_model: preferredModel,
       ...(preferredModel === 'Custom' && {
         api_key: apiKey,
         custom_model_name: customModelName,
@@ -74,8 +76,12 @@ export default function Customization() {
       }),
     };
 
+    const data = {
+      inference_settings: JSON.stringify(inferenceSettings),
+    };
+
     try {
-      const userUUID = GetUserUUID();
+      const userUUID = await GetUserUUID();
       const { error } = await supabase
         .from('user_data')
         .update(data)
@@ -98,52 +104,65 @@ export default function Customization() {
   };
 
   return (
-    <div className="p-4 space-y-4 relative">
-      {Object.keys(sliderDescriptions).map((key) => {
-        const sliderKey = key as keyof typeof sliderDescriptions;
-        const stateValue = {
-          maxTokens,
-          temperature,
-          topP,
-          presencePenalty,
-          frequencyPenalty,
-        }[sliderKey] as number;
-        const stateSetter = stateSetters[sliderKey];
-
-        return (
-          <SliderComponent
-            key={sliderKey}
-            sliderKey={sliderKey}
-            stateValue={stateValue}
-            stateSetter={stateSetter}
-            sliderDescriptions={sliderDescriptions}
-            setShowPopover={
-              setShowPopover as Dispatch<SetStateAction<string | null>>
-            }
-          />
-        );
-      })}
-
-      {showPopover && (
-        <div
-          className="absolute bg-gray-800 text-white text-sm rounded p-2 z-10"
-          style={{ top: '20px', left: '50%', transform: 'translateX(-50%)' }}
-        >
-          {sliderDescriptions[showPopover]}
-          <button
-            onClick={() => setShowPopover(null)}
-            className="absolute top-0 right-0 mt-1 mr-1 text-gray-400 hover:text-gray-300 focus:outline-none"
-          >
-            &times;
-          </button>
-        </div>
-      )}
-
+    <div className="p-4 space-y-4">
       <ModelSelection
         preferredModel={preferredModel}
         setPreferredModel={setPreferredModel}
         modelOptions={modelOptions}
       />
+
+      <div className="border p-4 rounded-lg shadow-sm">
+        <div className="flex items-center mb-4">
+          <BuildIcon className="mr-2" />
+          <Typography variant="subtitle1" component="h2">
+            Manual Parameters
+          </Typography>
+        </div>
+        {Object.keys(sliderDescriptions).map((key) => {
+          const sliderKey = key as keyof typeof sliderDescriptions;
+          const stateValue = {
+            maxTokens,
+            temperature,
+            topP,
+            presencePenalty,
+            frequencyPenalty,
+          }[sliderKey] as number;
+          const stateSetter = stateSetters[sliderKey];
+
+          let maxValue;
+          switch (sliderKey) {
+            case 'maxTokens':
+              maxValue = 1000;
+              break;
+            case 'temperature':
+              maxValue = 2;
+              break;
+            case 'topP':
+              maxValue = 1;
+              break;
+            case 'presencePenalty':
+              maxValue = 2;
+              break;
+            case 'frequencyPenalty':
+              maxValue = 2;
+              break;
+            default:
+              maxValue = undefined;
+          }
+
+          return (
+            <SliderComponent
+              key={sliderKey}
+              sliderKey={sliderKey}
+              stateValue={stateValue}
+              stateSetter={stateSetter}
+              sliderDescriptions={sliderDescriptions}
+              setShowPopover={setShowPopover as Dispatch<SetStateAction<string | null>>}
+              maxValue={maxValue}
+            />
+          );
+        })}
+      </div>
 
       {preferredModel === 'Custom' && (
         <CustomModelFields
@@ -162,6 +181,7 @@ export default function Customization() {
         color="primary"
         onClick={handleSubmit}
         className="w-full mt-4"
+        startIcon={<InfoIcon />}
       >
         Submit
       </Button>

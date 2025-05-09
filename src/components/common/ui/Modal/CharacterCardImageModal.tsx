@@ -11,8 +11,7 @@ import {
   Skeleton,
   Button,
 } from '@mui/material';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import toast from 'react-hot-toast';
 import { supabase } from '~/Utility/supabaseClient';
 import * as Sentry from '@sentry/react';
 import { X } from 'lucide-react';
@@ -108,7 +107,6 @@ export default function CharacterCardImageModal({
 
   return ReactDOM.createPortal(
     <>
-      <ToastContainer />
       <Modal
         open={isModalOpen}
         onClose={() => setModalOpen(false)}

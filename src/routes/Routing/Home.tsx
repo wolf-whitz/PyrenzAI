@@ -4,8 +4,7 @@ import { useHomeStore } from '~/store';
 import { motion } from 'framer-motion';
 import { Character } from '@shared-types/CharacterProp';
 import { Box, Typography, Container } from '@mui/material';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import {
   GetHotCharacters,
@@ -254,8 +253,6 @@ export default function Home() {
           © 2025 Pyrenz AI. {t('messages.allRightsReserved')}
         </Typography>
       </footer>
-
-      <ToastContainer />
     </motion.section>
   );
 }

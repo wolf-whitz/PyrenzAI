@@ -1,5 +1,5 @@
 import { Character } from '@shared-types/CharacterProp';
-import { toast } from 'react-toastify';
+import toast from 'react-hot-toast';
 import * as Sentry from '@sentry/react';
 import { fetchCharacters as fetchCharactersFunction } from '~/functions';
 

@@ -10,6 +10,8 @@ interface SliderComponentProps {
   stateSetter: (value: number) => void;
   sliderDescriptions: Record<string, string>;
   setShowPopover: (key: string | null) => void;
+  maxValue?: number;
+  className?: string;
 }
 
 export default function SliderComponent({
@@ -18,6 +20,8 @@ export default function SliderComponent({
   stateSetter,
   sliderDescriptions,
   setShowPopover,
+  maxValue,
+  className,
 }: SliderComponentProps) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
@@ -32,7 +36,7 @@ export default function SliderComponent({
   const open = Boolean(anchorEl);
 
   return (
-    <div key={sliderKey} className="mb-4">
+    <div key={sliderKey} className={`mb-4 ${className}`}>
       <div className="flex items-center justify-between">
         <label className="block text-sm font-medium text-gray-300">
           {sliderKey.charAt(0).toUpperCase() +
@@ -80,7 +84,7 @@ export default function SliderComponent({
       <Slider
         value={stateValue}
         onChange={(event, value) => stateSetter(value as number)}
-        max={sliderKey === 'maxTokens' ? 4000 : sliderKey === 'topP' ? 1 : 2}
+        max={maxValue}
         min={sliderKey.includes('Penalty') ? -2 : 0}
         step={sliderKey === 'maxTokens' ? 1 : sliderKey === 'topP' ? 0.01 : 0.1}
         valueLabelDisplay="auto"

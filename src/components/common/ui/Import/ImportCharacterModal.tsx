@@ -8,9 +8,8 @@ import {
 } from '@mui/material';
 import { Textarea, AISelectDropdown } from '~/components';
 import { Utils } from '~/Utility/Utility';
-import { toast, ToastContainer } from 'react-toastify';
+import toast from 'react-hot-toast';
 import * as Sentry from '@sentry/react';
-import 'react-toastify/dist/ReactToastify.css';
 
 interface ImportCharacterModalProps {
   onClose: () => void;
@@ -173,17 +172,6 @@ export default function ImportCharacterModal({
 
   return (
     <>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
       <motion.div
         className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
         initial={{ opacity: 0 }}

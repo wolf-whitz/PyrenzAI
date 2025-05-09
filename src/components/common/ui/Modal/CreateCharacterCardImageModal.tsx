@@ -4,8 +4,7 @@ import { useDropzone } from 'react-dropzone';
 import { Textarea } from '@components/index';
 import { Utils } from '~/Utility/Utility';
 import { createPortal } from 'react-dom';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import toast from 'react-hot-toast';
 
 interface CreateCharacterCardImageModalProps {
   isModalOpen: boolean;
@@ -136,7 +135,6 @@ export default function CreateCharacterCardImageModal({
           Cancel
         </Button>
       </Box>
-      <ToastContainer />
     </div>,
     document.getElementById('modal-root')!
   );

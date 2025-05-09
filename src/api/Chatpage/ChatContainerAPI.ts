@@ -64,20 +64,23 @@ export const useGenerateMessage = () => {
 
         const { inference_settings } = userData;
 
+        const connectionParams = new URLSearchParams();
+        connectionParams.append('user_uuid', user_uuid as string);
+        if (adWatchKey) {
+          connectionParams.append('ad_watch_key', adWatchKey);
+        }
+
+        const url = `/api/Generate?${connectionParams.toString()}`;
+
         const payload: any = {
           Type: 'Generate',
           ConversationId: conversation_id,
           Message: { User: text },
           Engine: 'b234e3de-7dbb-4a4c-b7c0-d8d4dce4f3c5',
-          user_uuid,
           inference_settings,
         };
 
-        if (adWatchKey) {
-          payload.ad_watch_key = adWatchKey;
-        }
-
-        const response = await Utils.post<GenerateResponse>('/api/Generate', payload);
+        const response = await Utils.post<GenerateResponse>(url, payload);
 
         if (!response?.data?.content) {
           throw new Error('No valid response from API');

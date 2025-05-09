@@ -1,15 +1,8 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { Box, Button, MenuItem, MenuList, Paper, Typography } from '@mui/material';
+import { ExpandMore, ExpandLess } from '@mui/icons-material';
 import { Customization, Cosmetic } from './MenuItem';
-import {
-  Box,
-  Button,
-  MenuItem,
-  MenuList,
-  Paper,
-  Typography,
-} from '@mui/material';
 
 interface MenuProps {
   onClose: () => void;
@@ -81,13 +74,7 @@ export default function Menu({ onClose }: MenuProps) {
               variant="contained"
               color="primary"
               fullWidth
-              startIcon={
-                isDropdownOpen ? (
-                  <ChevronUp size={20} />
-                ) : (
-                  <ChevronDown size={20} />
-                )
-              }
+              endIcon={isDropdownOpen ? <ExpandLess /> : <ExpandMore />}
               sx={{
                 backgroundColor: '#4a5568',
                 '&:hover': { backgroundColor: '#718096' },
