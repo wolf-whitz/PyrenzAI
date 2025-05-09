@@ -151,7 +151,7 @@ export default function ChatPage() {
             onClick={() => navigate('/Home')}
           />
           <Typography variant="body1" color="textWhite">
-            Unknown Chat or Character... Try again later.
+            Unknown Chat or Character... Try again later. ˙◠˙?
           </Typography>
         </Box>
       </motion.div>

@@ -1,7 +1,6 @@
 import { AuthenticationModal } from '@components/index';
 import { CreateNewChat, GetUserUUID } from '~/functions';
 import React, { useState, useEffect } from 'react';
-import { MessageSquare, Globe, Lock } from 'lucide-react';
 import { CharacterCardProps } from '@shared-types/CharacterCardPropsTypes';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -9,6 +8,9 @@ import { useNavigate } from 'react-router-dom';
 import { WindowAlert } from '~/components';
 import * as Sentry from '@sentry/react';
 import { Box, Typography, Button, CircularProgress } from '@mui/material';
+import MessageIcon from '@mui/icons-material/Message';
+import PublicIcon from '@mui/icons-material/Public';
+import LockIcon from '@mui/icons-material/Lock';
 
 interface CharacterCardModalProps {
   isOpen: boolean;
@@ -58,7 +60,12 @@ export default function CharacterCardModal({
     setIsLoading(true);
 
     try {
-      const response = await CreateNewChat(character.char_uuid, userUUID);
+      const response = await CreateNewChat(
+        character.char_uuid,
+        userUUID,
+        character.profile_image,
+        character.description,
+      );
 
       if (response?.chat_uuid) {
         navigate(`/chat/${response.chat_uuid}`);
@@ -148,7 +155,7 @@ export default function CharacterCardModal({
                       {isLoading ? 'Processing...' : 'Chat Now'}
                     </Button>
                     <Box className="flex items-center gap-1 ml-4">
-                      <MessageSquare size={18} className="text-white" />
+                      <MessageIcon fontSize="small" className="text-white" />
                       <Typography variant="caption">
                         {character.chat_messages_count}
                       </Typography>
@@ -168,12 +175,12 @@ export default function CharacterCardModal({
                       >
                         {character.is_public ? (
                           <>
-                            <Globe size={14} />
+                            <PublicIcon fontSize="small" />
                             Public
                           </>
                         ) : (
                           <>
-                            <Lock size={14} />
+                            <LockIcon fontSize="small" />
                             Private
                           </>
                         )}

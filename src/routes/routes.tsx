@@ -11,6 +11,7 @@ const Profile = lazy(() => import('./Routing/Profile'));
 const Chat = lazy(() => import('./Routing/Chat'));
 const Setting = lazy(() => import('./Routing/Setting/Setting'));
 const ErrorPage = lazy(() => import('./Routing/404page'));
+const ChatArchives = lazy(() => import('./Routing/Archive'));
 
 const ProtectedRoute = ({
   element,
@@ -63,5 +64,6 @@ export const routes: RouteObject[] = [
     element: <ProtectedRoute element={<Chat />} />,
   },
   { path: '/Settings', element: <ProtectedRoute element={<Setting />} /> },
+  { path: '/Archive', element: <ProtectedRoute element={<ChatArchives />} /> },
   { path: '*', element: <ErrorPage /> },
 ];

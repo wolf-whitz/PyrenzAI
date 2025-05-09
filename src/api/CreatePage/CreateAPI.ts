@@ -192,14 +192,13 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
     e.preventDefault();
     setLoading(true);
 
-    // Check for missing required fields
     const missing = requiredFields.filter(
       (field) => !characterData[field as keyof CharacterData]
     );
 
     if (missing.length > 0) {
       setMissingFields(missing);
-      setShowRequiredFieldsPopup(true); // Trigger the popup
+      setShowRequiredFieldsPopup(true);
       setLoading(false);
       return;
     }
@@ -242,7 +241,7 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
       } else {
         const characterUuid = response.character_uuid;
         if (characterUuid) {
-          const chatResponse = await CreateNewChat(characterUuid, userUuid);
+          const chatResponse = await CreateNewChat(characterUuid, userUuid, profileImage, characterData.description);
           if (chatResponse.error) {
             console.error('Error creating chat:', chatResponse.error);
             Sentry.captureException(new Error(chatResponse.error));

@@ -99,6 +99,8 @@ import CreateCharacterCardImageModal from '@ui/Modal/CreateCharacterCardImageMod
 import ProviderModals from '@ui/Modal/ProvidersModal';
 import AdModal from '@ui/Modal/AdModal';
 
+//CustomMenu
+import CustomContextMenu from '@ui/ContextMenu/CustomContextMenu';
 // Slider
 import SliderComponent from '@ui/Slider/SliderComponent';
 
@@ -222,6 +224,8 @@ export {
   CreateCharacterCardImageModal,
   AdModal,
 
+  //custom menu
+  CustomContextMenu,
   // Cards
   Card,
   CardContent,

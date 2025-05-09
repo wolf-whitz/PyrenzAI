@@ -45,7 +45,7 @@ export default function Sidebar({ className }: { className?: string }) {
     {
       name: t('navigation.chats'),
       icon: <MessageSquareIcon fontSize="small" />,
-      path: '/Chats',
+      path: '/Archive',
     },
     {
       name: t('navigation.settings'),

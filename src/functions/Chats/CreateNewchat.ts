@@ -15,7 +15,9 @@ interface SupabaseError {
 
 export default async function CreateNewChat(
   characterUuid: string,
-  userUUID: string
+  userUUID: string,
+  profileImage: string,
+  description: string
 ): Promise<CreateChatResponse> {
   const chatUuid = uuidv4();
 
@@ -23,7 +25,13 @@ export default async function CreateNewChat(
     const { error: insertError } = await supabase
       .from('chats')
       .insert([
-        { chat_uuid: chatUuid, char_uuid: characterUuid, user_uuid: userUUID },
+        {
+          chat_uuid: chatUuid,
+          char_uuid: characterUuid,
+          user_uuid: userUUID,
+          preview_image: profileImage,
+          preview_message: description
+        },
       ]);
 
     if (insertError) {

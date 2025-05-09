@@ -29,7 +29,6 @@ export default function PreviousChat() {
     chatId: string | null;
   } | null>(null);
 
-  const { conversation_id } = useParams<{ conversation_id: string }>();
   const navigate = useNavigate();
 
   useEffect(() => {

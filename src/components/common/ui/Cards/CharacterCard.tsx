@@ -1,9 +1,12 @@
-import { MessageSquare, Share2, Globe, Lock } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { CardContent, CharacterCardModal } from '~/components';
 import { CharacterCardProps } from '@shared-types/CharacterCardPropsTypes';
 import { Box, Typography, IconButton, Tooltip } from '@mui/material';
+import MessageIcon from '@mui/icons-material/Message';
+import ShareIcon from '@mui/icons-material/Share';
+import PublicIcon from '@mui/icons-material/Public';
+import LockIcon from '@mui/icons-material/Lock';
 
 export default function CharacterCard({
   id,
@@ -106,7 +109,7 @@ export default function CharacterCard({
                 component="span"
                 className="bg-black text-white text-xs font-semibold py-1 px-2 rounded-full flex items-center gap-1"
               >
-                <Globe size={12} />
+                <PublicIcon fontSize="small" />
                 Public
               </Typography>
             )}
@@ -115,7 +118,7 @@ export default function CharacterCard({
                 component="span"
                 className="bg-black text-white text-xs font-semibold py-1 px-2 rounded-full flex items-center gap-1"
               >
-                <Lock size={12} />
+                <LockIcon fontSize="small" />
                 Private
               </Typography>
             )}
@@ -123,7 +126,7 @@ export default function CharacterCard({
 
           <Box className="mt-4 flex items-center text-gray-400 text-xs">
             <Box className="flex items-center">
-              <MessageSquare size={14} className="text-white" />
+              <MessageIcon fontSize="small" className="text-white" />
               <Typography variant="caption" className="font-medium ml-1">
                 {chat_messages_count}
               </Typography>
@@ -142,7 +145,7 @@ export default function CharacterCard({
                   aria-label={`Share ${name}`}
                   className="transition-colors duration-200 hover:text-blue-400"
                 >
-                  <Share2 size={16} />
+                  <ShareIcon fontSize="small" />
                 </IconButton>
               </Tooltip>
             </Box>
