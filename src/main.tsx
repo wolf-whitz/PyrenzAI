@@ -23,15 +23,26 @@ import createCustomTheme from '~/provider/ThemeProvider';
 import i18n from '~/provider/TranslationProvider.ts';
 import ToastProvider from '~/provider/ToastProvider.tsx';
 import SentryProvider from './provider/SentryProvider.tsx';
+import * as Sentry from '@sentry/react';
 
 import ErrorBoundary from './routes/ErrorBoundary.tsx';
-
 
 const theme = createCustomTheme();
 
 posthog.init(posthogConfig.apiKey, {
   api_host: posthogConfig.apiHost,
   loaded: posthogConfig.loaded,
+});
+
+Sentry.init({
+  dsn: 'https://2bed6b35dd70e8068f61a53812a8a5fc@o4509146215284736.ingest.us.sentry.io/4509243214725120',
+  sendDefaultPii: true,
+  integrations: [
+    Sentry.replayIntegration()
+  ],
+  tracesSampleRate: 1.0,
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1.0
 });
 
 createRoot(document.getElementById('root')!).render(
