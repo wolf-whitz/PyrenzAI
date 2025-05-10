@@ -20,9 +20,10 @@ export async function GetUserData(): Promise<
   if (!user) {
     return { error: 'User not authenticated' };
   }
+
   const { data: userData, error: userError } = await supabase
     .from('user_data')
-    .select('username, subscription_plan')
+    .select('username')
     .eq('user_uuid', user.id)
     .single();
 
@@ -30,10 +31,20 @@ export async function GetUserData(): Promise<
     return { error: 'User not found' };
   }
 
+  const { data: subscriptionPlanData, error: subscriptionError } = await supabase
+    .from('subscription_plan')
+    .select('subscription_plan')
+    .eq('user_uuid', user.id)
+    .single();
+
+  if (subscriptionError || !subscriptionPlanData) {
+    return { error: 'Subscription plan not found' };
+  }
+
   const personaName = userData.username || 'Anon';
 
   let subscriptionData;
-  switch (userData.subscription_plan) {
+  switch (subscriptionPlanData.subscription_plan) {
     case 'MELON':
       subscriptionData = {
         tier: 'MELON',
