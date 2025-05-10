@@ -9,7 +9,6 @@ export default function handler(request) {
     status: 'ok',
     message: 'pong',
     timestamp: now,
-    uptime: process.uptime?.() ?? 'N/A',
     runtime: 'edge'
   };
 
