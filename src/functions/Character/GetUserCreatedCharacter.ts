@@ -7,6 +7,7 @@ type Character = {
   name: string;
   description: string;
   creator: string;
+  creator_uuid: string;
   chat_messages_count: number;
   profile_image: string;
   tags: string[];
@@ -30,7 +31,7 @@ export const GetUserCreatedCharacters = (uuid?: string) => {
       try {
         const { data: chars, error } = await supabase
           .from('characters')
-          .select('*')
+          .select('*') 
           .eq('creator_uuid', creatorUuid);
 
         if (error) throw error;
@@ -46,6 +47,7 @@ export const GetUserCreatedCharacters = (uuid?: string) => {
             name: char.name,
             description: char.description,
             creator: char.creator,
+            creator_uuid: char.creator_uuid,
             chat_messages_count: char.chat_messages_count ?? 0,
             profile_image: char.profile_image,
             tags: cleanedTags,

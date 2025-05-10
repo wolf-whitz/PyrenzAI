@@ -38,6 +38,7 @@ export default function ProfilePage() {
                   name={character.name}
                   description={character.description}
                   creator={character.creator}
+                  creator_uuid={character.creator_uuid}
                   chat_messages_count={character.chat_messages_count}
                   profile_image={character.profile_image}
                   tags={character.tags}
