@@ -9,7 +9,7 @@ import { GetLatestCharacters } from './Character/GetLatestCharacters';
 import { GetRandomCharacters } from './Character/GetRandomCharacters';
 import { GetCharactersWithTags } from './Character/GetCharactersWithTag';
 import { fetchCharacters } from './Character/fetchCharacters';
-
+import { GetUserCreatedCharacters } from './Character/GetUserCreatedCharacter';
 import CreateNewChat from './Chats/CreateNewchat';
 import GetChatData from './Chats/GetChatData';
 
@@ -22,6 +22,7 @@ export {
   GetLatestCharacters,
   GetRandomCharacters,
   GetCharactersWithTags,
+  GetUserCreatedCharacters,
   CreateNewChat,
   GetChatData,
   fetchCharacters,

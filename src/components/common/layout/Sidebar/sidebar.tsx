@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import clsx from 'clsx';
 import {
   Home as HomeIcon,
   Add as PlusIcon,
@@ -61,7 +62,10 @@ export default function Sidebar({ className }: { className?: string }) {
   return (
     <>
       <motion.div
-        className={`fixed top-0 left-0 h-screen w-16 md:w-16 lg:w-20 bg-gray-900 text-white flex-col justify-between p-4 rounded-r-3xl shadow-lg z-50 ${className} hidden md:flex`}
+        className={clsx(
+          'fixed top-0 left-0 h-screen w-16 md:w-16 lg:w-20 bg-gray-900 text-white flex-col justify-between p-4 rounded-r-3xl shadow-lg z-50 hidden md:flex',
+          className
+        )}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
@@ -189,7 +193,10 @@ function SidebarItem({
   return (
     <Tooltip title={item.name} placement="right" arrow>
       <IconButton
-        className="relative flex items-center justify-center w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 rounded-lg hover:bg-gray-800 cursor-pointer"
+        className={clsx(
+          'relative flex items-center justify-center w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 rounded-lg hover:bg-gray-800 cursor-pointer',
+          hovered === item.name && 'bg-gray-800'
+        )}
         onClick={handleClick}
         onMouseEnter={() => setHovered(item.name)}
         onMouseLeave={() => setHovered(null)}

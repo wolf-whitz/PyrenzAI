@@ -1,4 +1,4 @@
-import React, { lazy, useEffect, useState } from 'react';
+import React, { lazy } from 'react';
 import { RouteObject, Navigate } from 'react-router-dom';
 import { GetUserUUID } from '~/functions';
 import { useUserStore } from '~/store';
@@ -31,33 +31,18 @@ const ProtectedRoute = ({
   return React.cloneElement(element, props);
 };
 
-const ProfileWrapper = () => {
-  const [userUuid, setUserUuid] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchUserUuid = async () => {
-      const uuid = await GetUserUUID();
-      setUserUuid(uuid);
-    };
-
-    fetchUserUuid();
-  }, []);
-
-  if (userUuid === null) {
-    return;
-  }
-
-  return <Profile user_uuid={userUuid} />;
-};
-
 export const routes: RouteObject[] = [
   { path: '/', element: <Index /> },
   { path: '/Auth', element: <Auth /> },
   { path: '/Home', element: <ProtectedRoute element={<Home />} /> },
   { path: '/Create', element: <ProtectedRoute element={<Create />} /> },
   {
+    path: '/Profile/:uuid',
+    element: <ProtectedRoute element={<Profile />} />,
+  },
+  {
     path: '/Profile',
-    element: <ProtectedRoute element={<ProfileWrapper />} />,
+    element: <ProtectedRoute element={<Profile />} />,
   },
   {
     path: '/Chat/:conversation_id',

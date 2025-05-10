@@ -160,7 +160,7 @@ export default function Home() {
 
   return (
     <motion.section
-      className="flex flex-col bg-midnight min-h-screen text-white font-baloo"
+      className="flex flex-col min-h-screen text-white font-baloo"
       style={{
         backgroundImage: bgImage ? `url(${bgImage})` : 'none',
         backgroundSize: bgImage ? 'cover' : 'auto',
