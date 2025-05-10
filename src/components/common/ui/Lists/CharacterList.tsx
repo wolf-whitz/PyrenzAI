@@ -34,12 +34,7 @@ export default function CharacterList({
 }: CharacterListProps) {
   return (
     <motion.div
-      className="grid w-full gap-x-6 gap-y-4 pb-4 min-h-[50vh]
-        grid-cols-2
-        md:grid-cols-3
-        lg:grid-cols-4
-        xl:grid-cols-5
-        2xl:grid-cols-6"
+      className="grid w-full gap-x-6 gap-y-4 pb-4 min-h-[50vh] grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}

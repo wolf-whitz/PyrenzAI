@@ -125,9 +125,9 @@ export default function CharacterCard({
           </Box>
 
           <Box className="mt-4 flex items-center text-gray-400 text-xs">
-            <Box className="flex items-center">
+            <Box className="flex items-center gap-1">
               <MessageIcon fontSize="small" className="text-white" />
-              <Typography variant="caption" className="font-medium ml-1">
+              <Typography variant="caption" className="font-medium">
                 {chat_messages_count}
               </Typography>
             </Box>
