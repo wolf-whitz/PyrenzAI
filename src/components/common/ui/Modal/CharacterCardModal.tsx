@@ -1,7 +1,7 @@
 import { AuthenticationModal } from '@components/index';
 import { CreateNewChat, GetUserUUID } from '~/functions';
-import React, { useState, useEffect } from 'react';
-import { CharacterCardProps } from '@shared-types/CharacterCardPropsTypes';
+import React, { useState, useEffect, useCallback } from 'react';
+import { CharacterCardProps } from '@shared-types/CharacterProp';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -47,7 +47,15 @@ export default function CharacterCardModal({
     fetchUserUUID();
   }, []);
 
-  if (!character) return null;
+  const handleCreatorClick = useCallback(
+    (e: React.MouseEvent<HTMLElement>) => {
+      e.stopPropagation();
+      if (character?.creator_uuid) {
+        navigate(`/profile/${character.creator_uuid}`);
+      }
+    },
+    [character?.creator_uuid, navigate]
+  );
 
   const handleChatNow = async () => {
     if (isLoading || !character?.char_uuid) return;
@@ -81,6 +89,8 @@ export default function CharacterCardModal({
       setIsLoading(false);
     }
   };
+
+  if (!character) return null;
 
   return (
     <>
@@ -126,7 +136,12 @@ export default function CharacterCardModal({
                       {character.name}
                     </Typography>
                   </Box>
-                  <Typography variant="caption" color="textSecondary">
+                  <Typography
+                    variant="caption"
+                    color="textSecondary"
+                    onClick={handleCreatorClick}
+                    className="cursor-pointer hover:underline"
+                  >
                     @{character.creator}
                   </Typography>
 

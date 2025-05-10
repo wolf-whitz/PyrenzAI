@@ -46,6 +46,7 @@ export const fetchCharacters = async (
         name: char.name,
         description: char.description,
         creator: char.creator,
+        creator_uuid: char.creator_uuid, 
         chat_messages_count: char.chat_messages_count ?? 0,
         profile_image: char.profile_image,
         tags: cleanedTags,

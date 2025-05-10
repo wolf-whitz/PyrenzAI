@@ -4,6 +4,7 @@ export interface Character {
   name: string;
   description: string;
   creator: string | null;
+  creator_uuid: string; 
   chat_messages_count: number;
   tags: string[];
   profile_image: string;
@@ -17,6 +18,7 @@ export interface CharacterCardProps {
   name: string;
   description: string;
   creator: string | null;
+  creator_uuid: string;
   chat_messages_count: number;
   tags: string[];
   profile_image: string;

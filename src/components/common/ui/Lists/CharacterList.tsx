@@ -18,6 +18,7 @@ interface CharacterCardProps {
   name: string;
   description: string;
   creator: string | null;
+  creator_uuid: string;
   chat_messages_count: number;
   profile_image: string;
   tags: string[];

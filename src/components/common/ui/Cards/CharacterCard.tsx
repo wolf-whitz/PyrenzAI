@@ -1,12 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { CardContent, CharacterCardModal } from '~/components';
-import { CharacterCardProps } from '@shared-types/CharacterCardPropsTypes';
+import { CharacterCardProps } from '@shared-types/CharacterProp';
 import { Box, Typography, IconButton, Tooltip } from '@mui/material';
 import MessageIcon from '@mui/icons-material/Message';
 import ShareIcon from '@mui/icons-material/Share';
 import PublicIcon from '@mui/icons-material/Public';
 import LockIcon from '@mui/icons-material/Lock';
+import { useNavigate } from 'react-router-dom';
 
 export default function CharacterCard({
   id,
@@ -14,16 +15,18 @@ export default function CharacterCard({
   name,
   description,
   creator,
+  creator_uuid,
   chat_messages_count,
   profile_image,
   tags = [],
   is_public: isPublic = false,
   token_total,
   isLoading = false,
-}: CharacterCardProps & { isLoading: boolean }) {
+}: CharacterCardProps & { isLoading: boolean; creator_uuid: string }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState<CharacterCardProps | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoaded(true), 50);
@@ -37,11 +40,13 @@ export default function CharacterCard({
       name,
       description,
       creator,
+      creator_uuid,
       chat_messages_count,
       profile_image,
       tags,
       is_public: isPublic,
       token_total,
+      isLoading,
     });
     setIsModalOpen(true);
   }, [
@@ -50,22 +55,26 @@ export default function CharacterCard({
     name,
     description,
     creator,
+    creator_uuid,
     chat_messages_count,
     profile_image,
     tags,
     isPublic,
     token_total,
+    isLoading,
   ]);
+
+  const handleCreatorClick = useCallback(
+    (e: React.MouseEvent<HTMLElement>) => {
+      e.stopPropagation();
+      navigate(`/profile/${creator_uuid}`);
+    },
+    [creator_uuid, navigate]
+  );
 
   if (isLoading) {
     return null;
   }
-
-  const validTags = Array.isArray(tags)
-    ? tags
-        .filter((tag) => typeof tag === 'string' && tag.trim() !== '')
-        .map((tag) => tag.trim())
-    : [];
 
   return (
     <>
@@ -89,7 +98,12 @@ export default function CharacterCard({
           <Typography variant="h6" className="font-bold truncate">
             {name}
           </Typography>
-          <Typography variant="caption" color="textSecondary">
+          <Typography
+            variant="caption"
+            color="textSecondary"
+            onClick={handleCreatorClick}
+            className="cursor-pointer hover:underline"
+          >
             @{creator}
           </Typography>
 
@@ -135,7 +149,7 @@ export default function CharacterCard({
             <Box className="flex items-center ml-auto gap-2">
               <Tooltip title="Copy link">
                 <IconButton
-                  onClick={(e) => {
+                  onClick={(e: React.MouseEvent<HTMLElement>) => {
                     e.stopPropagation();
                     navigator.clipboard.writeText(
                       `${window.location.origin}/characters/${char_uuid}`

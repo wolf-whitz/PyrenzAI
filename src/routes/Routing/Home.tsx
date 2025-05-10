@@ -2,7 +2,7 @@ import React, { useEffect, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useHomeStore } from '~/store';
 import { motion } from 'framer-motion';
-import { Character } from '@shared-types/CharacterProp';
+import { Character, CharacterCardProps } from '@shared-types/CharacterProp';
 import { Box, Typography, Container } from '@mui/material';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
@@ -25,19 +25,7 @@ import {
   Pagination,
 } from '~/components';
 
-interface CharacterCardProps {
-  id: string;
-  char_uuid: string;
-  name: string;
-  description: string;
-  creator: string | null;
-  chat_messages_count: number;
-  profile_image: string;
-  tags: string[];
-  is_public: boolean;
-  token_total: number;
-  isLoading: boolean;
-}
+
 
 export default function Home() {
   const navigate = useNavigate();
@@ -117,6 +105,7 @@ export default function Home() {
         name: char.name,
         description: char.description,
         creator: char.creator,
+        creator_uuid: char.creator_uuid, 
         chat_messages_count: char.chat_messages_count,
         profile_image: char.profile_image,
         tags: Array.isArray(char.tags)
@@ -150,6 +139,7 @@ export default function Home() {
     name: char.name,
     description: char.description,
     creator: char.creator,
+    creator_uuid: char.creator_uuid,
     chat_messages_count: char.chat_messages_count,
     profile_image: char.profile_image,
     tags: char.tags,

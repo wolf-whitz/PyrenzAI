@@ -102,16 +102,6 @@ export default function ChatArchives() {
     }
   };
 
-  const handleExportChat = (chat: Chat) => {
-    const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(chat))}`;
-    const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute('href', dataStr);
-    downloadAnchorNode.setAttribute('download', `chat_${chat.chat_uuid}.json`);
-    document.body.appendChild(downloadAnchorNode);
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
-  };
-
   const handleContextMenu = (event: React.MouseEvent, chat: Chat) => {
     event.preventDefault();
     setContextMenuAnchor({
@@ -131,10 +121,6 @@ export default function ChatArchives() {
         {
           label: 'Remove Chat',
           action: () => handleRemoveChat(selectedChat.chat_uuid),
-        },
-        {
-          label: 'Export Chat',
-          action: () => handleExportChat(selectedChat),
         },
       ]
     : [];
@@ -188,7 +174,7 @@ export default function ChatArchives() {
               {chats.map((chat) => (
                 <motion.div
                   key={chat.chat_uuid}
-                  className="w-full sm:w-3/4 lg:w-4/5 p-4"
+                  className="w-full sm:w-1/2 lg:w-1/2 p-2" 
                   variants={{
                     hidden: { y: 20, opacity: 0 },
                     visible: { y: 0, opacity: 1 },
@@ -206,12 +192,12 @@ export default function ChatArchives() {
                   >
                     <CardMedia
                       component="img"
-                      style={{ width: 150 }}
+                      style={{ width: 100 }}
                       image={chat.preview_image}
                       alt="Preview"
                     />
                     <CardContent>
-                      <Typography gutterBottom variant="h5" component="div">
+                      <Typography gutterBottom variant="h6" component="div">
                         {characters[chat.char_uuid]}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
