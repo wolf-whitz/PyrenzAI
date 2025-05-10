@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '~/Utility/supabaseClient';
 import { Sidebar, CustomContextMenu } from '~/components';
-import { Card, CardContent, CardMedia, Typography, CircularProgress } from '@mui/material';
+import {
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+  CircularProgress,
+} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
@@ -21,7 +27,10 @@ export default function ChatArchives() {
   const [chats, setChats] = useState<Chat[]>([]);
   const [characters, setCharacters] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(true);
-  const [contextMenuAnchor, setContextMenuAnchor] = useState<{ top: number; left: number } | null>(null);
+  const [contextMenuAnchor, setContextMenuAnchor] = useState<{
+    top: number;
+    left: number;
+  } | null>(null);
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
   const navigate = useNavigate();
 
@@ -39,14 +48,17 @@ export default function ChatArchives() {
 
       const truncatedChats = chatsData.map((chat: Chat) => ({
         ...chat,
-        preview_message: chat.preview_message.length > 150
-          ? chat.preview_message.substring(0, 150) + '...'
-          : chat.preview_message
+        preview_message:
+          chat.preview_message.length > 150
+            ? chat.preview_message.substring(0, 150) + '...'
+            : chat.preview_message,
       }));
 
       setChats(truncatedChats);
 
-      const charUuids = [...new Set(chatsData.map((chat: Chat) => chat.char_uuid))];
+      const charUuids = [
+        ...new Set(chatsData.map((chat: Chat) => chat.char_uuid)),
+      ];
       const { data: charactersData, error: charactersError } = await supabase
         .from('characters')
         .select('char_uuid, name')
@@ -58,10 +70,13 @@ export default function ChatArchives() {
         return;
       }
 
-      const charactersMap = (charactersData as Character[]).reduce((acc, character) => {
-        acc[character.char_uuid] = character.name;
-        return acc;
-      }, {} as Record<string, string>);
+      const charactersMap = (charactersData as Character[]).reduce(
+        (acc, character) => {
+          acc[character.char_uuid] = character.name;
+          return acc;
+        },
+        {} as Record<string, string>
+      );
 
       setCharacters(charactersMap);
       setIsLoading(false);
@@ -83,15 +98,15 @@ export default function ChatArchives() {
     if (error) {
       console.error('Error removing chat:', error);
     } else {
-      setChats(chats.filter(chat => chat.chat_uuid !== chatUuid));
+      setChats(chats.filter((chat) => chat.chat_uuid !== chatUuid));
     }
   };
 
   const handleExportChat = (chat: Chat) => {
     const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(chat))}`;
     const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", `chat_${chat.chat_uuid}.json`);
+    downloadAnchorNode.setAttribute('href', dataStr);
+    downloadAnchorNode.setAttribute('download', `chat_${chat.chat_uuid}.json`);
     document.body.appendChild(downloadAnchorNode);
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
@@ -115,25 +130,35 @@ export default function ChatArchives() {
     ? [
         {
           label: 'Remove Chat',
-          action: () => handleRemoveChat(selectedChat.chat_uuid)
+          action: () => handleRemoveChat(selectedChat.chat_uuid),
         },
         {
           label: 'Export Chat',
-          action: () => handleExportChat(selectedChat)
-        }
+          action: () => handleExportChat(selectedChat),
+        },
       ]
     : [];
 
   return (
-    <motion.div className="flex" initial="hidden" animate="visible" variants={{
-      hidden: { opacity: 0 },
-      visible: { opacity: 1, transition: { duration: 0.5 } },
-    }}>
+    <motion.div
+      className="flex"
+      initial="hidden"
+      animate="visible"
+      variants={{
+        hidden: { opacity: 0 },
+        visible: { opacity: 1, transition: { duration: 0.5 } },
+      }}
+    >
       <Sidebar />
-      <motion.div className="flex-1 p-4 flex justify-center" initial="hidden" animate="visible" variants={{
-        hidden: { y: 20, opacity: 0 },
-        visible: { y: 0, opacity: 1, transition: { duration: 0.5 } },
-      }}>
+      <motion.div
+        className="flex-1 p-4 flex justify-center"
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: { y: 20, opacity: 0 },
+          visible: { y: 0, opacity: 1, transition: { duration: 0.5 } },
+        }}
+      >
         <div className="w-full max-w-screen-lg">
           {isLoading ? (
             <div className="flex justify-center items-center">
@@ -146,25 +171,37 @@ export default function ChatArchives() {
               </Typography>
             </div>
           ) : (
-            <motion.div className="flex flex-wrap -mx-2 justify-center" initial="hidden" animate="visible" variants={{
-              hidden: { opacity: 0 },
-              visible: {
-                opacity: 1,
-                transition: {
-                  staggerChildren: 0.1
-                }
-              },
-            }}>
+            <motion.div
+              className="flex flex-wrap -mx-2 justify-center"
+              initial="hidden"
+              animate="visible"
+              variants={{
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: {
+                    staggerChildren: 0.1,
+                  },
+                },
+              }}
+            >
               {chats.map((chat) => (
-                <motion.div key={chat.chat_uuid} className="w-full sm:w-3/4 lg:w-4/5 p-4" variants={{
-                  hidden: { y: 20, opacity: 0 },
-                  visible: { y: 0, opacity: 1 },
-                }}>
+                <motion.div
+                  key={chat.chat_uuid}
+                  className="w-full sm:w-3/4 lg:w-4/5 p-4"
+                  variants={{
+                    hidden: { y: 20, opacity: 0 },
+                    visible: { y: 0, opacity: 1 },
+                  }}
+                >
                   <motion.div
                     onClick={() => handleCardClick(chat.chat_uuid)}
                     onContextMenu={(e) => handleContextMenu(e, chat)}
                     className="cursor-pointer flex"
-                    whileHover={{ scale: 1.05, boxShadow: "0px 10px 20px rgba(0,0,0,0.1)" }}
+                    whileHover={{
+                      scale: 1.05,
+                      boxShadow: '0px 10px 20px rgba(0,0,0,0.1)',
+                    }}
                     whileTap={{ scale: 0.95 }}
                   >
                     <CardMedia

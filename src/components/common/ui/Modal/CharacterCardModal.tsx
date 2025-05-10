@@ -64,7 +64,7 @@ export default function CharacterCardModal({
         character.char_uuid,
         userUUID,
         character.profile_image,
-        character.description,
+        character.description
       );
 
       if (response?.chat_uuid) {

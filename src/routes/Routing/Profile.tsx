@@ -17,7 +17,12 @@ export default function ProfilePage() {
         <Box display="flex" flexDirection="column" alignItems="center" mb={4}>
           {loading ? (
             <Box display="flex" alignItems="center" mb={2}>
-              <Skeleton variant="circular" width={60} height={60} sx={{ marginRight: 2 }} />
+              <Skeleton
+                variant="circular"
+                width={60}
+                height={60}
+                sx={{ marginRight: 2 }}
+              />
               <Skeleton variant="text" width={120} height={30} />
             </Box>
           ) : userData ? (
@@ -43,7 +48,7 @@ export default function ProfilePage() {
               </div>
             ))
           ) : characters.length > 0 ? (
-            characters.map(character => (
+            characters.map((character) => (
               <div key={character.id}>
                 <CharacterCard
                   id={character.id.toString()}
@@ -61,8 +66,11 @@ export default function ProfilePage() {
               </div>
             ))
           ) : (
-            <Typography variant="h6" style={{ gridColumn: '1 / -1', textAlign: 'center' }}>
-              No characters have been created by this user.
+            <Typography
+              variant="h6"
+              style={{ gridColumn: '1 / -1', textAlign: 'center' }}
+            >
+              This user has not created any characters yet. (๑-﹏-๑){' '}
             </Typography>
           )}
         </div>

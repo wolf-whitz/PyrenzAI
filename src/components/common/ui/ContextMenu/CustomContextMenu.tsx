@@ -13,7 +13,11 @@ interface CustomContextMenuProps {
   anchorPosition: { top: number; left: number };
 }
 
-export default function CustomContextMenu({ items, onClose, anchorPosition }: CustomContextMenuProps) {
+export default function CustomContextMenu({
+  items,
+  onClose,
+  anchorPosition,
+}: CustomContextMenuProps) {
   const [open, setOpen] = useState(true);
 
   const handleClose = () => {

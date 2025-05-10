@@ -25,7 +25,7 @@ export const GetUserCreatedCharacters = (uuid?: string) => {
   const [userData, setUserData] = useState<UserData>({
     full_name: '',
     avatar_url: '',
-    user_uuid: ''
+    user_uuid: '',
   });
   const [loading, setLoading] = useState(true);
 
@@ -39,7 +39,7 @@ export const GetUserCreatedCharacters = (uuid?: string) => {
 
         if (error) throw error;
 
-        const formattedChars = chars.map(char => {
+        const formattedChars = chars.map((char) => {
           const cleanedTags = Array.isArray(char.tags)
             ? char.tags
             : char.tags?.split(',').map((tag: string) => tag.trim()) || [];
@@ -71,18 +71,18 @@ export const GetUserCreatedCharacters = (uuid?: string) => {
         if (!userUuidToUse) {
           const {
             data: { user },
-            error: authError
+            error: authError,
           } = await supabase.auth.getUser();
 
-          if (authError || !user) throw authError ?? new Error('No user session');
+          if (authError || !user)
+            throw authError ?? new Error('No user session');
           userUuidToUse = user.id;
         }
         const { data: userData, error } = await supabase
-        .from('public_user_profiles')
-        .select('full_name, avatar_url, user_uuid')
-        .eq('user_uuid', userUuidToUse)
-        .maybeSingle();
-      
+          .from('public_user_profiles')
+          .select('full_name, avatar_url, user_uuid')
+          .eq('user_uuid', userUuidToUse)
+          .maybeSingle();
 
         if (error || !userData) throw error;
 

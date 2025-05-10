@@ -243,7 +243,12 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
       } else {
         const characterUuid = response.character_uuid;
         if (characterUuid) {
-          const chatResponse = await CreateNewChat(characterUuid, userUuid, profileImage, characterData.description);
+          const chatResponse = await CreateNewChat(
+            characterUuid,
+            userUuid,
+            profileImage,
+            characterData.description
+          );
           if (chatResponse.error) {
             console.error('Error creating chat:', chatResponse.error);
             Sentry.captureException(new Error(chatResponse.error));
