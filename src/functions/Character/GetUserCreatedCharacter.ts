@@ -22,11 +22,7 @@ type UserData = {
 
 export const GetUserCreatedCharacters = (uuid?: string) => {
   const [characters, setCharacters] = useState<Character[]>([]);
-  const [userData, setUserData] = useState<UserData>({
-    full_name: '',
-    avatar_url: '',
-    user_uuid: '',
-  });
+  const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -84,12 +80,16 @@ export const GetUserCreatedCharacters = (uuid?: string) => {
           .eq('user_uuid', userUuidToUse)
           .maybeSingle();
 
-        if (error || !userData) throw error;
+        if (error || !userData) {
+          setUserData(null);
+          return null;
+        }
 
         setUserData(userData as UserData);
         return userData.user_uuid;
       } catch (error) {
         console.error('Error fetching user data:', error);
+        setUserData(null);
         return null;
       }
     };

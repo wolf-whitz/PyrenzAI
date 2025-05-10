@@ -16,6 +16,7 @@ import SearchBar from '@layout/SearchBar/SearchBar';
 import PreviewHeader from '@layout/Header/PreviewHeader';
 import HeroSection from '@layout/Sections/Hero/PreviewHeroSection';
 import FeaturesSection from '@layout/Sections/FeaturesSection';
+import UserProfileHeader from '@layout/Header/UserProfileHeader';
 
 // Sidebar Components
 import Sidebar from '@layout/Sidebar/sidebar';
@@ -130,7 +131,8 @@ export {
   PreviewFooter,
   HeroSection,
   FeaturesSection,
-
+  UserProfileHeader,
+  
   //Import
   ImportCharacterModal,
 

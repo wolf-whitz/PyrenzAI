@@ -1,86 +1,34 @@
 import { createTheme } from '@mui/material/styles';
+import { componentOverrides } from './Styles/componentOverrides';
+import createLightTheme from './Styles/Themes/LightTheme';
 
 const isDarkMode = document.documentElement.classList.contains('theme-dark');
 
 export default function createCustomTheme() {
-  const theme = createTheme({
-    typography: {
-      fontFamily: `'Baloo 2', cursive`,
-    },
-    palette: {
-      mode: isDarkMode ? 'dark' : 'light',
-      primary: {
-        main: '#3f51b5',
+  if (isDarkMode) {
+    const theme = createTheme({
+      typography: {
+        fontFamily: `'Baloo 2', cursive`,
       },
-      background: {
-        default: isDarkMode ? '#111827' : '#ffffff',
-        paper: isDarkMode ? '#1f2937' : '#ffffff',
-      },
-      text: {
-        primary: isDarkMode ? '#ffffff' : '#000000',
-        secondary: isDarkMode ? '#d1d5db' : '#4b5563',
-      },
-    },
-    components: {
-      MuiButton: {
-        styleOverrides: {
-          root: {
-            minWidth: 'auto',
-            padding: '6px 12px',
-          },
-          sizeSmall: {
-            padding: '4px 8px',
-            fontSize: '0.875rem',
-          },
+      palette: {
+        mode: 'dark',
+        primary: {
+          main: '#3f51b5',
+        },
+        background: {
+          default: '#111827',
+          paper: '#1f2937',
+        },
+        text: {
+          primary: '#ffffff',
+          secondary: '#d1d5db',
         },
       },
-      MuiSlider: {
-        styleOverrides: {
-          thumb: {
-            color: '#fff',
-          },
-        },
-      },
-      MuiTextField: {
-        styleOverrides: {
-          root: {
-            marginBottom: '16px',
-          },
-        },
-      },
-      MuiIconButton: {
-        styleOverrides: {
-          root: {
-            borderRadius: '4px',
-            '&:hover': {
-              backgroundColor: 'rgba(255, 255, 255, 0.1)',
-            },
-          },
-        },
-      },
-      MuiTooltip: {
-        styleOverrides: {
-          tooltip: {
-            borderRadius: '4px',
-            backgroundColor: isDarkMode ? '#333' : '#fff',
-            color: isDarkMode ? '#fff' : '#000',
-            fontFamily: `'Baloo Da 2', cursive`,
-          },
-        },
-      },
-      MuiListItemText: {
-        styleOverrides: {
-          root: {
-            color: '#ffffff',
-            fontFamily: `'Baloo Da 2', cursive`,
-            '&:hover': {
-              textDecoration: 'none',
-            },
-          },
-        },
-      },
-    },
-  });
+      components: componentOverrides,
+    });
 
-  return theme;
+    return theme;
+  } else {
+    return createLightTheme();
+  }
 }

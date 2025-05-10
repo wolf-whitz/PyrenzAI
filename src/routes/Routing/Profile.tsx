@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
-import { Sidebar, SkeletonCard, CharacterCard } from '~/components';
-import { Box, Typography, Avatar, Skeleton } from '@mui/material';
+import { Sidebar, SkeletonCard, CharacterCard, UserProfileHeader } from '~/components';
+import { Box, Typography } from '@mui/material';
 import { GetUserCreatedCharacters } from '@functions/index';
 
 export default function ProfilePage() {
@@ -14,32 +14,7 @@ export default function ProfilePage() {
     <div className="flex">
       <Sidebar className="flex-shrink-0" />
       <main className="flex-1 p-4 overflow-auto">
-        <Box display="flex" flexDirection="column" alignItems="center" mb={4}>
-          {loading ? (
-            <Box display="flex" alignItems="center" mb={2}>
-              <Skeleton
-                variant="circular"
-                width={60}
-                height={60}
-                sx={{ marginRight: 2 }}
-              />
-              <Skeleton variant="text" width={120} height={30} />
-            </Box>
-          ) : userData ? (
-            <Box display="flex" alignItems="center" mb={2}>
-              {userData.avatar_url && (
-                <Avatar
-                  alt={userData.full_name}
-                  src={userData.avatar_url}
-                  sx={{ width: 60, height: 60, marginRight: 2 }}
-                />
-              )}
-              <Typography variant="h6">{userData.full_name}</Typography>
-            </Box>
-          ) : (
-            <Typography variant="h6">No user found by that UUID.</Typography>
-          )}
-        </Box>
+        <UserProfileHeader loading={loading} userData={userData} />
         <div className="grid w-full gap-x-6 gap-y-4 pb-4 min-h-[50vh] grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 md:pl-20">
           {loading ? (
             Array.from(new Array(6)).map((_, index) => (
@@ -47,6 +22,13 @@ export default function ProfilePage() {
                 <SkeletonCard />
               </div>
             ))
+          ) : !userData ? (
+            <Typography
+              variant="h6"
+              style={{ gridColumn: '1 / -1', textAlign: 'center' }}
+            >
+              This user does not exist (·•᷄‎ࡇ•᷅ )
+            </Typography>
           ) : characters.length > 0 ? (
             characters.map((character) => (
               <div key={character.id}>
@@ -70,7 +52,7 @@ export default function ProfilePage() {
               variant="h6"
               style={{ gridColumn: '1 / -1', textAlign: 'center' }}
             >
-              This user has not created any characters yet. (๑-﹏-๑){' '}
+              This user has not created any characters yet. (๑-﹏-๑)
             </Typography>
           )}
         </div>
