@@ -22,16 +22,10 @@ import { I18nextProvider } from 'react-i18next';
 import createCustomTheme from '~/provider/ThemeProvider';
 import i18n from '~/provider/TranslationProvider.ts';
 import ToastProvider from '~/provider/ToastProvider.tsx';
-
-import * as Sentry from '@sentry/react';
+import SentryProvider from './provider/SentryProvider.tsx';
 
 import ErrorBoundary from './routes/ErrorBoundary.tsx';
 
-Sentry.init({
-  dsn: 'https://2bed6b35dd70e8068f61a53812a8a5fc@o4509146215284736.ingest.us.sentry.io/4509243214725120',
-  sendDefaultPii: true,
-  tracesSampleRate: 1.0,
-});
 
 const theme = createCustomTheme();
 
@@ -45,9 +39,11 @@ createRoot(document.getElementById('root')!).render(
     <I18nextProvider i18n={i18n}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <ErrorBoundary>
-          <App />
-        </ErrorBoundary>
+        <SentryProvider>
+          <ErrorBoundary>
+            <App />
+          </ErrorBoundary>
+        </SentryProvider>
         <Analytics />
         <SpeedInsights />
         <ToastProvider />

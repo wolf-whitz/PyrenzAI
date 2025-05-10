@@ -2,6 +2,7 @@ import posthog from 'posthog-js';
 import { supabase } from '~/Utility/supabaseClient';
 import { Utils, AuthTokenName } from '~/Utility/Utility';
 import * as Sentry from '@sentry/react';
+import toast from 'react-hot-toast';
 
 interface AppUser {
   id: string;
@@ -141,6 +142,8 @@ export const handleSignUp = async (
       const user = authData?.user;
       if (user) await sendUserDataToSupabase(user);
     }
+
+    toast.success('Signed up successfully! Please check your email to confirm your account. ₍ᐢ. .ᐢ₎');
 
     return { success: true };
   } catch (err: any) {
