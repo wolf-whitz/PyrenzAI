@@ -37,7 +37,14 @@ export default function ChatArchives() {
         return;
       }
 
-      setChats(chatsData as Chat[]);
+      const truncatedChats = chatsData.map((chat: Chat) => ({
+        ...chat,
+        preview_message: chat.preview_message.length > 150
+          ? chat.preview_message.substring(0, 150) + '...'
+          : chat.preview_message
+      }));
+
+      setChats(truncatedChats);
 
       const charUuids = [...new Set(chatsData.map((chat: Chat) => chat.char_uuid))];
       const { data: charactersData, error: charactersError } = await supabase

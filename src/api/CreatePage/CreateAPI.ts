@@ -120,10 +120,12 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
             .split(',')
             .map((tag: string) => tag.trim());
 
+      const { setCharacterData, ...characterDataToSave } = characterData;
+
       const { data, error } = await supabase.from('draft_characters').upsert([
         {
           user_uuid: userUuid,
-          ...characterData,
+          ...characterDataToSave,
           tags,
         },
       ]);
