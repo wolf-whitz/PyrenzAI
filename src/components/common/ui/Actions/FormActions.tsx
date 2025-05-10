@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Button, CircularProgress } from '@mui/material';
+import { Button, CircularProgress, Typography } from '@mui/material';
 import { CreateButton, DraftsModal, ImportCharacterModal } from '~/components';
 import SaveIcon from '@mui/icons-material/Save';
 import DescriptionIcon from '@mui/icons-material/Description';
@@ -108,6 +108,12 @@ export default function FormActions({
           onImport={onImportCharacter}
         />
       )}
+      <Typography
+        variant="body1"
+        align="center"
+        sx={{ width: '100%', marginTop: '16px', color: 'grey.600' }}
+      >
+Not sure where to start? Check out our starter guide! ദ്ദി(ᵔᗜᵔ)      </Typography>
     </motion.div>
   );
 }

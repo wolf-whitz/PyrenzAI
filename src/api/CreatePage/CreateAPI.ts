@@ -55,7 +55,7 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
   const fetchUserName = async (userUuid: string): Promise<string> => {
     const { data, error } = await supabase
       .from('user_data')
-      .select('persona_name, full_name')
+      .select('username')
       .eq('user_uuid', userUuid)
       .single();
 
@@ -65,7 +65,7 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
       return '';
     }
 
-    return data.persona_name || data.full_name || '';
+    return data.username || '';
   };
 
   const handleImageSelect = (file: File | null) => {};

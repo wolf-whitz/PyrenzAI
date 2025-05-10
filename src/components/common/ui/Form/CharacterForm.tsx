@@ -19,7 +19,6 @@ export default function CharacterForm() {
     showRequiredFieldsPopup,
     missingFields,
     characterData,
-    setCharacterData,
     handleImageSelect,
     handleDropdownChange,
     handleChange,

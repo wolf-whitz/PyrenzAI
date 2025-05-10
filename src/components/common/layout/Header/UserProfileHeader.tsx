@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 interface UserProfileHeaderProps {
   loading: boolean;
   userData: {
-    full_name: string;
+    username: string;
     avatar_url?: string;
     user_uuid: string;
   } | null;
@@ -41,12 +41,12 @@ export default function UserProfileHeader({ loading, userData }: UserProfileHead
         <Box display="flex" alignItems="center" mb={2}>
           {userData.avatar_url && (
             <Avatar
-              alt={userData.full_name}
+              alt={userData.username}
               src={userData.avatar_url}
               sx={{ width: 60, height: 60, marginRight: 2 }}
             />
           )}
-          <Typography variant="h6">{userData.full_name}</Typography>
+          <Typography variant="h6">{userData.username}</Typography>
           <IconButton
             onClick={handleCopyProfileUrl}
             aria-label="copy profile URL"

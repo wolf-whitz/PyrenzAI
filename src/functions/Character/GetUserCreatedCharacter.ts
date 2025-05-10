@@ -15,7 +15,7 @@ type Character = {
 };
 
 type UserData = {
-  full_name: string;
+  username: string;
   avatar_url: string;
   user_uuid: string;
 };
@@ -76,7 +76,7 @@ export const GetUserCreatedCharacters = (uuid?: string) => {
         }
         const { data: userData, error } = await supabase
           .from('public_user_profiles')
-          .select('full_name, avatar_url, user_uuid')
+          .select('username, avatar_url, user_uuid')
           .eq('user_uuid', userUuidToUse)
           .maybeSingle();
 
