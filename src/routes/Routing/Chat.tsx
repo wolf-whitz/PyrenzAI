@@ -85,9 +85,9 @@ export default function ChatPage() {
 
         const updatedUserData: PersonaResponse = {
           user_uuid: userUuid,
-          name: response.persona_name,
-          user_name: response.persona_name,
-          icon: `https://api.dicebear.com/9.x/adventurer/svg?seed=${response.persona_name.split('@')[0] || 'Anon'}`,
+          name: response.username,
+          user_name: response.username,
+          icon: `https://api.dicebear.com/9.x/adventurer/svg?seed=${response.username.split('@')[0] || 'Anon'}`,
         };
 
         setUserData(updatedUserData);

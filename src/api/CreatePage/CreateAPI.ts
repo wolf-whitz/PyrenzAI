@@ -235,6 +235,7 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
         bannerImage,
         profileImage,
         user_uuid: userUuid,
+        creator: characterData.creator,
       });
 
       if (response.error) {

@@ -1,7 +1,7 @@
 import { supabase } from '~/Utility/supabaseClient';
 
 interface UserDataResponse {
-  persona_name: string;
+  username: string;
   subscription_data: {
     tier: string;
     max_token: number;
@@ -22,7 +22,7 @@ export async function GetUserData(): Promise<
   }
   const { data: userData, error: userError } = await supabase
     .from('user_data')
-    .select('persona_name, full_name, subscription_plan')
+    .select('username, subscription_plan')
     .eq('user_uuid', user.id)
     .single();
 
@@ -30,7 +30,7 @@ export async function GetUserData(): Promise<
     return { error: 'User not found' };
   }
 
-  const personaName = userData.persona_name || userData.full_name || 'Anon';
+  const personaName = userData.username || 'Anon';
 
   let subscriptionData;
   switch (userData.subscription_plan) {
@@ -69,7 +69,7 @@ export async function GetUserData(): Promise<
   }
 
   return {
-    persona_name: personaName,
+    username: personaName,
     subscription_data: subscriptionData,
   };
 }
