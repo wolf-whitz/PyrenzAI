@@ -38,6 +38,22 @@
         {
           "key": "Referrer-Policy",
           "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=600, stale-while-revalidate=30"
+        },
+        {
+          "key": "X-RateLimit-Limit",
+          "value": "100"
+        },
+        {
+          "key": "X-RateLimit-Remaining",
+          "value": "99"
+        },
+        {
+          "key": "X-RateLimit-Reset",
+          "value": "600"
         }
       ]
     }
@@ -46,6 +62,12 @@
     {
       "source": "/(.*)",
       "destination": "/"
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/pong",
+      "schedule": "*/10 * * * *"
     }
   ]
 }

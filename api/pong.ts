@@ -1,13 +1,23 @@
 export const config = {
-    runtime: 'edge',
+  runtime: 'edge'
+};
+
+export default function handler(request) {
+  const now = new Date().toISOString();
+
+  const data = {
+    status: 'ok',
+    message: 'pong',
+    timestamp: now,
+    uptime: process.uptime?.() ?? 'N/A',
+    runtime: 'edge'
   };
-  
-  export default function handler(request) {
-    return new Response('Pong', {
-      status: 200,
-      headers: {
-        'Content-Type': 'text/plain',
-      },
-    });
-  }
-  
+
+  return new Response(JSON.stringify(data), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json',
+      'Cache-Control': 'no-store'
+    }
+  });
+}
