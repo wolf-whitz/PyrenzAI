@@ -11,8 +11,8 @@ import '~/styles/Preview.css';
 import { motion } from 'framer-motion';
 import AOS from 'aos';
 import { Box, Container } from '@mui/material';
-import { Utils } from '~/Utility/Utility';
-import { GetUserUUID } from '~/functions';
+import { sendUserDataToUserDataTable } from '~/api';
+import { supabase } from '~/Utility/supabaseClient';
 
 export default function Preview() {
   const [showModal, setShowModal] = useState<'login' | 'register' | null>(null);
@@ -31,12 +31,10 @@ export default function Preview() {
     });
 
     const fetchUserData = async () => {
-      try {
-        const userUUID = await GetUserUUID();
-        const response = await Utils.post('/api/createUserData', { userUUID });
-        console.log('User data created:', response);
-      } catch (error) {
-        console.error('Error creating user data:', error);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await sendUserDataToUserDataTable(user);
+        return { success: true, user };
       }
     };
 

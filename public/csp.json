@@ -41,7 +41,8 @@
     "https://*.adtrafficquality.google",
     "https://*.hcaptcha.com",
     "https://*.google.com",
-    "https://*.googleusercontent.com"
+    "https://*.googleusercontent.com",
+    "https://*.googlesyndication.com"
   ],
   "manifest-src": ["'self'", "https://pyrenzai.com"],
   "worker-src": ["'self'", "blob:"],

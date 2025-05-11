@@ -1,9 +1,10 @@
-import { sentryVitePlugin } from '@sentry/vite-plugin';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
-import tailwindcss from 'tailwindcss';
 import path from 'path';
+import tailwindcss from 'tailwindcss';
+import { sentryVitePlugin } from '@sentry/vite-plugin';
 import { cspPlugin } from './plugin/DevheaderCsp';
+import { createHtmlPlugin } from 'vite-plugin-html';
 
 export default defineConfig({
   plugins: [
@@ -11,8 +12,23 @@ export default defineConfig({
     sentryVitePlugin({
       org: 'pyrenzai',
       project: 'pyrenzai',
+      authToken: process.env.VITE_SENTRY_AUTH_TOKEN,
     }),
+
     cspPlugin(),
+
+    createHtmlPlugin({
+      minify: {
+        collapseWhitespace: true,
+        removeComments: true,
+        removeRedundantAttributes: true,
+        removeScriptTypeAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        useShortDoctype: true,
+        minifyCSS: true,
+        minifyJS: true,
+      },
+    })
   ],
   css: {
     postcss: {
@@ -69,10 +85,7 @@ export default defineConfig({
       '@components': path.resolve(__dirname, 'src/components'),
       '@ui': path.resolve(__dirname, 'src/components/common/ui'),
       '@layout': path.resolve(__dirname, 'src/components/common/layout'),
-      '@shared-types': path.resolve(
-        __dirname,
-        'src/components/common/shared-types'
-      ),
+      '@shared-types': path.resolve(__dirname, 'src/components/common/shared-types'),
       '@store': path.resolve(__dirname, 'src/store'),
       '@libs': path.resolve(__dirname, 'src/lib'),
       '@functions': path.resolve(__dirname, 'src/functions'),

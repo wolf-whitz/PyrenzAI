@@ -4,8 +4,7 @@ import {
   handleLogin,
   handleOAuthSignIn,
   handleSignUp,
-  sendUserDataToSupabase,
-  extractTokensFromLocalStorage,
+  sendUserDataToUserDataTable
 } from './Modals/AuthenticationAPI';
 import { useCreateAPI } from './CreatePage/CreateAPI';
 
@@ -15,7 +14,6 @@ export {
   handleLogin,
   handleOAuthSignIn,
   handleSignUp,
-  sendUserDataToSupabase,
-  extractTokensFromLocalStorage,
   useCreateAPI,
+  sendUserDataToUserDataTable,
 };

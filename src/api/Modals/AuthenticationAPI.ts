@@ -1,6 +1,5 @@
 import posthog from 'posthog-js';
 import { supabase } from '~/Utility/supabaseClient';
-import { Utils, AuthTokenName } from '~/Utility/Utility';
 import * as Sentry from '@sentry/react';
 import toast from 'react-hot-toast';
 
@@ -10,65 +9,44 @@ interface AppUser {
   user_metadata?: {
     avatar_url?: string;
     full_name?: string;
+    is_adult?: boolean;
   };
 }
 
-interface ApiResponse {
-  error?: string;
-}
-
-export const extractTokensFromLocalStorage = (): {
-  accessToken?: string;
-  refreshToken?: string;
-} | null => {
-  const authData = localStorage.getItem(AuthTokenName);
-  if (!authData) return null;
-
+export const sendUserDataToUserDataTable = async (user: AppUser) => {
   try {
-    const parsedData = JSON.parse(authData);
-    const accessToken = parsedData?.provider_token;
-    const refreshToken = parsedData?.refresh_token;
+    const { data, error } = await supabase
+      .from('user_data')
+      .upsert(
+        {
+          user_uuid: user.id,
+          email: user.email,
+          avatar_url: user.user_metadata?.avatar_url,
+          username: user.user_metadata?.full_name || user.email?.split('@')[0],
+          last_sign_in_at: new Date().toISOString(),
+        },
+        { onConflict: 'user_uuid' }
+      );
 
-    if (accessToken && refreshToken) {
-      localStorage.setItem('sb-auth-token', accessToken);
-      localStorage.setItem('sb-refresh-token', refreshToken);
-      return { accessToken, refreshToken };
-    }
-  } catch (err) {
-    const error = err as Error;
-    console.error('Error parsing auth data:', error);
-    Sentry.captureException(error);
-  }
-  return null;
-};
+    if (error) throw error;
 
-export const sendUserDataToSupabase = async (user: AppUser): Promise<void> => {
-  const username = user.email?.split('@')[0] || 'UnknownUser';
-  const imageUrl =
-    user.user_metadata?.avatar_url ||
-    `https://api.dicebear.com/8.x/avataaars/svg?seed=${username}`;
+    console.log('User data successfully sent to user_data table:', data);
 
-  try {
-    const response = await Utils.post<ApiResponse>('/authorized', {
-      id: user.id,
-      name: user.user_metadata?.full_name || username,
-      imageUrl,
+    posthog.identify(user.id, {
+      email: user.email,
+      full_name: user.user_metadata?.full_name,
+      avatar_url: user.user_metadata?.avatar_url,
     });
 
-    if (response.error) {
-      console.error('Error sending user data:', response.error);
-      Sentry.captureMessage(`Error sending user data: ${response.error}`);
-    } else {
-      console.log('User data successfully sent!');
-      posthog.identify(user.id, {
-        email: user.email,
-        full_name: user.user_metadata?.full_name,
-        avatar_url: imageUrl,
-      });
-    }
+    Sentry.setUser({
+      id: user.id,
+      email: user.email,
+      username: user.user_metadata?.full_name || user.email?.split('@')[0],
+    });
+
   } catch (err) {
     const error = err as Error;
-    console.error('Unexpected error:', error);
+    console.error('Error sending user data to user_data table:', error);
     Sentry.captureException(error);
   }
 };
@@ -81,13 +59,6 @@ export const handleLogin = async (email: string, password: string) => {
     });
 
     if (error) throw new Error(error.message);
-
-    const tokens = extractTokensFromLocalStorage();
-    if (tokens) {
-      const authData = JSON.parse(localStorage.getItem(AuthTokenName) || '');
-      const user = authData?.user;
-      if (user) await sendUserDataToSupabase(user);
-    }
 
     return { success: true };
   } catch (err: any) {
@@ -103,13 +74,6 @@ export const handleOAuthSignIn = async (provider: 'google' | 'discord') => {
 
     if (error) throw new Error(error.message);
 
-    const tokens = extractTokensFromLocalStorage();
-    if (tokens) {
-      const authData = JSON.parse(localStorage.getItem(AuthTokenName) || '');
-      const user = authData?.user;
-      if (user) await sendUserDataToSupabase(user);
-    }
-
     return { success: true };
   } catch (err: any) {
     const error = new Error(err.message || 'Failed to sign in with OAuth.');
@@ -124,6 +88,10 @@ export const handleSignUp = async (
   isAdult: boolean
 ) => {
   try {
+    if (!isAdult) {
+      throw new Error('User must be an adult to sign up.');
+    }
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -135,13 +103,6 @@ export const handleSignUp = async (
     });
 
     if (error) throw new Error(error.message);
-
-    const tokens = extractTokensFromLocalStorage();
-    if (tokens) {
-      const authData = JSON.parse(localStorage.getItem(AuthTokenName) || '');
-      const user = authData?.user;
-      if (user) await sendUserDataToSupabase(user);
-    }
 
     toast.success(
       'Signed up successfully! Please check your email to confirm your account. ₍ᐢ. .ᐢ₎'
