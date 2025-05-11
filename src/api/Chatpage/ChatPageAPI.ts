@@ -65,9 +65,9 @@ export const fetchChatData = async (
         const messages: Message[] = [];
 
         if (msg.user_message) {
+          console.log('Username:', username);
           messages.push({
             id: msg.id,
-            username: username || 'User',
             text: msg.user_message,
             icon: avatar_url || '',
             type: 'user',
@@ -78,7 +78,6 @@ export const fetchChatData = async (
         if (msg.char_message) {
           messages.push({
             id: msg.id,
-            character_name: character.character_name,
             text: msg.char_message,
             icon: character.profile_image || '',
             type: 'assistant',

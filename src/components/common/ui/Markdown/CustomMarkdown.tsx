@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Typography, Link, Box } from '@mui/material';
+import { Typography, Box } from '@mui/material';
 
 interface CustomMarkdownProps {
   text?: string;
-  char?: string;
-  user?: string;
+  char?: { character_name: string };
+  user?: { username: string };
   ai_message?: string;
 }
 
@@ -20,16 +20,13 @@ export default function CustomMarkdown({
   const [userColor, setUserColor] = useState<string | undefined>('');
 
   useEffect(() => {
-    console.log('Char:', char);
-    console.log('User:', user);
-
     const savedUserColor = localStorage.getItem('userColor');
     if (savedUserColor) setUserColor(savedUserColor);
 
     const replacePlaceholders = (content: string) =>
       content
-        .replace(/{{char}}/g, char || '')
-        .replace(/{{user}}/g, user || '')
+        .replace(/{{char}}/g, char?.character_name || '')
+        .replace(/{{user}}/g, user?.username || '')
         .replace(/{{you}}:/g, '')
         .replace(/{{ai_message}}/g, ai_message);
 
@@ -52,29 +49,13 @@ export default function CustomMarkdown({
           strong: ({ children }) => (
             <Typography
               component="span"
-              sx={{
-                color: 'white',
-                fontWeight: 'bold',
-                ...(char ? { color: char } : {}),
-              }}
+              sx={{ color: 'gray', fontStyle: 'italic', fontWeight: 'bold' }}
             >
               {children}
             </Typography>
           ),
           p: ({ children }) => (
             <Typography component="p">{children}</Typography>
-          ),
-          a: ({ children, href }) => (
-            <Link
-              href={href}
-              sx={{
-                color: 'blue',
-                textDecoration: 'none',
-                '&:hover': { textDecoration: 'underline' },
-              }}
-            >
-              {children}
-            </Link>
           ),
           code: ({ children }) => (
             <Typography
@@ -90,31 +71,7 @@ export default function CustomMarkdown({
             >
               {children}
             </Typography>
-          ),
-          blockquote: ({ children }) => (
-            <Typography
-              component="blockquote"
-              sx={{
-                borderLeft: 4,
-                borderColor: 'gray',
-                pl: 2,
-                color: 'gray',
-                fontStyle: 'italic',
-              }}
-            >
-              {children}
-            </Typography>
-          ),
-          ul: ({ children }) => (
-            <Typography component="ul" sx={{ listStyleType: 'disc', pl: 4 }}>
-              {children}
-            </Typography>
-          ),
-          li: ({ children }) => (
-            <Typography component="li" sx={{ mb: 1 }}>
-              {children}
-            </Typography>
-          ),
+          )
         }}
       >
         {replacedText}

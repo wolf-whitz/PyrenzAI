@@ -39,7 +39,7 @@ export default function ChatMain({
   useEffect(() => {
     const storedBgImage = localStorage.getItem('bgImage');
     if (storedBgImage) {
-      handleBackgroundChange(storedBgImage);
+      setBgImage(storedBgImage);
     }
   }, []);
 
@@ -98,7 +98,7 @@ export default function ChatMain({
   const handleGoHome = () => {
     navigate('/home');
   };
-  
+
   return (
     <motion.div
       className="flex flex-col h-screen text-white p-4 relative w-full justify-center items-center"
@@ -123,13 +123,13 @@ export default function ChatMain({
           className="w-16 h-16"
         />
         <div className="flex items-center mt-2">
-          <IconButton onClick={handleGoHome} className="mr-2 text-white">
+          <IconButton onClick={handleGoHome} className="mr-2 text-white" aria-label="Go home">
             <ChevronLeft className="w-6 h-6" />
           </IconButton>
           <Typography variant="h6" className="text-lg font-bold">
             {char?.character_name || 'Anon'}
           </Typography>
-          <IconButton onClick={toggleSettings} className="ml-2 text-white">
+          <IconButton onClick={toggleSettings} className="ml-2 text-white" aria-label="Settings">
             <Settings className="w-6 h-6" />
           </IconButton>
         </div>
@@ -144,9 +144,10 @@ export default function ChatMain({
         <ChatMessages
           previous_message={previous_message.map((msg) => ({
             ...msg,
-            character_name: msg.character_name || 'Unknown',
+            character_name: msg.character_name || 'Anon',
           }))}
-          role="assistant"
+          user={{ username: user?.username || 'Anon' }}
+          char={{ character_name: char?.character_name || 'Anon' }}
           isGenerating={isGenerating}
         />
         <div ref={messagesEndRef}></div>

@@ -1,8 +1,10 @@
 import React from 'react';
 import TypingIndicator from '../Indicator/TypingIndicator';
 import CustomMarkdown from '../Markdown/CustomMarkdown';
-import { Box, Avatar } from '@mui/material';
-import { AlertCircle } from 'lucide-react';
+import { Box, Avatar, IconButton } from '@mui/material';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import ReplayIcon from '@mui/icons-material/Replay';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 interface Message {
   id?: string;
@@ -22,21 +24,27 @@ interface ChatMessagesProps {
   messageId?: string | null;
   token?: number | null;
   role?: string | null;
+  user: { username: string };
+  char: { character_name: string };
+  onRegenerate?: (messageId: string) => void;
+  onRemove?: (messageId: string) => void;
 }
 
 export default function ChatMessages({
   previous_message,
   isGenerating,
+  user,
+  char,
+  onRegenerate,
+  onRemove,
 }: ChatMessagesProps) {
   return (
     <Box className="space-y-4 p-4 max-w-2xl mx-auto">
       {previous_message.map((msg, index) => {
         const isUser = msg.type === 'user';
-        const displayName = isUser ? msg.username || 'User' : msg.character_name || 'Anon';
+        const displayName = isUser ? msg.username || user.username : msg.character_name || char.character_name;
         const icon = msg.icon || '';
-
-        console.log('Username:', msg.username);
-        console.log('Character Name:', msg.character_name);
+        const isLatestMessage = index === previous_message.length - 1;
 
         return (
           <Box
@@ -66,17 +74,34 @@ export default function ChatMessages({
                 index === previous_message.length - 1 && <TypingIndicator />}
               <CustomMarkdown
                 text={msg.text}
-                user={msg.username || 'User'}
-                char={msg.character_name || 'Anon'}
+                user={user}
+                char={char}
               />
             </Box>
 
             {msg.error && (
               <Box display="flex" alignItems="center" ml={1} mt={1}>
-                <AlertCircle color="red" size={16} />
-                <Box ml={1} color="red">
+                <ErrorOutlineIcon color="error" fontSize="small" />
+                <Box ml={1} color="error">
                   Error
                 </Box>
+              </Box>
+            )}
+
+            {!isUser && isLatestMessage && (
+              <Box display="flex" flexDirection="column" ml={1}>
+                <IconButton
+                  onClick={() => onRegenerate && msg.id && onRegenerate(msg.id)}
+                  aria-label="regenerate"
+                >
+                  <ReplayIcon fontSize="small" />
+                </IconButton>
+                <IconButton
+                  onClick={() => onRemove && msg.id && onRemove(msg.id)}
+                  aria-label="remove"
+                >
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
               </Box>
             )}
 
