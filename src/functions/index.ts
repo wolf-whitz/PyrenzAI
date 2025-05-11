@@ -3,7 +3,7 @@
  * This file serves as a central export point for all the database fetch functions that are used in the application itself.
  */
 
-//Tags
+
 import { GetHotCharacters } from './Character/GetHotCharacters';
 import { GetLatestCharacters } from './Character/GetLatestCharacters';
 import { GetRandomCharacters } from './Character/GetRandomCharacters';
