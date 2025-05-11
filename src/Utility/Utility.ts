@@ -13,7 +13,6 @@
  * For ease in development future dev can use this utility to make API calls without the need of a dedicated fetch function and having to paste the same baseurl for every request.
  */
 
-import { useUserStore as UserStore } from '~/store';
 import { supabase } from '~/Utility/supabaseClient';
 import useSWR from 'swr';
 import { SERVER_API_URL as BASE_URL } from '~/config';
@@ -21,6 +20,12 @@ import { SERVER_API_URL as BASE_URL } from '~/config';
 type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 
 export const AuthTokenName = 'sb-cqtbishpefnfvaxheyqu-auth-token';
+
+const getCookie = (name: string) => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop()?.split(';').shift();
+};
 
 const pendingRequests = new Map<string, Promise<any>>();
 
@@ -63,7 +68,7 @@ export const Utils = {
         session = sessionData.session;
       }
 
-      const captcha_uuid = UserStore.getState().captcha_uuid || '';
+      const captchaCookie = getCookie('captcha-cookie');
 
       const headers: HeadersInit = {
         'Content-Type': 'application/json',
@@ -71,7 +76,7 @@ export const Utils = {
       };
 
       if (session) headers.Authorization = `Bearer ${session.access_token}`;
-      if (captcha_uuid) headers['captcha_key'] = captcha_uuid;
+      if (captchaCookie) headers['captcha_key'] = captchaCookie;
 
       const options: RequestInit = {
         method,

@@ -34,7 +34,7 @@ export default function Preview() {
   };
 
   return (
-    <motion.div
+    <motion.section
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -51,15 +51,17 @@ export default function Preview() {
         />
       </Box>
 
-      <Container maxWidth={false} disableGutters className="pt-20 flex-grow">
-        <HeroSection openModal={openModal} pyrenzAiRef={pyrenzAiRef} />
-        <DownloadModal isModalOpen={isModalOpen} closeModal={closeModal} />
-        <FeaturesSection discoverMoreRef={discoverMoreRef} />
-      </Container>
+      <main className="pt-20 flex-grow">
+        <Container maxWidth={false} disableGutters>
+          <HeroSection openModal={openModal} pyrenzAiRef={pyrenzAiRef} />
+          <DownloadModal isModalOpen={isModalOpen} closeModal={closeModal} />
+          <FeaturesSection discoverMoreRef={discoverMoreRef} />
+        </Container>
+      </main>
 
-      <motion.div data-aos="fade-up" className="mt-44">
+      <motion.footer data-aos="fade-up" className="mt-44">
         <Footer />
-      </motion.div>
+      </motion.footer>
 
       {showModal && (
         <AuthenticationModal
@@ -68,6 +70,6 @@ export default function Preview() {
           toggleMode={toggleMode}
         />
       )}
-    </motion.div>
+    </motion.section>
   );
 }

@@ -1,7 +1,5 @@
 import React, { lazy } from 'react';
 import { RouteObject, Navigate } from 'react-router-dom';
-import { GetUserUUID } from '~/functions';
-import { useUserStore } from '~/store';
 
 const Index = lazy(() => import('./Routing/Index'));
 const Auth = lazy(() => import('./Routing/Auth'));
@@ -13,6 +11,12 @@ const Setting = lazy(() => import('./Routing/Setting/Setting'));
 const ErrorPage = lazy(() => import('./Routing/404page'));
 const ChatArchives = lazy(() => import('./Routing/Archive'));
 
+const getCookie = (name: string) => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop()?.split(';').shift();
+};
+
 const ProtectedRoute = ({
   element,
   ...props
@@ -20,9 +24,8 @@ const ProtectedRoute = ({
   element: JSX.Element;
   [key: string]: any;
 }) => {
-  const captcha_uuid = useUserStore((state) => state.captcha_uuid);
-  const captcha_expiration = useUserStore((state) => state.captcha_expiration);
-  const isAuthenticated = captcha_uuid && captcha_expiration;
+  const captchaCookie = getCookie('captcha-cookie');
+  const isAuthenticated = !!captchaCookie;
 
   if (!isAuthenticated) {
     return <Navigate to="/Auth" replace />;

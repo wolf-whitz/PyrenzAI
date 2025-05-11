@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 import { useNavigate } from 'react-router-dom';
-import { useUserStore } from '~/store';
 import { motion } from 'framer-motion';
 import { Box, Typography, CircularProgress } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -9,7 +8,6 @@ import { useTranslation } from 'react-i18next';
 export default function Auth() {
   const [isLoaded, setIsLoaded] = useState(false);
   const navigate = useNavigate();
-  const setCaptcha = useUserStore((state) => state.setCaptcha);
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -19,8 +17,8 @@ export default function Auth() {
   }, []);
 
   const handleCaptcha = (token: string) => {
-    const expiration = Date.now() + 2 * 60 * 1000;
-    setCaptcha(token, expiration);
+    const expiration = new Date(Date.now() + 2 * 60 * 1000).toUTCString();
+    document.cookie = `captcha-cookie=${token}; expires=${expiration}; path=/`;
     navigate('/Home');
   };
 

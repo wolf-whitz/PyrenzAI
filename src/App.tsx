@@ -1,7 +1,6 @@
 import React, { useEffect, Suspense, lazy, useState } from 'react';
 import { BrowserRouter as Router, useRoutes } from 'react-router-dom';
 import { supabase } from '~/Utility/supabaseClient';
-import { useUserStore } from '~/store';
 import { routes as allRoutes } from '~/routes/routes';
 import { Spinner } from '@components/index';
 
@@ -10,16 +9,9 @@ const RoutesWrapper = lazy(() =>
 );
 
 export default function App() {
-  const { setHasHydrated, hasHydrated } = useUserStore();
   const [isSessionChecked, setIsSessionChecked] = useState(false);
 
   useEffect(() => {
-    setHasHydrated(true);
-  }, [setHasHydrated]);
-
-  useEffect(() => {
-    if (!hasHydrated) return;
-
     const authDataString = localStorage.getItem(
       'sb-dojdyydsanxoblgjmzmq-auth-token'
     );
@@ -49,9 +41,9 @@ export default function App() {
     };
 
     handleSession();
-  }, [hasHydrated]);
+  }, []);
 
-  if (!hasHydrated || !isSessionChecked) {
+  if (!isSessionChecked) {
     return <Spinner />;
   }
 

@@ -9,7 +9,6 @@ import { FaDiscord } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '~/Utility/supabaseClient';
-import { LanguageDropdown } from '@components/index';
 
 interface HeaderProps {
   setShowLogin: (value: boolean) => void;
@@ -29,28 +28,11 @@ const itemVariants = {
 export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const [languages, setLanguages] = useState<{ code: string; name: string }[]>(
-    []
-  );
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { t } = useTranslation();
 
   useEffect(() => {
     setIsMounted(true);
-
-    fetch('/Languages/Languages.json')
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.languages && Array.isArray(data.languages)) {
-          setLanguages(data.languages);
-        } else {
-          console.error(
-            'Fetched data does not contain a valid languages array:',
-            data
-          );
-        }
-      })
-      .catch((error) => console.error('Error fetching languages:', error));
 
     const checkUserSession = async () => {
       const { data, error } = await supabase.auth.getSession();
@@ -123,8 +105,6 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
                 <Icon size={18} /> {name}
               </motion.button>
             ))}
-            <LanguageDropdown languages={languages} />{' '}
-            {/* Use the new component */}
             {!isLoggedIn && (
               <>
                 <motion.button
@@ -192,8 +172,6 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
                     <Icon className="inline-block mr-2" /> {name}
                   </motion.button>
                 ))}
-
-                <LanguageDropdown languages={languages} />
 
                 {!isLoggedIn && (
                   <>
