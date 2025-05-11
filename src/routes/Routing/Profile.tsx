@@ -1,5 +1,10 @@
 import { useParams } from 'react-router-dom';
-import { Sidebar, SkeletonCard, CharacterCard, UserProfileHeader } from '~/components';
+import {
+  Sidebar,
+  SkeletonCard,
+  CharacterCard,
+  UserProfileHeader,
+} from '~/components';
 import { Box, Typography } from '@mui/material';
 import { GetUserCreatedCharacters } from '@functions/index';
 

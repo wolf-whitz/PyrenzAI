@@ -31,11 +31,12 @@ export async function GetUserData(): Promise<
     return { error: 'User not found' };
   }
 
-  const { data: subscriptionPlanData, error: subscriptionError } = await supabase
-    .from('subscription_plan')
-    .select('subscription_plan')
-    .eq('user_uuid', user.id)
-    .single();
+  const { data: subscriptionPlanData, error: subscriptionError } =
+    await supabase
+      .from('subscription_plan')
+      .select('subscription_plan')
+      .eq('user_uuid', user.id)
+      .single();
 
   if (subscriptionError || !subscriptionPlanData) {
     return { error: 'Subscription plan not found' };

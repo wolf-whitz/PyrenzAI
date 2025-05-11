@@ -1,5 +1,5 @@
 export const config = {
-  runtime: 'edge'
+  runtime: 'edge',
 };
 
 export default function handler(request) {
@@ -9,14 +9,14 @@ export default function handler(request) {
     status: 'ok',
     message: 'pong',
     timestamp: now,
-    runtime: 'edge'
+    runtime: 'edge',
   };
 
   return new Response(JSON.stringify(data), {
     status: 200,
     headers: {
       'Content-Type': 'application/json',
-      'Cache-Control': 'no-store'
-    }
+      'Cache-Control': 'no-store',
+    },
   });
 }

@@ -37,12 +37,10 @@ posthog.init(posthogConfig.apiKey, {
 Sentry.init({
   dsn: 'https://2bed6b35dd70e8068f61a53812a8a5fc@o4509146215284736.ingest.us.sentry.io/4509243214725120',
   sendDefaultPii: true,
-  integrations: [
-    Sentry.replayIntegration()
-  ],
+  integrations: [Sentry.replayIntegration()],
   tracesSampleRate: 1.0,
   replaysSessionSampleRate: 0.1,
-  replaysOnErrorSampleRate: 1.0
+  replaysOnErrorSampleRate: 1.0,
 });
 
 createRoot(document.getElementById('root')!).render(

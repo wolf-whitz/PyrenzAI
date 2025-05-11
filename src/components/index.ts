@@ -132,7 +132,7 @@ export {
   HeroSection,
   FeaturesSection,
   UserProfileHeader,
-  
+
   //Import
   ImportCharacterModal,
 

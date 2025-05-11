@@ -113,7 +113,8 @@ export default function FormActions({
         align="center"
         sx={{ width: '100%', marginTop: '16px', color: 'grey.600' }}
       >
-Not sure where to start? Check out our starter guide! ദ്ദി(ᵔᗜᵔ)      </Typography>
+        Not sure where to start? Check out our starter guide! ദ്ദി(ᵔᗜᵔ){' '}
+      </Typography>
     </motion.div>
   );
 }

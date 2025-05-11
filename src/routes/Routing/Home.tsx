@@ -25,8 +25,6 @@ import {
   Pagination,
 } from '~/components';
 
-
-
 export default function Home() {
   const navigate = useNavigate();
   const {
@@ -105,7 +103,7 @@ export default function Home() {
         name: char.name,
         description: char.description,
         creator: char.creator,
-        creator_uuid: char.creator_uuid, 
+        creator_uuid: char.creator_uuid,
         chat_messages_count: char.chat_messages_count,
         profile_image: char.profile_image,
         tags: Array.isArray(char.tags)

@@ -32,8 +32,8 @@ export const componentOverrides = {
       root: {
         borderRadius: '4px',
         '&:hover': {
-          backgroundColor: 'transparent', 
-          color: 'grey', 
+          backgroundColor: 'transparent',
+          color: 'grey',
         },
       },
     },

@@ -54,6 +54,10 @@
         {
           "key": "X-RateLimit-Reset",
           "value": "600"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://pyrenzai.com https://*.googletagmanager.com https://pagead2.googlesyndication.com https://us-assets.i.posthog.com https://va.vercel-scripts.com https://*.adtrafficquality.google https://js.hcaptcha.com https://*.google.com; style-src 'self' 'unsafe-inline' https://pyrenzai.com https://fonts.googleapis.com; connect-src 'self' https://us-assets.i.posthog.com https://us.i.posthog.com https://*.ingest.us.sentry.io https://*.adtrafficquality.google https://*.google.com https://*.hcaptcha.com https://*.supabase.co https://*.pyrenzai.com https://pagead2.googlesyndication.com; font-src 'self' *; img-src 'self' https://pyrenzai.com https://*.supabase.co https://*.githubusercontent.com https://*.googletagmanager.com https://*.adtrafficquality.google https://*.hcaptcha.com https://*.google.com; manifest-src 'self' https://pyrenzai.com; worker-src 'self' blob:; object-src 'none'; frame-src 'self' https://*.doubleclick.net https://*.adtrafficquality.google https://*.google.com https://*.hcaptcha.com"
         }
       ]
     }

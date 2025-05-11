@@ -174,7 +174,7 @@ export default function ChatArchives() {
               {chats.map((chat) => (
                 <motion.div
                   key={chat.chat_uuid}
-                  className="w-full sm:w-1/2 lg:w-1/2 p-2" 
+                  className="w-full sm:w-1/2 lg:w-1/2 p-2"
                   variants={{
                     hidden: { y: 20, opacity: 0 },
                     visible: { y: 0, opacity: 1 },

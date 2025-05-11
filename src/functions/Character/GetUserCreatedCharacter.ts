@@ -31,7 +31,7 @@ export const GetUserCreatedCharacters = (uuid?: string) => {
       try {
         const { data: chars, error } = await supabase
           .from('characters')
-          .select('*') 
+          .select('*')
           .eq('creator_uuid', creatorUuid);
 
         if (error) throw error;

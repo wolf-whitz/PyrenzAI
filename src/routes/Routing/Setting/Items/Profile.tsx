@@ -61,7 +61,10 @@ export default function Profile() {
         const formData = new FormData();
         formData.append('image', profileImage);
 
-        const response: ApiResponse = await Utils.post('/api/ConvertAvif', formData);
+        const response: ApiResponse = await Utils.post(
+          '/api/ConvertAvif',
+          formData
+        );
         if (response.success) {
           console.log('Profile image uploaded successfully');
         } else {
@@ -76,7 +79,10 @@ export default function Profile() {
   return (
     <Box sx={{ padding: '20px', maxWidth: '400px', margin: '0 auto' }}>
       <Box sx={{ marginBottom: '20px' }}>
-        <Typography variant="subtitle1" sx={{ fontWeight: 'bold', marginBottom: '8px' }}>
+        <Typography
+          variant="subtitle1"
+          sx={{ fontWeight: 'bold', marginBottom: '8px' }}
+        >
           Profile Image
         </Typography>
         <DropdownMenu.Root>
@@ -100,7 +106,10 @@ export default function Profile() {
       </Box>
 
       <Box sx={{ marginBottom: '20px' }}>
-        <Typography variant="subtitle1" sx={{ fontWeight: 'bold', marginBottom: '8px' }}>
+        <Typography
+          variant="subtitle1"
+          sx={{ fontWeight: 'bold', marginBottom: '8px' }}
+        >
           Username
         </Typography>
         <TextField

@@ -118,7 +118,6 @@
     "vite-plugin-compression": "^0.5.1",
     "vite-plugin-image-presets": "^0.3.4",
     "vite-plugin-robots": "^1.0.5",
-    "vite-plugin-sitemap": "^0.7.1",
     "vite-tsconfig-paths": "^4.3.2",
     "webpack-bundle-analyzer": "^4.10.2",
     "webpack-cli": "^6.0.1"

@@ -143,7 +143,9 @@ export const handleSignUp = async (
       if (user) await sendUserDataToSupabase(user);
     }
 
-    toast.success('Signed up successfully! Please check your email to confirm your account. ₍ᐢ. .ᐢ₎');
+    toast.success(
+      'Signed up successfully! Please check your email to confirm your account. ₍ᐢ. .ᐢ₎'
+    );
 
     return { success: true };
   } catch (err: any) {

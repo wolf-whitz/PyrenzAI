@@ -12,16 +12,22 @@ interface UserProfileHeaderProps {
   } | null;
 }
 
-export default function UserProfileHeader({ loading, userData }: UserProfileHeaderProps) {
+export default function UserProfileHeader({
+  loading,
+  userData,
+}: UserProfileHeaderProps) {
   const handleCopyProfileUrl = () => {
     if (userData) {
       const profileUrl = `${window.location.origin}/Profile/${userData.user_uuid}`;
-      navigator.clipboard.writeText(profileUrl).then(() => {
-        toast.success('Profile URL copied to clipboard!');
-      }).catch(err => {
-        console.error('Failed to copy URL: ', err);
-        toast.error('Failed to copy URL');
-      });
+      navigator.clipboard
+        .writeText(profileUrl)
+        .then(() => {
+          toast.success('Profile URL copied to clipboard!');
+        })
+        .catch((err) => {
+          console.error('Failed to copy URL: ', err);
+          toast.error('Failed to copy URL');
+        });
     }
   };
 

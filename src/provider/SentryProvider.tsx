@@ -6,9 +6,5 @@ interface SentryProviderProps {
 }
 
 export default function SentryProvider({ children }: SentryProviderProps) {
-  return (
-    <Sentry.ErrorBoundary>
-      {children}
-    </Sentry.ErrorBoundary>
-  );
+  return <Sentry.ErrorBoundary>{children}</Sentry.ErrorBoundary>;
 }
