@@ -3,4 +3,4 @@
 
 ## 2025-05-12
 
-- [017a984] Updated a few stuff - Whitzscott (Developer)
+- [824ace8] Merge branch 'main' of https://github.com/Whitzzscott/PyrenzAI - Whitzscott (Developer)
