@@ -6,9 +6,8 @@ import { AlertCircle } from 'lucide-react';
 
 interface Message {
   id?: string;
-  name: string;
-  user_name?: string;
-  char_name?: string;
+  character_name: string;
+  username?: string;
   text: string;
   icon: string;
   type: 'user' | 'assistant';
@@ -33,14 +32,15 @@ export default function ChatMessages({
     <Box className="space-y-4 p-4 max-w-2xl mx-auto">
       {previous_message.map((msg, index) => {
         const isUser = msg.type === 'user';
-        const displayName = isUser ? msg.user_name : msg.name || 'Anon';
-        const icon =
-          msg.icon ||
-          `https://api.dicebear.com/9.x/adventurer/svg?seed=${msg.name?.split('@')[0] || 'Anon'}`;
+        const displayName = isUser ? msg.username || 'User' : msg.character_name || 'Anon';
+        const icon = msg.icon || '';
+
+        console.log('Username:', msg.username);
+        console.log('Character Name:', msg.character_name);
 
         return (
           <Box
-            key={msg.id || `temp-${index}`}
+            key={msg.id ? `${msg.id}-${index}` : `temp-${index}`}
             display="flex"
             alignItems="start"
             justifyContent={isUser ? 'flex-end' : 'flex-start'}
@@ -57,7 +57,7 @@ export default function ChatMessages({
 
             <Box
               className={`flex flex-col max-w-md p-3 rounded-lg shadow-md ${
-                isUser ? 'bg-green-600 text-white' : 'bg-gray-700 text-white'
+                isUser ? 'bg-gray-500 text-white' : 'bg-gray-700 text-white'
               }`}
               sx={{ marginLeft: !isUser ? 2 : 0, marginRight: isUser ? 2 : 0 }}
             >
@@ -66,8 +66,8 @@ export default function ChatMessages({
                 index === previous_message.length - 1 && <TypingIndicator />}
               <CustomMarkdown
                 text={msg.text}
-                user={msg.user_name || 'User'}
-                char={msg.char_name || 'Anon'}
+                user={msg.username || 'User'}
+                char={msg.character_name || 'Anon'}
               />
             </Box>
 

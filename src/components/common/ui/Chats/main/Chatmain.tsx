@@ -98,7 +98,7 @@ export default function ChatMain({
   const handleGoHome = () => {
     navigate('/home');
   };
-
+  
   return (
     <motion.div
       className="flex flex-col h-screen text-white p-4 relative w-full justify-center items-center"
@@ -118,7 +118,7 @@ export default function ChatMain({
         transition={{ duration: 0.5 }}
       >
         <Avatar
-          alt={char?.name || 'Anon'}
+          alt={char?.character_name || 'Anon'}
           src={char?.icon || ''}
           className="w-16 h-16"
         />
@@ -127,7 +127,7 @@ export default function ChatMain({
             <ChevronLeft className="w-6 h-6" />
           </IconButton>
           <Typography variant="h6" className="text-lg font-bold">
-            {char?.name || 'Anon'}
+            {char?.character_name || 'Anon'}
           </Typography>
           <IconButton onClick={toggleSettings} className="ml-2 text-white">
             <Settings className="w-6 h-6" />
@@ -142,7 +142,10 @@ export default function ChatMain({
         transition={{ duration: 0.5 }}
       >
         <ChatMessages
-          previous_message={previous_message}
+          previous_message={previous_message.map((msg) => ({
+            ...msg,
+            character_name: msg.character_name || 'Unknown',
+          }))}
           role="assistant"
           isGenerating={isGenerating}
         />
@@ -157,10 +160,10 @@ export default function ChatMain({
       >
         <ChatInput
           user={{
-            name: user?.name || 'Anon',
+            username: user?.username || 'Anon',
             icon: user?.icon || '',
           }}
-          char={{ name: char?.name || 'Anon' }}
+          char={{ character_name: char?.character_name || 'Anon' }}
           handleSend={handleSend}
         />
       </motion.div>

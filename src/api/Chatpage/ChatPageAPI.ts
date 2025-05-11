@@ -13,10 +13,12 @@ interface ChatMessageWithId {
 }
 
 export const fetchChatData = async (
-  conversation_id: string
+  conversation_id: string,
+  username: string,
+  avatar_url: string
 ): Promise<{
   character: Character;
-  messages: (Message & { id?: string })[];
+  messages: Message[];
   firstMessage: string;
 }> => {
   if (!conversation_id) {
@@ -33,7 +35,7 @@ export const fetchChatData = async (
     }
 
     const character: Character = {
-      name: characterData.name || '',
+      character_name: characterData.name || 'Assistant',
       persona: characterData.persona || '',
       scenario: characterData.scenario || '',
       gender: characterData.gender || '',
@@ -42,10 +44,6 @@ export const fetchChatData = async (
       tags: characterData.tags || [],
       profile_image: characterData.profile_image || '',
       token_total: characterData.token_total || 0,
-      id: 0,
-      uuid: '',
-      user_name: '',
-      icon: '',
     };
 
     const { data, error } = await supabase
@@ -64,14 +62,14 @@ export const fetchChatData = async (
 
     const formattedMessages = reversedMessages.flatMap(
       (msg: ChatMessageWithId) => {
-        const messages: (Message & { id?: string })[] = [];
+        const messages: Message[] = [];
 
         if (msg.user_message) {
           messages.push({
             id: msg.id,
-            name: 'User',
+            username: username || 'User',
             text: msg.user_message,
-            icon: '',
+            icon: avatar_url || '',
             type: 'user',
             conversation_id,
           });
@@ -80,11 +78,9 @@ export const fetchChatData = async (
         if (msg.char_message) {
           messages.push({
             id: msg.id,
-            name: character.name || 'Assistant',
+            character_name: character.character_name,
             text: msg.char_message,
-            icon:
-              character.profile_image ||
-              `https://api.dicebear.com/9.x/adventurer/svg?seed=${character.name || 'Anon'}`,
+            icon: character.profile_image || '',
             type: 'assistant',
             conversation_id,
           });

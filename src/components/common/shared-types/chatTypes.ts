@@ -1,12 +1,12 @@
 import { MutableRefObject, RefObject } from 'react';
 
 export interface Message {
-  name: string;
+  character_name?: string;
   text: string;
   id?: string;
   icon: string;
   type: 'user' | 'assistant';
-  user_name?: string;
+  username?: string;
   char_name?: string;
   isGenerate?: boolean;
   isFirst?: boolean;
@@ -17,22 +17,21 @@ export interface Message {
 }
 
 export interface User {
-  name: string;
-  user_name: string;
+  username: string;
   icon: string;
 }
 
-export interface Character extends User {
-  id: number;
-  uuid: string;
-  description: string;
-  first_message: string;
-  profile_image?: string;
+export interface Character {
+  character_name: string;
   persona?: string;
   scenario?: string;
   gender?: string;
+  description: string;
+  first_message: string;
   tags?: string[];
+  profile_image?: string;
   token_total?: number;
+  icon?: string;
 }
 
 export interface ChatContainerProps {

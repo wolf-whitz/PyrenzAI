@@ -28,7 +28,8 @@
     "https://*.hcaptcha.com",
     "https://*.supabase.co",
     "https://*.pyrenzai.com",
-    "https://pagead2.googlesyndication.com"
+    "https://pagead2.googlesyndication.com",
+    "http://localhost:8080"
   ],
   "font-src": ["'self'", "*"],
   "img-src": [

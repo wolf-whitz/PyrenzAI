@@ -1,7 +1,8 @@
 import { create } from 'zustand';
 
 interface Message {
-  name: string;
+  character_name?: string;
+  username?: string;
   text: string;
   icon: string;
   type: 'assistant' | 'user';
@@ -9,12 +10,12 @@ interface Message {
 
 export interface UserData {
   user_uuid: string;
-  name: string;
+  username: string;
   icon: string;
 }
 
 interface Character {
-  name: string;
+  character_name: string;
   icon: string;
   first_message: string;
   profile_image?: string;

@@ -20,13 +20,16 @@ export default function CustomMarkdown({
   const [userColor, setUserColor] = useState<string | undefined>('');
 
   useEffect(() => {
+    console.log('Char:', char);
+    console.log('User:', user);
+
     const savedUserColor = localStorage.getItem('userColor');
     if (savedUserColor) setUserColor(savedUserColor);
 
     const replacePlaceholders = (content: string) =>
       content
-        .replace(/{{char}}/g, char || 'Anon')
-        .replace(/{{user}}/g, user || 'User')
+        .replace(/{{char}}/g, char || '')
+        .replace(/{{user}}/g, user || '')
         .replace(/{{you}}:/g, '')
         .replace(/{{ai_message}}/g, ai_message);
 

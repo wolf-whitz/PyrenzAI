@@ -5,12 +5,11 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useChatStore } from '~/store';
 import { fetchChatData } from '~/api';
 import { Sidebar, ChatContainer, PreviousChat } from '~/components';
-import { Box, Typography, CircularProgress } from '@mui/material';
 
 interface PersonaResponse {
   user_uuid: string;
   name: string;
-  user_name: string;
+  username: string;
   icon: string;
 }
 
@@ -38,11 +37,11 @@ export default function ChatPage() {
 
   useEffect(() => {
     const getChatData = async () => {
-      if (conversation_id && userUuid && !chatDataFetched) {
+      if (conversation_id && userUuid && userData && !chatDataFetched) {
         try {
           clearData();
           setChatDataFetched(true);
-          const result = await fetchChatData(conversation_id);
+          const result = await fetchChatData(conversation_id, userData.username, userData.icon);
 
           const updatedCharacter = {
             ...result.character,
@@ -51,10 +50,7 @@ export default function ChatPage() {
 
           setChatData({ ...result, character: updatedCharacter });
 
-          if (
-            result?.character?.first_message &&
-            result?.character?.id === result?.character?.id
-          ) {
+          if (result?.character?.first_message) {
             setFirstMessage(result.character.first_message);
           } else {
             setFirstMessage('');
@@ -70,7 +66,7 @@ export default function ChatPage() {
     };
 
     getChatData();
-  }, [conversation_id, userUuid, setFirstMessage, chatDataFetched, clearData]);
+  }, [conversation_id, userUuid, userData, setFirstMessage, chatDataFetched, clearData]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -86,8 +82,8 @@ export default function ChatPage() {
         const updatedUserData: PersonaResponse = {
           user_uuid: userUuid,
           name: response.username,
-          user_name: response.username,
-          icon: `https://api.dicebear.com/9.x/adventurer/svg?seed=${response.username.split('@')[0] || 'Anon'}`,
+          username: response.username,
+          icon: response.icon || '',
         };
 
         setUserData(updatedUserData);
@@ -101,15 +97,9 @@ export default function ChatPage() {
 
   if (loading) {
     return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="100vh"
-        width="100vw"
-      >
-        <CircularProgress />
-      </Box>
+      <div className="flex justify-center items-center min-h-screen w-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
     );
   }
 
@@ -119,30 +109,13 @@ export default function ChatPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
-        style={{
-          display: 'flex',
-          minHeight: '100vh',
-          width: '100vw',
-          color: 'white',
-          backgroundColor: '#111827',
-        }}
+        className="flex flex-col min-h-screen w-screen text-white bg-gray-900"
       >
-        <Box
-          component="aside"
-          display={{ xs: 'none', lg: 'flex' }}
-          flexDirection="column"
-          width="256px"
-        >
+        <aside className="hidden lg:flex flex-col w-64">
           <Sidebar />
-        </Box>
+        </aside>
 
-        <Box
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="center"
-          flex={1}
-        >
+        <main className="flex flex-col justify-center items-center flex-1">
           <img
             src="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MascotCrying.avif"
             alt="Mascot Crying"
@@ -150,10 +123,10 @@ export default function ChatPage() {
             className="w-24 h-24 mb-5 animate-bounce cursor-pointer"
             onClick={() => navigate('/Home')}
           />
-          <Typography variant="body1" color="textWhite">
+          <p className="text-white">
             Unknown Chat or Character... Try again later. ˙◠˙?
-          </Typography>
-        </Box>
+          </p>
+        </main>
       </motion.div>
     );
   }
@@ -165,29 +138,13 @@ export default function ChatPage() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
-      style={{
-        display: 'flex',
-        minHeight: '100vh',
-        width: '100vw',
-        color: 'white',
-        backgroundColor: '#111827',
-      }}
+      className="flex min-h-screen w-screen text-white bg-gray-900"
     >
-      <Box
-        component="aside"
-        display={{ xs: 'none', lg: 'flex' }}
-        flexDirection="column"
-        width="256px"
-      >
+      <aside className="hidden lg:flex flex-col w-64">
         <Sidebar />
-      </Box>
+      </aside>
 
-      <Box
-        component="main"
-        flex={1}
-        overflow="auto"
-        sx={{ scrollbarWidth: 'none' }}
-      >
+      <main className="flex-1 overflow-auto scrollbar-hide">
         <ChatContainer
           user={userData}
           char={character}
@@ -195,7 +152,7 @@ export default function ChatPage() {
           previous_message={messages}
           conversation_id={conversation_id}
         />
-      </Box>
+      </main>
 
       <PreviousChat />
     </motion.div>

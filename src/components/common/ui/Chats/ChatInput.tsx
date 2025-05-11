@@ -6,8 +6,8 @@ import { Menu } from '~/components';
 interface ChatInputProps {
   className?: string;
   handleSend: (message: string) => void;
-  user: { name: string; icon: string };
-  char: { name: string };
+  user: { username: string; icon: string };
+  char: { character_name: string };
 }
 
 const MAX_CHAR_LIMIT = 280;
@@ -67,7 +67,7 @@ export default function ChatInput({
                 sendMessage();
               }
             }}
-            placeholder={`Chat with ${char.name}`}
+            placeholder={`Chat with ${char.character_name}`}
             className="flex-1 w-full bg-transparent outline-none text-white px-4 py-2 rounded-full focus:ring-0 resize-none overflow-hidden min-w-0"
             rows={1}
           />

@@ -2,6 +2,7 @@ import { supabase } from '~/Utility/supabaseClient';
 
 interface UserDataResponse {
   username: string;
+  icon: string;
   subscription_data: {
     tier: string;
     max_token: number;
@@ -23,7 +24,7 @@ export async function GetUserData(): Promise<
 
   const { data: userData, error: userError } = await supabase
     .from('user_data')
-    .select('username')
+    .select('username, avatar_url')
     .eq('user_uuid', user.id)
     .single();
 
@@ -43,6 +44,7 @@ export async function GetUserData(): Promise<
   }
 
   const personaName = userData.username || 'Anon';
+  const avatarUrl = userData.avatar_url || '';
 
   let subscriptionData;
   switch (subscriptionPlanData.subscription_plan) {
@@ -82,6 +84,7 @@ export async function GetUserData(): Promise<
 
   return {
     username: personaName,
+    icon: avatarUrl,
     subscription_data: subscriptionData,
   };
 }

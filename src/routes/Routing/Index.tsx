@@ -11,6 +11,8 @@ import '~/styles/Preview.css';
 import { motion } from 'framer-motion';
 import AOS from 'aos';
 import { Box, Container } from '@mui/material';
+import { Utils } from '~/Utility/Utility';
+import { GetUserUUID } from '~/functions';
 
 export default function Preview() {
   const [showModal, setShowModal] = useState<'login' | 'register' | null>(null);
@@ -27,6 +29,18 @@ export default function Preview() {
       easing: 'ease-in-out',
       once: true,
     });
+
+    const fetchUserData = async () => {
+      try {
+        const userUUID = await GetUserUUID();
+        const response = await Utils.post('/api/createUserData', { userUUID });
+        console.log('User data created:', response);
+      } catch (error) {
+        console.error('Error creating user data:', error);
+      }
+    };
+
+    fetchUserData();
   }, []);
 
   const toggleMode = () => {

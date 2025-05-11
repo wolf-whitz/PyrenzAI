@@ -17,7 +17,9 @@ export default function Auth() {
   }, []);
 
   const handleCaptcha = (token: string) => {
-    const expiration = new Date(Date.now() + 2 * 60 * 1000).toUTCString();
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const expiration = tomorrow.toUTCString();
     document.cookie = `captcha-cookie=${token}; expires=${expiration}; path=/`;
     navigate('/Home');
   };

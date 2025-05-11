@@ -19,9 +19,10 @@ export default function ChatContainer({
   conversation_id,
 }: ChatContainerPropsExtended) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const messageIdRef = useRef<{ charId: string | null; userId: string | null }>(
-    { charId: null, userId: null }
-  );
+  const messageIdRef = useRef<{ charId: string | null; userId: string | null }>({
+    charId: null,
+    userId: null,
+  });
   const [charIcon, setCharIcon] = useState<string>(char?.icon ?? '');
   const { messages, setMessages } = useChatStore();
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
@@ -29,7 +30,7 @@ export default function ChatContainer({
   useEffect(() => {
     if (!char?.icon || charIcon === char.icon) return;
     const img = new Image();
-    img.src = char.icon;
+    img.src = char.icon || '';
     img.onload = () => setCharIcon(char.icon || '');
     img.onerror = () => setCharIcon('');
   }, [char?.icon, charIcon]);
@@ -38,7 +39,7 @@ export default function ChatContainer({
     if (char && firstMessage && messages.length === 0) {
       setMessages([
         {
-          name: char.name ?? 'Unknown',
+          character_name: char.character_name ?? 'Unknown', 
           text: firstMessage,
           icon: char.icon ?? '',
           type: 'assistant',
@@ -50,9 +51,7 @@ export default function ChatContainer({
 
   return (
     <Suspense fallback={<ChatPageSpinner />}>
-      <div
-        className={`flex justify-center items-center w-full h-full ${className}`}
-      >
+      <div className={`flex justify-center items-center w-full h-full ${className}`}>
         <ChatMain
           user={user}
           char={char}
