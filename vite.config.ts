@@ -3,6 +3,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import tailwindcss from 'tailwindcss';
 import path from 'path';
+import ViteSitemap from 'vite-plugin-sitemap';
 
 export default defineConfig({
   plugins: [
@@ -10,6 +11,9 @@ export default defineConfig({
     sentryVitePlugin({
       org: 'pyrenzai',
       project: 'pyrenzai',
+    }),
+    ViteSitemap({
+      hostname: 'https://pyrenzai.com',
     }),
   ],
   css: {
