@@ -3,4 +3,4 @@
 
 ## 2025-05-11
 
-- [c4125f8] Added write perm - Whitzscott (Developer)
+- [bbb107d] Merge branch 'main' of https://github.com/Whitzzscott/PyrenzAI - Whitzscott (Developer)
