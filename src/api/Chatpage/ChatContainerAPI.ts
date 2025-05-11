@@ -28,13 +28,13 @@ export const useGenerateMessage = () => {
       }
 
       const userMessage: Message = {
-        name: user.name,
+        username: user.username,
         text,
         icon: user.icon,
         type: 'user',
       };
       const assistantMessage: Message = {
-        name: char.name ?? 'Assistant',
+        character_name: char.character_name ?? 'Assistant',
         text: '',
         icon: char.icon,
         type: 'assistant',
