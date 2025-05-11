@@ -15,22 +15,31 @@ interface AppUser {
 
 export const sendUserDataToUserDataTable = async (user: AppUser) => {
   try {
-    const { data, error } = await supabase
+    const { data: userData, error: userError } = await supabase
       .from('user_data')
       .upsert(
         {
           user_uuid: user.id,
-          email: user.email,
           avatar_url: user.user_metadata?.avatar_url,
           username: user.user_metadata?.full_name || user.email?.split('@')[0],
           last_sign_in_at: new Date().toISOString(),
         },
-        { onConflict: 'user_uuid' }
+        { onConflict: 'user_uuid' } // Prevents duplicated entries within the database
       );
 
-    if (error) throw error;
+    if (userError) throw userError;
 
-    console.log('User data successfully sent to user_data table:', data);
+    const { data: emailData, error: emailError } = await supabase
+      .from('emails')
+      .upsert(
+        {
+          user_uuid: user.id,
+          email: user.email,
+        },
+        { onConflict: 'user_uuid' } // Prevents duplicated entries within the database
+      );
+
+    if (emailError) throw emailError;
 
     posthog.identify(user.id, {
       email: user.email,
@@ -46,10 +55,10 @@ export const sendUserDataToUserDataTable = async (user: AppUser) => {
 
   } catch (err) {
     const error = err as Error;
-    console.error('Error sending user data to user_data table:', error);
     Sentry.captureException(error);
   }
 };
+
 
 export const handleLogin = async (email: string, password: string) => {
   try {

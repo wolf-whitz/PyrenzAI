@@ -77,7 +77,7 @@ export const GetUserCreatedCharacters = (uuid?: string) => {
           userUuidToUse = user.id;
         }
         const { data: userData, error } = await supabase
-          .from('public_user_profiles')
+          .from('user_data')
           .select('username, avatar_url, user_uuid')
           .eq('user_uuid', userUuidToUse)
           .maybeSingle();

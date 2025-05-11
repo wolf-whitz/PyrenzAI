@@ -66,6 +66,7 @@ export default defineConfig({
         assetFileNames: 'assets/[name].[hash].[ext]',
         compact: true,
       },
+      input: path.resolve(__dirname, 'index.html'),
       treeshake: {
         moduleSideEffects: 'no-external',
       },
