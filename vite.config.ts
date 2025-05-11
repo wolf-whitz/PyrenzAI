@@ -3,7 +3,6 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import tailwindcss from 'tailwindcss';
 import path from 'path';
-import ViteSitemap from 'vite-plugin-sitemap';
 
 export default defineConfig({
   plugins: [
@@ -12,15 +11,13 @@ export default defineConfig({
       org: 'pyrenzai',
       project: 'pyrenzai',
     }),
-    ViteSitemap({
-      hostname: 'https://pyrenzai.com',
-    }),
   ],
   css: {
     postcss: {
       plugins: [tailwindcss()],
     },
   },
+  publicDir: 'public',
   cacheDir: 'node_modules/.vite_cache',
   build: {
     outDir: 'build',
