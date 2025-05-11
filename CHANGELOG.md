@@ -1,6 +1,6 @@
 # 📜 Project Changelog
 
 
-## 2025-05-11
+## 2025-05-12
 
-- [bbb107d] Merge branch 'main' of https://github.com/Whitzzscott/PyrenzAI - Whitzscott (Developer)
+- [017a984] Updated a few stuff - Whitzscott (Developer)
