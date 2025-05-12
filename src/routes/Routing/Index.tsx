@@ -1,3 +1,4 @@
+import { Utils } from "~/Utility/Utility";
 import { useEffect, useState, useRef } from 'react';
 import {
   PreviewHeader,
@@ -13,6 +14,10 @@ import AOS from 'aos';
 import { Box, Container } from '@mui/material';
 import { sendUserDataToUserDataTable } from '~/api';
 import { supabase } from '~/Utility/supabaseClient';
+
+interface PostResponse {
+  success: boolean;
+}
 
 export default function Preview() {
   const [showModal, setShowModal] = useState<'login' | 'register' | null>(null);
@@ -33,8 +38,19 @@ export default function Preview() {
     const fetchUserData = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        await sendUserDataToUserDataTable(user);
-        return { success: true, user };
+        const userData = {
+          userUUID: user.id,
+        };
+
+        const response = await Utils.post('/api/createUserData', userData) as PostResponse;
+
+        if (response.success) {
+          await sendUserDataToUserDataTable(user);
+          return { success: true, user };
+        } else {
+          console.error('Failed to create user data');
+          return { success: false, error: 'Failed to create user data' };
+        }
       }
     };
 

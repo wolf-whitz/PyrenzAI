@@ -3,7 +3,9 @@ import { motion } from 'framer-motion';
 import { SettingsPageLoader, Sidebar } from '@components/index';
 import { supabase } from '~/Utility/supabaseClient';
 import { User } from '@supabase/supabase-js';
-import { Tabs, Tab, Box, Typography, CircularProgress } from '@mui/material';
+import { Tabs, Tab, Typography, CircularProgress, IconButton, useMediaQuery, useTheme } from '@mui/material';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 const Account = React.lazy(() => import('./Items/Account'));
 const Profile = React.lazy(() => import('./Items/Profile'));
@@ -17,6 +19,11 @@ export default function Setting() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [visibleTabs, setVisibleTabs] = useState(['account', 'profile', 'preference', 'persona']);
+  const [startIndex, setStartIndex] = useState(0);
+
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -47,34 +54,34 @@ export default function Setting() {
     setActiveTab(newValue);
   };
 
+  const handleNext = () => {
+    if (startIndex < visibleTabs.length - 3) {
+      setStartIndex(startIndex + 1);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (startIndex > 0) {
+      setStartIndex(startIndex - 1);
+    }
+  };
+
   const renderContent = () => {
     if (isLoading) {
       return (
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          height="100%"
-          minHeight="300px"
-        >
+        <div className="flex justify-center items-center h-full min-h-[300px]">
           <CircularProgress />
-        </Box>
+        </div>
       );
     }
 
     if (!isAuthenticated && activeTab === 'account') {
       return (
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          height="100%"
-          minHeight="300px"
-        >
+        <div className="flex justify-center items-center h-full min-h-[300px]">
           <Typography variant="h6" color="textSecondary">
             Please log in to access your account settings.
           </Typography>
-        </Box>
+        </div>
       );
     }
 
@@ -93,31 +100,39 @@ export default function Setting() {
   };
 
   return (
-    <Box display="flex">
+    <div className="flex">
       <Sidebar />
-      <Box
-        flexGrow={1}
-        p={3}
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-      >
-        <Tabs value={activeTab} onChange={handleTabChange} centered>
-          <Tab label="Account" value="account" />
-          <Tab label="Profile" value="profile" />
-          <Tab label="Preference" value="preference" />
-          <Tab label="Persona" value="persona" />
-        </Tabs>
+      <div className="flex-grow p-3 flex flex-col items-center">
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', position: 'relative' }}>
+          {isSmallScreen && (
+            <IconButton onClick={handlePrevious} disabled={startIndex === 0} style={{ position: 'absolute', left: 0 }}>
+              <NavigateBeforeIcon />
+            </IconButton>
+          )}
+          <motion.div
+            initial={{ x: isSmallScreen ? -100 : 0 }}
+            animate={{ x: 0 }}
+            exit={{ x: isSmallScreen ? 100 : 0 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            style={{ display: 'flex', overflow: 'hidden' }}
+          >
+            <Tabs value={activeTab} onChange={handleTabChange} variant="scrollable" scrollButtons="auto">
+              {(isSmallScreen ? visibleTabs.slice(startIndex, startIndex + 3) : visibleTabs).map((tab) => (
+                <Tab key={tab} label={tab.charAt(0).toUpperCase() + tab.slice(1)} value={tab} />
+              ))}
+            </Tabs>
+          </motion.div>
+          {isSmallScreen && (
+            <IconButton onClick={handleNext} disabled={startIndex >= visibleTabs.length - 3} style={{ position: 'absolute', right: 0 }}>
+              <NavigateNextIcon />
+            </IconButton>
+          )}
+        </div>
         <Suspense
           fallback={
-            <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              height="100%"
-            >
+            <div className="flex justify-center items-center h-full">
               <CircularProgress />
-            </Box>
+            </div>
           }
         >
           <motion.div
@@ -126,19 +141,14 @@ export default function Setting() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.4, ease: 'easeOut' }}
-            style={{
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
+            className="w-full flex justify-center items-center"
           >
-            <Box maxWidth="md" width="100%">
+            <div className="max-w-md w-full">
               {renderContent()}
-            </Box>
+            </div>
           </motion.div>
         </Suspense>
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 }

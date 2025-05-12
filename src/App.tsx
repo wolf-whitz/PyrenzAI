@@ -12,29 +12,17 @@ export default function App() {
   const [isSessionChecked, setIsSessionChecked] = useState(false);
 
   useEffect(() => {
-    const authDataString = localStorage.getItem(
-      'sb-dojdyydsanxoblgjmzmq-auth-token'
-    );
-
     const handleSession = async () => {
-      if (!authDataString) {
-        setIsSessionChecked(true);
-        return;
-      }
-
       try {
-        const { access_token, refresh_token } = JSON.parse(authDataString);
-        const { error } = await supabase.auth.setSession({
-          access_token,
-          refresh_token,
-        });
+        const { data: { user }, error } = await supabase.auth.getUser();
+
         if (error) throw error;
 
-        const { data, error: sessionError } = await supabase.auth.getSession();
-        if (sessionError || !data.session) throw sessionError;
+        if (!user) {
+          console.log('No active session found');
+        }
       } catch (error) {
         console.error('Error handling session:', error);
-        localStorage.removeItem('sb-dojdyydsanxoblgjmzmq-auth-token');
       } finally {
         setIsSessionChecked(true);
       }

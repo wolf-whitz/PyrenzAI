@@ -6,14 +6,13 @@ import { supabase } from '~/Utility/supabaseClient';
 import { Utils } from '~/Utility/Utility';
 import { User } from '@supabase/supabase-js';
 import { useNavigate } from 'react-router-dom';
-import { Avatar, Button, Container, Typography, Box } from '@mui/material';
+import { Avatar, Button, Container, Typography, Box, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 
 export default function Account() {
-  const [languages, setLanguages] = useState<{ code: string; name: string }[]>(
-    []
-  );
+  const [languages, setLanguages] = useState<{ code: string; name: string }[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [openDialog, setOpenDialog] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,13 +24,11 @@ export default function Account() {
       .catch((error) => console.error('Error fetching languages:', error));
 
     const fetchUser = async () => {
-      const { data: sessionData, error: sessionError } =
-        await supabase.auth.getSession();
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
       if (sessionError || !sessionData.session) {
         console.error('Error fetching session:', sessionError);
       } else {
-        const { data: userData, error: userError } =
-          await supabase.auth.getUser();
+        const { data: userData, error: userError } = await supabase.auth.getUser();
         if (userError) {
           console.error('Error fetching user:', userError);
         } else {
@@ -59,11 +56,35 @@ export default function Account() {
   };
 
   const handleDeleteAccount = async () => {
+    setOpenDialog(true);
+  };
+
+  const confirmDeleteAccount = async () => {
+    setOpenDialog(false);
+
     try {
-      await Utils.post('/api/delete-account');
-      console.log('Account deleted successfully');
-      setUser(null);
-      navigate('/auth');
+      const { error: emailError } = await supabase.functions.invoke('send-delete-account-email', {
+        body: { userEmail: user?.email }
+      });
+
+      const { error: deleteError } = await supabase
+        .from('user_data')
+        .delete()
+        .eq('user_uuid', user?.id);
+
+      if (deleteError) {
+        console.error('Error deleting user from user_data:', deleteError);
+        return;
+      }
+
+      const { error: logoutError } = await supabase.auth.signOut();
+      if (logoutError) {
+        console.error('Error logging out:', logoutError);
+      } else {
+        console.log('Logged out successfully');
+        setUser(null);
+        navigate('/');
+      }
     } catch (error) {
       console.error('Error deleting account:', error);
     }
@@ -165,6 +186,28 @@ export default function Account() {
           />
         </motion.div>
       </Box>
+
+      <Dialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Confirm Account Deletion"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete your account? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDialog(false)} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={confirmDeleteAccount} color="primary" autoFocus>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <LanguageModal
         languages={languages}
