@@ -1,9 +1,22 @@
-import fs from 'fs';
-import path from 'path';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { ServerStyleSheet } from 'styled-components';
 import App from '../src/App';
+
+// This should be the raw HTML template, not relying on the file system
+const indexHtml = `
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>PyrenzAI</title>
+    </head>
+    <body>
+      <div id="root" aria-label="PyrenzAI" role="main"></div>
+    </body>
+  </html>
+`;
 
 export const config = {
   runtime: 'edge',
@@ -15,10 +28,8 @@ export default async function handler(request) {
     const content = renderToString(sheet.collectStyles(React.createElement(App)));
     const styles = sheet.getStyleTags();
 
-    const indexPath = path.join(process.cwd(), 'public', 'index.html');
-    let html = fs.readFileSync(indexPath, 'utf8');
-
-    html = html.replace(
+    // Replace the root div and inject styles into the template
+    let html = indexHtml.replace(
       '<div id="root" aria-label="PyrenzAI" role="main"></div>',
       `<div id="root" aria-label="PyrenzAI" role="main">${content}</div>`
     );
