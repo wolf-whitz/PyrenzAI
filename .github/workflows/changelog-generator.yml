@@ -1,0 +1,42 @@
+ name: Generate Changelog
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Generate Changelog
+        run: |
+          changelogPath="CHANGELOG.md"
+          rm -f "$changelogPath"
+
+          echo "# 📜 Project Changelog" >> "$changelogPath"
+          echo "" >> "$changelogPath"
+
+          git log --pretty=format:"%ad|[%h] %s - %an" --date=short | sort -r | while IFS='|' read -r commitDate commitMsg; do
+              if [[ "$lastDate" != "$commitDate" ]]; then
+                  echo "" >> "$changelogPath"
+                  echo "## $commitDate" >> "$changelogPath"
+                  echo "" >> "$changelogPath"
+                  lastDate="$commitDate"
+              fi
+              echo "- $commitMsg" >> "$changelogPath"
+          done
+
+      - name: Commit and push changelog update
+        uses: EndBug/add-and-commit@v7
+        with:
+          author_name: 'GitHub Actions'
+          author_email: 'actions@github.com'
+          message: '✨ Auto-update changelog'
