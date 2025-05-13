@@ -42,7 +42,8 @@
     "https://*.hcaptcha.com",
     "https://*.google.com",
     "https://*.googleusercontent.com",
-    "https://*.googlesyndication.com"
+    "https://*.googlesyndication.com",
+    "data:"
   ],
   "manifest-src": ["'self'", "https://pyrenzai.com"],
   "worker-src": ["'self'", "blob:"],

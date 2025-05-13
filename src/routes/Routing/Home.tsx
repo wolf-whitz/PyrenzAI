@@ -106,14 +106,7 @@ export default function Home() {
         creator_uuid: char.creator_uuid,
         chat_messages_count: char.chat_messages_count,
         profile_image: char.profile_image,
-        tags: Array.isArray(char.tags)
-          ? char.tags.map((tag: string) =>
-              tag
-                .replace(/[\[\]"]/g, '')
-                .trim()
-                .toLowerCase()
-            )
-          : [],
+        tags: char.tags,
         is_public: char.is_public,
         token_total: char.token_total,
       }));

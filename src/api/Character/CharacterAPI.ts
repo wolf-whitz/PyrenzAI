@@ -24,37 +24,19 @@ export const fetchCharacters = async (
       };
     }
 
-    const formattedCharacters = data.characters.map((char: any) => {
-      const parsedTags = char.tags
-        ? Array.isArray(char.tags)
-          ? char.tags
-          : JSON.parse(char.tags)
-        : [];
-
-      const cleanedTags = parsedTags
-        .map((tag: any) =>
-          typeof tag === 'string' || typeof tag === 'number'
-            ? String(tag)
-                .replace(/[\[\]"]/g, '')
-                .trim()
-            : ''
-        )
-        .filter(Boolean);
-
-      return {
-        id: char.id,
-        name: char.name,
-        description: char.description,
-        creator: char.creator,
-        creator_uuid: char.creator_uuid,
-        chat_messages_count: char.chat_messages_count ?? 0,
-        profile_image: char.profile_image,
-        tags: cleanedTags,
-        is_public: char.is_public,
-        char_uuid: char.char_uuid,
-        token_total: char.token_total ?? 0,
-      };
-    });
+    const formattedCharacters = data.characters.map((char: any) => ({
+      id: char.id,
+      name: char.name,
+      description: char.description,
+      creator: char.creator,
+      creator_uuid: char.creator_uuid,
+      chat_messages_count: char.chat_messages_count ?? 0,
+      profile_image: char.profile_image,
+      tags: char.tags,
+      is_public: char.is_public,
+      char_uuid: char.char_uuid,
+      token_total: char.token_total ?? 0,
+    }));
 
     return {
       characters: formattedCharacters,
