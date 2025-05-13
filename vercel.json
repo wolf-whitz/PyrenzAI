@@ -57,8 +57,7 @@
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/api/renderer.ts"
-
+      "destination": "/index.html"
     }
   ]
 }
