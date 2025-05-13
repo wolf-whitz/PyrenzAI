@@ -6,6 +6,12 @@ import { sentryVitePlugin } from '@sentry/vite-plugin';
 import { cspPlugin } from './plugin/DevheaderCsp';
 import { createHtmlPlugin } from 'vite-plugin-html';
 
+export const test = {
+  globals: true,
+  environment: 'jsdom',
+  setupFiles: './src/App.test.tsx',
+};
+
 export default defineConfig({
   plugins: [
     react(),
