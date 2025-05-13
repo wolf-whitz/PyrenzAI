@@ -57,12 +57,7 @@
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
+      "destination": "/index.html",
       "dest": "api/renderer.ts"
     }
   ]
