@@ -6,10 +6,23 @@ import { supabase } from '~/Utility/supabaseClient';
 import { Utils } from '~/Utility/Utility';
 import { User } from '@supabase/supabase-js';
 import { useNavigate } from 'react-router-dom';
-import { Avatar, Button, Container, Typography, Box, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import {
+  Avatar,
+  Button,
+  Container,
+  Typography,
+  Box,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from '@mui/material';
 
 export default function Account() {
-  const [languages, setLanguages] = useState<{ code: string; name: string }[]>([]);
+  const [languages, setLanguages] = useState<{ code: string; name: string }[]>(
+    []
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
@@ -24,11 +37,13 @@ export default function Account() {
       .catch((error) => console.error('Error fetching languages:', error));
 
     const fetchUser = async () => {
-      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      const { data: sessionData, error: sessionError } =
+        await supabase.auth.getSession();
       if (sessionError || !sessionData.session) {
         console.error('Error fetching session:', sessionError);
       } else {
-        const { data: userData, error: userError } = await supabase.auth.getUser();
+        const { data: userData, error: userError } =
+          await supabase.auth.getUser();
         if (userError) {
           console.error('Error fetching user:', userError);
         } else {
@@ -63,9 +78,12 @@ export default function Account() {
     setOpenDialog(false);
 
     try {
-      const { error: emailError } = await supabase.functions.invoke('send-delete-account-email', {
-        body: { userEmail: user?.email }
-      });
+      const { error: emailError } = await supabase.functions.invoke(
+        'send-delete-account-email',
+        {
+          body: { userEmail: user?.email },
+        }
+      );
 
       const { error: deleteError } = await supabase
         .from('user_data')
@@ -193,10 +211,13 @@ export default function Account() {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Confirm Account Deletion"}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">
+          {'Confirm Account Deletion'}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure you want to delete your account? This action cannot be undone.
+            Are you sure you want to delete your account? This action cannot be
+            undone.
           </DialogContentText>
         </DialogContent>
         <DialogActions>

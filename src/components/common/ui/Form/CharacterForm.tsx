@@ -5,8 +5,7 @@ import {
   TokenSummary,
   FormActions,
   RequiredFieldsPopup,
-  ImageUpload,
-} from '~/components';
+} from '@components/index';
 import TextareaForm from './Childrens/TextareaForm';
 import { useNavigate } from 'react-router-dom';
 import { useCreateAPI } from '~/api/CreatePage/CreateAPI';
@@ -19,7 +18,6 @@ export default function CharacterForm() {
     showRequiredFieldsPopup,
     missingFields,
     characterData,
-    handleImageSelect,
     handleDropdownChange,
     handleChange,
     handleClear,
@@ -48,7 +46,6 @@ export default function CharacterForm() {
         onSubmit={handleSubmit}
         className="bg-black p-8 rounded-lg shadow-lg w-full flex flex-col space-y-6"
       >
-        <ImageUpload onImageSelect={handleImageSelect} />
         <TextareaForm formState={formState} handleChange={handleChange} />
         <GenderDropdown
           value={characterData.gender}

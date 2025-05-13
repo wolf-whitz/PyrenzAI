@@ -28,7 +28,7 @@ export default defineConfig({
         minifyCSS: true,
         minifyJS: true,
       },
-    })
+    }),
   ],
   css: {
     postcss: {
@@ -86,7 +86,10 @@ export default defineConfig({
       '@components': path.resolve(__dirname, 'src/components'),
       '@ui': path.resolve(__dirname, 'src/components/common/ui'),
       '@layout': path.resolve(__dirname, 'src/components/common/layout'),
-      '@shared-types': path.resolve(__dirname, 'src/components/common/shared-types'),
+      '@shared-types': path.resolve(
+        __dirname,
+        'src/components/common/shared-types'
+      ),
       '@store': path.resolve(__dirname, 'src/store'),
       '@libs': path.resolve(__dirname, 'src/lib'),
       '@functions': path.resolve(__dirname, 'src/functions'),

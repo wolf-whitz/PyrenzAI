@@ -75,6 +75,10 @@
   background-color: transparent;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 @keyframes openAnimation {
   from {
     opacity: 0;

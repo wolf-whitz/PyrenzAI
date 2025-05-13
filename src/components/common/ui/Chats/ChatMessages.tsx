@@ -42,7 +42,9 @@ export default function ChatMessages({
     <Box className="space-y-4 p-4 max-w-2xl mx-auto">
       {previous_message.map((msg, index) => {
         const isUser = msg.type === 'user';
-        const displayName = isUser ? msg.username || user.username : msg.character_name || char.character_name;
+        const displayName = isUser
+          ? msg.username || user.username
+          : msg.character_name || char.character_name;
         const icon = msg.icon || '';
         const isLatestMessage = index === previous_message.length - 1;
         const isFirstMessage = index === 0;
@@ -73,11 +75,7 @@ export default function ChatMessages({
               {isGenerating &&
                 !isUser &&
                 index === previous_message.length - 1 && <TypingIndicator />}
-              <CustomMarkdown
-                text={msg.text}
-                user={user}
-                char={char}
-              />
+              <CustomMarkdown text={msg.text} user={user} char={char} />
             </Box>
 
             {msg.error && (

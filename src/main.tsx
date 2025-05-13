@@ -1,4 +1,3 @@
-
 /**
  * @file main.tsx
  * Main entry point for the application and where we also set up the global providers such as:

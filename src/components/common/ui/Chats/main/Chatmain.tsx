@@ -123,13 +123,21 @@ export default function ChatMain({
           className="w-16 h-16"
         />
         <div className="flex items-center mt-2">
-          <IconButton onClick={handleGoHome} className="mr-2 text-white" aria-label="Go home">
+          <IconButton
+            onClick={handleGoHome}
+            className="mr-2 text-white"
+            aria-label="Go home"
+          >
             <ChevronLeft className="w-6 h-6" />
           </IconButton>
           <Typography variant="h6" className="text-lg font-bold">
             {char?.character_name || 'Anon'}
           </Typography>
-          <IconButton onClick={toggleSettings} className="ml-2 text-white" aria-label="Settings">
+          <IconButton
+            onClick={toggleSettings}
+            className="ml-2 text-white"
+            aria-label="Settings"
+          >
             <Settings className="w-6 h-6" />
           </IconButton>
         </div>

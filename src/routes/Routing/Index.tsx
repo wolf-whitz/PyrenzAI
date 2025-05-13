@@ -1,4 +1,4 @@
-import { Utils } from "~/Utility/Utility";
+import { Utils } from '~/Utility/Utility';
 import { useEffect, useState, useRef } from 'react';
 import {
   PreviewHeader,
@@ -36,13 +36,18 @@ export default function Preview() {
     });
 
     const fetchUserData = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (user) {
         const userData = {
           userUUID: user.id,
         };
 
-        const response = await Utils.post('/api/createUserData', userData) as PostResponse;
+        const response = (await Utils.post(
+          '/api/createUserData',
+          userData
+        )) as PostResponse;
 
         if (response.success) {
           await sendUserDataToUserDataTable(user);

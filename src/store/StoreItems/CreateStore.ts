@@ -36,7 +36,6 @@ export const useCharacterStore = create<CharacterState>((set) => ({
     scenario: 0,
     description: 0,
     first_message: 0,
-    tags: 0,
   },
   token_total: 0,
   setCharacterData: (data) =>

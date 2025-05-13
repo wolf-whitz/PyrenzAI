@@ -52,13 +52,11 @@ export const sendUserDataToUserDataTable = async (user: AppUser) => {
       email: user.email,
       username: user.user_metadata?.full_name || user.email?.split('@')[0],
     });
-
   } catch (err) {
     const error = err as Error;
     Sentry.captureException(error);
   }
 };
-
 
 export const handleLogin = async (email: string, password: string) => {
   try {

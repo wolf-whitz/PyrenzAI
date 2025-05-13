@@ -71,7 +71,7 @@ export default function CustomMarkdown({
             >
               {children}
             </Typography>
-          )
+          ),
         }}
       >
         {replacedText}

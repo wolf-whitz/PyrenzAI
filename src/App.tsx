@@ -14,7 +14,10 @@ export default function App() {
   useEffect(() => {
     const handleSession = async () => {
       try {
-        const { data: { user }, error } = await supabase.auth.getUser();
+        const {
+          data: { user },
+          error,
+        } = await supabase.auth.getUser();
 
         if (error) throw error;
 

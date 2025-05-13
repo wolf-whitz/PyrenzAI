@@ -41,7 +41,11 @@ export default function ChatPage() {
         try {
           clearData();
           setChatDataFetched(true);
-          const result = await fetchChatData(conversation_id, userData.username, userData.icon);
+          const result = await fetchChatData(
+            conversation_id,
+            userData.username,
+            userData.icon
+          );
 
           const updatedCharacter = {
             ...result.character,
@@ -66,7 +70,14 @@ export default function ChatPage() {
     };
 
     getChatData();
-  }, [conversation_id, userUuid, userData, setFirstMessage, chatDataFetched, clearData]);
+  }, [
+    conversation_id,
+    userUuid,
+    userData,
+    setFirstMessage,
+    chatDataFetched,
+    clearData,
+  ]);
 
   useEffect(() => {
     const fetchUserData = async () => {

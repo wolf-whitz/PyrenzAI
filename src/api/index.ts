@@ -4,7 +4,7 @@ import {
   handleLogin,
   handleOAuthSignIn,
   handleSignUp,
-  sendUserDataToUserDataTable
+  sendUserDataToUserDataTable,
 } from './Modals/AuthenticationAPI';
 import { useCreateAPI } from './CreatePage/CreateAPI';
 

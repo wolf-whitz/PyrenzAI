@@ -2,24 +2,10 @@ import React, { useState } from 'react';
 import { Textarea } from '~/components';
 import { Menu, MenuItem, Typography, TextField } from '@mui/material';
 import { supabase } from '~/Utility/supabaseClient';
-
-interface Tag {
-  id: string;
-  name: string;
-}
-
-interface TextareaFormProps {
-  formState: {
-    persona: string;
-    name: string;
-    model_instructions: string;
-    scenario: string;
-    description: string;
-    first_message: string;
-    tags: string;
-  };
-  handleChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-}
+import { useCreateAPI } from '~/api/CreatePage/CreateAPI';
+import { Tag, TextareaFormProps } from '@shared-types/TagTypes';
+import { useNavigate } from 'react-router-dom';
+import { ImageUploader } from '~/components';
 
 export default function TextareaForm({
   formState,
@@ -29,6 +15,7 @@ export default function TextareaForm({
   const [tags, setTags] = useState<Tag[]>([]);
   const [filteredTags, setFilteredTags] = useState<Tag[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const navigate = useNavigate();
 
   const handleOpenDropdown = async (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -68,6 +55,8 @@ export default function TextareaForm({
     );
   };
 
+  const handleImageSelect = (file: File | null) => {};
+
   return (
     <>
       <Textarea
@@ -76,7 +65,11 @@ export default function TextareaForm({
         onChange={handleChange}
         label="Name"
         aria-label="Name"
+        maxLength={50}
       />
+
+      <ImageUploader onImageSelect={handleImageSelect} />
+
       <Textarea
         name="description"
         value={formState.description}

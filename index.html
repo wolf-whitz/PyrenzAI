@@ -4,11 +4,23 @@
     <meta charset="UTF-8" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content user-scalable=no"
+      content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content user-scalable=no viewport-fit=cover"
     />
     <meta
       http-equiv="Content-Security-Policy"
       content="upgrade-insecure-requests"
+    />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Cache-Control" content="no-store" />
+    <meta
+      http-equiv="Strict-Transport-Security"
+      content="max-age=63072000; includeSubDomains; preload"
+    />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta
+      http-equiv="Permissions-Policy"
+      content="camera=(), microphone=(), geolocation=()"
     />
 
     <!-- Favicons -->
@@ -76,26 +88,27 @@
     />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="format-detection" content="telephone=no" />
+    <meta name="HandheldFriendly" content="true" />
+    <meta name="msapplication-TileColor" content="#14181f" />
+    <meta
+      name="msapplication-TileImage"
+      content="https://pyrenzai.com/Favicons/favicon-192x192.png"
+    />
 
-    <!-- Google Tag Manager -->
-    <script>
-      (function (w, d, s, l, i) {
-        w[l] = w[l] || [];
-        w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
-        var f = d.getElementsByTagName(s)[0],
-          j = d.createElement(s),
-          dl = l != 'dataLayer' ? '&l=' + l : '';
-        j.async = true;
-        j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-        f.parentNode.insertBefore(j, f);
-      })(window, document, 'script', 'dataLayer', 'GTM-PV9LKZJF');
-    </script>
-    <!-- End Google Tag Manager -->
-    <script
-      async
-      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7111856745606800"
-      crossorigin="anonymous"
-    ></script>
+    <!-- SEO -->
+    <meta
+      name="keywords"
+      content="PyrenAI, AI, roleplay, anime, best, tags, artificial intelligence, chatbots, AI characters, roleplaying, online roleplay, anime roleplay, digital companions, interactive AI, virtual assistants, anime characters, AI-powered, storytelling, creative writing, virtual worlds"
+    />
+    <meta name="author" content="PyrenzAI" />
+    <meta name="copyright" content="PyrenzAI" />
+    <meta name="revisit-after" content="1 days" />
+    <meta name="rating" content="18+" />
+    <link rel="canonical" href="https://pyrenzai.com" />
+
+    <!-- Bots -->
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
 
     <!-- Meta Data -->
     <meta name="title" content="PyrenzAI" />
@@ -164,17 +177,66 @@
     />
   </head>
   <body>
-    <!-- Google Tag Manager (noscript) -->
-    <noscript>
-      <iframe
-        src="https://www.googletagmanager.com/ns.html?id=GTM-PV9LKZJF"
-        height="0"
-        width="0"
-        style="display: none; visibility: hidden"
-      ></iframe>
-    </noscript>
-    <!-- End Google Tag Manager (noscript) -->
+    <div id="root" aria-label="PyrenzAI" role="main"></div>
 
+    <script type="module" src="/src/main.tsx"></script>
+
+    <!-- JSONLD -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "url": "https://pyrenzai.com",
+        "name": "PyrenzAI",
+        "description": "AI-powered chat app where users can interact with anime characters and create immersive stories.",
+        "inLanguage": "en",
+        "publisher": {
+          "@type": "Organization",
+          "name": "PyrenzAI",
+          "url": "https://pyrenzai.com",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://pyrenzai.com/Favicons/favicon-192x192.png",
+            "width": 192,
+            "height": 192
+          },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://pyrenzai.com/search?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        }
+      }
+    </script>
+
+    <!-- LazyLoading -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const lazyImages = [].slice.call(
+          document.querySelectorAll("img[loading='lazy']")
+        );
+        if ('IntersectionObserver' in window) {
+          let lazyImageObserver = new IntersectionObserver(function (
+            entries,
+            observer
+          ) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                let img = entry.target;
+                img.src = img.dataset.src;
+                img.classList.remove('lazy');
+                lazyImageObserver.unobserve(img);
+              }
+            });
+          });
+          lazyImages.forEach(function (lazyImage) {
+            lazyImageObserver.observe(lazyImage);
+          });
+        }
+      });
+    </script>
+
+    <!-- Service Worker Registration -->
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
@@ -192,26 +254,8 @@
         });
       }
     </script>
-    <div id="root" aria-label="PyrenzAI"></div>
 
-    <script type="module" src="/src/main.tsx"></script>
-
-    <!-- JSONLD -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "url": "https://pyrenzai.com",
-        "name": "PyrenzAI",
-        "description": "AI-powered chat app where users can interact with anime characters and create immersive stories.",
-        "publisher": {
-          "@type": "Organization",
-          "name": "PyrenzAI"
-        }
-      }
-    </script>
-
-    <!-- Roots -->
+    <!-- Root Modals -->
     <div id="modal-root"></div>
     <div id="headers-root"></div>
     <div id="footer-root"></div>

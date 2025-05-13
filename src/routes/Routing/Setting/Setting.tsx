@@ -3,7 +3,15 @@ import { motion } from 'framer-motion';
 import { SettingsPageLoader, Sidebar } from '@components/index';
 import { supabase } from '~/Utility/supabaseClient';
 import { User } from '@supabase/supabase-js';
-import { Tabs, Tab, Typography, CircularProgress, IconButton, useMediaQuery, useTheme } from '@mui/material';
+import {
+  Tabs,
+  Tab,
+  Typography,
+  CircularProgress,
+  IconButton,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
@@ -19,7 +27,12 @@ export default function Setting() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [visibleTabs, setVisibleTabs] = useState(['account', 'profile', 'preference', 'persona']);
+  const [visibleTabs, setVisibleTabs] = useState([
+    'account',
+    'profile',
+    'preference',
+    'persona',
+  ]);
   const [startIndex, setStartIndex] = useState(0);
 
   const theme = useTheme();
@@ -103,9 +116,21 @@ export default function Setting() {
     <div className="flex">
       <Sidebar />
       <div className="flex-grow p-3 flex flex-col items-center">
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', position: 'relative' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '100%',
+            position: 'relative',
+          }}
+        >
           {isSmallScreen && (
-            <IconButton onClick={handlePrevious} disabled={startIndex === 0} style={{ position: 'absolute', left: 0 }}>
+            <IconButton
+              onClick={handlePrevious}
+              disabled={startIndex === 0}
+              style={{ position: 'absolute', left: 0 }}
+            >
               <NavigateBeforeIcon />
             </IconButton>
           )}
@@ -116,14 +141,30 @@ export default function Setting() {
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             style={{ display: 'flex', overflow: 'hidden' }}
           >
-            <Tabs value={activeTab} onChange={handleTabChange} variant="scrollable" scrollButtons="auto">
-              {(isSmallScreen ? visibleTabs.slice(startIndex, startIndex + 3) : visibleTabs).map((tab) => (
-                <Tab key={tab} label={tab.charAt(0).toUpperCase() + tab.slice(1)} value={tab} />
+            <Tabs
+              value={activeTab}
+              onChange={handleTabChange}
+              variant="scrollable"
+              scrollButtons="auto"
+            >
+              {(isSmallScreen
+                ? visibleTabs.slice(startIndex, startIndex + 3)
+                : visibleTabs
+              ).map((tab) => (
+                <Tab
+                  key={tab}
+                  label={tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  value={tab}
+                />
               ))}
             </Tabs>
           </motion.div>
           {isSmallScreen && (
-            <IconButton onClick={handleNext} disabled={startIndex >= visibleTabs.length - 3} style={{ position: 'absolute', right: 0 }}>
+            <IconButton
+              onClick={handleNext}
+              disabled={startIndex >= visibleTabs.length - 3}
+              style={{ position: 'absolute', right: 0 }}
+            >
               <NavigateNextIcon />
             </IconButton>
           )}
@@ -143,9 +184,7 @@ export default function Setting() {
             transition={{ duration: 0.4, ease: 'easeOut' }}
             className="w-full flex justify-center items-center"
           >
-            <div className="max-w-md w-full">
-              {renderContent()}
-            </div>
+            <div className="max-w-md w-full">{renderContent()}</div>
           </motion.div>
         </Suspense>
       </div>

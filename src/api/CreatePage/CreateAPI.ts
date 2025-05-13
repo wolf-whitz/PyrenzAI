@@ -68,8 +68,6 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
     return data.username || '';
   };
 
-  const handleImageSelect = (file: File | null) => {};
-
   const handleDropdownChange = (value: string) => {
     setCharacterData({ gender: value });
   };
@@ -205,13 +203,12 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
       return;
     }
 
-    const bannerImage = sessionStorage.getItem('Character_Create_Image_Banner');
     const profileImage = sessionStorage.getItem(
       'Character_Create_Image_Profile'
     );
 
-    if (!bannerImage || !profileImage) {
-      alert('Missing required item: Images');
+    if (!profileImage) {
+      alert('Missing required item: Profile Image');
       setLoading(false);
       return;
     }
@@ -232,7 +229,6 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
       const response: ApiResponse = await Utils.post('/api/createCharacter', {
         ...characterData,
         tags,
-        bannerImage,
         profileImage,
         user_uuid: userUuid,
         creator: characterData.creator,
@@ -294,7 +290,6 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
     missingFields,
     characterData,
     setCharacterData,
-    handleImageSelect,
     handleDropdownChange,
     handleChange,
     handleClear,

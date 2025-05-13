@@ -28,7 +28,7 @@ export default function Textarea({
   placeholder = '',
   showTokenizer = false,
   className = '',
-  maxLength = 15000,
+  maxLength = 12000,
   require_link = false,
   is_tag = false,
   onTagPressed,
