@@ -55,6 +55,7 @@
     "llama-tokenizer-js": "^1.2.2",
     "lodash": "^4.17.21",
     "lucide-react": "^0.476.0",
+    "mixpanel-browser": "^2.64.0",
     "motion": "^12.4.7",
     "posthog-js": "^1.236.7",
     "react": "^18.2.0",

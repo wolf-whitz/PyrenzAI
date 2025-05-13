@@ -45,6 +45,7 @@ export default function ChatMessages({
         const displayName = isUser ? msg.username || user.username : msg.character_name || char.character_name;
         const icon = msg.icon || '';
         const isLatestMessage = index === previous_message.length - 1;
+        const isFirstMessage = index === 0;
 
         return (
           <Box
@@ -88,7 +89,7 @@ export default function ChatMessages({
               </Box>
             )}
 
-            {!isUser && isLatestMessage && (
+            {!isUser && isLatestMessage && !isGenerating && !isFirstMessage && (
               <Box display="flex" flexDirection="column" ml={1}>
                 <IconButton
                   onClick={() => onRegenerate && msg.id && onRegenerate(msg.id)}
