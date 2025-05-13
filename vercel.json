@@ -63,5 +63,11 @@
       "source": "/(.*)",
       "destination": "/index.html"
     }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "api/renderer.ts"
+    }
   ]
 }
