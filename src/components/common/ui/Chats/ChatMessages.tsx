@@ -3,8 +3,8 @@ import TypingIndicator from '../Indicator/TypingIndicator';
 import CustomMarkdown from '../Markdown/CustomMarkdown';
 import { Box, Avatar } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import { CustomContextMenu } from "@components/index";
-import { Message, ChatMessagesProps } from "@shared-types/ChatmainTypes"
+import { CustomContextMenu } from '@components/index';
+import { Message, ChatMessagesProps } from '@shared-types/ChatmainTypes';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
@@ -18,7 +18,11 @@ export default function ChatMessages({
   onRegenerate,
   onRemove,
 }: ChatMessagesProps) {
-  const [contextMenu, setContextMenu] = useState<{ mouseX: number; mouseY: number; messageId: string } | null>(null);
+  const [contextMenu, setContextMenu] = useState<{
+    mouseX: number;
+    mouseY: number;
+    messageId: string;
+  } | null>(null);
   const longPressTimer = useRef<NodeJS.Timeout | null>(null);
 
   const handleContextMenu = (event: React.MouseEvent, messageId: string) => {
@@ -26,7 +30,7 @@ export default function ChatMessages({
     setContextMenu(
       contextMenu === null
         ? { mouseX: event.clientX, mouseY: event.clientY, messageId }
-        : null,
+        : null
     );
   };
 
@@ -39,7 +43,7 @@ export default function ChatMessages({
         mouseY: touch.clientY,
         messageId,
       });
-    }, 500); // Adjust the delay as needed
+    }, 500);
   };
 
   const handleLongPressEnd = () => {
@@ -125,7 +129,10 @@ export default function ChatMessages({
               <CustomContextMenu
                 items={menuItems}
                 onClose={handleClose}
-                anchorPosition={{ top: contextMenu.mouseY, left: contextMenu.mouseX }}
+                anchorPosition={{
+                  top: contextMenu.mouseY,
+                  left: contextMenu.mouseX,
+                }}
               />
             )}
 

@@ -59,7 +59,10 @@ export default function TextareaForm({
       setSelectedImage(file);
       const reader = new FileReader();
       reader.onloadend = () => {
-        sessionStorage.setItem('Character_Create_Image_Profile', reader.result as string);
+        sessionStorage.setItem(
+          'Character_Create_Image_Profile',
+          reader.result as string
+        );
       };
       reader.readAsDataURL(file);
     }

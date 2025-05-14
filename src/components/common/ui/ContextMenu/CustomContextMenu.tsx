@@ -88,7 +88,9 @@ export default function CustomContextMenu({
                 whileTap={{ scale: 0.95 }}
               >
                 <MenuItem
-                  onClick={() => handleMenuItemClick(item.action, item.disabled)}
+                  onClick={() =>
+                    handleMenuItemClick(item.action, item.disabled)
+                  }
                   disabled={item.disabled}
                   className="hover:bg-gray-200"
                   role="menuitem"

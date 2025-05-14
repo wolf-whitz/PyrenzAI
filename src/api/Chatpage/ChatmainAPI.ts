@@ -10,7 +10,10 @@ export const useChatPageAPI = (
   user: any,
   char: any,
   conversation_id: string,
-  messageIdRef: React.MutableRefObject<{ charId: string | null; userId: string | null }>,
+  messageIdRef: React.MutableRefObject<{
+    charId: string | null;
+    userId: string | null;
+  }>,
   setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   const [bgImage, setBgImage] = useState<string | null>(null);
@@ -91,7 +94,9 @@ export const useChatPageAPI = (
         console.error('Error deleting message:', error);
       } else {
         console.log('Message deleted successfully');
-        setMessages(prevMessages => prevMessages.filter(msg => msg.id !== messageId));
+        setMessages((prevMessages) =>
+          prevMessages.filter((msg) => msg.id !== messageId)
+        );
       }
     } catch (error) {
       console.error('Error deleting message:', error);

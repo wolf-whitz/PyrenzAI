@@ -1,9 +1,18 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Dropzone, Textarea } from '~/components';
-import { Button, Modal, Box, TextField, Skeleton, Card, CardMedia, CircularProgress } from '@mui/material';
+import {
+  Button,
+  Modal,
+  Box,
+  TextField,
+  Skeleton,
+  Card,
+  CardMedia,
+  CircularProgress,
+} from '@mui/material';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
-import { Utils } from "~/Utility/Utility";
+import { Utils } from '~/Utility/Utility';
 import { toast } from 'react-hot-toast';
 
 interface CreateImageResponse {
@@ -15,7 +24,9 @@ interface ImageUploaderProps {
 }
 
 export default function ImageUploader({ onImageSelect }: ImageUploaderProps) {
-  const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(null);
+  const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(
+    null
+  );
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [textareaValue, setTextareaValue] = useState('');
@@ -33,7 +44,10 @@ export default function ImageUploader({ onImageSelect }: ImageUploaderProps) {
       reader.onloadend = () => {
         setBannerImagePreview(reader.result as string);
         onImageSelect(file);
-        sessionStorage.setItem('Character_Create_Image_Profile', reader.result as string);
+        sessionStorage.setItem(
+          'Character_Create_Image_Profile',
+          reader.result as string
+        );
       };
       reader.readAsDataURL(file);
     }
@@ -66,11 +80,16 @@ export default function ImageUploader({ onImageSelect }: ImageUploaderProps) {
       const typedResponse = response as CreateImageResponse;
       if (typedResponse.image) {
         setImageUrl(typedResponse.image);
-        sessionStorage.setItem('Character_Create_Image_Profile', typedResponse.image);
+        sessionStorage.setItem(
+          'Character_Create_Image_Profile',
+          typedResponse.image
+        );
         fetch(typedResponse.image)
-          .then(res => res.blob())
-          .then(blob => {
-            const file = new File([blob], "generated-image.png", { type: "image/png" });
+          .then((res) => res.blob())
+          .then((blob) => {
+            const file = new File([blob], 'generated-image.png', {
+              type: 'image/png',
+            });
             onImageSelect(file);
           });
       }
@@ -112,17 +131,19 @@ export default function ImageUploader({ onImageSelect }: ImageUploaderProps) {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: 400,
-          bgcolor: 'background.paper',
-          border: '2px solid #000',
-          boxShadow: 24,
-          p: 4,
-        }}>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 400,
+            bgcolor: 'background.paper',
+            border: '2px solid #000',
+            boxShadow: 24,
+            p: 4,
+          }}
+        >
           <TextField
             fullWidth
             label="negative_prompt"
@@ -138,18 +159,36 @@ export default function ImageUploader({ onImageSelect }: ImageUploaderProps) {
             placeholder="Enter a description to generate an image for your character&nbsp;&nbsp;₍⑅ᐢ..ᐢ₎"
           />
           {isSubmitted && (
-            <Card sx={{ mt: 2, display: 'flex', justifyContent: 'center', alignItems: 'center', height: 200 }}>
+            <Card
+              sx={{
+                mt: 2,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: 200,
+              }}
+            >
               {isLoading ? (
                 <CircularProgress />
               ) : imageUrl ? (
-                <CardMedia component="img" height="200" image={imageUrl} alt="Generated" />
+                <CardMedia
+                  component="img"
+                  height="200"
+                  image={imageUrl}
+                  alt="Generated"
+                />
               ) : (
                 <Skeleton variant="rectangular" width="100%" height={200} />
               )}
             </Card>
           )}
           <div className="flex justify-end mt-4">
-            <Button variant="outlined" color="secondary" onClick={handleClear} sx={{ mr: 2 }}>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={handleClear}
+              sx={{ mr: 2 }}
+            >
               Clear
             </Button>
             <Button variant="contained" color="primary" onClick={handleSubmit}>
