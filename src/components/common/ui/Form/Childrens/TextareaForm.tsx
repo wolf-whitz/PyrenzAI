@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Textarea } from '~/components';
 import { Menu, MenuItem, Typography, TextField } from '@mui/material';
 import { supabase } from '~/Utility/supabaseClient';
-import { useCreateAPI } from '~/api/CreatePage/CreateAPI';
 import { Tag, TextareaFormProps } from '@shared-types/TagTypes';
 import { useNavigate } from 'react-router-dom';
 import { ImageUploader } from '~/components';

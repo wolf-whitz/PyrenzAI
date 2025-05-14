@@ -10,7 +10,7 @@ interface TextareaProps {
   name?: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  label: string;
+  label?: string;
   placeholder?: string;
   showTokenizer?: boolean;
   className?: string;
