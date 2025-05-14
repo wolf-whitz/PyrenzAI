@@ -10,13 +10,15 @@
     "https://va.vercel-scripts.com",
     "https://*.adtrafficquality.google",
     "https://js.hcaptcha.com",
-    "https://*.google.com"
+    "https://*.google.com",
+    "https://*.clerk.accounts.dev"
   ],
   "style-src": [
     "'self'",
     "'unsafe-inline'",
     "https://pyrenzai.com",
-    "https://fonts.googleapis.com"
+    "https://fonts.googleapis.com",
+    "https://*.jsdelivr.net"
   ],
   "connect-src": [
     "'self'",
@@ -29,7 +31,9 @@
     "https://*.supabase.co",
     "https://*.pyrenzai.com",
     "https://pagead2.googlesyndication.com",
-    "http://localhost:8080"
+    "http://localhost:8080",
+    "https://*.clerk.accounts.dev",
+    "https://*.jsdelivr.net"
   ],
   "font-src": ["'self'", "*"],
   "img-src": [

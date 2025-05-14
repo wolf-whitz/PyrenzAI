@@ -7,6 +7,7 @@ import {
   sendUserDataToUserDataTable,
 } from './Modals/AuthenticationAPI';
 import { useCreateAPI } from './CreatePage/CreateAPI';
+import { useChatPageAPI } from './Chatpage/ChatmainAPI';
 
 export {
   fetchCharacters,
@@ -14,6 +15,7 @@ export {
   handleLogin,
   handleOAuthSignIn,
   handleSignUp,
+  useChatPageAPI,
   useCreateAPI,
   sendUserDataToUserDataTable,
 };

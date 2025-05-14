@@ -9,7 +9,7 @@ export default function ToastProvider() {
         style: {
           background: '#000000',
           color: '#FFFFFF',
-          fontFamily: "'Baloo Da 2', cursive",
+          fontFamily: 'Baloo Tammudu 2',
         },
       }}
     />

@@ -4,10 +4,10 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        baloo: ['Baloo Da 2', 'sans-serif'],
-        lato: ['Lato', 'sans-serif'],
-        fredoka: ['Fredoka', 'sans-serif'],
-        baloo2: ['Baloo 2', 'sans-serif'],
+        baloo: ['Baloo Tammudu 2'],
+        lato: ['Lato'],
+        fredoka: ['Fredoka'],
+        baloo2: ['Baloo 2'],
       },
       colors: {
         midnight: '#0F0F0F',

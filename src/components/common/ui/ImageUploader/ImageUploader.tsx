@@ -14,18 +14,6 @@ interface ImageUploaderProps {
   onImageSelect: (file: File | null) => void;
 }
 
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
-
 export default function ImageUploader({ onImageSelect }: ImageUploaderProps) {
   const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
@@ -45,6 +33,7 @@ export default function ImageUploader({ onImageSelect }: ImageUploaderProps) {
       reader.onloadend = () => {
         setBannerImagePreview(reader.result as string);
         onImageSelect(file);
+        sessionStorage.setItem('Character_Create_Image_Profile', reader.result as string);
       };
       reader.readAsDataURL(file);
     }
@@ -55,6 +44,7 @@ export default function ImageUploader({ onImageSelect }: ImageUploaderProps) {
     setTextareaValue('');
     setImageUrl(null);
     setIsSubmitted(false);
+    sessionStorage.removeItem('Character_Create_Image_Profile');
   };
 
   const handleSubmit = async () => {
@@ -76,6 +66,13 @@ export default function ImageUploader({ onImageSelect }: ImageUploaderProps) {
       const typedResponse = response as CreateImageResponse;
       if (typedResponse.image) {
         setImageUrl(typedResponse.image);
+        sessionStorage.setItem('Character_Create_Image_Profile', typedResponse.image);
+        fetch(typedResponse.image)
+          .then(res => res.blob())
+          .then(blob => {
+            const file = new File([blob], "generated-image.png", { type: "image/png" });
+            onImageSelect(file);
+          });
       }
     } catch (error) {
       toast.error('Error creating image');
@@ -115,7 +112,17 @@ export default function ImageUploader({ onImageSelect }: ImageUploaderProps) {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+        <Box sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 400,
+          bgcolor: 'background.paper',
+          border: '2px solid #000',
+          boxShadow: 24,
+          p: 4,
+        }}>
           <TextField
             fullWidth
             label="negative_prompt"

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import { ChatContainerProps, Message } from '@shared-types/chatTypes';
 import ChatInput from '../ChatInput';
 import ChatMessages from '../ChatMessages';
@@ -6,8 +6,7 @@ import { motion } from 'framer-motion';
 import { Avatar, Typography, IconButton } from '@mui/material';
 import { Settings, ChevronLeft } from 'lucide-react';
 import { SettingsSidebar, AdModal } from '@components/index';
-import { useGenerateMessage } from '~/api/Chatpage/ChatContainerAPI';
-import { useNavigate } from 'react-router-dom';
+import { useChatPageAPI } from '~/api';
 
 interface ChatMainProps extends ChatContainerProps {
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
@@ -24,80 +23,32 @@ export default function ChatMain({
   char,
   previous_message = [],
   isGenerating,
-  messagesEndRef,
   setMessages,
   messageIdRef,
   setIsGenerating,
   conversation_id,
 }: ChatMainProps) {
-  const [bgImage, setBgImage] = useState<string | null>(null);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [isAdModalOpen, setIsAdModalOpen] = useState(false);
-  const generateMessage = useGenerateMessage();
-  const navigate = useNavigate();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const storedBgImage = localStorage.getItem('bgImage');
-    if (storedBgImage) {
-      setBgImage(storedBgImage);
-    }
-  }, []);
-
-  useEffect(() => {
-    const scrollWithDelay = () => {
-      if (messagesEndRef?.current) {
-        setTimeout(() => {
-          messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-        }, 300);
-      }
-    };
-
-    scrollWithDelay();
-  }, [previous_message, messagesEndRef]);
-
-  useEffect(() => {
-    if (bgImage) {
-      localStorage.setItem('bgImage', bgImage);
-    } else {
-      localStorage.removeItem('bgImage');
-    }
-  }, [bgImage]);
-
-  const handleBackgroundChange = (newImageUrl: string | null) => {
-    setBgImage(newImageUrl);
-  };
-
-  const toggleSettings = () => {
-    setIsSettingsOpen((prev) => !prev);
-  };
-
-  const handleSend = async (message: string) => {
-    const trimmedMessage = message.trim();
-    if (!trimmedMessage) return;
-
-    try {
-      console.log(trimmedMessage);
-      const response = await generateMessage(
-        trimmedMessage,
-        user,
-        char,
-        conversation_id,
-        setMessages,
-        messageIdRef,
-        setIsGenerating
-      );
-
-      if (response.remainingMessages === 0) {
-        setIsAdModalOpen(true);
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  };
-
-  const handleGoHome = () => {
-    navigate('/home');
-  };
+  const {
+    bgImage,
+    isSettingsOpen,
+    isAdModalOpen,
+    setIsAdModalOpen,
+    toggleSettings,
+    handleSend,
+    handleGoHome,
+    handleRemoveMessage,
+  } = useChatPageAPI(
+    messagesEndRef,
+    previous_message,
+    setMessages,
+    user,
+    char,
+    conversation_id,
+    messageIdRef,
+    setIsGenerating
+  );
 
   return (
     <motion.div
@@ -157,6 +108,7 @@ export default function ChatMain({
           user={{ username: user?.username || 'Anon' }}
           char={{ character_name: char?.character_name || 'Anon' }}
           isGenerating={isGenerating}
+          onRemove={handleRemoveMessage}
         />
         <div ref={messagesEndRef}></div>
       </motion.div>

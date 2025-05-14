@@ -8,7 +8,7 @@ export default function createCustomTheme() {
   if (isDarkMode) {
     const theme = createTheme({
       typography: {
-        fontFamily: `'Baloo 2', cursive`,
+        fontFamily: 'Baloo Tammudu 2',
       },
       palette: {
         mode: 'dark',

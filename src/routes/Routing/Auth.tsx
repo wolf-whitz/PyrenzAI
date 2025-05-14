@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Box, Typography, CircularProgress } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import AOS from 'aos';
+import 'aos/dist/aos.css'; // You can also use <link> for styles
 
 export default function Auth() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -14,6 +16,10 @@ export default function Auth() {
     if (typeof window !== 'undefined') {
       setIsLoaded(true);
     }
+    AOS.init({
+      duration: 1000, // Animation duration
+      once: true, // Whether animation should happen only once
+    });
   }, []);
 
   const handleCaptcha = (token: string) => {
@@ -40,6 +46,7 @@ export default function Auth() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
         className="w-full max-w-md p-10 rounded-2xl bg-gray-900 bg-opacity-70 shadow-2xl border border-gray-700"
+        data-aos="fade-up"
       >
         <Typography
           variant="h4"
@@ -54,6 +61,7 @@ export default function Auth() {
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.2, duration: 0.4 }}
               className="mb-6"
+              data-aos="zoom-in"
             >
               <HCaptcha
                 sitekey="91081ab4-7c04-4130-b526-926e81bacae4"
@@ -70,6 +78,7 @@ export default function Auth() {
           <Typography
             variant="body2"
             className="text-gray-300 text-center mt-4 text-sm font-light"
+            data-aos="fade-in"
           >
             {t('messages.pyrenzAIDescription')}
           </Typography>

@@ -14,7 +14,7 @@ export default function TextareaForm({
   const [tags, setTags] = useState<Tag[]>([]);
   const [filteredTags, setFilteredTags] = useState<Tag[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const navigate = useNavigate();
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
   const handleOpenDropdown = async (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -54,7 +54,16 @@ export default function TextareaForm({
     );
   };
 
-  const handleImageSelect = (file: File | null) => {};
+  const handleImageSelect = (file: File | null) => {
+    if (file) {
+      setSelectedImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        sessionStorage.setItem('Character_Create_Image_Profile', reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   return (
     <>
