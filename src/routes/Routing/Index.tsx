@@ -105,12 +105,15 @@ export default function Preview() {
           />
         </Box>
 
-        <Box component="main">
+        <Box component="main" sx={{ pt: 10 }}>
           <Container maxWidth={false} disableGutters>
             <HeroSection openModal={openModal} pyrenzAiRef={pyrenzAiRef} />
-            <DownloadModal isModalOpen={isModalOpen} closeModal={closeModal} />
-            <FeaturesSection discoverMoreRef={discoverMoreRef} />
           </Container>
+        </Box>
+
+        <Box sx={{ mt: 10 }}> {/* Add margin-top to push these sections below the HeroSection */}
+          <DownloadModal isModalOpen={isModalOpen} closeModal={closeModal} />
+          <FeaturesSection discoverMoreRef={discoverMoreRef} />
         </Box>
 
         <Box component={motion.footer} data-aos="fade-up" sx={{ mt: 44 }}>
