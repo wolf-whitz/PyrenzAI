@@ -26,7 +26,6 @@ export default function HeroSection({
         alignItems: 'center',
         minHeight: '100vh',
         color: 'white',
-        mt: '-10rem',
         py: '1rem',
         textAlign: 'center',
       }}
