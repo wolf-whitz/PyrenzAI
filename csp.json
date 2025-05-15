@@ -11,7 +11,8 @@
     "https://*.adtrafficquality.google",
     "https://js.hcaptcha.com",
     "https://*.google.com",
-    "https://*.clerk.accounts.dev"
+    "https://*.clerk.accounts.dev",
+    "https://*.cloudflareinsights.com/"
   ],
   "style-src": [
     "'self'",
@@ -34,7 +35,9 @@
     "http://localhost:8080",
     "https://*.clerk.accounts.dev",
     "https://*.jsdelivr.net",
-    "https://*.pollinations.ai"
+    "https://*.pollinations.ai",
+    "https://*.cloudflareinsights.com",
+    "https://cloudflareinsights.com"
   ],
   "media-src": ["'self'", "blob:"],
   "font-src": ["'self'", "*"],

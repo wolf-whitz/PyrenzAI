@@ -193,7 +193,7 @@
     <link rel="preconnect" href="https://us-assets.i.posthog.com" />
     <link rel="preconnect" href="https://cqtbishpefnfvaxheyqu.supabase.co" />
   </head>
-  <body>
+  <body onload="checkBrowserSupport()">
     <!-- Entry Point -->
     <div id="root" aria-label="PyrenzAI" role="main"></div>
     <script type="module" src="/src/main.tsx"></script>
@@ -274,6 +274,32 @@
               console.error('❌ Service Worker registration failed:', error);
             });
         });
+      }
+    </script>
+
+    <script>
+      var checkBrowserSupport = function () {
+        try {
+          var svg = document.createElementNS(
+            'http://www.w3.org/2000/svg',
+            'svg'
+          );
+          if (!(svg.classList && typeof svg.classList.add === 'function'))
+            return false;
+          if (typeof Promise === 'undefined') return false;
+          if (typeof fetch !== 'function') return false;
+          if (typeof Object.assign !== 'function') return false;
+          if (typeof Array.prototype.includes !== 'function') return false;
+          return true;
+        } catch (e) {
+          return false;
+        }
+      };
+
+      if (!checkBrowserSupport()) {
+        alert(
+          '⚠️ Your browser is outdated and may not support this site properly. Please update to a modern browser for the best experience.'
+        );
       }
     </script>
 
