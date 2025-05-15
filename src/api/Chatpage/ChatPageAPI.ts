@@ -65,7 +65,6 @@ export const fetchChatData = async (
         const messages: Message[] = [];
 
         if (msg.user_message) {
-          console.log('Username:', username);
           messages.push({
             id: msg.id,
             text: msg.user_message,
@@ -82,6 +81,7 @@ export const fetchChatData = async (
             icon: character.profile_image || '',
             type: 'assistant',
             conversation_id,
+            gender: character.gender,
           });
         }
 

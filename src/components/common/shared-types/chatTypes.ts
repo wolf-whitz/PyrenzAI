@@ -14,6 +14,7 @@ export interface Message {
   role?: string;
   conversation_id?: string;
   error?: boolean;
+  gender?: string;
 }
 
 export interface User {
@@ -46,6 +47,15 @@ export interface ChatContainerProps {
     userId: string | null;
   } | null>;
   messagesEndRef?: RefObject<HTMLDivElement>;
+}
+
+export interface ChatMessagesProps {
+  previous_message: Message[];
+  user: User;
+  char: Character;
+  isGenerating?: boolean;
+  onRemove?: (messageId: string) => void;
+  setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export interface GenerateResponse {

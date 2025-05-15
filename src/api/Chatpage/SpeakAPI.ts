@@ -1,9 +1,11 @@
 import toast from 'react-hot-toast';
 import * as Sentry from '@sentry/react';
 
-export const speakMessage = async (message: string, voiceType: string) => {
+export const speakMessage = async (message: string, gender: string) => {
   try {
     const url = 'https://text.pollinations.ai/';
+
+    const voiceType = gender === 'female' ? 'nova' : 'onyx';
 
     const response = await fetch(url, {
       method: 'POST',
@@ -25,7 +27,7 @@ export const speakMessage = async (message: string, voiceType: string) => {
         modalities: ['text', 'audio'],
         private: false,
         audio: {
-          voice: voiceType || 'nova',
+          voice: voiceType,
           format: 'wav',
         },
         max_tokens: 300,

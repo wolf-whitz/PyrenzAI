@@ -8,6 +8,7 @@ export interface Message {
   token?: number | null;
   role?: string | null;
   error?: boolean;
+  gender?: string;
 }
 
 export interface ChatMessagesProps {
@@ -17,7 +18,7 @@ export interface ChatMessagesProps {
   token?: number | null;
   role?: string | null;
   user: { username: string };
-  char: { character_name: string };
+  char: { character_name: string; gender?: string };
   onRegenerate?: (messageId: string) => void;
   onRemove?: (messageId: string) => void;
 }

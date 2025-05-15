@@ -112,7 +112,10 @@ export default function ChatMain({
             character_name: msg.character_name || 'Anon',
           }))}
           user={{ username: user?.username || 'Anon' }}
-          char={{ character_name: char?.character_name || 'Anon' }}
+          char={{
+            character_name: char?.character_name || 'Anon',
+            gender: char?.gender,
+          }}
           isGenerating={isGenerating}
           onRemove={handleRemoveMessage}
           setIsGenerating={setIsGenerating}

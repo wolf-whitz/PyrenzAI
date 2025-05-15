@@ -43,7 +43,7 @@ export default function ChatMessages({
   const handleSpeak = async (text: string) => {
     setIsGenerating(true);
     try {
-      await speakMessage(text);
+      await speakMessage(text, char.gender as string);
     } finally {
       setIsGenerating(false);
     }
