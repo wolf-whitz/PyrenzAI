@@ -1,7 +1,7 @@
 import toast from 'react-hot-toast';
 import * as Sentry from '@sentry/react';
 
-export const speakMessage = async (message: string) => {
+export const speakMessage = async (message: string, voiceType: string) => {
   try {
     const url = 'https://text.pollinations.ai/';
 
@@ -13,19 +13,32 @@ export const speakMessage = async (message: string) => {
       body: JSON.stringify({
         messages: [
           {
+            role: 'system',
+            content: `Narrate what the character is currently saying. Speak as if you are a real, living character experiencing and narrating this moment from your own point of view. Make it feel natural, immersive, and full of personality — like your alive and telling a story about what’s happening. Replace {{user}} with 'you' and always use first person.`,
+          },
+          {
             role: 'user',
-            content: `Narrate what I am currently saying: ${message}. Speak as if you are a real, living character experiencing and narrating this moment from your own point of view. Make it feel natural, immersive, and full of personality — like you’re alive and telling a story about what’s happening.`,
+            content: `${message}`,
           },
         ],
         model: 'openai-audio',
-        voice: 'nova',
+        modalities: ['text', 'audio'],
         private: false,
+        audio: {
+          voice: voiceType || 'nova',
+          format: 'wav',
+        },
         max_tokens: 300,
       }),
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const error = await response.json();
+      console.error('API error:', error);
+      throw new Error(
+        error?.details?.error?.message ||
+          `HTTP error! status: ${response.status}`
+      );
     }
 
     const audioBlob = await response.blob();
