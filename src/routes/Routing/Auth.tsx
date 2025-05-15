@@ -38,7 +38,7 @@ export default function Auth() {
       className="min-h-screen flex justify-center items-center bg-cover bg-center bg-no-repeat font-baloo"
       style={{
         backgroundImage:
-          "linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif')",
+          "linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.4)), url('https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif')",
       }}
     >
       <motion.section
