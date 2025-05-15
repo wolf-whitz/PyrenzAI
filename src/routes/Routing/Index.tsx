@@ -105,7 +105,7 @@ export default function Preview() {
           />
         </Box>
 
-        <Box component="main" sx={{ pt: 20, flexGrow: 1 }}>
+        <Box component="main">
           <Container maxWidth={false} disableGutters>
             <HeroSection openModal={openModal} pyrenzAiRef={pyrenzAiRef} />
             <DownloadModal isModalOpen={isModalOpen} closeModal={closeModal} />
