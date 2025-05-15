@@ -22,7 +22,7 @@ const SpinnerBase = ({
     exit={{ opacity: 0 }}
     transition={{ duration: 0.4 }}
   >
-    <CircularProgress style={{ color: 'yellow' }} />
+    <CircularProgress style={{ color: 'blue' }} />
     <p className="mt-4 animate-pulse">{message}</p>
     {subMessage && <p className="mt-2 text-gray-400">{subMessage}</p>}
   </motion.div>
@@ -32,7 +32,7 @@ const Spinner = () => (
   <SpinnerBase
     message={
       <>
-        Loading <span className="font-semibold text-blue-500">Pyrenz</span>,
+        Loading <span className="font-baloo text-blue-500">Pyrenz</span>,
         Open Source, Free Alternative
       </>
     }
@@ -44,7 +44,7 @@ const ChatPageSpinner = () => (
     message={
       <>
         Loading.. Please Wait While{' '}
-        <span className="font-semibold text-blue-500">Pyrenz</span> loads your
+        <span className="font-baloo text-blue-500">Pyrenz</span> loads your
         chats.
       </>
     }
@@ -58,7 +58,7 @@ const SettingsPageLoader = () => (
     message={
       <>
         Loading.. Please Wait While{' '}
-        <span className="font-semibold text-blue-500">Pyrenz</span> loads your
+        <span className="font-baloo text-blue-500">Pyrenz</span> loads your
         settings.
       </>
     }

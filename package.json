@@ -9,7 +9,7 @@
     "format:check": "prettier --check .",
     "dev": "concurrently \"vite dev --port 8800\" \"tsc --watch\"",
     "prod": "vite prod",
-    "docs-build": "eleventy"
+    "sync": "node csp-sync.cjs"
   },
   "dependencies": {
     "@datadog/browser-rum-react": "^6.6.3",

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import TypingIndicator from '../Indicator/TypingIndicator';
 import CustomMarkdown from '../Markdown/CustomMarkdown';
 import { Box, Avatar } from '@mui/material';
@@ -23,33 +23,14 @@ export default function ChatMessages({
     mouseY: number;
     messageId: string;
   } | null>(null);
-  const longPressTimer = useRef<NodeJS.Timeout | null>(null);
 
-  const handleContextMenu = (event: React.MouseEvent, messageId: string) => {
+  const handleClick = (event: React.MouseEvent, messageId: string) => {
     event.preventDefault();
     setContextMenu(
       contextMenu === null
         ? { mouseX: event.clientX, mouseY: event.clientY, messageId }
         : null
     );
-  };
-
-  const handleLongPressStart = (event: React.TouchEvent, messageId: string) => {
-    event.preventDefault();
-    longPressTimer.current = setTimeout(() => {
-      const touch = event.touches[0];
-      setContextMenu({
-        mouseX: touch.clientX,
-        mouseY: touch.clientY,
-        messageId,
-      });
-    }, 500);
-  };
-
-  const handleLongPressEnd = () => {
-    if (longPressTimer.current) {
-      clearTimeout(longPressTimer.current);
-    }
   };
 
   const handleClose = () => {
@@ -90,10 +71,7 @@ export default function ChatMessages({
             alignItems="start"
             justifyContent={isUser ? 'flex-end' : 'flex-start'}
             className={`flex items-start ${isUser ? 'justify-end' : 'justify-start'}`}
-            onContextMenu={(event) => handleContextMenu(event, msg.id || '')}
-            onTouchStart={(event) => handleLongPressStart(event, msg.id || '')}
-            onTouchEnd={handleLongPressEnd}
-            onTouchMove={handleLongPressEnd}
+            onClick={(event) => handleClick(event, msg.id || '')}
           >
             {!isUser && (
               <Avatar

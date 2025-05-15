@@ -9,7 +9,7 @@ export function cspPlugin(): PluginOption {
     name: 'vite:csp-header',
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
-        const cspPath = path.resolve(process.cwd(), 'public/csp.json');
+        const cspPath = path.resolve(process.cwd(), 'csp.json');
 
         if (!fs.existsSync(cspPath)) {
           res.statusCode = 500;
