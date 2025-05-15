@@ -193,7 +193,7 @@
     <link rel="preconnect" href="https://us-assets.i.posthog.com" />
     <link rel="preconnect" href="https://cqtbishpefnfvaxheyqu.supabase.co" />
   </head>
-  <body onload="checkBrowserSupport()">
+  <body onload="DeviceTest()">
     <!-- Entry Point -->
     <div id="root" aria-label="PyrenzAI" role="main"></div>
     <script type="module" src="/src/main.tsx"></script>
@@ -278,29 +278,166 @@
     </script>
 
     <script>
-      var checkBrowserSupport = function () {
+      var DeviceTest = function () {
         try {
-          var svg = document.createElementNS(
-            'http://www.w3.org/2000/svg',
-            'svg'
-          );
-          if (!(svg.classList && typeof svg.classList.add === 'function'))
+          if (
+            typeof Promise === 'undefined' ||
+            typeof fetch !== 'function' ||
+            typeof Object.assign !== 'function' ||
+            typeof Array.prototype.includes !== 'function'
+          ) {
+            console.log('Old browser detected: missing modern JS features');
             return false;
-          if (typeof Promise === 'undefined') return false;
-          if (typeof fetch !== 'function') return false;
-          if (typeof Object.assign !== 'function') return false;
-          if (typeof Array.prototype.includes !== 'function') return false;
+          }
+
+          var cpuCores = navigator.hardwareConcurrency || 2;
+          var deviceMemoryGB = navigator.deviceMemory || 4;
+
+          var screenWidth = window.screen.width;
+          var screenHeight = window.screen.height;
+
+          var touchSupported =
+            'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+          var userAgent = navigator.userAgent;
+
+          var languages = navigator.languages || [
+            navigator.language || 'unknown',
+          ];
+
+          var platform = navigator.platform || 'unknown';
+
+          var supportsWebGL = false;
+          var supportsWebGL2 = false;
+          var gpuVendor = 'unknown';
+          var gpuRenderer = 'unknown';
+
+          try {
+            var canvas = document.createElement('canvas');
+            var gl =
+              canvas.getContext('webgl') ||
+              canvas.getContext('experimental-webgl');
+            var gl2 = canvas.getContext('webgl2');
+
+            supportsWebGL = !!gl;
+            supportsWebGL2 = !!gl2;
+
+            var debugInfo =
+              (gl && gl.getExtension('WEBGL_debug_renderer_info')) ||
+              (gl2 && gl2.getExtension('WEBGL_debug_renderer_info'));
+
+            if (debugInfo) {
+              if (gl) {
+                gpuVendor =
+                  gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) || gpuVendor;
+                gpuRenderer =
+                  gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) ||
+                  gpuRenderer;
+              } else if (gl2) {
+                gpuVendor =
+                  gl2.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) ||
+                  gpuVendor;
+                gpuRenderer =
+                  gl2.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) ||
+                  gpuRenderer;
+              }
+            }
+          } catch {
+            supportsWebGL = false;
+            supportsWebGL2 = false;
+          }
+
+          var isOldBrowser =
+            typeof Promise === 'undefined' ||
+            typeof fetch !== 'function' ||
+            typeof Object.assign !== 'function' ||
+            typeof Array.prototype.includes !== 'function';
+
+          var isOnline = navigator.onLine;
+
+          var storageQuotaMB = 0;
+
+          var estimateLLMCapable = function (storageQuotaMB) {
+            var reasons = [];
+            var capable = true;
+
+            if (cpuCores < 4) {
+              capable = false;
+              reasons.push(`CPU cores too low (${cpuCores} < 4)`);
+            }
+            if (deviceMemoryGB < 8) {
+              capable = false;
+              reasons.push(`Not enough RAM (${deviceMemoryGB}GB < 8GB)`);
+            }
+            if (!supportsWebGL2) {
+              capable = false;
+              reasons.push('No WebGL2 support');
+            }
+            if (storageQuotaMB < 100) {
+              capable = false;
+              reasons.push(
+                `Insufficient storage quota (${storageQuotaMB}MB < 100MB)`
+              );
+            }
+            if (!isOnline) {
+              reasons.push('Offline mode - LLM can run but updates limited');
+            }
+
+            if (capable) {
+              reasons.push('Device looks capable of running LLM locally');
+            }
+
+            return {
+              capable: capable,
+              reasons: reasons,
+            };
+          };
+
+          var logAll = function (storageQuota) {
+            storageQuotaMB = Math.round(storageQuota.quota / (1024 * 1024));
+
+            var llmResult = estimateLLMCapable(storageQuotaMB);
+
+            console.log({
+              cpuCores: cpuCores,
+              deviceMemoryGB: deviceMemoryGB,
+              screenWidth: screenWidth,
+              screenHeight: screenHeight,
+              touchSupported: touchSupported,
+              userAgent: userAgent,
+              languages: languages,
+              platform: platform,
+              storageQuotaMB: {
+                quota: storageQuotaMB,
+                usage: Math.round(storageQuota.usage / (1024 * 1024)),
+              },
+              supportsWebGL: supportsWebGL,
+              supportsWebGL2: supportsWebGL2,
+              gpuVendor: gpuVendor,
+              gpuRenderer: gpuRenderer,
+              isOldBrowser: isOldBrowser,
+              isOnline: isOnline,
+              llmCapable: llmResult.capable,
+              llmDetails: llmResult.reasons,
+            });
+          };
+
+          if (navigator.storage && navigator.storage.estimate) {
+            navigator.storage.estimate().then(function (estimate) {
+              logAll(estimate);
+            });
+          } else {
+            logAll({ quota: 0, usage: 0 });
+          }
+
           return true;
         } catch (e) {
+          console.log('Error in DeviceTest:', e);
           return false;
         }
       };
 
-      if (!checkBrowserSupport()) {
-        alert(
-          '⚠️ Your browser is outdated and may not support this site properly. Please update to a modern browser for the best experience.'
-        );
-      }
+      DeviceTest();
     </script>
 
     <!-- Root Modals -->
