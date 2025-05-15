@@ -91,6 +91,8 @@ export default function Preview() {
           display: 'flex',
           flexDirection: 'column',
           backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
           overflowY: 'auto',
           overflowX: 'hidden',
           backgroundImage: `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.4)), url(https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif)`,

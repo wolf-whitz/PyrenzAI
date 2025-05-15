@@ -1,4 +1,3 @@
-import React from 'react';
 import { DropdownField } from '~/components';
 
 interface GenderDropdownProps {
@@ -13,7 +12,6 @@ export default function GenderDropdown({
   const genderOptions = [
     { value: 'male', label: 'Male' },
     { value: 'female', label: 'Female' },
-    { value: 'other', label: 'Other' },
   ];
 
   return (
