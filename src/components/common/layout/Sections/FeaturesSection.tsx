@@ -77,7 +77,11 @@ export default function FeaturesSection({
                 </Typography>
               </div>
               <div className="md:w-1/2">
-                <FeatureCard cardImage={card.cardImage} />
+                <FeatureCard
+                  cardImage={card.cardImage}
+                  imageWidth={card.imageWidth}
+                  imageHeight={card.imageHeight}
+                />
               </div>
             </div>
           ))}
