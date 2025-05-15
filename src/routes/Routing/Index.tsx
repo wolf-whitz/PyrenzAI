@@ -8,6 +8,7 @@ import {
   HeroSection,
   FeaturesSection,
 } from '~/components';
+import '~/styles/Preview.css';
 import { motion } from 'framer-motion';
 import AOS from 'aos';
 import { Box, Container } from '@mui/material';
