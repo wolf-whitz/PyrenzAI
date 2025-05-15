@@ -1,7 +1,7 @@
 import toast from 'react-hot-toast';
 import * as Sentry from '@sentry/react';
 
-export const speakMessage = async (message: string, gender: string) => {
+export const speakMessage = async (message: string, gender: string, onAudioEnded?: () => void) => {
   try {
     const url = 'https://text.pollinations.ai/';
 
@@ -49,8 +49,13 @@ export const speakMessage = async (message: string, gender: string) => {
     const audio = new Audio(audioUrl);
     audio.play();
 
+    toast.success('Playing audio...');
+
     audio.onended = () => {
       URL.revokeObjectURL(audioUrl);
+      if (onAudioEnded) {
+        onAudioEnded();
+      }
     };
   } catch (error) {
     console.error('Error fetching or playing the audio:', error);

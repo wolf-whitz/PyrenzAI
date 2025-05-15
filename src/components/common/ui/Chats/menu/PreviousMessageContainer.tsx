@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   Avatar,
   CircularProgress,
   Typography,
-  Menu,
-  MenuItem,
+  Box,
 } from '@mui/material';
 import { supabase } from '~/Utility/supabaseClient';
 import { GetUserUUID } from '~/functions';
+
+const CustomContextMenu = React.lazy(() => import("@components/index").then(module => ({ default: module.CustomContextMenu })));
 
 interface Chat {
   id: string;
@@ -30,6 +31,7 @@ export default function PreviousChat() {
   } | null>(null);
 
   const navigate = useNavigate();
+  const longPressTimer = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const fetchPreviousChats = async () => {
@@ -126,42 +128,55 @@ export default function PreviousChat() {
     handleClose();
   };
 
+  const handleMouseDown = (event: React.MouseEvent, chatId: string) => {
+    longPressTimer.current = setTimeout(() => {
+      handleContextMenu(event, chatId);
+    }, 500);
+  };
+
+  const handleMouseUp = () => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+  };
+
   return (
-    <aside className="hidden lg:flex flex-col justify-end w-64 p-4 h-full">
-      <div className="rounded-xl w-full bg-gray-800 flex-grow overflow-auto min-h-[200px] max-h-[400px]">
+    <Box sx={{ display: { xs: 'none', lg: 'flex' }, flexDirection: 'column', justifyContent: 'flex-end', width: '256px', padding: '16px', height: '100%' }}>
+      <Box sx={{ borderRadius: '12px', width: '100%', backgroundColor: 'background.paper', flexGrow: 1, overflow: 'auto', minHeight: '200px', maxHeight: '400px' }}>
         {loading ? (
-          <div className="flex flex-col items-center justify-center p-4 space-y-4">
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '16px', gap: '16px' }}>
             <CircularProgress />
             <Typography variant="body2" color="textSecondary">
               Loading previous chats...
             </Typography>
-          </div>
+          </Box>
         ) : error ? (
-          <div className="flex flex-col items-center justify-center p-4 space-y-4">
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '16px', gap: '16px' }}>
             <motion.img
               src="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MascotCrying.avif"
               alt="Crying Mascot"
-              className="w-24 h-24 mt-2"
+              style={{ width: '96px', height: '96px', marginTop: '8px' }}
               whileHover={{ scale: 1.1 }}
               transition={{ duration: 0.5 }}
             />
             <Typography variant="body2" color="textSecondary">
               {error}
             </Typography>
-          </div>
+          </Box>
         ) : chats.length === 0 ? (
-          <div className="flex flex-col items-center justify-center p-4 space-y-4">
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '16px', gap: '16px' }}>
             <motion.img
               src="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MascotCrying.avif"
               alt="Crying Mascot"
-              className="w-24 h-24 mt-3"
+              style={{ width: '96px', height: '96px', marginTop: '12px' }}
               whileHover={{ scale: 1.1 }}
               transition={{ duration: 0.5 }}
             />
             <Typography variant="body2" color="textSecondary">
               No chats to load. Start a new conversation!
             </Typography>
-          </div>
+          </Box>
         ) : (
           chats.slice(0, 11).map((chat) => (
             <motion.div
@@ -170,48 +185,52 @@ export default function PreviousChat() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="flex items-start space-x-4 p-4 border-b border-gray-700 cursor-pointer hover:bg-gray-700"
+              style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', padding: '16px', borderBottom: '1px solid rgba(255, 255, 255, 0.12)', cursor: 'pointer' }}
               onClick={() => handleMessageClick(chat.chat_uuid)}
               onContextMenu={(e) => handleContextMenu(e, chat.id)}
+              onMouseDown={(e) => handleMouseDown(e, chat.id)}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
             >
               <Avatar
                 src={chat.preview_image}
                 alt="Chat preview"
-                className="w-12 h-12"
+                sx={{ width: '48px', height: '48px' }}
               />
-              <div className="flex-1">
+              <Box sx={{ flexGrow: 1 }}>
                 <Typography
                   variant="body2"
                   color="textSecondary"
-                  className="break-words"
+                  sx={{ wordBreak: 'break-word' }}
                 >
                   {truncateMessage(chat.preview_message)}
                 </Typography>
                 <Typography variant="caption" color="textSecondary">
                   {new Date(chat.created_at).toLocaleString()}
                 </Typography>
-              </div>
+              </Box>
             </motion.div>
           ))
         )}
-        <Menu
-          open={contextMenu !== null}
-          onClose={handleClose}
-          anchorReference="anchorPosition"
-          anchorPosition={
-            contextMenu !== null
-              ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
-              : undefined
-          }
-        >
-          <MenuItem onClick={() => handleExport(contextMenu?.chatId)}>
-            Export
-          </MenuItem>
-          <MenuItem onClick={() => handleDelete(contextMenu?.chatId)}>
-            Delete
-          </MenuItem>
-        </Menu>
-      </div>
-    </aside>
+        {contextMenu && (
+          <Suspense fallback={<div>Loading...</div>}>
+            <CustomContextMenu
+              items={[
+                {
+                  label: 'Export',
+                  action: () => handleExport(contextMenu.chatId),
+                },
+                {
+                  label: 'Delete',
+                  action: () => handleDelete(contextMenu.chatId),
+                },
+              ]}
+              onClose={handleClose}
+              anchorPosition={{ top: contextMenu.mouseY, left: contextMenu.mouseX }}
+            />
+          </Suspense>
+        )}
+      </Box>
+    </Box>
   );
 }

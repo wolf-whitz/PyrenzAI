@@ -43,12 +43,14 @@ export default function ChatMessages({
   const handleSpeak = async (text: string) => {
     setIsGenerating(true);
     try {
-      await speakMessage(text, char.gender as string);
-    } finally {
+      await speakMessage(text, char.gender as string, () => {
+        setIsGenerating(false);
+      });
+    } catch (error) {
       setIsGenerating(false);
     }
   };
-
+  
   return (
     <Box className="space-y-4 p-4 max-w-2xl mx-auto">
       {previous_message.map((msg, index) => {

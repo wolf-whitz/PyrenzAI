@@ -21,7 +21,12 @@ export default function PreviewFooter() {
           <div className="w-full md:w-1/3 px-6">
             <Typography
               variant="h6"
-              className="font-bold text-white border-b-2 border-[#E03201] pb-1"
+              sx={{
+                fontWeight: 'bold',
+                color: 'white',
+                borderBottom: '2px solid #E03201',
+                paddingBottom: '4px',
+              }}
             >
               {t('footer.quickLinks')}
             </Typography>
@@ -38,7 +43,14 @@ export default function PreviewFooter() {
                 <ListItem className="group" key={index}>
                   <Link
                     href={item.path}
-                    className="text-white transition duration-300 hover:text-[#E03201] group-hover:translate-x-2"
+                    sx={{
+                      color: 'white',
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        color: '#E03201',
+                        transform: 'translateX(8px)',
+                      },
+                    }}
                   >
                     <ListItemText primary={item.name} />
                   </Link>
@@ -50,20 +62,32 @@ export default function PreviewFooter() {
           <div className="w-full md:w-1/3 px-6 mt-8 md:mt-0">
             <Typography
               variant="h6"
-              className="font-bold text-white border-b-2 border-[#E03201] pb-1"
+              sx={{
+                fontWeight: 'bold',
+                color: 'white',
+                borderBottom: '2px solid #E03201',
+                paddingBottom: '4px',
+              }}
             >
               {t('footer.links.guide')}
             </Typography>
             <List>
               {[
-                { name: t('footer.links.botCreation'), path: '/bot-creation' },
-                { name: t('footer.links.howTokenWorks'), path: '/token-guide' },
-                { name: t('footer.links.lorebooks'), path: '/lorebooks' },
+                { name: t('footer.links.botCreation'), path: 'https://pyrenz-ai.gitbook.io/pyrenz-ai/bot-creation' },
+                { name: t('footer.links.howTokenWorks'), path: 'https://pyrenz-ai.gitbook.io/pyrenz-ai/how-tokens-work' },
+                { name: t('footer.links.lorebooks'), path: 'https://pyrenz-ai.gitbook.io/pyrenz-ai/lorebooks' },
               ].map((item, index) => (
                 <ListItem className="group" key={index}>
                   <Link
                     href={item.path}
-                    className="text-white transition duration-300 hover:text-[#E03201] group-hover:translate-x-2"
+                    sx={{
+                      color: 'white',
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        color: '#E03201',
+                        transform: 'translateX(8px)',
+                      },
+                    }}
                   >
                     <ListItemText primary={item.name} />
                   </Link>
@@ -75,7 +99,12 @@ export default function PreviewFooter() {
           <div className="w-full md:w-1/3 px-6 mt-8 md:mt-0">
             <Typography
               variant="h6"
-              className="font-bold text-white border-b-2 border-[#E03201] pb-1"
+              sx={{
+                fontWeight: 'bold',
+                color: 'white',
+                borderBottom: '2px solid #E03201',
+                paddingBottom: '4px',
+              }}
             >
               Legal
             </Typography>
@@ -84,7 +113,14 @@ export default function PreviewFooter() {
                 <ListItem className="group" key={index}>
                   <Link
                     href={`/${key.toLowerCase()}`}
-                    className="text-white transition duration-300 hover:text-[#E03201] group-hover:translate-x-2"
+                    sx={{
+                      color: 'white',
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        color: '#E03201',
+                        transform: 'translateX(8px)',
+                      },
+                    }}
                   >
                     <ListItemText primary={value} />
                   </Link>

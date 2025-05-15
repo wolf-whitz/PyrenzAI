@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { RefObject } from 'react';
 import { FeatureCard } from '@components/index';
 import { useTranslation } from 'react-i18next';
-import { Container, Typography, Box, Grid } from '@mui/material';
+import { Typography, Container } from '@mui/material';
 
 const cardData = [
   {
@@ -43,58 +43,45 @@ export default function FeaturesSection({
     <motion.section
       ref={discoverMoreRef}
       data-aos="fade-up"
-      style={{ padding: '2.5rem 1rem', paddingBottom: '8rem', color: 'white' }}
+      className="py-10 px-4 pb-32 text-white"
     >
       <Container maxWidth="lg">
         <Typography
           variant="h2"
           component="h2"
+          className="text-3xl font-bold mb-8 text-center bg-gradient-to-r from-white to-gray-400 text-transparent bg-clip-text"
           sx={{
-            fontWeight: 'bold',
-            mb: 3,
-            textAlign: 'center',
-            background: 'linear-gradient(to right, #fff, #9ca3af)',
-            WebkitBackgroundClip: 'text',
-            color: 'transparent',
+            fontSize: '4.5rem',
+            fontWeight: '600',
+            mb: '1rem',
           }}
         >
-          Why Choose Pyrenz<span style={{ color: '#ef4444' }}>AI</span>?
+          Why Choose Pyrenz<span className="text-red-500">AI</span>?
         </Typography>
-        <Box mt={4}>
+        <div className="mt-16">
           {cardData.map((card, index) => (
-            <Grid
-              container
+            <div
               key={index}
-              spacing={4}
-              direction={index % 2 === 0 ? 'row' : 'row-reverse'}
-              alignItems="center"
-              sx={{ mb: index < cardData.length - 1 ? 6 : 0 }}
+              className={`flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center mb-24`}
             >
-              <Grid size={{ xs: 12, md: 6 }} component="div">
-                <Box textAlign={{ xs: 'center', md: 'left' }}>
-                  <Typography
-                    variant="h4"
-                    component="h3"
-                    sx={{
-                      fontWeight: 'bold',
-                      background: 'linear-gradient(to right, #fff, #9ca3af)',
-                      WebkitBackgroundClip: 'text',
-                      color: 'transparent',
-                    }}
-                  >
-                    {t(card.cardNameKey)}
-                  </Typography>
-                  <Typography variant="body1" sx={{ opacity: 0.9, mt: 2 }}>
-                    {t(card.cardDescriptionKey)}
-                  </Typography>
-                </Box>
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }} component="div">
+              <div className="md:w-1/2 text-center md:text-left">
+                <Typography
+                  variant="h4"
+                  component="h3"
+                  className="text-2xl font-bold bg-gradient-to-r from-white to-gray-400 text-transparent bg-clip-text"
+                >
+                  {t(card.cardNameKey)}
+                </Typography>
+                <Typography variant="body1" className="mt-4 opacity-90">
+                  {t(card.cardDescriptionKey)}
+                </Typography>
+              </div>
+              <div className="md:w-1/2">
                 <FeatureCard cardImage={card.cardImage} />
-              </Grid>
-            </Grid>
+              </div>
+            </div>
           ))}
-        </Box>
+        </div>
       </Container>
     </motion.section>
   );

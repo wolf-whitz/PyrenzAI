@@ -123,7 +123,7 @@ export default function Footer() {
           <Typography
             variant="h4"
             component="h1"
-            style={{ fontWeight: 'bold', textAlign: 'center' }}
+            style={{ textAlign: 'center' }}
           >
             {t('banner.joinDiscordTitle')}
           </Typography>

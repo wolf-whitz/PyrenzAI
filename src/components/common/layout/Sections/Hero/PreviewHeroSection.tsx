@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Button, Typography, Box, Container } from '@mui/material';
 
 interface HeroSectionProps {
   openModal: () => void;
@@ -14,28 +15,67 @@ export default function HeroSection({
   const { t } = useTranslation();
 
   return (
-    <motion.main
+    <Container
+      component={motion.main}
       ref={pyrenzAiRef}
       data-aos="fade-up"
-      className="flex flex-col justify-center items-center min-h-screen text-white -mt-16 px-4"
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '100vh',
+        color: 'white',
+        mt: '-10rem',
+        py: '1rem',
+        textAlign: 'center',
+      }}
     >
-      <article>
-        <h1 className="text-7xl font-semibold mb-4 text-center">
+      <Box textAlign="center">
+        <Typography
+          variant="h1"
+          sx={{
+            fontSize: '4.5rem',
+            fontWeight: '600',
+            mb: '1rem',
+          }}
+        >
           {t('hero.title')}
-        </h1>
-        <p className="text-2xl opacity-80 text-center max-w-xl">
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={{
+            fontSize: '1.5rem',
+            opacity: '0.8',
+            maxWidth: '600px',
+            mx: 'auto',
+          }}
+        >
           {t('hero.description')}
-        </p>
-      </article>
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        className="mt-4 bg-dark-red text-white px-8 py-3 rounded w-full max-w-xs hover:bg-red-900 transition-colors duration-300 animate-shimmer"
-        onClick={openModal}
-        aria-label={t('buttons.getStarted')}
-      >
-        {t('buttons.getStarted')}
-      </motion.button>
-    </motion.main>
+        </Typography>
+      </Box>
+      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+        <Button
+          variant="contained"
+          sx={{
+            mt: '1rem',
+            backgroundColor: '#8B0000',
+            color: 'white',
+            padding: '0.75rem 2rem',
+            borderRadius: '4px',
+            width: 'auto',
+            maxWidth: '400px',
+            '&:hover': {
+              backgroundColor: '#B22222',
+            },
+            transition: 'background-color 0.3s ease',
+          }}
+          onClick={openModal}
+          aria-label={t('buttons.getStarted')}
+        >
+          {t('buttons.getStarted')}
+        </Button>
+      </motion.div>
+    </Container>
   );
 }
