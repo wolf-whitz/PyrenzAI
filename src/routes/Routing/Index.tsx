@@ -10,7 +10,7 @@ import {
 } from '~/components';
 import { motion } from 'framer-motion';
 import AOS from 'aos';
-import { Box, Container, GlobalStyles } from '@mui/material';
+import { Box, Container } from '@mui/material';
 import { sendUserDataToUserDataTable } from '~/api';
 import { supabase } from '~/Utility/supabaseClient';
 
@@ -66,68 +66,42 @@ export default function Preview() {
   };
 
   return (
-    <>
-      <GlobalStyles
-        styles={{
-          html: {
-            scrollBehavior: 'smooth',
-          },
-          body: {
-            scrollBehavior: 'smooth',
-          },
-        }}
-      />
-      <Box
-        component={motion.section}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 1 }}
-        sx={{
-          position: 'relative',
-          width: '100vw',
-          height: '100vh',
-          margin: 0,
-          display: 'flex',
-          flexDirection: 'column',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundAttachment: 'fixed',
-          overflowY: 'auto',
-          overflowX: 'hidden',
-          backgroundImage: `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.4)), url(https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif)`,
-        }}
-      >
-        <Box sx={{ position: 'fixed', top: 0, width: '100%', zIndex: 50 }}>
-          <PreviewHeader
-            setShowLogin={() => setShowModal('login')}
-            setShowRegister={() => setShowModal('register')}
-          />
-        </Box>
+    <motion.section
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 1 }}
+      className="flex flex-col font-baloo bg-cover bg-fixed bg-center bg-no-repeat"
+      style={{
+        backgroundImage: `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.4)), url(https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif)`,
+      }}
+    >
+      <Box className="fixed top-0 w-full z-50">
+        <PreviewHeader
+          setShowLogin={() => setShowModal('login')}
+          setShowRegister={() => setShowModal('register')}
+        />
+      </Box>
 
-        <Box component="main" sx={{ pt: 10 }}>
-          <Container maxWidth={false} disableGutters>
-            <HeroSection openModal={openModal} pyrenzAiRef={pyrenzAiRef} />
-          </Container>
-        </Box>
-
-        <Box sx={{ mt: 10 }}> {/* Add margin-top to push these sections below the HeroSection */}
+      <main className="pt-20 flex-grow">
+        <Container maxWidth={false} disableGutters>
+          <HeroSection openModal={openModal} pyrenzAiRef={pyrenzAiRef} />
           <DownloadModal isModalOpen={isModalOpen} closeModal={closeModal} />
           <FeaturesSection discoverMoreRef={discoverMoreRef} />
-        </Box>
+        </Container>
+      </main>
 
-        <Box component={motion.footer} data-aos="fade-up" sx={{ mt: 44 }}>
-          <Footer />
-        </Box>
+      <motion.footer data-aos="fade-up" className="mt-44">
+        <Footer />
+      </motion.footer>
 
-        {showModal && (
-          <AuthenticationModal
-            mode={showModal}
-            onClose={() => setShowModal(null)}
-            toggleMode={toggleMode}
-          />
-        )}
-      </Box>
-    </>
+      {showModal && (
+        <AuthenticationModal
+          mode={showModal}
+          onClose={() => setShowModal(null)}
+          toggleMode={toggleMode}
+        />
+      )}
+    </motion.section>
   );
 }
