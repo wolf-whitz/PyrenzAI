@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { ChatContainerProps, Message } from '@shared-types/chatTypes';
 import ChatInput from '../ChatInput';
 import ChatMessages from '../ChatMessages';
@@ -16,19 +16,25 @@ interface ChatMainProps extends ChatContainerProps {
   }>;
   setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>;
   conversation_id: string;
+  isGenerating: boolean;
 }
 
 export default function ChatMain({
   user,
   char,
   previous_message = [],
-  isGenerating,
+  isGenerating = false,
   setMessages,
   messageIdRef,
   setIsGenerating,
   conversation_id,
 }: ChatMainProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [contextMenu, setContextMenu] = useState<{
+    mouseX: number;
+    mouseY: number;
+    messageId: string;
+  } | null>(null);
 
   const {
     bgImage,
@@ -109,6 +115,7 @@ export default function ChatMain({
           char={{ character_name: char?.character_name || 'Anon' }}
           isGenerating={isGenerating}
           onRemove={handleRemoveMessage}
+          setIsGenerating={setIsGenerating}
         />
         <div ref={messagesEndRef}></div>
       </motion.div>
@@ -126,6 +133,7 @@ export default function ChatMain({
           }}
           char={{ character_name: char?.character_name || 'Anon' }}
           handleSend={handleSend}
+          isGenerating={isGenerating}
         />
       </motion.div>
 

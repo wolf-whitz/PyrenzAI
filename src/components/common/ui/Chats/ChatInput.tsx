@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, ArrowRight, MoreVertical } from 'lucide-react';
+import { Send, ArrowRight, MoreVertical, Loader2 } from 'lucide-react';
 import { Menu } from '~/components';
 
 interface ChatInputProps {
@@ -8,15 +8,17 @@ interface ChatInputProps {
   handleSend: (message: string) => void;
   user: { username: string; icon: string };
   char: { character_name: string };
+  isGenerating: boolean;
 }
 
-const MAX_CHAR_LIMIT = 280;
+const MAX_CHAR_LIMIT = 1500;
 
 export default function ChatInput({
   className,
   handleSend,
   user,
   char,
+  isGenerating,
 }: ChatInputProps) {
   const [message, setMessage] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -47,6 +49,7 @@ export default function ChatInput({
             whileTap={{ scale: 0.9 }}
             onClick={() => setIsMenuOpen(true)}
             aria-label="More options"
+            disabled={isGenerating}
           >
             <MoreVertical size={20} />
           </motion.button>
@@ -70,28 +73,46 @@ export default function ChatInput({
             placeholder={`Chat with ${char.character_name}`}
             className="flex-1 w-full bg-transparent outline-none text-white px-4 py-2 rounded-full focus:ring-0 resize-none overflow-hidden min-w-0"
             rows={1}
+            disabled={isGenerating}
           />
 
           <motion.button
             onClick={message.trim().length > 0 ? sendMessage : undefined}
             className={`ml-2 flex items-center gap-1 text-gray-400 transition duration-200 px-4 py-2 rounded-full flex-shrink-0 ${
-              message.length > MAX_CHAR_LIMIT
+              message.length > MAX_CHAR_LIMIT || isGenerating
                 ? 'cursor-not-allowed opacity-50'
                 : 'hover:text-white bg-gray-800 hover:bg-gray-600'
             }`}
-            whileHover={message.length <= MAX_CHAR_LIMIT ? { scale: 1.05 } : {}}
-            whileTap={message.length <= MAX_CHAR_LIMIT ? { scale: 0.95 } : {}}
+            whileHover={
+              message.length <= MAX_CHAR_LIMIT && !isGenerating
+                ? { scale: 1.05 }
+                : {}
+            }
+            whileTap={
+              message.length <= MAX_CHAR_LIMIT && !isGenerating
+                ? { scale: 0.95 }
+                : {}
+            }
             aria-label="Send message"
+            disabled={isGenerating}
           >
             <AnimatePresence mode="wait">
               <motion.div
-                key={message.trim() ? 'send' : 'continue'}
+                key={
+                  isGenerating
+                    ? 'Generating'
+                    : message.trim()
+                      ? 'send'
+                      : 'continue'
+                }
                 initial={{ x: -10, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 exit={{ x: 10, opacity: 0 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 25 }}
               >
-                {message.trim().length > 0 ? (
+                {isGenerating ? (
+                  <Loader2 className="animate-spin" size={20} />
+                ) : message.trim().length > 0 ? (
                   <Send size={20} />
                 ) : (
                   <ArrowRight size={20} />
@@ -101,14 +122,24 @@ export default function ChatInput({
 
             <AnimatePresence mode="wait">
               <motion.span
-                key={message.trim() ? 'Send' : 'Continue'}
+                key={
+                  isGenerating
+                    ? 'Generating'
+                    : message.trim()
+                      ? 'Send'
+                      : 'Continue'
+                }
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
                 className="text-sm font-medium"
               >
-                {message.trim().length > 0 ? 'Send' : 'Continue'}
+                {isGenerating
+                  ? 'Generating...'
+                  : message.trim().length > 0
+                    ? 'Send'
+                    : 'Continue'}
               </motion.span>
             </AnimatePresence>
           </motion.button>

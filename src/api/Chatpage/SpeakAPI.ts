@@ -1,3 +1,6 @@
+import toast from 'react-hot-toast';
+import * as Sentry from '@sentry/react';
+
 export const speakMessage = async (message: string) => {
   try {
     const url = 'https://text.pollinations.ai/';
@@ -17,6 +20,7 @@ export const speakMessage = async (message: string) => {
         model: 'openai-audio',
         voice: 'nova',
         private: false,
+        max_tokens: 300,
       }),
     });
 
@@ -35,5 +39,7 @@ export const speakMessage = async (message: string) => {
     };
   } catch (error) {
     console.error('Error fetching or playing the audio:', error);
+    toast.error('Failed to fetch or play the audio.');
+    Sentry.captureException(error);
   }
 };

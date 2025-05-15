@@ -4,7 +4,7 @@ import CustomMarkdown from '../Markdown/CustomMarkdown';
 import { Box, Avatar } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { CustomContextMenu } from '@components/index';
-import { Message, ChatMessagesProps } from '@shared-types/ChatmainTypes';
+import { ChatMessagesProps } from '@shared-types/ChatmainTypes';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
@@ -12,29 +12,41 @@ import { speakMessage } from '~/api/Chatpage/SpeakAPI';
 
 export default function ChatMessages({
   previous_message,
-  isGenerating,
+  isGenerating = false,
   user,
   char,
   onRegenerate,
   onRemove,
-}: ChatMessagesProps) {
+  setIsGenerating,
+}: ChatMessagesProps & {
+  setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const [contextMenu, setContextMenu] = useState<{
     mouseX: number;
     mouseY: number;
     messageId: string;
   } | null>(null);
 
-  const handleClick = (event: React.MouseEvent, messageId: string) => {
-    event.preventDefault();
-    setContextMenu(
-      contextMenu === null
-        ? { mouseX: event.clientX, mouseY: event.clientY, messageId }
-        : null
-    );
-  };
-
   const handleClose = () => {
     setContextMenu(null);
+  };
+
+  const handleMessageClick = (event: React.MouseEvent, messageId: string) => {
+    event.preventDefault();
+    setContextMenu({
+      mouseX: event.clientX,
+      mouseY: event.clientY,
+      messageId,
+    });
+  };
+
+  const handleSpeak = async (text: string) => {
+    setIsGenerating(true);
+    try {
+      await speakMessage(text);
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   return (
@@ -49,17 +61,26 @@ export default function ChatMessages({
         const menuItems = [
           {
             label: 'Regenerate',
-            action: () => onRegenerate && msg.id && onRegenerate(msg.id),
+            action: () => {
+              handleClose();
+              onRegenerate && msg.id && onRegenerate(msg.id);
+            },
             icon: <RefreshIcon />,
           },
           {
             label: 'Delete',
-            action: () => onRemove && msg.id && onRemove(msg.id),
+            action: () => {
+              handleClose();
+              onRemove && msg.id && onRemove(msg.id);
+            },
             icon: <DeleteIcon />,
           },
           {
             label: 'Speak',
-            action: () => speakMessage(msg.text),
+            action: () => {
+              handleClose();
+              handleSpeak(msg.text);
+            },
             icon: <VolumeUpIcon />,
           },
         ];
@@ -71,7 +92,6 @@ export default function ChatMessages({
             alignItems="start"
             justifyContent={isUser ? 'flex-end' : 'flex-start'}
             className={`flex items-start ${isUser ? 'justify-end' : 'justify-start'}`}
-            onClick={(event) => handleClick(event, msg.id || '')}
           >
             {!isUser && (
               <Avatar
@@ -87,6 +107,7 @@ export default function ChatMessages({
                 isUser ? 'bg-gray-500 text-white' : 'bg-gray-700 text-white'
               }`}
               sx={{ marginLeft: !isUser ? 2 : 0, marginRight: isUser ? 2 : 0 }}
+              onClick={(event) => handleMessageClick(event, msg.id || '')}
             >
               {isGenerating &&
                 !isUser &&
