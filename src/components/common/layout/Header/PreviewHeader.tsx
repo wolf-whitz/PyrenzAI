@@ -150,6 +150,7 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
                     <ListItem
                       component="button"
                       onClick={() => setShowLogin(true)}
+                      sx={{ backgroundColor: 'red', '&:hover': { backgroundColor: 'darkred' } }}
                     >
                       <ListItemText primary={t('buttons.login')} />
                     </ListItem>

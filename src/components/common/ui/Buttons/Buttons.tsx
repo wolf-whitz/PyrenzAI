@@ -58,7 +58,6 @@ export function CustomButton({ onButtonClick }: CustomButtonProps) {
         justifyContent: 'center',
         gap: '8px',
         marginBottom: '1.5rem',
-        padding: '1rem',
         borderRadius: '0.5rem',
       }}
     >
