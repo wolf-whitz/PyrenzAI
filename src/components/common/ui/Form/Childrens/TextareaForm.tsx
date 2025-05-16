@@ -6,10 +6,7 @@ import { Tag, TextareaFormProps } from '@shared-types/TagTypes';
 import { useNavigate } from 'react-router-dom';
 import { ImageUploader } from '~/components';
 
-export function TextareaForm({
-  formState,
-  handleChange,
-}: TextareaFormProps) {
+export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [tags, setTags] = useState<Tag[]>([]);
   const [filteredTags, setFilteredTags] = useState<Tag[]>([]);

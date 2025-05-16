@@ -46,7 +46,11 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
 
   const menuItems = [
     { name: t('navigation.home'), icon: <HomeIcon />, link: '/Home' },
-    { name: t('footer.links.explore'), icon: <ExploreIcon />, link: '/Explore' },
+    {
+      name: t('footer.links.explore'),
+      icon: <ExploreIcon />,
+      link: '/Explore',
+    },
     { name: t('navigation.chats'), icon: <ChatIcon />, link: '/Chats' },
     {
       name: t('footer.links.discord'),
@@ -57,10 +61,21 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
   ];
 
   return (
-    <AppBar position="static" elevation={0} sx={{ backgroundColor: 'gray.900' }}>
+    <AppBar
+      position="static"
+      elevation={0}
+      sx={{ backgroundColor: 'gray.900' }}
+    >
       <Toolbar className="flex justify-between items-center w-full max-w-screen-2xl mx-auto px-6">
-        <div className="flex items-center space-x-4 cursor-pointer md:ml-[60px]" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-          <img src="/favicon.png" alt={t('footer.pyrenzLogo')} className="h-8 w-8" />
+        <div
+          className="flex items-center space-x-4 cursor-pointer md:ml-[60px]"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        >
+          <img
+            src="/favicon.png"
+            alt={t('footer.pyrenzLogo')}
+            className="h-8 w-8"
+          />
           <h1 className="text-2xl font-bold font-baloo">
             Pyrenz<span className="text-blue-600">AI</span>
           </h1>
@@ -72,7 +87,11 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
               key={name}
               startIcon={icon}
               className="font-baloo hover:text-blue-600"
-              onClick={() => external ? window.open(link, '_blank') : (window.location.href = link)}
+              onClick={() =>
+                external
+                  ? window.open(link, '_blank')
+                  : (window.location.href = link)
+              }
             >
               {name}
             </Button>
@@ -100,7 +119,11 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
           <IconButton onClick={() => setMenuOpen(true)}>
             <MenuIcon />
           </IconButton>
-          <Drawer anchor="right" open={menuOpen} onClose={() => setMenuOpen(false)}>
+          <Drawer
+            anchor="right"
+            open={menuOpen}
+            onClose={() => setMenuOpen(false)}
+          >
             <Box
               sx={{ width: 250, backgroundColor: 'gray.900' }}
               role="presentation"
@@ -112,7 +135,11 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
                   <ListItem
                     key={name}
                     component="button"
-                    onClick={() => external ? window.open(link, '_blank') : (window.location.href = link)}
+                    onClick={() =>
+                      external
+                        ? window.open(link, '_blank')
+                        : (window.location.href = link)
+                    }
                   >
                     <ListItemIcon>{icon}</ListItemIcon>
                     <ListItemText primary={name} />

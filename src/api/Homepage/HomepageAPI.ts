@@ -8,7 +8,11 @@ import {
   GetRandomCharacters,
   GetCharactersWithTags,
 } from '~/functions';
-import { useFetchUserUUID, useSyncSearchParams, useFetchCharacters } from '~/components';
+import {
+  useFetchUserUUID,
+  useSyncSearchParams,
+  useFetchCharacters,
+} from '~/components';
 import { supabase } from '~/Utility/supabaseClient';
 import { Utils } from '~/Utility/Utility';
 import { sendUserDataToUserDataTable } from '~/api';

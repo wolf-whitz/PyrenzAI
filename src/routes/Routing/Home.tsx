@@ -9,7 +9,7 @@ import {
   CustomButton,
   CharacterList,
   Pagination,
-  PreviewHeader
+  PreviewHeader,
 } from '~/components';
 import { useHomepageAPI } from '~/api';
 
@@ -60,7 +60,10 @@ export function Home() {
       transition={{ duration: 0.5 }}
     >
       <div className="w-full">
-        <PreviewHeader setShowLogin={setShowLogin} setShowRegister={setShowRegister} />
+        <PreviewHeader
+          setShowLogin={setShowLogin}
+          setShowRegister={setShowRegister}
+        />
       </div>
 
       <Container
@@ -131,9 +134,7 @@ export function Home() {
         </main>
       </Container>
 
-      <nav
-        className="fixed bottom-0 left-0 w-full bg-gray-900 text-white flex justify-around p-2 shadow-lg z-40 md:hidden"
-      >
+      <nav className="fixed bottom-0 left-0 w-full bg-gray-900 text-white flex justify-around p-2 shadow-lg z-40 md:hidden">
         <Sidebar />
       </nav>
 

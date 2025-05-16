@@ -59,7 +59,10 @@ export function Footer() {
             <Typography variant="h4" component="h1">
               <Typewriter
                 options={{
-                  strings: ['Join the Discord server or else...', 'Enjoying the website?'],
+                  strings: [
+                    'Join the Discord server or else...',
+                    'Enjoying the website?',
+                  ],
                   autoStart: true,
                   loop: true,
                   delay: 100,
@@ -71,10 +74,7 @@ export function Footer() {
         </Card>
       </motion.div>
 
-      <motion.div
-        whileHover={{ scale: 1.05 }}
-        transition={{ duration: 0.3 }}
-      >
+      <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.3 }}>
         <Button
           component="a"
           href="https://discord.gg/zTcyP4WB8h"
@@ -94,7 +94,10 @@ export function Footer() {
           {t('buttons.joinDiscord')}
         </Button>
       </motion.div>
-      <Typography variant="body2" style={{ textAlign: 'center', color: '#6b7280', marginTop: '1rem' }}>
+      <Typography
+        variant="body2"
+        style={{ textAlign: 'center', color: '#6b7280', marginTop: '1rem' }}
+      >
         © 2025 Pyrenz AI. {t('messages.allRightsReserved')}
       </Typography>
     </motion.div>

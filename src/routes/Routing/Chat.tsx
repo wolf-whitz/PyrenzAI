@@ -128,17 +128,34 @@ export function ChatPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
       >
-        <Box display="flex" minHeight="100vh" width="100vw" bgcolor="gray.900" color="white">
+        <Box
+          display="flex"
+          minHeight="100vh"
+          width="100vw"
+          bgcolor="gray.900"
+          color="white"
+        >
           <Box display={{ xs: 'none', lg: 'flex' }} width="256px">
             <Sidebar />
           </Box>
 
-          <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" flex={1}>
+          <Box
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
+            flex={1}
+          >
             <img
               src="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MascotCrying.avif"
               alt="Mascot Crying"
               loading="lazy"
-              style={{ width: '96px', height: '96px', marginBottom: '20px', cursor: 'pointer' }}
+              style={{
+                width: '96px',
+                height: '96px',
+                marginBottom: '20px',
+                cursor: 'pointer',
+              }}
               onClick={() => navigate('/Home')}
             />
             <Typography variant="body1" color="white">
@@ -158,7 +175,13 @@ export function ChatPage() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
     >
-      <Box display="flex" minHeight="100vh" width="100vw" bgcolor="gray.900" color="white">
+      <Box
+        display="flex"
+        minHeight="100vh"
+        width="100vw"
+        bgcolor="gray.900"
+        color="white"
+      >
         <Box display={{ xs: 'none', lg: 'flex' }} width="256px">
           <Sidebar />
         </Box>

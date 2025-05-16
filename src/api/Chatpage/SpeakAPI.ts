@@ -1,7 +1,11 @@
 import toast from 'react-hot-toast';
 import * as Sentry from '@sentry/react';
 
-export const speakMessage = async (message: string, gender: string, onAudioEnded?: () => void) => {
+export const speakMessage = async (
+  message: string,
+  gender: string,
+  onAudioEnded?: () => void
+) => {
   try {
     const url = 'https://text.pollinations.ai/';
 

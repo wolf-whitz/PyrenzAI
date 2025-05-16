@@ -10,11 +10,7 @@ import {
   Divider,
 } from '@mui/material';
 
-export function CommunityGuidelines({
-  className,
-}: {
-  className?: string;
-}) {
+export function CommunityGuidelines({ className }: { className?: string }) {
   const [isVisible, setIsVisible] = useState(true);
 
   const handleRemove = () => {

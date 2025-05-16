@@ -14,10 +14,7 @@ interface PersonaListProps {
   loading: boolean;
 }
 
-export function PersonaList({
-  personaData,
-  loading,
-}: PersonaListProps) {
+export function PersonaList({ personaData, loading }: PersonaListProps) {
   return (
     <div className="mt-4 space-y-4">
       {loading ? (

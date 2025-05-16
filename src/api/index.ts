@@ -8,7 +8,7 @@ import {
 } from './Modals/AuthenticationAPI';
 import { useCreateAPI } from './CreatePage/CreateAPI';
 import { useChatPageAPI } from './Chatpage/ChatmainAPI';
-import { useHomepageAPI } from './Homepage/HomepageAPI'
+import { useHomepageAPI } from './Homepage/HomepageAPI';
 
 export {
   fetchCharacters,
@@ -19,5 +19,5 @@ export {
   useChatPageAPI,
   useCreateAPI,
   sendUserDataToUserDataTable,
-  useHomepageAPI
+  useHomepageAPI,
 };

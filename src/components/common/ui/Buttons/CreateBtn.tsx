@@ -8,10 +8,7 @@ interface CreateButtonProps {
   className?: string;
 }
 
-export function CreateButton({
-  loading,
-  className,
-}: CreateButtonProps) {
+export function CreateButton({ loading, className }: CreateButtonProps) {
   return (
     <Button
       type="submit"

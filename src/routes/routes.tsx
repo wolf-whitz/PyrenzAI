@@ -1,13 +1,12 @@
 import React, { lazy } from 'react';
 import { RouteObject, Navigate } from 'react-router-dom';
 
-
 function lazyNamed<T>(
   factory: () => Promise<{ [key: string]: T }>,
   exportName: string
 ) {
   return lazy(() =>
-    factory().then(mod => ({ default: (mod as any)[exportName] }))
+    factory().then((mod) => ({ default: (mod as any)[exportName] }))
   );
 }
 
@@ -18,8 +17,10 @@ const Profile = lazyNamed(() => import('./Routing/Profile'), 'Profile');
 const Chat = lazyNamed(() => import('./Routing/Chat'), 'Chat');
 const Setting = lazyNamed(() => import('./Routing/Setting/Setting'), 'Setting');
 const ErrorPage = lazyNamed(() => import('./Routing/404page'), 'ErrorPage');
-const ChatArchives = lazyNamed(() => import('./Routing/Archive'), 'ChatArchives');
-
+const ChatArchives = lazyNamed(
+  () => import('./Routing/Archive'),
+  'ChatArchives'
+);
 
 const getCookie = (name: string) => {
   const value = `; ${document.cookie}`;

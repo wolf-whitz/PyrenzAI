@@ -20,7 +20,7 @@ function lazyNamed<T>(
   exportName: string
 ) {
   return lazy(() =>
-    factory().then(mod => ({ default: (mod as any)[exportName] }))
+    factory().then((mod) => ({ default: (mod as any)[exportName] }))
   );
 }
 

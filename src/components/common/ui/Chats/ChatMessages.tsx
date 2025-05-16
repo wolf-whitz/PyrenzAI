@@ -50,7 +50,7 @@ export function ChatMessages({
       setIsGenerating(false);
     }
   };
-  
+
   return (
     <Box className="space-y-4 p-4 max-w-2xl mx-auto">
       {previous_message.map((msg, index) => {

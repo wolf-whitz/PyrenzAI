@@ -4,7 +4,11 @@ import { Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { buttons, CustomButtonProps } from '@shared-types/MoreButtonsTypes';
 
-const MoreButtonsModal = React.lazy(() => import('@components/index').then(module => ({ default: module.MoreButtonsModal })));
+const MoreButtonsModal = React.lazy(() =>
+  import('@components/index').then((module) => ({
+    default: module.MoreButtonsModal,
+  }))
+);
 
 export function CustomButton({ onButtonClick }: CustomButtonProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);

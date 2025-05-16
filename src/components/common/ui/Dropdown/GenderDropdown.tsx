@@ -5,10 +5,7 @@ interface GenderDropdownProps {
   onChange: (value: string) => void;
 }
 
-export function GenderDropdown({
-  value,
-  onChange,
-}: GenderDropdownProps) {
+export function GenderDropdown({ value, onChange }: GenderDropdownProps) {
   const genderOptions = [
     { value: 'male', label: 'Male' },
     { value: 'female', label: 'Female' },

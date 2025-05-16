@@ -103,7 +103,8 @@ export function SettingsSidebar({
             height: '100%',
             width: '288px',
             backgroundColor: '#111827',
-            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+            boxShadow:
+              '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
             padding: '24px',
             borderTopLeftRadius: '16px',
             borderBottomLeftRadius: '16px',

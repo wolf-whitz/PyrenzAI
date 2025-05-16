@@ -32,8 +32,8 @@ const Spinner = () => (
   <SpinnerBase
     message={
       <>
-        Loading <span className="font-baloo text-blue-500">Pyrenz</span>,
-        Open Source, Free Alternative
+        Loading <span className="font-baloo text-blue-500">Pyrenz</span>, Open
+        Source, Free Alternative
       </>
     }
   />

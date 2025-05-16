@@ -52,8 +52,8 @@ class ErrorBoundary extends Component<Props, State> {
               marginBottom: '20px',
             }}
           >
-            Something went wrong. The developer has been notified and is
-            looking into the issue. (╥‸╥)
+            Something went wrong. The developer has been notified and is looking
+            into the issue. (╥‸╥)
           </Typography>
 
           <Typography
