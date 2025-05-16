@@ -8,7 +8,7 @@ interface UseSyncSearchParamsProps {
   setCurrentPage: (page: number) => void;
 }
 
-export default function useSyncSearchParams({
+export function useSyncSearchParams({
   search,
   currentPage,
   setSearch,

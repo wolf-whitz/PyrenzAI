@@ -1,7 +1,7 @@
 import { createTheme } from '@mui/material/styles';
 import { componentOverrides } from '~/provider/Styles/componentOverrides';
 
-export default function CreateLightTheme() {
+export function CreateLightTheme() {
   const theme = createTheme({
     typography: {
       fontFamily: `'Baloo 2', cursive`,

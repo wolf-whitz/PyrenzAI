@@ -1,7 +1,7 @@
 import { CharacterForm } from '~/components';
 import { Sidebar, CommunityGuidelines } from '~/components';
 
-export default function CreatePage() {
+export function CreatePage() {
   return (
     <div className="flex flex-col sm:flex-row w-full h-full">
       <div className="w-full sm:w-64 p-4 sm:p-0">

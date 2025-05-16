@@ -12,7 +12,7 @@ interface VisibilityCheckboxesProps {
   ) => void;
 }
 
-export default function VisibilityCheckboxes({
+export function VisibilityCheckboxes({
   isPublic,
   isNSFW,
   handleChange,

@@ -12,7 +12,7 @@ interface UseFetchCharactersProps {
   t: (key: string) => string;
 }
 
-export default function useFetchCharacters({
+export function useFetchCharacters({
   currentPage,
   search,
   itemsPerPage,

@@ -17,7 +17,7 @@ interface PersonaCard {
   description: string;
 }
 
-export default function SettingsSidebar({
+export function SettingsSidebar({
   settingsOpen,
   onClose,
 }: SettingsSidebarProps) {

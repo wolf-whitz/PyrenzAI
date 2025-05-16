@@ -25,7 +25,7 @@ interface ProviderModalsProps {
   onSelect: (provider: Provider) => void;
 }
 
-export default function ProviderModals({
+export function ProviderModals({
   open,
   onClose,
   onSelect,

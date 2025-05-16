@@ -10,7 +10,7 @@ interface DropzoneProps {
   className: string;
 }
 
-export default function Dropzone({
+export function Dropzone({
   onDrop,
   label = 'Drag & drop a file here or click to upload',
   className,

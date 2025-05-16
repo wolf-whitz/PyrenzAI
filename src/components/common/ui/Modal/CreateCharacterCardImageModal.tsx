@@ -11,7 +11,7 @@ interface CreateCharacterCardImageModalProps {
   setModalOpen: (open: boolean) => void;
 }
 
-export default function CreateCharacterCardImageModal({
+export function CreateCharacterCardImageModal({
   isModalOpen,
   setModalOpen,
 }: CreateCharacterCardImageModalProps) {

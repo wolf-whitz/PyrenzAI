@@ -13,7 +13,7 @@ interface ChatInputProps {
 
 const MAX_CHAR_LIMIT = 1500;
 
-export default function ChatInput({
+export function ChatInput({
   className,
   handleSend,
   user,

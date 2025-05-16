@@ -19,7 +19,7 @@ import {
   DialogTitle,
 } from '@mui/material';
 
-export default function Account() {
+export function Account() {
   const [languages, setLanguages] = useState<{ code: string; name: string }[]>(
     []
   );

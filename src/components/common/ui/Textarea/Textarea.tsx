@@ -20,7 +20,7 @@ interface TextareaProps {
   onTagPressed?: (event: React.MouseEvent<HTMLElement>) => void;
 }
 
-export default function Textarea({
+export function Textarea({
   name,
   value,
   onChange,

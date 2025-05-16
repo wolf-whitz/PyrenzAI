@@ -1,4 +1,4 @@
-import Cosmetic from './Cosmetic';
-import Customization from './Customization';
+import { Cosmetic } from './Cosmetic';
+import { Customization } from './Customization';
 
 export { Customization, Cosmetic };

@@ -4,7 +4,7 @@ interface CosmeticProps {
   onBackgroundChange: (imageUrl: string | null) => void;
 }
 
-export default function Cosmetic({ onBackgroundChange }: CosmeticProps) {
+export function Cosmetic({ onBackgroundChange }: CosmeticProps) {
   const [charColor, setCharColor] = useState<string>('green');
   const [tempColor, setTempColor] = useState<string>('green');
   const [bgImage, setBgImage] = useState<string | null>(null);

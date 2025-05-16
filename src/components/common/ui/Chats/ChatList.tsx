@@ -10,7 +10,7 @@ interface ChatListProps {
   messages: Message[];
 }
 
-export default function ChatList({ messages }: ChatListProps) {
+export function ChatList({ messages }: ChatListProps) {
   return (
     <motion.div
       initial={{ opacity: 0, x: -10 }}

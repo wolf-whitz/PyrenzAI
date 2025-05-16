@@ -14,7 +14,7 @@ interface AuthenticationModalProps {
   toggleMode: () => void;
 }
 
-export default function AuthenticationModal({
+export function AuthenticationModal({
   mode,
   onClose,
   toggleMode,

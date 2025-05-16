@@ -16,7 +16,7 @@ interface FormActionsProps {
   onImportCharacter: (data: CharacterData | null) => void;
 }
 
-export default function FormActions({
+export function FormActions({
   onClear,
   onSave,
   loading,

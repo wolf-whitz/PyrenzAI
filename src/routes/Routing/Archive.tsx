@@ -23,7 +23,7 @@ type Character = {
   name: string;
 };
 
-export default function ChatArchives() {
+export function ChatArchives() {
   const [chats, setChats] = useState<Chat[]>([]);
   const [characters, setCharacters] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(true);

@@ -5,7 +5,7 @@ import { Container, Typography, Button, Box } from '@mui/material';
 import { AlertCircle } from 'lucide-react';
 import * as Sentry from '@sentry/react';
 
-export default function ErrorPage() {
+export function ErrorPage() {
   const location = useLocation();
 
   useEffect(() => {

@@ -14,7 +14,7 @@ interface TextareaProps {
   heightLimit?: string;
 }
 
-export default function Textarea({
+export function Textarea({
   name,
   value,
   onChange,

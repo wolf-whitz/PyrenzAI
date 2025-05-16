@@ -16,7 +16,7 @@ interface PersonaModalProps {
   onSelect: (persona: PersonaCard) => void;
 }
 
-export default function PersonaModal({
+export function PersonaModal({
   isOpen,
   onClose,
   personaData,

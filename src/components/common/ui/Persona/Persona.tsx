@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { User } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Typography, Box } from '@mui/material';
-import PersonaModal from '../Modal/PersonaCardModal';
+import { PersonaModal } from '../Modal/PersonaCardModal';
 
 interface PersonaCard {
   id: string;
@@ -16,7 +16,7 @@ interface PersonaProps {
   updatePersonaData: (newPersona: PersonaCard) => void;
 }
 
-export default function Persona({ personaData, loading }: PersonaProps) {
+export function Persona({ personaData, loading }: PersonaProps) {
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedPersona, setSelectedPersona] = useState<PersonaCard | null>(
     null

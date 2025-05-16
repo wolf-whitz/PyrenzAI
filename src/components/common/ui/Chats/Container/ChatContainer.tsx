@@ -10,7 +10,7 @@ interface ChatContainerPropsExtended extends ChatContainerProps {
   conversation_id: string;
 }
 
-export default function ChatContainer({
+export function ChatContainer({
   user,
   char,
   firstMessage,

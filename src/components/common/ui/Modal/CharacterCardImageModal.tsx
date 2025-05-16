@@ -30,7 +30,7 @@ interface CharacterCardImageModalProps {
   setSelectedImage: (image: string) => void;
 }
 
-export default function CharacterCardImageModal({
+export function CharacterCardImageModal({
   isModalOpen,
   setModalOpen,
   setCreatePersonaModalOpen,

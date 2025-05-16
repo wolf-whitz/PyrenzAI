@@ -8,7 +8,7 @@ interface CheckboxFieldProps {
   ariaLabel: string;
 }
 
-export default function CheckboxField({
+export function CheckboxField({
   name,
   checked,
   onChange,

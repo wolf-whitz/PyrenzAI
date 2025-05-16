@@ -13,7 +13,7 @@ interface RequiredFieldsPopupProps {
   onClose: () => void;
 }
 
-export default function RequiredFieldsPopup({
+export function RequiredFieldsPopup({
   missingFields,
   onClose,
 }: RequiredFieldsPopupProps) {

@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { ChatContainerProps, Message } from '@shared-types/chatTypes';
-import ChatInput from '../ChatInput';
-import ChatMessages from '../ChatMessages';
+import { ChatInput } from '../ChatInput';
+import { ChatMessages } from '../ChatMessages';
 import { motion } from 'framer-motion';
 import { Avatar, Typography, IconButton } from '@mui/material';
 import { Settings, ChevronLeft } from 'lucide-react';
@@ -19,7 +19,7 @@ interface ChatMainProps extends ChatContainerProps {
   isGenerating: boolean;
 }
 
-export default function ChatMain({
+export function ChatMain({
   user,
   char,
   previous_message = [],

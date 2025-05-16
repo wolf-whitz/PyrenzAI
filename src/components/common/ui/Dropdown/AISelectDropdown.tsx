@@ -19,7 +19,7 @@ interface AISelectDropdownProps {
   onAISelectionChange: (event: SelectChangeEvent<string>) => void;
 }
 
-export default function AISelectDropdown({
+export function AISelectDropdown({
   options,
   selectedAI,
   placeholder,

@@ -6,7 +6,7 @@ import { Box, Typography, CircularProgress } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import AOS from 'aos';
 
-export default function Auth() {
+export function Auth() {
   const [isLoaded, setIsLoaded] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();

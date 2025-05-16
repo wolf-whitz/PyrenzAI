@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { GetUserUUID } from '~/functions';
 
-const useFetchUserUUID = (): string | null => {
+export function useFetchUserUUID(): string | null {
   const [userUUID, setUserUUID] = useState<string | null>(null);
 
   useEffect(() => {
@@ -18,6 +18,4 @@ const useFetchUserUUID = (): string | null => {
   }, []);
 
   return userUUID;
-};
-
-export default useFetchUserUUID;
+}

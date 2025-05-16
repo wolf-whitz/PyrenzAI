@@ -15,7 +15,7 @@ interface MenuProps {
   onClose: () => void;
 }
 
-export default function Menu({ onClose }: MenuProps) {
+export function Menu({ onClose }: MenuProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState('Cosmetic');
   const [bgImage, setBgImage] = useState<string | null>(null);

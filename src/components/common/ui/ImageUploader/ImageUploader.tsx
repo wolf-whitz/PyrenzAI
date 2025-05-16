@@ -23,7 +23,7 @@ interface ImageUploaderProps {
   onImageSelect: (file: File | null) => void;
 }
 
-export default function ImageUploader({ onImageSelect }: ImageUploaderProps) {
+export function ImageUploader({ onImageSelect }: ImageUploaderProps) {
   const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(
     null
   );

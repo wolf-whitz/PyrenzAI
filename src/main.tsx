@@ -9,7 +9,7 @@
 
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import App from './App.tsx';
+import { App } from './App.tsx';
 import './GlobalStyles.css';
 
 import { Analytics } from '@vercel/analytics/react';
@@ -19,10 +19,10 @@ import { posthogConfig } from '~/config';
 
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import { I18nextProvider } from 'react-i18next';
-import createCustomTheme from '~/provider/ThemeProvider';
+import { createCustomTheme } from '~/provider/ThemeProvider';
 import i18n from '~/provider/TranslationProvider.ts';
-import ToastProvider from '~/provider/ToastProvider.tsx';
-import SentryProvider from './provider/SentryProvider.tsx';
+import { ToastProvider } from '~/provider/ToastProvider.tsx';
+import { SentryProvider } from './provider/SentryProvider.tsx';
 import * as Sentry from '@sentry/react';
 
 import ErrorBoundary from './routes/ErrorBoundary.tsx';

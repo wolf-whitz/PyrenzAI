@@ -24,7 +24,7 @@ interface CreatePersonaModalProps {
   selectedImage: string;
 }
 
-export default function CreatePersonaModal({
+export function CreatePersonaModal({
   isModalOpen,
   setModalOpen,
   newPersonaName,

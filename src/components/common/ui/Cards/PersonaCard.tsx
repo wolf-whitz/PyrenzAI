@@ -7,7 +7,7 @@ interface PersonaCardProps {
   selected?: boolean;
 }
 
-export default function PersonaCard({
+export function PersonaCard({
   id,
   name,
   description,

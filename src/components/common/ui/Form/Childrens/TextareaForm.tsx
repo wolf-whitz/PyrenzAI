@@ -6,7 +6,7 @@ import { Tag, TextareaFormProps } from '@shared-types/TagTypes';
 import { useNavigate } from 'react-router-dom';
 import { ImageUploader } from '~/components';
 
-export default function TextareaForm({
+export function TextareaForm({
   formState,
   handleChange,
 }: TextareaFormProps) {

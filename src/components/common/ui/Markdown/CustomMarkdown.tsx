@@ -10,7 +10,7 @@ interface CustomMarkdownProps {
   ai_message?: string;
 }
 
-export default function CustomMarkdown({
+export function CustomMarkdown({
   text = '',
   char,
   user,

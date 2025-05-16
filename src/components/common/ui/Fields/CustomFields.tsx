@@ -17,7 +17,7 @@ interface CustomModelFieldsProps {
   setModalOpen: (value: boolean) => void;
 }
 
-export default function CustomModelFields({
+export function CustomModelFields({
   apiKey,
   setApiKey,
   customModelName,

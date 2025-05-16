@@ -8,7 +8,7 @@ import {
 import { Box, Typography } from '@mui/material';
 import { GetUserCreatedCharacters } from '@functions/index';
 
-export default function ProfilePage() {
+export function ProfilePage() {
   const { uuid } = useParams();
 
   const safeUuid = uuid && uuid.trim() !== '' ? uuid : undefined;

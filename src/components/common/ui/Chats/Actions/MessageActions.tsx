@@ -4,7 +4,7 @@ interface MessageActionsProps {
   onEdit?: () => void;
 }
 
-export default function MessageActions({ onEdit }: MessageActionsProps) {
+export function MessageActions({ onEdit }: MessageActionsProps) {
   return (
     <div className="absolute -top-6 left-1">
       <Pencil

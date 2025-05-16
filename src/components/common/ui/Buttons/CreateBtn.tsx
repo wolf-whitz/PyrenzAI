@@ -8,7 +8,7 @@ interface CreateButtonProps {
   className?: string;
 }
 
-export default function CreateButton({
+export function CreateButton({
   loading,
   className,
 }: CreateButtonProps) {

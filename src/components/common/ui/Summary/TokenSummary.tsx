@@ -5,7 +5,7 @@ interface TokenSummaryProps {
   tokenTotal: number;
 }
 
-export default function TokenSummary({ tokenTotal }: TokenSummaryProps) {
+export function TokenSummary({ tokenTotal }: TokenSummaryProps) {
   return (
     <Box className="mt-4">
       <Typography variant="h6" component="strong" className="text-gray-400">

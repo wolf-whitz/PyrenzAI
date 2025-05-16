@@ -11,7 +11,7 @@ interface ApiResponse {
   error?: string;
 }
 
-export default function Profile() {
+export function Profile() {
   const [username, setUsername] = useState('');
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [userUUID, setUserUUID] = useState<string | null>(null);

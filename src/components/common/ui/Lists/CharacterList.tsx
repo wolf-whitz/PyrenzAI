@@ -27,7 +27,7 @@ interface CharacterCardProps {
   isLoading: boolean;
 }
 
-export default function CharacterList({
+export function CharacterList({
   characters,
   loading,
   itemsPerPage,

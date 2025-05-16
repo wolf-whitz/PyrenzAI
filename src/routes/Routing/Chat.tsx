@@ -14,7 +14,7 @@ interface PersonaResponse {
   icon: string;
 }
 
-export default function ChatPage() {
+export function ChatPage() {
   const { conversation_id } = useParams<{ conversation_id: string }>();
   const navigate = useNavigate();
 

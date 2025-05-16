@@ -13,7 +13,7 @@ interface DropdownFieldProps {
   ariaLabel: string;
 }
 
-export default function DropdownField({
+export function DropdownField({
   name,
   value,
   onChange,

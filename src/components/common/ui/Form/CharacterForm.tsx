@@ -6,11 +6,11 @@ import {
   FormActions,
   RequiredFieldsPopup,
 } from '@components/index';
-import TextareaForm from './Childrens/TextareaForm';
+import { TextareaForm } from './Childrens/TextareaForm';
 import { useNavigate } from 'react-router-dom';
 import { useCreateAPI } from '~/api/CreatePage/CreateAPI';
 
-export default function CharacterForm() {
+export function CharacterForm() {
   const navigate = useNavigate();
   const {
     loading,

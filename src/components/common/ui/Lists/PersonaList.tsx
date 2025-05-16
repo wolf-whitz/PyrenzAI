@@ -14,7 +14,7 @@ interface PersonaListProps {
   loading: boolean;
 }
 
-export default function PersonaList({
+export function PersonaList({
   personaData,
   loading,
 }: PersonaListProps) {

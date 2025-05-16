@@ -18,7 +18,7 @@ const LoadingSpinner = () => (
   </div>
 );
 
-export default function MoreButtonsModal({
+export function MoreButtonsModal({
   isOpen,
   onClose,
   onButtonClick,

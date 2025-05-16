@@ -1,14 +1,25 @@
 import React, { lazy } from 'react';
 import { RouteObject, Navigate } from 'react-router-dom';
 
-const Auth = lazy(() => import('./Routing/Auth'));
-const Home = lazy(() => import('./Routing/Home'));
-const Create = lazy(() => import('./Routing/Create'));
-const Profile = lazy(() => import('./Routing/Profile'));
-const Chat = lazy(() => import('./Routing/Chat'));
-const Setting = lazy(() => import('./Routing/Setting/Setting'));
-const ErrorPage = lazy(() => import('./Routing/404page'));
-const ChatArchives = lazy(() => import('./Routing/Archive'));
+
+function lazyNamed<T>(
+  factory: () => Promise<{ [key: string]: T }>,
+  exportName: string
+) {
+  return lazy(() =>
+    factory().then(mod => ({ default: (mod as any)[exportName] }))
+  );
+}
+
+const Auth = lazyNamed(() => import('./Routing/Auth'), 'Auth');
+const Home = lazyNamed(() => import('./Routing/Home'), 'Home');
+const Create = lazyNamed(() => import('./Routing/Create'), 'Create');
+const Profile = lazyNamed(() => import('./Routing/Profile'), 'Profile');
+const Chat = lazyNamed(() => import('./Routing/Chat'), 'Chat');
+const Setting = lazyNamed(() => import('./Routing/Setting/Setting'), 'Setting');
+const ErrorPage = lazyNamed(() => import('./Routing/404page'), 'ErrorPage');
+const ChatArchives = lazyNamed(() => import('./Routing/Archive'), 'ChatArchives');
+
 
 const getCookie = (name: string) => {
   const value = `; ${document.cookie}`;

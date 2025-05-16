@@ -16,7 +16,7 @@ interface PersonaCard {
   selected?: boolean;
 }
 
-export default function Persona() {
+export function Persona() {
   const [personaData, setPersonaData] = useState<PersonaCard[]>([]);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);

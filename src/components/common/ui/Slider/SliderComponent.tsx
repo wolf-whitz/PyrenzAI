@@ -14,7 +14,7 @@ interface SliderComponentProps {
   className?: string;
 }
 
-export default function SliderComponent({
+export function SliderComponent({
   sliderKey,
   stateValue = 0,
   stateSetter,

@@ -95,7 +95,7 @@ const aiOptions: AIOption[] = [
   },
 ];
 
-export default function ImportCharacterModal({
+export function ImportCharacterModal({
   onClose,
   onImport,
 }: ImportCharacterModalProps) {

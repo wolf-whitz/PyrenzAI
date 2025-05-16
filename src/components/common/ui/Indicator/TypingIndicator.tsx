@@ -16,7 +16,7 @@ const Dot = styled('span')<{ delay: number }>(({ theme, delay }) => ({
   },
 }));
 
-export default function TypingIndicator() {
+export function TypingIndicator() {
   return (
     <Box display="flex" alignItems="center" gap={0.5}>
       {[0, 1, 2].map((i) => (

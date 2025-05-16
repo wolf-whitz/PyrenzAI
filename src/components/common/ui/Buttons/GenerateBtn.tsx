@@ -7,7 +7,7 @@ interface GenerateButtonProps {
   onClick: () => void;
 }
 
-export default function GenerateButton({
+export function GenerateButton({
   isGenerating,
   loadingDots,
   onClick,

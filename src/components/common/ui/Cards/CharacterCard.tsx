@@ -9,7 +9,7 @@ import PublicIcon from '@mui/icons-material/Public';
 import LockIcon from '@mui/icons-material/Lock';
 import { useNavigate } from 'react-router-dom';
 
-export default function CharacterCard({
+export function CharacterCard({
   id,
   char_uuid,
   name,

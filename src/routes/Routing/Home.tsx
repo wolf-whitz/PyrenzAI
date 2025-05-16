@@ -13,7 +13,7 @@ import {
 } from '~/components';
 import { useHomepageAPI } from '~/api';
 
-export default function Home() {
+export function Home() {
   const {
     navigate,
     search,

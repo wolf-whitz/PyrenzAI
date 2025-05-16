@@ -6,7 +6,7 @@ import { buttons, CustomButtonProps } from '@shared-types/MoreButtonsTypes';
 
 const MoreButtonsModal = React.lazy(() => import('@components/index').then(module => ({ default: module.MoreButtonsModal })));
 
-export default function CustomButton({ onButtonClick }: CustomButtonProps) {
+export function CustomButton({ onButtonClick }: CustomButtonProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [visibleButtons, setVisibleButtons] = useState(buttons);
   const containerRef = useRef<HTMLDivElement | null>(null);

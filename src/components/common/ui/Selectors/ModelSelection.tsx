@@ -7,7 +7,7 @@ interface ModelSelectionProps {
   modelOptions: { value: string; label: string }[];
 }
 
-export default function ModelSelection({
+export function ModelSelection({
   preferredModel,
   setPreferredModel,
   modelOptions,

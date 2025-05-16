@@ -14,7 +14,7 @@ interface LanguageModalProps {
   onClose: () => void;
 }
 
-export default function LanguageModal({
+export function LanguageModal({
   languages,
   isOpen,
   onClose,

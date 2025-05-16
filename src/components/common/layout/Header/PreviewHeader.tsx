@@ -26,7 +26,7 @@ interface HeaderProps {
   setShowRegister: (value: boolean) => void;
 }
 
-export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
+export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { t } = useTranslation();

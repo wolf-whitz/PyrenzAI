@@ -38,7 +38,7 @@ const modelOptions = [
   { value: 'Custom', label: 'Custom' },
 ];
 
-export default function Customization() {
+export function Customization() {
   const [maxTokens, setMaxTokens] = useState(100);
   const [temperature, setTemperature] = useState(1);
   const [topP, setTopP] = useState(1);

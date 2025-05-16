@@ -15,7 +15,7 @@ interface ApiResponse {
   ad_watch_token: string;
 }
 
-export default function AdModal({ isOpen, onClose }: AdModalProps) {
+export function AdModal({ isOpen, onClose }: AdModalProps) {
   const [countdown, setCountdown] = useState(15);
   const [showExplosion, setShowExplosion] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

@@ -15,7 +15,7 @@ interface CustomContextMenuProps {
   anchorPosition: { top: number; left: number };
 }
 
-export default function CustomContextMenu({
+export function CustomContextMenu({
   items,
   onClose,
   anchorPosition,

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import TypingIndicator from '../Indicator/TypingIndicator';
-import CustomMarkdown from '../Markdown/CustomMarkdown';
+import { TypingIndicator } from '../Indicator/TypingIndicator';
+import { CustomMarkdown } from '../Markdown/CustomMarkdown';
 import { Box, Avatar } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { CustomContextMenu } from '@components/index';
@@ -10,7 +10,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import { speakMessage } from '~/api/Chatpage/SpeakAPI';
 
-export default function ChatMessages({
+export function ChatMessages({
   previous_message,
   isGenerating = false,
   user,

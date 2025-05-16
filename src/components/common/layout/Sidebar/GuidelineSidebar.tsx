@@ -10,7 +10,7 @@ import {
   Divider,
 } from '@mui/material';
 
-export default function CommunityGuidelines({
+export function CommunityGuidelines({
   className,
 }: {
   className?: string;

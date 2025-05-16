@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { motion } from 'framer-motion';
 import { SettingsPageLoader, Sidebar } from '@components/index';
 import { supabase } from '~/Utility/supabaseClient';
@@ -15,12 +15,21 @@ import {
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
-const Account = React.lazy(() => import('./Items/Account'));
-const Profile = React.lazy(() => import('./Items/Profile'));
-const Preference = React.lazy(() => import('./Items/Preference'));
-const Persona = React.lazy(() => import('./Items/Persona'));
+function lazyNamed<T>(
+  factory: () => Promise<{ [key: string]: T }>,
+  exportName: string
+) {
+  return lazy(() =>
+    factory().then(mod => ({ default: (mod as any)[exportName] }))
+  );
+}
 
-export default function Setting() {
+const Account = lazyNamed(() => import('./Items/Account'), 'Account');
+const Profile = lazyNamed(() => import('./Items/Profile'), 'Profile');
+const Preference = lazyNamed(() => import('./Items/Preference'), 'Preference');
+const Persona = lazyNamed(() => import('./Items/Persona'), 'Persona');
+
+export function Setting() {
   const [activeTab, setActiveTab] = useState<
     'account' | 'profile' | 'preference' | 'persona'
   >('account');

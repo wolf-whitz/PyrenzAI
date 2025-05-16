@@ -17,7 +17,7 @@ const itemVariants = {
   visible: { opacity: 1, y: 0 },
 };
 
-export default function LanguageDropdown({ languages }: LanguageDropdownProps) {
+export function LanguageDropdown({ languages }: LanguageDropdownProps) {
   const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const languageButtonRef = useRef<HTMLButtonElement>(null);

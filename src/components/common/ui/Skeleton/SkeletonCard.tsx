@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Box, Typography, Skeleton } from '@mui/material';
 
-export default function SkeletonCard() {
+export function SkeletonCard() {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {

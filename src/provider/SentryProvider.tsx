@@ -5,6 +5,6 @@ interface SentryProviderProps {
   children: ReactNode;
 }
 
-export default function SentryProvider({ children }: SentryProviderProps) {
+export function SentryProvider({ children }: SentryProviderProps) {
   return <Sentry.ErrorBoundary>{children}</Sentry.ErrorBoundary>;
 }

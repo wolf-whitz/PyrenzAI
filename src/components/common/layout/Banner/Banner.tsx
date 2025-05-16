@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { Box, Typography, Fade } from '@mui/material';
 import Typewriter from 'typewriter-effect';
 
-export default function Banner() {
+export function Banner() {
   return (
     <Fade in={true} timeout={500}>
       <Box

@@ -20,7 +20,7 @@ interface Chat {
   preview_image: string;
 }
 
-export default function PreviousChat() {
+export function PreviousChat() {
   const [chats, setChats] = useState<Chat[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

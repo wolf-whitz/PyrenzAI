@@ -15,7 +15,7 @@ import { AuthenticationModal } from '@components/index';
 import { Tooltip, IconButton } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-export default function Sidebar({ className }: { className?: string }) {
+export function Sidebar({ className }: { className?: string }) {
   const [hovered, setHovered] = useState<string | null>(null);
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [showLoginModal, setShowLoginModal] = useState(false);

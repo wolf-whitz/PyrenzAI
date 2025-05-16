@@ -5,7 +5,7 @@ interface GenderDropdownProps {
   onChange: (value: string) => void;
 }
 
-export default function GenderDropdown({
+export function GenderDropdown({
   value,
   onChange,
 }: GenderDropdownProps) {

@@ -12,7 +12,7 @@ interface UserProfileHeaderProps {
   } | null;
 }
 
-export default function UserProfileHeader({
+export function UserProfileHeader({
   loading,
   userData,
 }: UserProfileHeaderProps) {

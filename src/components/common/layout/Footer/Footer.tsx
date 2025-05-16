@@ -4,7 +4,7 @@ import { Button, Card, CardContent, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import Typewriter from 'typewriter-effect';
 
-export default function Footer() {
+export function Footer() {
   const { t } = useTranslation();
 
   return (

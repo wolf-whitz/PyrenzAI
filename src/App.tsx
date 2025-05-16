@@ -8,7 +8,7 @@ const RoutesWrapper = lazy(() =>
   Promise.resolve({ default: () => useRoutes(allRoutes) })
 );
 
-export default function App() {
+export function App() {
   const [isSessionChecked, setIsSessionChecked] = useState(false);
 
   useEffect(() => {

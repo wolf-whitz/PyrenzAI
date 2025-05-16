@@ -29,7 +29,7 @@ const SkeletonLoader = () => (
   </Card>
 );
 
-export default function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
+export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
   const [drafts, setDrafts] = useState<Draft[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
