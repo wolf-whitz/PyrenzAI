@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { motion } from 'framer-motion';
-import { MoreButtonsModal } from '@components/index';
 import { Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { buttons, CustomButtonProps } from '@shared-types/MoreButtonsTypes';
+
+const MoreButtonsModal = React.lazy(() => import('@components/index').then(module => ({ default: module.MoreButtonsModal })));
 
 export default function CustomButton({ onButtonClick }: CustomButtonProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -72,7 +73,7 @@ export default function CustomButton({ onButtonClick }: CustomButtonProps) {
               )
             }
             sx={{
-              borderColor: '#fff',
+              borderColor: '#3B82F6',
               color: '#fff',
               borderRadius: '0.375rem',
               padding: '0.5rem 1rem',
@@ -94,7 +95,7 @@ export default function CustomButton({ onButtonClick }: CustomButtonProps) {
           variant="outlined"
           onClick={() => setIsModalOpen(true)}
           sx={{
-            borderColor: '#fff',
+            borderColor: '#3B82F6',
             color: '#fff',
             borderRadius: '0.375rem',
             padding: '0.5rem 1rem',
@@ -111,12 +112,16 @@ export default function CustomButton({ onButtonClick }: CustomButtonProps) {
         </Button>
       </motion.div>
 
-      <MoreButtonsModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onButtonClick={onButtonClick}
-        buttons={buttons}
-      />
+      {isModalOpen && (
+        <Suspense>
+          <MoreButtonsModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            onButtonClick={onButtonClick}
+            buttons={buttons}
+          />
+        </Suspense>
+      )}
     </motion.div>
   );
 }

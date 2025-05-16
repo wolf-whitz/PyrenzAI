@@ -11,7 +11,7 @@ interface SearchBarProps {
   setCurrentPage: (page: number) => void;
 }
 
-export default function SearchBar({
+export function SearchBar({
   search,
   setSearch,
   setCurrentPage,

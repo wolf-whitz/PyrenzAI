@@ -1,7 +1,6 @@
 import React, { lazy } from 'react';
 import { RouteObject, Navigate } from 'react-router-dom';
 
-const Index = lazy(() => import('./Routing/Index'));
 const Auth = lazy(() => import('./Routing/Auth'));
 const Home = lazy(() => import('./Routing/Home'));
 const Create = lazy(() => import('./Routing/Create'));
@@ -35,8 +34,8 @@ const ProtectedRoute = ({
 };
 
 export const routes: RouteObject[] = [
-  { path: '/', element: <Index /> },
   { path: '/Auth', element: <Auth /> },
+  { path: '/', element: <ProtectedRoute element={<Home />} /> },
   { path: '/Home', element: <ProtectedRoute element={<Home />} /> },
   { path: '/Create', element: <ProtectedRoute element={<Create />} /> },
   {

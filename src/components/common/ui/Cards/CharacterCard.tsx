@@ -80,7 +80,7 @@ export default function CharacterCard({
     <>
       <motion.div
         onClick={handleCardClick}
-        className="w-full sm:w-56 min-h-[360px] rounded-xl shadow-lg border border-gray-600 bg-gray-900 text-white font-baloo overflow-hidden cursor-pointer"
+        className="w-full sm:w-56 min-h-[360px] rounded-xl shadow-lg border border-blue-500 bg-gray-900 text-white font-baloo overflow-hidden cursor-pointer"
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: isLoaded ? 1 : 0, scale: isLoaded ? 1 : 0.95 }}
         transition={{ duration: 1.5, ease: 'easeOut' }}

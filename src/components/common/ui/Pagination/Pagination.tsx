@@ -1,5 +1,9 @@
-import React from 'react';
-import { LoadMore } from '~/components';
+import React, { useState } from 'react';
+import { Button, CircularProgress } from '@mui/material';
+import { motion } from 'framer-motion';
+import { fetchCharacters } from '~/functions';
+import toast from 'react-hot-toast';
+import * as Sentry from '@sentry/react';
 
 interface PaginationProps {
   currentPage: number;
@@ -8,30 +12,80 @@ interface PaginationProps {
   userUUID: string | null;
   setCurrentPage: (page: number) => void;
   t: (key: string) => string;
+  searchQuery?: string | null;
 }
 
-const Pagination: React.FC<PaginationProps> = ({
+export function Pagination({
   currentPage,
   totalPages,
   itemsPerPage,
   userUUID,
   setCurrentPage,
   t,
-}) => {
+  searchQuery = '',
+}: PaginationProps) {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleLoadMore = async () => {
+    if (isLoading) return;
+
+    setIsLoading(true);
+    try {
+      const { characters } = await fetchCharacters(
+        'character',
+        searchQuery || null,
+        currentPage + 1,
+        itemsPerPage
+      );
+
+      if (characters.length > 0) {
+        setCurrentPage(currentPage + 1);
+      } else {
+        toast.success('No more characters to load.');
+      }
+    } catch (error) {
+      console.error('Error fetching characters:', error);
+      Sentry.captureException(error);
+      toast.error('Error fetching characters.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <section aria-labelledby="pagination-heading" className="mt-6">
       <h2 id="pagination-heading" className="sr-only">
         {t('ariaLabels.paginationControls')}
       </h2>
-      <LoadMore
-        currentPage={currentPage}
-        totalPages={totalPages}
-        itemsPerPage={itemsPerPage}
-        user_uuid={userUUID || ''}
-        onLoadMore={setCurrentPage}
-      />
+      <motion.div
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        transition={{ duration: 0.3 }}
+      >
+        <Button
+          variant="outlined"
+          onClick={handleLoadMore}
+          disabled={isLoading}
+          sx={{
+            color: '#fff',
+            borderColor: 'blue',
+            borderRadius: '9999px',
+            padding: '0.5rem 1rem',
+            cursor: isLoading ? 'not-allowed' : 'pointer',
+            '&:hover': {
+              borderColor: 'blue',
+              backgroundColor: 'rgba(0, 0, 255, 0.04)',
+            },
+          }}
+          aria-label={t('ariaLabels.loadMore')}
+        >
+          {isLoading ? (
+            <CircularProgress size={24} color="inherit" />
+          ) : (
+            t('buttons.loadMore')
+          )}
+        </Button>
+      </motion.div>
     </section>
   );
-};
-
-export default Pagination;
+}

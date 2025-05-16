@@ -1,62 +1,39 @@
-import React, { useEffect, memo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useHomeStore } from '~/store';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Character, CharacterCardProps } from '@shared-types/CharacterProp';
-import { Box, Typography, Container } from '@mui/material';
-import toast from 'react-hot-toast';
-import { useTranslation } from 'react-i18next';
-import {
-  GetHotCharacters,
-  GetLatestCharacters,
-  GetRandomCharacters,
-  GetCharactersWithTags,
-} from '~/functions';
+import { Container } from '@mui/material';
 import {
   Sidebar,
   Banner,
   SearchBar,
   Footer,
   CustomButton,
-  useFetchUserUUID,
-  useSyncSearchParams,
-  useFetchCharacters,
   CharacterList,
   Pagination,
+  PreviewHeader
 } from '~/components';
+import { useHomepageAPI } from '~/api';
 
 export default function Home() {
-  const navigate = useNavigate();
   const {
+    navigate,
     search,
     currentPage,
     characters,
-    total,
     loading,
     bgImage,
     setSearch,
     setCurrentPage,
-    setCharacters,
-    setTotal,
-    setLoading,
-  } = useHomeStore();
-
-  const { t } = useTranslation();
-  const userUUID = useFetchUserUUID();
-  const itemsPerPage = 10;
-  const totalPages = Math.max(1, Math.ceil(total / itemsPerPage));
-
-  useSyncSearchParams({ search, currentPage, setSearch, setCurrentPage });
-
-  useFetchCharacters({
-    currentPage,
-    search,
-    itemsPerPage,
-    setCharacters,
-    setTotal,
-    setLoading,
     t,
-  });
+    userUUID,
+    itemsPerPage,
+    totalPages,
+    handleButtonClick,
+    transformCharacter,
+    fetchUserData,
+  } = useHomepageAPI();
+
+  const [showLogin, setShowLogin] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
 
   useEffect(() => {
     navigate(`?page=${currentPage}&search=${encodeURIComponent(search)}`, {
@@ -64,80 +41,9 @@ export default function Home() {
     });
   }, [currentPage, search, navigate]);
 
-  const handleButtonClick = async (
-    functionName: string,
-    type: string,
-    maxCharacter: number,
-    page: number
-  ) => {
-    setLoading(true);
-    setCharacters([]);
-
-    try {
-      let rawCharacters: any[] = [];
-      switch (functionName) {
-        case 'GetHotCharacters':
-          rawCharacters = await GetHotCharacters(type, maxCharacter, page);
-          break;
-        case 'GetLatestCharacters':
-          rawCharacters = await GetLatestCharacters(type, maxCharacter, page);
-          break;
-        case 'GetRandomCharacters':
-          rawCharacters = await GetRandomCharacters(type, maxCharacter, page);
-          break;
-        case 'GetCharactersWithTags':
-          rawCharacters = await GetCharactersWithTags(
-            maxCharacter,
-            page,
-            type,
-            search
-          );
-          break;
-        default:
-          throw new Error('Invalid function name');
-      }
-
-      const characters: Character[] = rawCharacters.map((char) => ({
-        id: char.id,
-        char_uuid: char.char_uuid,
-        name: char.name,
-        description: char.description,
-        creator: char.creator,
-        creator_uuid: char.creator_uuid,
-        chat_messages_count: char.chat_messages_count,
-        profile_image: char.profile_image,
-        tags: char.tags,
-        is_public: char.is_public,
-        token_total: char.token_total,
-      }));
-
-      setCharacters(characters);
-      console.log('Fetched characters:', characters);
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(t('errors.callingRPCFunction') + error.message);
-      } else {
-        toast.error(t('errors.unknown'));
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const transformCharacter = (char: Character): CharacterCardProps => ({
-    id: char.id,
-    char_uuid: char.char_uuid,
-    name: char.name,
-    description: char.description,
-    creator: char.creator,
-    creator_uuid: char.creator_uuid,
-    chat_messages_count: char.chat_messages_count,
-    profile_image: char.profile_image,
-    tags: char.tags,
-    is_public: char.is_public ?? false,
-    token_total: char.token_total,
-    isLoading: false,
-  });
+  useEffect(() => {
+    fetchUserData();
+  }, [fetchUserData]);
 
   return (
     <motion.section
@@ -153,20 +59,24 @@ export default function Home() {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
+      <div className="w-full">
+        <PreviewHeader setShowLogin={setShowLogin} setShowRegister={setShowRegister} />
+      </div>
+
       <Container
         maxWidth={false}
         disableGutters
         className="flex flex-1 flex-col md:flex-row"
       >
         <nav
-          className="hidden md:flex md:pl-[50px]"
+          className="hidden md:flex md:pl-[50px] mt-16"
           aria-label={t('ariaLabels.mainNavigation')}
         >
           <Sidebar />
         </nav>
 
         <main className="p-6 flex-1 flex flex-col items-center">
-          <header className="w-full mb-6">
+          <header className="w-full">
             <Banner />
           </header>
 
@@ -222,17 +132,13 @@ export default function Home() {
       </Container>
 
       <nav
-        className="fixed bottom-0 left-0 w-full bg-gray-900 text-white flex justify-around p-2 shadow-lg z-50 md:hidden"
-        aria-label={t('ariaLabels.mobileNavigation')}
+        className="fixed bottom-0 left-0 w-full bg-gray-900 text-white flex justify-around p-2 shadow-lg z-40 md:hidden"
       >
         <Sidebar />
       </nav>
 
-      <footer className="pb-16 px-4" role="contentinfo">
+      <footer className="px-4" role="contentinfo">
         <Footer />
-        <Typography variant="body2" className="text-center text-gray-500 mt-4">
-          © 2025 Pyrenz AI. {t('messages.allRightsReserved')}
-        </Typography>
       </footer>
     </motion.section>
   );

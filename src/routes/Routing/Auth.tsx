@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import { Box, Typography, CircularProgress } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import AOS from 'aos';
-import 'aos/dist/aos.css'; // You can also use <link> for styles
 
 export default function Auth() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -17,8 +16,8 @@ export default function Auth() {
       setIsLoaded(true);
     }
     AOS.init({
-      duration: 1000, // Animation duration
-      once: true, // Whether animation should happen only once
+      duration: 1000,
+      once: true,
     });
   }, []);
 

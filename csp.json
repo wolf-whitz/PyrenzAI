@@ -14,7 +14,7 @@
     "https://*.clerk.accounts.dev",
     "https://*.cloudflareinsights.com",
     "https://cloudflareinsights.com",
-    "http://static.cloudflareinsights.com`"
+    "http://static.cloudflareinsights.com"
   ],
   "style-src": [
     "'self'",

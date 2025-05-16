@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { Button, TextField, CircularProgress, Box, Modal } from '@mui/material';
+import { Button, TextField, CircularProgress, Modal } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { GetCharactersWithTags } from '~/functions';
 import {
@@ -13,9 +13,9 @@ import {
 import { Tag } from 'lucide-react';
 
 const LoadingSpinner = () => (
-  <Box display="flex" justifyContent="center" alignItems="center">
+  <div className="flex justify-center items-center">
     <CircularProgress />
-  </Box>
+  </div>
 );
 
 export default function MoreButtonsModal({
@@ -122,26 +122,15 @@ export default function MoreButtonsModal({
       onClose={onClose}
       aria-labelledby="more-buttons-modal"
       aria-describedby="more-buttons-modal-description"
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backdropFilter: 'blur(4px)',
-      }}
+      className="flex items-center justify-center"
+      style={{ backdropFilter: 'blur(4px)' }}
     >
       <motion.div
         ref={modalRef}
         initial={{ scale: 0.5 }}
         animate={{ scale: 1 }}
         exit={{ scale: 0.5 }}
-        style={{
-          backgroundColor: '#000',
-          padding: '1.5rem',
-          borderRadius: '0.375rem',
-          border: '1px solid #fff',
-          width: '100%',
-          maxWidth: '20rem',
-        }}
+        className="bg-black p-6 rounded-lg border border-blue-500 w-full max-w-xs"
       >
         <TextField
           label={t('search.placeholder')}
@@ -150,14 +139,14 @@ export default function MoreButtonsModal({
           onChange={handleSearch}
           fullWidth
           InputProps={{
-            style: { color: '#fff', borderColor: '#fff' },
+            className: 'text-white border-white',
           }}
           InputLabelProps={{
-            style: { color: '#fff' },
+            className: 'text-white',
           }}
-          sx={{ marginBottom: '1rem' }}
+          className="mb-4"
         />
-        <Box display="flex" flexDirection="column" gap={2}>
+        <div className="flex flex-col gap-2">
           {loading ? (
             <LoadingSpinner />
           ) : (
@@ -178,12 +167,13 @@ export default function MoreButtonsModal({
                   }
                   onClick={() => handleButtonClick(btn)}
                   fullWidth
+                  className="justify-start normal-case text-base"
                   sx={{
+                    borderColor: '#3B82F6',
                     color: '#fff',
-                    borderColor: '#fff',
-                    justifyContent: 'flex-start',
-                    textTransform: 'none',
-                    fontSize: '1rem',
+                    '&:hover': {
+                      borderColor: '#3B82F6',
+                    },
                   }}
                 >
                   {'icon' in btn ? t(btn.label) : btn.name}
@@ -191,7 +181,7 @@ export default function MoreButtonsModal({
               </motion.div>
             ))
           )}
-        </Box>
+        </div>
       </motion.div>
     </Modal>,
     document.getElementById('modal-root')!

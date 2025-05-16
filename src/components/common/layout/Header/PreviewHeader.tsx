@@ -1,12 +1,23 @@
 import { useState, useEffect } from 'react';
 import {
-  Home as FaHome,
-  Explore as FaCompass,
-  Chat as FaComments,
-  Menu as FaBars,
+  AppBar,
+  Toolbar,
+  IconButton,
+  Button,
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Box,
+} from '@mui/material';
+import {
+  Home as HomeIcon,
+  Explore as ExploreIcon,
+  Chat as ChatIcon,
+  Menu as MenuIcon,
 } from '@mui/icons-material';
 import { FaDiscord } from 'react-icons/fa';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '~/Utility/supabaseClient';
 
@@ -15,25 +26,12 @@ interface HeaderProps {
   setShowRegister: (value: boolean) => void;
 }
 
-const menuVariants = {
-  hidden: { opacity: 0, y: -20 },
-  visible: { opacity: 1, y: 0, transition: { staggerChildren: 0.1 } },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: -10 },
-  visible: { opacity: 1, y: 0 },
-};
-
 export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { t } = useTranslation();
 
   useEffect(() => {
-    setIsMounted(true);
-
     const checkUserSession = async () => {
       const { data, error } = await supabase.auth.getSession();
       if (data.session) {
@@ -47,163 +45,100 @@ export default function Header({ setShowLogin, setShowRegister }: HeaderProps) {
   }, []);
 
   const menuItems = [
-    { name: t('navigation.home'), icon: FaHome, link: '/Home' },
-    { name: t('footer.links.explore'), icon: FaCompass, link: '/Explore' },
-    { name: t('navigation.chats'), icon: FaComments, link: '/Chats' },
+    { name: t('navigation.home'), icon: <HomeIcon />, link: '/Home' },
+    { name: t('footer.links.explore'), icon: <ExploreIcon />, link: '/Explore' },
+    { name: t('navigation.chats'), icon: <ChatIcon />, link: '/Chats' },
     {
       name: t('footer.links.discord'),
-      icon: FaDiscord,
+      icon: <FaDiscord />,
       link: 'https://discord.com',
       external: true,
     },
   ];
 
   return (
-    <motion.header
-      initial={false}
-      animate={isMounted ? 'visible' : 'hidden'}
-      exit="hidden"
-      variants={menuVariants}
-      className="fixed top-0 left-0 w-full bg-black bg-opacity-40 p-4 z-50 transition-opacity duration-500"
-    >
-      <div className="flex justify-between items-center w-full max-w-screen-xl mx-auto px-4">
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          className="flex items-center space-x-4 cursor-pointer"
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          aria-label={t('navigation.scrollToTop')}
-        >
-          <img
-            src="/favicon.png"
-            alt={t('footer.pyrenzLogo')}
-            className="h-8 w-8"
-          />
-          <h1 className="text-2xl font-bold text-white font-baloo-da-2 font-display: swap">
-            Pyrenz<span className="text-redorange">AI</span>
+    <AppBar position="static" elevation={0} sx={{ backgroundColor: 'gray.900' }}>
+      <Toolbar className="flex justify-between items-center w-full max-w-screen-2xl mx-auto px-6">
+        <div className="flex items-center space-x-4 cursor-pointer md:ml-[60px]" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+          <img src="/favicon.png" alt={t('footer.pyrenzLogo')} className="h-8 w-8" />
+          <h1 className="text-2xl font-bold font-baloo">
+            Pyrenz<span className="text-blue-600">AI</span>
           </h1>
-        </motion.div>
+        </div>
 
-        <nav aria-label={t('navigation.mainNavigation')}>
-          <motion.div
-            className="hidden md:flex items-center space-x-6 relative"
-            variants={menuVariants}
-          >
-            {menuItems.map(({ name, icon: Icon, link, external }) => (
-              <motion.button
-                key={name}
-                variants={itemVariants}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-                className="flex items-center gap-2 text-white font-baloo-da-2 hover:text-[#E03201]"
-                onClick={() =>
-                  external
-                    ? window.open(link, '_blank')
-                    : (window.location.href = link)
-                }
-                aria-label={t('navigation.navigateTo', { name })}
+        <div className="hidden md:flex items-center space-x-8">
+          {menuItems.map(({ name, icon, link, external }) => (
+            <Button
+              key={name}
+              startIcon={icon}
+              className="font-baloo hover:text-blue-600"
+              onClick={() => external ? window.open(link, '_blank') : (window.location.href = link)}
+            >
+              {name}
+            </Button>
+          ))}
+          {!isLoggedIn && (
+            <>
+              <Button
+                className="font-baloo hover:text-blue-600"
+                onClick={() => setShowLogin(true)}
               >
-                <Icon size={18} /> {name}
-              </motion.button>
-            ))}
-            {!isLoggedIn && (
-              <>
-                <motion.button
-                  variants={itemVariants}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setShowLogin(true)}
-                  className="text-white font-baloo-da-2 hover:text-[#E03201] transition-all"
-                  aria-label={t('buttons.login')}
-                >
-                  {t('buttons.login')}
-                </motion.button>
-                <motion.button
-                  variants={itemVariants}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setShowRegister(true)}
-                  className="bg-[#E03201] text-white px-4 py-2 rounded font-baloo-da-2 transition-all hover:bg-[#611600]"
-                  aria-label={t('buttons.signUp')}
-                >
-                  {t('buttons.signUp')}
-                </motion.button>
-              </>
-            )}
-          </motion.div>
-        </nav>
-
-        <div className="md:hidden relative">
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="text-white text-2xl focus:outline-none"
-            aria-label={t('navigation.toggleMenu')}
-            aria-expanded={menuOpen}
-          >
-            <FaBars />
-          </motion.button>
-
-          <AnimatePresence>
-            {menuOpen && (
-              <motion.div
-                initial="hidden"
-                animate="visible"
-                exit="hidden"
-                variants={menuVariants}
-                className="absolute right-0 mt-2 w-48 bg-gray-900 text-white rounded-lg shadow-lg border border-gray-700 p-2 max-h-60 overflow-y-auto"
-                role="menu"
+                {t('buttons.login')}
+              </Button>
+              <Button
+                variant="contained"
+                className="bg-[#E03201] font-baloo hover:bg-blue-600"
+                onClick={() => setShowRegister(true)}
               >
-                {menuItems.map(({ name, icon: Icon, link, external }) => (
-                  <motion.button
+                {t('buttons.signUp')}
+              </Button>
+            </>
+          )}
+        </div>
+
+        <div className="md:hidden">
+          <IconButton onClick={() => setMenuOpen(true)}>
+            <MenuIcon />
+          </IconButton>
+          <Drawer anchor="right" open={menuOpen} onClose={() => setMenuOpen(false)}>
+            <Box
+              sx={{ width: 250, backgroundColor: 'gray.900' }}
+              role="presentation"
+              onClick={() => setMenuOpen(false)}
+              onKeyDown={() => setMenuOpen(false)}
+            >
+              <List>
+                {menuItems.map(({ name, icon, link, external }) => (
+                  <ListItem
                     key={name}
-                    variants={itemVariants}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-800 rounded"
-                    onClick={() =>
-                      external
-                        ? window.open(link, '_blank')
-                        : (window.location.href = link)
-                    }
-                    aria-label={t('navigation.navigateTo', { name })}
-                    role="menuitem"
+                    component="button"
+                    onClick={() => external ? window.open(link, '_blank') : (window.location.href = link)}
                   >
-                    <Icon className="inline-block mr-2" /> {name}
-                  </motion.button>
+                    <ListItemIcon>{icon}</ListItemIcon>
+                    <ListItemText primary={name} />
+                  </ListItem>
                 ))}
-
                 {!isLoggedIn && (
                   <>
-                    <motion.button
-                      variants={itemVariants}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                    <ListItem
+                      component="button"
                       onClick={() => setShowLogin(true)}
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-800 rounded text-white font-baloo-da-2 hover:text-[#E03201] transition-all mb-2"
-                      aria-label={t('buttons.login')}
-                      role="menuitem"
                     >
-                      {t('buttons.login')}
-                    </motion.button>
-                    <motion.button
-                      variants={itemVariants}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                      <ListItemText primary={t('buttons.login')} />
+                    </ListItem>
+                    <ListItem
+                      component="button"
                       onClick={() => setShowRegister(true)}
-                      className="block w-full text-left bg-[#E03201] text-white px-4 py-2 rounded font-baloo-da-2 transition-all hover:bg-[#611600]"
-                      aria-label={t('buttons.signUp')}
-                      role="menuitem"
                     >
-                      {t('buttons.signUp')}
-                    </motion.button>
+                      <ListItemText primary={t('buttons.signUp')} />
+                    </ListItem>
                   </>
                 )}
-              </motion.div>
-            )}
-          </AnimatePresence>
+              </List>
+            </Box>
+          </Drawer>
         </div>
-      </div>
-    </motion.header>
+      </Toolbar>
+    </AppBar>
   );
 }

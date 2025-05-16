@@ -13,7 +13,7 @@ export default function createCustomTheme() {
       palette: {
         mode: 'dark',
         primary: {
-          main: '#3f51b5',
+          main: '#111827',
         },
         background: {
           default: '#111827',
@@ -24,7 +24,52 @@ export default function createCustomTheme() {
           secondary: '#d1d5db',
         },
       },
-      components: componentOverrides,
+      components: {
+        ...componentOverrides,
+        MuiButton: {
+          styleOverrides: {
+            root: {
+              color: '#ffffff',
+              borderColor: '#ffffff',
+            },
+          },
+        },
+        MuiListItem: {
+          styleOverrides: {
+            root: {
+              color: '#ffffff',
+            },
+          },
+        },
+        MuiListItemIcon: {
+          styleOverrides: {
+            root: {
+              color: '#ffffff',
+            },
+          },
+        },
+        MuiAppBar: {
+          styleOverrides: {
+            root: {
+              backgroundColor: '#111827',
+            },
+          },
+        },
+        MuiToolbar: {
+          styleOverrides: {
+            root: {
+              backgroundColor: '#111827',
+            },
+          },
+        },
+        MuiDrawer: {
+          styleOverrides: {
+            paper: {
+              backgroundColor: '#111827',
+            },
+          },
+        },
+      },
     });
 
     return theme;

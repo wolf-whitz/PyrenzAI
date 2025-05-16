@@ -159,7 +159,13 @@ export default function CharacterCardModal({
                   <Box className="flex items-center mt-4 w-full">
                     <Button
                       variant="contained"
-                      color="primary"
+                      color="inherit"
+                      sx={{
+                        backgroundColor: 'grey.500',
+                        '&:hover': {
+                          backgroundColor: 'grey.600',
+                        },
+                      }}
                       className="flex-1"
                       onClick={handleChatNow}
                       disabled={isLoading}

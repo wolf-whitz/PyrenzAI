@@ -1,58 +1,8 @@
-import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Box, Typography, Fade } from '@mui/material';
+import Typewriter from 'typewriter-effect';
 
 export default function Banner() {
-  const [displayedText, setDisplayedText] = useState('');
-  const [showCursor, setShowCursor] = useState(true);
-  const fullText = 'PyrenzAI';
-  const typingSpeed = 80;
-  const resetTime = 3000;
-
-  const getRandomChar = () => {
-    const chars =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
-    return chars[Math.floor(Math.random() * chars.length)];
-  };
-
-  useEffect(() => {
-    let index = 0;
-    let typingTimeout: NodeJS.Timeout;
-    let restartTimeout: NodeJS.Timeout;
-
-    const typeText = () => {
-      if (index < fullText.length) {
-        setDisplayedText((prev) => prev.slice(0, -1) + getRandomChar());
-
-        setTimeout(() => {
-          setDisplayedText(fullText.slice(0, index + 1));
-          index++;
-          typingTimeout = setTimeout(typeText, typingSpeed);
-        }, typingSpeed / 2);
-      } else {
-        restartTimeout = setTimeout(startTyping, resetTime);
-      }
-    };
-
-    const startTyping = () => {
-      index = 0;
-      setDisplayedText('');
-      setTimeout(typeText, 800);
-    };
-
-    typeText();
-
-    return () => {
-      clearTimeout(typingTimeout);
-      clearTimeout(restartTimeout);
-    };
-  }, [fullText]);
-
-  useEffect(() => {
-    const cursorBlink = setInterval(() => setShowCursor((prev) => !prev), 500);
-    return () => clearInterval(cursorBlink);
-  }, []);
-
   return (
     <Fade in={true} timeout={500}>
       <Box
@@ -68,15 +18,17 @@ export default function Banner() {
         <Typography
           variant="h4"
           className="text-3xl font-bold relative z-10 text-center w-full"
+          style={{ transition: 'opacity 0.3s ease-in-out' }}
         >
-          {displayedText}
-          <motion.span
-            className="ml-1"
-            animate={{ opacity: showCursor ? 1 : 0 }}
-            transition={{ duration: 0.5, repeat: Infinity, repeatType: 'loop' }}
-          >
-            |
-          </motion.span>
+          <Typewriter
+            options={{
+              strings: ['PyrenzAI', 'Support Us', 'Join our discord server!'],
+              autoStart: true,
+              loop: true,
+              delay: 100,
+              deleteSpeed: 30,
+            }}
+          />
         </Typography>
       </Box>
     </Fade>

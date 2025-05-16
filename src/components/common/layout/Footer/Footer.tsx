@@ -1,52 +1,11 @@
-import { useState, useEffect } from 'react';
 import { FaDiscord } from 'react-icons/fa';
-import { CardContent } from '~/components';
 import { motion } from 'framer-motion';
-import { Box, Typography, Button } from '@mui/material';
+import { Button, Card, CardContent, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import Typewriter from 'typewriter-effect';
 
 export default function Footer() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [hovering, setHovering] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const [imageSrc, setImageSrc] = useState('');
   const { t } = useTranslation();
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const handleMouseMove = (e: MouseEvent) => {
-        setMousePosition({ x: e.clientX, y: e.clientY });
-      };
-
-      window.addEventListener('mousemove', handleMouseMove);
-
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              const img = new Image();
-              img.src =
-                'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif';
-              img.onload = () => {
-                setImageSrc(img.src);
-                setImageLoaded(true);
-              };
-              observer.disconnect();
-            }
-          });
-        },
-        { threshold: 0.1 }
-      );
-
-      const target = document.querySelector('.bg-cover-container');
-      if (target) observer.observe(target);
-
-      return () => {
-        window.removeEventListener('mousemove', handleMouseMove);
-        if (target) observer.unobserve(target);
-      };
-    }
-  }, []);
 
   return (
     <motion.div
@@ -59,33 +18,24 @@ export default function Footer() {
         alignItems: 'center',
         gap: '1.25rem',
         marginBottom: '2rem',
-        fontFamily: 'Fredoka',
+        fontFamily: 'Baloo, sans-serif',
       }}
     >
       <motion.div
         whileHover={{ scale: 1.05 }}
         transition={{ duration: 0.3 }}
         style={{
-          width: '90%',
-          maxWidth: '650px',
-          borderRadius: '1.25rem',
+          width: '95%',
+          maxWidth: '800px',
+          borderRadius: '0.75rem',
           overflow: 'hidden',
           border: 'none',
           background: 'transparent',
         }}
       >
-        <CardContent
-          className="bg-cover-container"
+        <Card
           style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: '160px',
-            color: '#fff',
-            backgroundImage: imageLoaded
-              ? `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('${imageSrc}')`
-              : 'none',
+            backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/Mascot-holdingGun.avif')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             border: 'none',
@@ -93,45 +43,36 @@ export default function Footer() {
             overflow: 'hidden',
             transition: 'all 0.3s',
           }}
-          onMouseEnter={() => setHovering(true)}
-          onMouseLeave={() => setHovering(false)}
-          onMouseMove={(e: React.MouseEvent<HTMLDivElement>) =>
-            setMousePosition({ x: e.clientX, y: e.clientY })
-          }
         >
-          {hovering && (
-            <motion.div
-              style={{
-                position: 'absolute',
-                width: '5rem',
-                height: '5rem',
-                backgroundColor: '#fff',
-                opacity: 0.2,
-                borderRadius: '50%',
-                pointerEvents: 'none',
-                left: `${mousePosition.x}px`,
-                top: `${mousePosition.y}px`,
-                transform: 'translate(-50%, -50%)',
-                filter: 'blur(10px)',
-                mixBlendMode: 'overlay',
-              }}
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 0.2, scale: 1 }}
-              transition={{ duration: 0.3 }}
-            />
-          )}
-          <Typography
-            variant="h4"
-            component="h1"
-            style={{ textAlign: 'center' }}
+          <CardContent
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: '160px',
+              color: '#fff',
+              textAlign: 'center',
+              padding: '1rem',
+            }}
           >
-            {t('banner.joinDiscordTitle')}
-          </Typography>
-        </CardContent>
+            <Typography variant="h4" component="h1">
+              <Typewriter
+                options={{
+                  strings: ['Join the Discord server or else...', 'Enjoying the website?'],
+                  autoStart: true,
+                  loop: true,
+                  delay: 100,
+                  deleteSpeed: 30,
+                }}
+              />
+            </Typography>
+          </CardContent>
+        </Card>
       </motion.div>
 
       <motion.div
-        whileHover={{ scale: 1.05, color: '#60a5fa' }}
+        whileHover={{ scale: 1.05 }}
         transition={{ duration: 0.3 }}
       >
         <Button
@@ -143,7 +84,7 @@ export default function Footer() {
           startIcon={<FaDiscord size={30} />}
           style={{
             color: '#fff',
-            fontSize: '1.125rem',
+            fontSize: '1.25rem',
             fontWeight: '600',
             display: 'flex',
             alignItems: 'center',
@@ -153,6 +94,9 @@ export default function Footer() {
           {t('buttons.joinDiscord')}
         </Button>
       </motion.div>
+      <Typography variant="body2" style={{ textAlign: 'center', color: '#6b7280', marginTop: '1rem' }}>
+        © 2025 Pyrenz AI. {t('messages.allRightsReserved')}
+      </Typography>
     </motion.div>
   );
 }

@@ -10,11 +10,8 @@
 
 import Banner from '@layout/Banner/Banner';
 import Footer from '@layout/Footer/Footer';
-import PreviewFooter from '@layout/Footer/PreviewFooter';
-import SearchBar from '@layout/SearchBar/SearchBar';
+import { SearchBar } from '@layout/SearchBar/SearchBar';
 import PreviewHeader from '@layout/Header/PreviewHeader';
-import HeroSection from '@layout/Sections/Hero/PreviewHeroSection';
-import FeaturesSection from '@layout/Sections/FeaturesSection';
 import UserProfileHeader from '@layout/Header/UserProfileHeader';
 
 import Sidebar from '@layout/Sidebar/sidebar';
@@ -65,15 +62,12 @@ import TokenSummary from '@ui/Summary/TokenSummary';
 import VisibilityCheckboxes from '@ui/CheckBox/VisibilityCheckboxes';
 
 import CharacterCard from '@ui/Cards/CharacterCard';
-import LoadMore from '@ui/LoadMore/LoadMoreButton';
 import SkeletonCard from '@ui/Skeleton/SkeletonCard';
 import CustomButton from '@ui/Buttons/Buttons';
-import FeatureCard from '@ui/Cards/FeaturesCard';
 import PersonaCard from '@ui/Cards/PersonaCard';
 
 import CharacterCardModal from '@ui/Modal/CharacterCardModal';
 import AuthenticationModal from '~/components/common/ui/Modal/Auth/AuthenticationModal';
-import DownloadModal from '@ui/Modal/DownloadsModal';
 import LanguageModal from '@ui/Modal/LanguageModal';
 import DraftsModal from '@ui/Modal/DraftsModal';
 import MoreButtonsModal from '@ui/Modal/MoreButtonsModal';
@@ -97,16 +91,13 @@ import useFetchUserUUID from '@hooks/useFetchUserUUID';
 import useSyncSearchParams from '@hooks/useSyncSearchParams';
 import useFetchCharacters from '@hooks/useFetchCharacters';
 
-import Pagination from '@ui/Pagination/Pagination';
+import { Pagination } from '@ui/Pagination/Pagination';
 
 export {
   Banner,
   Footer,
   SearchBar,
   PreviewHeader,
-  PreviewFooter,
-  HeroSection,
-  FeaturesSection,
   UserProfileHeader,
   ImportCharacterModal,
   useFetchCharacters,
@@ -131,10 +122,8 @@ export {
   ChatMain,
   SliderComponent,
   CharacterCard,
-  LoadMore,
   SkeletonCard,
   CustomButton,
-  FeatureCard,
   PersonaCard,
   CheckboxField,
   CustomModelFields,
@@ -153,7 +142,6 @@ export {
   Textarea,
   CharacterCardModal,
   AuthenticationModal,
-  DownloadModal,
   ProviderModals,
   LanguageModal,
   DraftsModal,
