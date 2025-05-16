@@ -1,15 +1,11 @@
-import React, { useEffect, useState, Suspense, useRef } from 'react';
+import React, { useEffect, useState, useRef, lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Avatar, CircularProgress, Typography, Box } from '@mui/material';
 import { supabase } from '~/Utility/supabaseClient';
 import { GetUserUUID } from '~/functions';
 
-const CustomContextMenu = React.lazy(() =>
-  import('@components/index').then((module) => ({
-    default: module.CustomContextMenu,
-  }))
-);
+const CustomContextMenu = lazy(() => import('@components/index').then(module => ({ default: module.CustomContextMenu })));
 
 interface Chat {
   id: string;
@@ -265,7 +261,7 @@ export function PreviousChat() {
           ))
         )}
         {contextMenu && (
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense>
             <CustomContextMenu
               items={[
                 {

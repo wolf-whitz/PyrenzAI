@@ -69,6 +69,13 @@ export function createCustomTheme() {
             },
           },
         },
+        MuiCircularProgress: {
+          styleOverrides: {
+            root: {
+              color: 'blue', 
+            },
+          },
+        },
       },
     });
 

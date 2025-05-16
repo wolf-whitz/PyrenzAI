@@ -149,7 +149,6 @@ export function ChatPage() {
             <img
               src="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MascotCrying.avif"
               alt="Mascot Crying"
-              loading="lazy"
               style={{
                 width: '96px',
                 height: '96px',

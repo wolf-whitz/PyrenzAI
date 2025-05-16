@@ -12,9 +12,9 @@ function lazyNamed<T>(
 
 const Auth = lazyNamed(() => import('./Routing/Auth'), 'Auth');
 const Home = lazyNamed(() => import('./Routing/Home'), 'Home');
-const Create = lazyNamed(() => import('./Routing/Create'), 'Create');
-const Profile = lazyNamed(() => import('./Routing/Profile'), 'Profile');
-const Chat = lazyNamed(() => import('./Routing/Chat'), 'Chat');
+const Create = lazyNamed(() => import('./Routing/Create'), 'CreatePage');
+const Profile = lazyNamed(() => import('./Routing/Profile'), 'ProfilePage');
+const Chat = lazyNamed(() => import('./Routing/Chat'), 'ChatPage');
 const Setting = lazyNamed(() => import('./Routing/Setting/Setting'), 'Setting');
 const ErrorPage = lazyNamed(() => import('./Routing/404page'), 'ErrorPage');
 const ChatArchives = lazyNamed(

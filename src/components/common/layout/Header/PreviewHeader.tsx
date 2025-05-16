@@ -140,6 +140,13 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
                         ? window.open(link, '_blank')
                         : (window.location.href = link)
                     }
+                    sx={{
+                      '&:hover': {
+                        backgroundColor: 'rgba(0, 0, 0, 0.3)', 
+                        transform: 'scale(1.05)',
+                        transition: 'transform 0.3s ease, background-color 0.3s ease',
+                      },
+                    }}
                   >
                     <ListItemIcon>{icon}</ListItemIcon>
                     <ListItemText primary={name} />
@@ -150,13 +157,27 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
                     <ListItem
                       component="button"
                       onClick={() => setShowLogin(true)}
-                      sx={{ backgroundColor: 'red', '&:hover': { backgroundColor: 'darkred' } }}
+                      sx={{
+                        backgroundColor: 'red',
+                        '&:hover': {
+                          backgroundColor: 'darkred',
+                          transform: 'scale(1.05)',
+                          transition: 'transform 0.3s ease, background-color 0.3s ease',
+                        },
+                      }}
                     >
                       <ListItemText primary={t('buttons.login')} />
                     </ListItem>
                     <ListItem
                       component="button"
                       onClick={() => setShowRegister(true)}
+                      sx={{
+                        '&:hover': {
+                          backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                          transform: 'scale(1.05)',
+                          transition: 'transform 0.3s ease, background-color 0.3s ease',
+                        },
+                      }}
                     >
                       <ListItemText primary={t('buttons.signUp')} />
                     </ListItem>
