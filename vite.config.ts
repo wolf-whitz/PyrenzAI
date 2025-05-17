@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react-swc';
+import preact from '@preact/preset-vite'
 import path from 'path';
 import tailwindcss from 'tailwindcss';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
@@ -8,7 +8,7 @@ import { createHtmlPlugin } from 'vite-plugin-html';
 
 export default defineConfig({
   plugins: [
-    react(),
+    preact(),
     sentryVitePlugin({
       org: 'pyrenzai',
       project: 'pyrenzai',
@@ -94,6 +94,8 @@ export default defineConfig({
       '@libs': path.resolve(__dirname, 'src/lib'),
       '@functions': path.resolve(__dirname, 'src/functions'),
       '@hooks': path.resolve(__dirname, 'src/components/common/hooks'),
+      react: 'preact/compat',
+      'react-dom': 'preact/compat',
     },
   },
   optimizeDeps: {

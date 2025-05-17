@@ -1,18 +1,6 @@
 const isDarkMode = document.documentElement.classList.contains('theme-dark');
 
 export const componentOverrides = {
-  MuiButton: {
-    styleOverrides: {
-      root: {
-        minWidth: 'auto',
-        padding: '6px 12px',
-      },
-      sizeSmall: {
-        padding: '4px 8px',
-        fontSize: '0.875rem',
-      },
-    },
-  },
   MuiSlider: {
     styleOverrides: {
       thumb: {
@@ -56,6 +44,47 @@ export const componentOverrides = {
         '&:hover': {
           textDecoration: 'none',
         },
+      },
+    },
+  },
+  MuiButton: {
+    styleOverrides: {
+      root: {
+        borderColor: '#ffffff',
+        minWidth: 'auto',
+        padding: '6px 12px',
+      },
+      sizeSmall: {
+        padding: '4px 8px',
+        fontSize: '0.875rem',
+      },
+    },
+  },
+  MuiListItem: {
+    styleOverrides: {
+      root: {
+        color: '#ffffff',
+      },
+    },
+  },
+  MuiListItemIcon: {
+    styleOverrides: {
+      root: {
+        color: '#ffffff',
+      },
+    },
+  },
+  MuiAppBar: {
+    styleOverrides: {
+      root: {
+        backgroundColor: '#111827',
+      },
+    },
+  },
+  MuiToolbar: {
+    styleOverrides: {
+      root: {
+        backgroundColor: '#111827',
       },
     },
   },

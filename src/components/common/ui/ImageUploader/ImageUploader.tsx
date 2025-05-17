@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Dropzone, Textarea } from '~/components';
 import {
-  Button,
   Modal,
   Box,
   TextField,
@@ -14,6 +13,7 @@ import {
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import { Utils } from '~/Utility/Utility';
 import { toast } from 'react-hot-toast';
+import { MuiBlueButton } from '~/theme';
 
 interface CreateImageResponse {
   image: string;
@@ -114,15 +114,15 @@ export function ImageUploader({ onImageSelect }: ImageUploaderProps) {
         className="bg-gray-800 border-dashed border-2 border-gray-500"
       />
       <div className="flex items-center mt-4">
-        <Button
+        <MuiBlueButton
           variant="contained"
-          color="primary"
           startIcon={<AddPhotoAlternateIcon />}
           className="mr-2"
           onClick={handleOpen}
+          Blue={true}
         >
           Generate Image
-        </Button>
+        </MuiBlueButton>
       </div>
 
       <Modal
@@ -183,17 +183,21 @@ export function ImageUploader({ onImageSelect }: ImageUploaderProps) {
             </Card>
           )}
           <div className="flex justify-end mt-4">
-            <Button
+            <MuiBlueButton
               variant="outlined"
-              color="secondary"
               onClick={handleClear}
               sx={{ mr: 2 }}
+              Blue={true}
             >
               Clear
-            </Button>
-            <Button variant="contained" color="primary" onClick={handleSubmit}>
+            </MuiBlueButton>
+            <MuiBlueButton
+              variant="contained"
+              onClick={handleSubmit}
+              Blue={true}
+            >
               Submit
-            </Button>
+            </MuiBlueButton>
           </div>
         </Box>
       </Modal>

@@ -1,7 +1,8 @@
 import React from 'react';
-import { Button, CircularProgress } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 import clsx from 'clsx';
 import { Plus } from 'lucide-react';
+import { MuiBlueButton } from '~/theme';
 
 interface CreateButtonProps {
   loading: boolean;
@@ -10,11 +11,10 @@ interface CreateButtonProps {
 
 export function CreateButton({ loading, className }: CreateButtonProps) {
   return (
-    <Button
+    <MuiBlueButton
       type="submit"
       disabled={loading}
       variant="contained"
-      color="primary"
       className={clsx('flex items-center', className)}
       startIcon={
         loading ? (
@@ -23,8 +23,9 @@ export function CreateButton({ loading, className }: CreateButtonProps) {
           <Plus className="mr-2" />
         )
       }
+      Blue={true}
     >
       {loading ? 'Submitting...' : 'Create'}
-    </Button>
+    </MuiBlueButton>
   );
 }

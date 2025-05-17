@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Box, Typography, CircularProgress } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 export function Auth() {
   const [isLoaded, setIsLoaded] = useState(false);

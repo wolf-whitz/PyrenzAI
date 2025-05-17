@@ -3,8 +3,6 @@ import {
   AppBar,
   Toolbar,
   IconButton,
-  Button,
-  Drawer,
   List,
   ListItem,
   ListItemIcon,
@@ -20,6 +18,7 @@ import {
 import { FaDiscord } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '~/Utility/supabaseClient';
+import { MuiStyledDrawer, MuiBlueButton } from '~/theme';
 
 interface HeaderProps {
   setShowLogin: (value: boolean) => void;
@@ -83,7 +82,7 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
 
         <div className="hidden md:flex items-center space-x-8">
           {menuItems.map(({ name, icon, link, external }) => (
-            <Button
+            <MuiBlueButton
               key={name}
               startIcon={icon}
               className="font-baloo hover:text-blue-600"
@@ -92,25 +91,28 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
                   ? window.open(link, '_blank')
                   : (window.location.href = link)
               }
+              Blue={true}
             >
               {name}
-            </Button>
+            </MuiBlueButton>
           ))}
           {!isLoggedIn && (
             <>
-              <Button
+              <MuiBlueButton
                 className="font-baloo hover:text-blue-600"
                 onClick={() => setShowLogin(true)}
+                Blue={true}
               >
                 {t('buttons.login')}
-              </Button>
-              <Button
+              </MuiBlueButton>
+              <MuiBlueButton
                 variant="contained"
                 className="bg-[#E03201] font-baloo hover:bg-blue-600"
                 onClick={() => setShowRegister(true)}
+                Blue={true}
               >
                 {t('buttons.signUp')}
-              </Button>
+              </MuiBlueButton>
             </>
           )}
         </div>
@@ -119,10 +121,10 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
           <IconButton onClick={() => setMenuOpen(true)}>
             <MenuIcon />
           </IconButton>
-          <Drawer
-            anchor="right"
-            open={menuOpen}
+          <MuiStyledDrawer
+            isOpen={menuOpen}
             onClose={() => setMenuOpen(false)}
+            profileData={{ name: 'User', avatarUrl: '/path-to-avatar.jpg' }}
           >
             <Box
               sx={{ width: 250, backgroundColor: 'gray.900' }}
@@ -142,7 +144,8 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
                     }
                     sx={{
                       '&:hover': {
-                        backgroundColor: 'rgba(0, 0, 0, 0.3)', 
+                        backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                        borderRadius: '50px',
                         transform: 'scale(1.05)',
                         transition: 'transform 0.3s ease, background-color 0.3s ease',
                       },
@@ -159,6 +162,7 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
                       onClick={() => setShowLogin(true)}
                       sx={{
                         backgroundColor: 'red',
+                        borderRadius: '50px',
                         '&:hover': {
                           backgroundColor: 'darkred',
                           transform: 'scale(1.05)',
@@ -172,6 +176,7 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
                       component="button"
                       onClick={() => setShowRegister(true)}
                       sx={{
+                        borderRadius: '50px',
                         '&:hover': {
                           backgroundColor: 'rgba(0, 0, 0, 0.3)',
                           transform: 'scale(1.05)',
@@ -185,7 +190,7 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
                 )}
               </List>
             </Box>
-          </Drawer>
+          </MuiStyledDrawer>
         </div>
       </Toolbar>
     </AppBar>

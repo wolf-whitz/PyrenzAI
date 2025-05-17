@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Button, CircularProgress, Typography } from '@mui/material';
+import { CircularProgress, Typography } from '@mui/material';
 import { CreateButton, DraftsModal, ImportCharacterModal } from '~/components';
 import SaveIcon from '@mui/icons-material/Save';
 import DescriptionIcon from '@mui/icons-material/Description';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { CharacterData, Draft } from '@shared-types/CharacterProp';
+import { MuiBlueButton } from '~/theme';
 
 interface FormActionsProps {
   onClear: () => void;
@@ -51,7 +52,7 @@ export function FormActions({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <Button
+      <MuiBlueButton
         variant="contained"
         onClick={onClear}
         className="w-full sm:w-auto"
@@ -61,10 +62,11 @@ export function FormActions({
           '&:hover': { bgcolor: 'gray.700' },
           '&:focus': { outline: 'none', ring: '2px solid gray.500' },
         }}
+        Blue={true}
       >
         Clear
-      </Button>
-      <Button
+      </MuiBlueButton>
+      <MuiBlueButton
         variant="contained"
         color="primary"
         onClick={onSave}
@@ -77,27 +79,30 @@ export function FormActions({
             <SaveIcon className="text-xl" />
           )
         }
+        Blue={true}
       >
         {saveLoading ? 'Saving...' : 'Save'}
-      </Button>
-      <Button
+      </MuiBlueButton>
+      <MuiBlueButton
         variant="contained"
         color="primary"
         onClick={handleOpenDraftModal}
         className="w-full sm:w-auto"
         startIcon={<DescriptionIcon className="text-xl" />}
+        Blue={true}
       >
         Drafts
-      </Button>
-      <Button
+      </MuiBlueButton>
+      <MuiBlueButton
         variant="contained"
         color="primary"
         onClick={handleOpenImportCharacterModal}
         className="w-full sm:w-auto"
         startIcon={<UploadFileIcon className="text-xl" />}
+        Blue={true}
       >
         Import Character
-      </Button>
+      </MuiBlueButton>
       <CreateButton loading={loading} className="w-full sm:w-auto" />
       {isDraftModalOpen && (
         <DraftsModal onClose={handleCloseDraftModal} onSelect={onSelectDraft} />

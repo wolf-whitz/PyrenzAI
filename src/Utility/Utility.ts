@@ -14,7 +14,7 @@
  */
 
 import { supabase } from '~/Utility/supabaseClient';
-import useSWR from 'swr';
+import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { SERVER_API_URL as BASE_URL } from '~/config';
 
 type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
@@ -123,20 +123,13 @@ export const Utils = {
     }
   },
 
-  useFetch<T>(endpoint: string, params: Record<string, any> = {}) {
-    const { data, error, mutate } = useSWR<T>(
-      `${BASE_URL}${endpoint}?${new URLSearchParams(params).toString()}`,
-      async () => {
+  useFetch<T>(endpoint: string, params: Record<string, any> = {}): UseQueryResult<T, Error> {
+    return useQuery<T, Error>({
+      queryKey: [`${BASE_URL}${endpoint}`, params],
+      queryFn: async () => {
         return await this.request<T>('GET', endpoint, {}, params, false);
       }
-    );
-
-    return {
-      data,
-      error,
-      isLoading: !data && !error,
-      mutate,
-    };
+    });
   },
 
   post<T>(

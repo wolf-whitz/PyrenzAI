@@ -1,5 +1,5 @@
 import { createTheme } from '@mui/material/styles';
-import { componentOverrides } from '~/provider/Styles/componentOverrides';
+import { componentOverrides } from '../overrides/componentOverrides';
 
 export function CreateLightTheme() {
   const theme = createTheme({

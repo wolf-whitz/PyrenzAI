@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef, Suspense } from 'react';
+import { MuiBlueButton } from '~/theme';
+import React, { useState, useRef, Suspense } from 'react';
 import { motion } from 'framer-motion';
-import { Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { buttons, CustomButtonProps } from '@shared-types/MoreButtonsTypes';
 
@@ -16,36 +16,6 @@ export function CustomButton({ onButtonClick }: CustomButtonProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const { t } = useTranslation();
 
-  useEffect(() => {
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (let entry of entries) {
-        const containerWidth = entry.contentRect.width;
-        let count = 0;
-        let totalWidth = 0;
-
-        buttons.forEach((btn) => {
-          const buttonWidth = 100;
-          if (totalWidth + buttonWidth <= containerWidth) {
-            totalWidth += buttonWidth;
-            count++;
-          }
-        });
-
-        setVisibleButtons(buttons.slice(0, count));
-      }
-    });
-
-    if (containerRef.current) {
-      resizeObserver.observe(containerRef.current);
-    }
-
-    return () => {
-      if (containerRef.current) {
-        resizeObserver.unobserve(containerRef.current);
-      }
-    };
-  }, []);
-
   return (
     <motion.div
       ref={containerRef}
@@ -58,13 +28,12 @@ export function CustomButton({ onButtonClick }: CustomButtonProps) {
         justifyContent: 'center',
         gap: '8px',
         marginBottom: '1.5rem',
-        borderRadius: '0.5rem',
       }}
     >
       {visibleButtons.map((btn, index) => (
         <motion.div key={index}>
-          <Button
-            variant="outlined"
+          <MuiBlueButton
+            variant="contained"
             startIcon={<btn.icon size={18} />}
             onClick={() =>
               onButtonClick(
@@ -75,44 +44,20 @@ export function CustomButton({ onButtonClick }: CustomButtonProps) {
                 btn.tag
               )
             }
-            sx={{
-              borderColor: '#3B82F6',
-              color: '#fff',
-              borderRadius: '0.375rem',
-              padding: '0.5rem 1rem',
-              transition: 'transform 0.3s',
-              '&:hover': {
-                transform: 'scale(1.05)',
-              },
-              '&:active': {
-                transform: 'scale(0.95)',
-              },
-            }}
+            Blue={true}
           >
             {t(btn.label)}
-          </Button>
+          </MuiBlueButton>
         </motion.div>
       ))}
       <motion.div>
-        <Button
-          variant="outlined"
+        <MuiBlueButton
+          variant="contained"
           onClick={() => setIsModalOpen(true)}
-          sx={{
-            borderColor: '#3B82F6',
-            color: '#fff',
-            borderRadius: '0.375rem',
-            padding: '0.5rem 1rem',
-            transition: 'transform 0.3s',
-            '&:hover': {
-              transform: 'scale(1.05)',
-            },
-            '&:active': {
-              transform: 'scale(0.95)',
-            },
-          }}
+          Blue={true}
         >
           {t('HomePageMoreButtons.btn.more')}
-        </Button>
+        </MuiBlueButton>
       </motion.div>
 
       {isModalOpen && (
