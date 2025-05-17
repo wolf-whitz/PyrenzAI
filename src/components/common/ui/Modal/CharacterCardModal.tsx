@@ -11,22 +11,13 @@ import { Box, Typography, Button, CircularProgress } from '@mui/material';
 import MessageIcon from '@mui/icons-material/Message';
 import PublicIcon from '@mui/icons-material/Public';
 import LockIcon from '@mui/icons-material/Lock';
-import { keyframes } from '@mui/system';
+import { ShimmerText } from 'react-shimmer-effects';
 
 interface CharacterCardModalProps {
   isOpen: boolean;
   onClose: () => void;
   character: CharacterCardProps | null;
 }
-
-const shimmer = keyframes`
-  0% {
-    background-position: -200px;
-  }
-  100% {
-    background-position: 200px;
-  }
-`;
 
 const truncateText = (text: string, maxLength: number): string => {
   if (text.length <= maxLength) return text;
@@ -171,9 +162,6 @@ export function CharacterCardModal({
                       variant="contained"
                       sx={{
                         backgroundColor: '#3B82F6',
-                        backgroundImage: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0) 100%)',
-                        backgroundSize: '200% 100%',
-                        animation: `${shimmer} 2s infinite`,
                         '&:hover': {
                           backgroundColor: '#3B82F6',
                         },
@@ -185,7 +173,11 @@ export function CharacterCardModal({
                         isLoading ? <CircularProgress size={24} /> : null
                       }
                     >
-                      {isLoading ? 'Processing...' : 'Chat Now'}
+                      {isLoading ? (
+                        <ShimmerText line={1} gap={10} />
+                      ) : (
+                        'Chat Now'
+                      )}
                     </Button>
                     <Box className="flex items-center gap-1 ml-4">
                       <MessageIcon fontSize="small" className="text-white" />

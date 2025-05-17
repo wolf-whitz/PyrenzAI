@@ -1,10 +1,10 @@
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { createTheme } from '@mui/material/styles';
 import { componentOverrides } from '../overrides/componentOverrides';
 import { CreateLightTheme } from '../themes/LightTheme';
 
-const isDarkMode = document.documentElement.classList.contains('theme-dark');
-
 export function GetTheme() {
+  const isDarkMode = document.documentElement.getAttribute('data-mui-theme') === 'theme-dark';
+
   if (isDarkMode) {
     const theme = createTheme({
       typography: {
@@ -26,7 +26,6 @@ export function GetTheme() {
       },
       components: {
         ...componentOverrides,
-       
       },
     });
 
