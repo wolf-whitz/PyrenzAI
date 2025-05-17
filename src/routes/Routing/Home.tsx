@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Container } from '@mui/material';
-import toast from 'react-hot-toast';
 import {
   Sidebar,
   Banner,
@@ -46,15 +45,6 @@ export function Home() {
     fetchUserData();
   }, [fetchUserData]);
 
-  useEffect(() => {
-    const toastShown = localStorage.getItem('toastShown');
-    if (!toastShown) {
-      toast("PyrenzAI Is currently in development, You can check out our discord server if you wish to learn more about pyrenzai! PS: Feel free to explore around haha", {
-        duration: 5000,
-      });
-      localStorage.setItem('toastShown', 'true');
-    }
-  }, []);
 
   return (
     <motion.section
