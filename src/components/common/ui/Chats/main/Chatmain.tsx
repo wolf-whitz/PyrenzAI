@@ -74,18 +74,18 @@ export function ChatMain({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <Avatar
-          alt={char?.character_name || 'Anon'}
-          src={char?.icon || ''}
-          className="w-16 h-16"
-        />
         <div className="flex items-center mt-2">
           <IconButton
             onClick={handleGoHome}
             className="mr-2 text-white"
             aria-label="Go home"
           >
-            <ChevronLeft className="w-6 h-6" />
+            <ChevronLeft className="w-6 h-6 md:hidden" />
+            <Avatar
+              alt={char?.character_name || 'Anon'}
+              src={char?.icon || ''}
+              className="w-6 h-6 ml-1"
+            />
           </IconButton>
           <Typography variant="h6" className="text-lg font-bold">
             {char?.character_name || 'Anon'}

@@ -88,4 +88,11 @@ export const componentOverrides = {
       },
     },
   },
+  MuiCircularProgress: {
+    styleOverrides: {
+      root: {
+        color: 'blue',
+      },
+    },
+  },
 };
