@@ -14,9 +14,7 @@ interface ChatDataResponse {
   token_total?: number;
 }
 
-export async function getChatData(
-  chatId: string
-): Promise<ChatDataResponse> {
+export async function getChatData(chatId: string): Promise<ChatDataResponse> {
   const { data: chatData, error: chatError } = await supabase
     .from('chats')
     .select('char_uuid')

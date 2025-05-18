@@ -11,7 +11,12 @@ interface MuiStyledDrawerProps {
   children: React.ReactNode;
 }
 
-export const MuiStyledDrawer = ({ isOpen, onClose, profileData, children }: MuiStyledDrawerProps) => {
+export const MuiStyledDrawer = ({
+  isOpen,
+  onClose,
+  profileData,
+  children,
+}: MuiStyledDrawerProps) => {
   return (
     <Drawer
       anchor="right"
@@ -30,7 +35,7 @@ export const MuiStyledDrawer = ({ isOpen, onClose, profileData, children }: MuiS
         <Avatar alt="Profile" src={profileData.avatarUrl} />
         <Typography
           variant="subtitle1"
-          className='font-baloo'
+          className="font-baloo"
           sx={{
             marginLeft: 1,
           }}

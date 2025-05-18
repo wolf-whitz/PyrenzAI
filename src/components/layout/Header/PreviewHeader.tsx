@@ -147,7 +147,8 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
                         backgroundColor: 'rgba(0, 0, 0, 0.3)',
                         borderRadius: '50px',
                         transform: 'scale(1.05)',
-                        transition: 'transform 0.3s ease, background-color 0.3s ease',
+                        transition:
+                          'transform 0.3s ease, background-color 0.3s ease',
                       },
                     }}
                   >
@@ -166,7 +167,8 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
                         '&:hover': {
                           backgroundColor: 'darkred',
                           transform: 'scale(1.05)',
-                          transition: 'transform 0.3s ease, background-color 0.3s ease',
+                          transition:
+                            'transform 0.3s ease, background-color 0.3s ease',
                         },
                       }}
                     >
@@ -180,7 +182,8 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
                         '&:hover': {
                           backgroundColor: 'rgba(0, 0, 0, 0.3)',
                           transform: 'scale(1.05)',
-                          transition: 'transform 0.3s ease, background-color 0.3s ease',
+                          transition:
+                            'transform 0.3s ease, background-color 0.3s ease',
                         },
                       }}
                     >

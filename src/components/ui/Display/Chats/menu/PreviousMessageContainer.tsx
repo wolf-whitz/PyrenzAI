@@ -5,7 +5,11 @@ import { Avatar, CircularProgress, Typography, Box } from '@mui/material';
 import { supabase } from '~/Utility/supabaseClient';
 import { GetUserUUID } from '@functions';
 
-const CustomContextMenu = lazy(() => import('~/components/ui/Actions/ContextMenu/CustomContextMenu').then(module => ({ default: module.CustomContextMenu })));
+const CustomContextMenu = lazy(() =>
+  import('~/components/ui/Actions/ContextMenu/CustomContextMenu').then(
+    (module) => ({ default: module.CustomContextMenu })
+  )
+);
 
 interface Chat {
   id: string;

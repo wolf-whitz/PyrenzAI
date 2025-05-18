@@ -75,7 +75,8 @@ export function SettingsSidebar({
       open={settingsOpen}
       onClose={onClose}
       PaperProps={{
-        className: "w-full sm:w-72 bg-gray-900 text-white p-6 shadow-lg rounded-l-xl",
+        className:
+          'w-full sm:w-72 bg-gray-900 text-white p-6 shadow-lg rounded-l-xl',
       }}
     >
       <Box className="flex justify-center">

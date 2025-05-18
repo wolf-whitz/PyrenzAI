@@ -8,7 +8,7 @@ import {
   CustomModelFields,
   ModelSelection,
   SliderComponent,
-  ProviderModals
+  ProviderModals,
 } from '@ui';
 import InfoIcon from '@mui/icons-material/Info';
 import BuildIcon from '@mui/icons-material/Build';

@@ -3,7 +3,8 @@ import { componentOverrides } from '../overrides/componentOverrides';
 import { CreateLightTheme } from '../themes/LightTheme';
 
 export function GetTheme() {
-  const isDarkMode = document.documentElement.getAttribute('data-mui-theme') === 'theme-dark';
+  const isDarkMode =
+    document.documentElement.getAttribute('data-mui-theme') === 'theme-dark';
 
   if (isDarkMode) {
     const theme = createTheme({

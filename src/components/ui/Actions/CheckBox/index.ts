@@ -1,2 +1,2 @@
-export * from './CheckBox'
-export * from './VisibilityCheckboxes'
+export * from './CheckBox';
+export * from './VisibilityCheckboxes';

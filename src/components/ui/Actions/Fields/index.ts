@@ -1,2 +1,2 @@
-export * from "./CustomFields";
-export * from "./RequiredFieldsPopup";
+export * from './CustomFields';
+export * from './RequiredFieldsPopup';

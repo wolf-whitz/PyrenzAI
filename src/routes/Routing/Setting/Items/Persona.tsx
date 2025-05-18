@@ -7,7 +7,7 @@ import {
   CreateCharacterCardImageModal,
   CharacterCardImageModal,
 } from '@ui';
-import { PersonaList } from '@layout'
+import { PersonaList } from '@layout';
 
 interface PersonaCard {
   id: string;

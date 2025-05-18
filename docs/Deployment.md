@@ -23,10 +23,10 @@ Easiest way to get started is using Docker. We’ve already set it up so you don
 
 3. This will:
 
-   * Build the Docker image
-   * Run `npm install`
-   * Run `npm run build` to bundle the app
-   * Start the production server using `npm run prod`
+   - Build the Docker image
+   - Run `npm install`
+   - Run `npm run build` to bundle the app
+   - Start the production server using `npm run prod`
 
 4. Once it's up, the app will be live at:
    👉 [http://localhost:8080](http://localhost:8080)
@@ -111,8 +111,6 @@ If you just wanna build the app without dealing with Docker, npm commands, or al
 This batch file automatically runs all the build steps for you like installing dependencies, building the app, and starting the production server so you don’t have to remember any commands like a caveman haha.
 
 Once it’s done, PyrenzAI should be live locally, usually at [http://localhost:8080](http://localhost:8080).
-
-
 
 ### © 2025 Pyrenz AI. All rights reserved. Under GPL 3.0 License
 

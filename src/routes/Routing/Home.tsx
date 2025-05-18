@@ -1,18 +1,14 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Container } from '@mui/material';
+import { CustomButton, Pagination, Banner } from '@ui';
 import {
-  CustomButton,
-  Pagination,
-  Banner,
-} from '@ui';
-import { 
   Sidebar,
   SearchBar,
   Footer,
   PreviewHeader,
   CharacterList,
-} from '@layout'
+} from '@layout';
 import { useHomepageAPI } from '@api';
 
 export function Home() {
@@ -46,7 +42,6 @@ export function Home() {
   useEffect(() => {
     fetchUserData();
   }, [fetchUserData]);
-
 
   return (
     <motion.section

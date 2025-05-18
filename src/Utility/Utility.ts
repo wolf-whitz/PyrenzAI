@@ -123,12 +123,15 @@ export const Utils = {
     }
   },
 
-  useFetch<T>(endpoint: string, params: Record<string, any> = {}): UseQueryResult<T, Error> {
+  useFetch<T>(
+    endpoint: string,
+    params: Record<string, any> = {}
+  ): UseQueryResult<T, Error> {
     return useQuery<T, Error>({
       queryKey: [`${BASE_URL}${endpoint}`, params],
       queryFn: async () => {
         return await this.request<T>('GET', endpoint, {}, params, false);
-      }
+      },
     });
   },
 

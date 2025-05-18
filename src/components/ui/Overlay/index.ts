@@ -5,4 +5,3 @@ export * from './Indicator/TypingIndicator';
 export * from './Modal';
 
 export * from './Spinner/Spinner';
-

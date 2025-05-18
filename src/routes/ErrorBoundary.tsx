@@ -40,16 +40,17 @@ class ErrorBoundary extends Component<Props, State> {
     const { error, errorInfo } = this.state;
     if (!error || !errorInfo) return;
 
-    const timestamp = new Date().toLocaleString('en-GB', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: true,
-    }).replace(',', ' |');
-    
+    const timestamp = new Date()
+      .toLocaleString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true,
+      })
+      .replace(',', ' |');
 
     const errorDetails = {
       timestamp: timestamp,
@@ -83,7 +84,10 @@ class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-black">
-          <div className="w-full max-w-md p-6 bg-gray-800 rounded-lg shadow-md" data-aos="fade-up">
+          <div
+            className="w-full max-w-md p-6 bg-gray-800 rounded-lg shadow-md"
+            data-aos="fade-up"
+          >
             <Typography
               variant="h4"
               component="h1"
@@ -91,8 +95,8 @@ class ErrorBoundary extends Component<Props, State> {
               className="text-red-400 font-bold mb-4"
               data-aos="fade-down"
             >
-              Something went wrong. The developer has been notified and is looking
-              into the issue. (╥‸╥)
+              Something went wrong. The developer has been notified and is
+              looking into the issue. (╥‸╥)
             </Typography>
 
             <Typography
