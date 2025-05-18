@@ -55,14 +55,12 @@ export default defineConfig({
     target: 'esnext',
     cssCodeSplit: true,
     rollupOptions: {
+      input: path.resolve(__dirname, 'index.html'),
       output: {
         entryFileNames: 'assets/[name].[hash:8].js',
         chunkFileNames: 'assets/[name].[hash:8].js',
         assetFileNames: 'assets/[name].[hash:8].[ext]',
         compact: true,
-      },
-      treeshake: {
-        moduleSideEffects: 'no-external',
       },
     },
     commonjsOptions: {

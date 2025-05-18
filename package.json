@@ -4,11 +4,11 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "build": "concurrently \"tsc -p tsconfig.build.json \" \"vite build \"",
+    "build": "concurrently \"tsc -p tsconfig.build.json \" \"vite build \" && npm run sync",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "dev": "concurrently \"vite dev --port 8800\" \"tsc --watch\"",
-    "prod": "vite prod",
+    "dev": "concurrently \"vite\" \"tsc --watch\"",
+    "prod": "vite preview",
     "sync": "node csp-sync.cjs",
     "barrels": "barrelsby"
   },

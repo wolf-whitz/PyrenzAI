@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SkeletonCard, CharacterCard } from '~/components';
-import { Typography } from '@mui/material';
+import { Typography, Box } from '@mui/material';
 
 const MemoizedCharacterCard = memo(CharacterCard);
 
@@ -34,8 +34,16 @@ export function CharacterList({
   t,
 }: CharacterListProps) {
   return (
-    <motion.div
-      className="grid w-full gap-x-6 gap-y-4 pb-4 min-h-[50vh] grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6"
+    <Box
+      component={motion.div}
+      sx={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        gap: 2,
+        pb: 4,
+        minHeight: '50vh',
+        justifyContent: { xs: 'center', sm: 'flex-start' },
+      }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
@@ -43,49 +51,70 @@ export function CharacterList({
       <AnimatePresence>
         {loading ? (
           Array.from({ length: itemsPerPage }).map((_, i) => (
-            <motion.article
+            <Box
               key={i}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.5 }}
-              className="w-full"
-              aria-label={t('ariaLabels.loadingCharacter', {
-                index: i + 1,
-              })}
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: { xs: '100%', sm: '48%', md: '32%', lg: '24%', xl: '20%' },
+              }}
             >
-              <SkeletonCard />
-            </motion.article>
+              <motion.article
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+                aria-label={t('ariaLabels.loadingCharacter', {
+                  index: i + 1,
+                })}
+              >
+                <SkeletonCard />
+              </motion.article>
+            </Box>
           ))
         ) : characters.length > 0 ? (
           characters.map((char) => (
-            <motion.article
+            <Box
               key={char.id}
+              component={motion.article}
+              sx={{
+                width: { xs: '100%', sm: '48%', md: '32%', lg: '24%', xl: '20%' },
+                transition: 'transform 0.3s ease-in-out',
+                '&:hover': {
+                  transform: 'scale(1.05)',
+                },
+                p: 1,
+              }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.5 }}
-              className="transition-transform hover:scale-105 p-2"
               aria-labelledby={`character-${char.name}`}
             >
               <MemoizedCharacterCard {...char} />
-            </motion.article>
+            </Box>
           ))
         ) : (
-          <motion.div
-            className="text-gray-500 text-center w-full"
-            aria-live="polite"
+          <Box
+            component={motion.div}
+            sx={{
+              color: 'text.secondary',
+              textAlign: 'center',
+              width: '100%',
+            }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
+            aria-live="polite"
           >
             <Typography variant="body1">
               {t('messages.noCharactersFound')}
             </Typography>
-          </motion.div>
+          </Box>
         )}
       </AnimatePresence>
-    </motion.div>
+    </Box>
   );
 }

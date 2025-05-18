@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Container } from '@mui/material';
+import { Container, useMediaQuery, Box, useTheme,
+} from '@mui/material';
 import { CustomButton, Pagination, Banner } from '@ui';
 import {
   Sidebar,
@@ -8,12 +9,12 @@ import {
   Footer,
   PreviewHeader,
   CharacterList,
+  MobileNav,
 } from '@layout';
 import { useHomepageAPI } from '@api';
 
 export function Home() {
   const {
-    navigate,
     search,
     currentPage,
     characters,
@@ -32,16 +33,18 @@ export function Home() {
 
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  useEffect(() => {
-    navigate(`?page=${currentPage}&search=${encodeURIComponent(search)}`, {
-      replace: true,
+  const fetchData = useCallback(() => {
+    fetchUserData().catch(error => {
+      console.error('Error fetching user data:', error);
     });
-  }, [currentPage, search, navigate]);
+  }, [fetchUserData]);
 
   useEffect(() => {
-    fetchUserData();
-  }, [fetchUserData]);
+    fetchData();
+  }, [fetchData]);
 
   return (
     <motion.section
@@ -69,14 +72,30 @@ export function Home() {
         disableGutters
         className="flex flex-1 flex-col md:flex-row"
       >
-        <nav
-          className="hidden md:flex md:pl-[50px] mt-16"
-          aria-label={t('ariaLabels.mainNavigation')}
-        >
-          <Sidebar className="hidden md:flex" />
-        </nav>
+        {!isMobile && (
+          <Box
+            component="nav"
+            sx={{
+              display: { xs: 'none', md: 'flex' },
+              pl: '50px',
+              mt: '16px',
+            }}
+            aria-label={t('ariaLabels.mainNavigation')}
+          >
+            <Sidebar />
+          </Box>
+        )}
 
-        <main className="p-6 flex-1 flex flex-col items-center">
+        <Box
+          component="main"
+          sx={{
+            flex: 1,
+            p: 3,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
           <header className="w-full">
             <Banner />
           </header>
@@ -129,10 +148,10 @@ export function Home() {
             setCurrentPage={setCurrentPage}
             t={t}
           />
-        </main>
+        </Box>
       </Container>
 
-
+      {isMobile && <MobileNav setShowLoginModal={setShowLogin} />}
 
       <footer className="px-4" role="contentinfo">
         <Footer />

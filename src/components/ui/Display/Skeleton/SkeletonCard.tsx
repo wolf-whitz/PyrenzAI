@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Box, Typography, Skeleton } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 
 export function SkeletonCard() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -12,28 +12,13 @@ export function SkeletonCard() {
 
   return (
     <motion.div
-      style={{
-        width: '100%',
-        minHeight: '360px',
-        borderRadius: '8px',
-        boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
-        border: '1px solid #374151',
-        backgroundColor: '#1f2937',
-        marginBottom: '16px',
-        overflow: 'hidden',
-      }}
+      className="w-full min-h-[360px] rounded-lg shadow-md border border-gray-600 bg-gray-800 mb-4 overflow-hidden"
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: isLoaded ? 1 : 0, scale: isLoaded ? 1 : 0.95 }}
       transition={{ duration: 0.7 }}
     >
       <motion.div
-        style={{
-          width: '100%',
-          height: '192px',
-          backgroundColor: '#374151',
-          borderTopLeftRadius: '8px',
-          borderTopRightRadius: '8px',
-        }}
+        className="w-full h-48 bg-gray-600 rounded-t-lg"
         initial={{ opacity: 0 }}
         animate={{ opacity: isLoaded ? 1 : 0 }}
         transition={{ delay: 0.2, duration: 0.5 }}
@@ -41,39 +26,21 @@ export function SkeletonCard() {
 
       <Box sx={{ p: 3 }}>
         <motion.div
-          style={{
-            height: '24px',
-            backgroundColor: '#4b5563',
-            width: '75%',
-            marginBottom: '8px',
-            borderRadius: '4px',
-          }}
+          className="h-6 bg-gray-500 w-3/4 mb-2 rounded"
           initial={{ width: 0 }}
           animate={{ width: isLoaded ? '75%' : 0 }}
           transition={{ delay: 0.4, duration: 0.5 }}
         ></motion.div>
 
         <motion.div
-          style={{
-            height: '16px',
-            backgroundColor: '#4b5563',
-            width: '100%',
-            marginBottom: '8px',
-            borderRadius: '4px',
-          }}
+          className="h-4 bg-gray-500 w-full mb-2 rounded"
           initial={{ width: 0 }}
           animate={{ width: isLoaded ? '100%' : 0 }}
           transition={{ delay: 0.6, duration: 0.5 }}
         ></motion.div>
 
         <motion.div
-          style={{
-            height: '16px',
-            backgroundColor: '#4b5563',
-            width: '66.67%',
-            marginBottom: '8px',
-            borderRadius: '4px',
-          }}
+          className="h-4 bg-gray-500 w-2/3 mb-2 rounded"
           initial={{ width: 0 }}
           animate={{ width: isLoaded ? '66.67%' : 0 }}
           transition={{ delay: 0.8, duration: 0.5 }}
@@ -83,12 +50,7 @@ export function SkeletonCard() {
           {[...Array(3)].map((_, index) => (
             <motion.div
               key={index}
-              style={{
-                height: '24px',
-                backgroundColor: '#4b5563',
-                width: '64px',
-                borderRadius: '9999px',
-              }}
+              className="h-6 bg-gray-500 w-16 rounded-full"
               initial={{ opacity: 0 }}
               animate={{ opacity: isLoaded ? 1 : 0 }}
               transition={{ delay: 1 + index * 0.2, duration: 0.5 }}
@@ -106,12 +68,7 @@ export function SkeletonCard() {
           }}
         >
           <motion.div
-            style={{
-              height: '20px',
-              width: '48px',
-              backgroundColor: '#4b5563',
-              borderRadius: '4px',
-            }}
+            className="h-5 w-12 bg-gray-500 rounded"
             initial={{ width: 0 }}
             animate={{ width: isLoaded ? '48px' : 0 }}
             transition={{ delay: 1.6, duration: 0.5 }}
@@ -120,23 +77,13 @@ export function SkeletonCard() {
             sx={{ ml: 'auto', display: 'flex', alignItems: 'center', gap: 2 }}
           >
             <motion.div
-              style={{
-                height: '20px',
-                width: '20px',
-                backgroundColor: '#4b5563',
-                borderRadius: '9999px',
-              }}
+              className="h-5 w-5 bg-gray-500 rounded-full"
               initial={{ opacity: 0 }}
               animate={{ opacity: isLoaded ? 1 : 0 }}
               transition={{ delay: 1.8, duration: 0.5 }}
             ></motion.div>
             <motion.div
-              style={{
-                height: '20px',
-                width: '20px',
-                backgroundColor: '#4b5563',
-                borderRadius: '9999px',
-              }}
+              className="h-5 w-5 bg-gray-500 rounded-full"
               initial={{ opacity: 0 }}
               animate={{ opacity: isLoaded ? 1 : 0 }}
               transition={{ delay: 2, duration: 0.5 }}

@@ -1,6 +1,10 @@
-const CACHE_NAME = 'pre-cache';
+const CACHE_NAME = 'PyrenzAI-cache';
+const PRECACHE_URLS = ['/manifest.json', '/'];
 
 self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE_URLS))
+  );
   self.skipWaiting();
 });
 
@@ -23,7 +27,6 @@ self.addEventListener('fetch', (event) => {
 
   const isHtml = accept.includes('text/html');
   const isCss = event.request.destination === 'style' || reqUrl.pathname.endsWith('.css');
-  const isFont = reqUrl.pathname.endsWith('.ttf');
 
   if (event.request.mode === 'navigate') {
     event.respondWith(
@@ -37,12 +40,14 @@ self.addEventListener('fetch', (event) => {
           }
           return res;
         })
-        .catch(() => caches.match(event.request))
+        .catch(() => caches.match(event.request).then((cachedResponse) => {
+          return cachedResponse || caches.match('/');
+        }))
     );
     return;
   }
 
-  if (isCss || isFont) {
+  if (isCss) {
     event.respondWith(
       caches.match(event.request).then((cached) => {
         const fetchAndCache = fetch(event.request)
