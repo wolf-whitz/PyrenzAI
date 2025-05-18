@@ -132,9 +132,7 @@ export function Home() {
         </main>
       </Container>
 
-      <nav className="fixed bottom-0 left-0 w-full bg-gray-900 text-white flex justify-around p-2 shadow-lg z-40 md:hidden">
-        <Sidebar className="md:hidden" />
-      </nav>
+
 
       <footer className="px-4" role="contentinfo">
         <Footer />
