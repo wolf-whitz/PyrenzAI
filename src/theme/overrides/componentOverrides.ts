@@ -1,6 +1,13 @@
-const isDarkMode = document.documentElement.classList.contains('theme-dark');
+const getIsDarkMode = () => document.documentElement.classList.contains('theme-dark');
 
 export const componentOverrides = {
+  values: {
+    xs: 0,
+    sm: 640,
+    md: 768,
+    lg: 1024,
+    xl: 1280,
+  },
   MuiSlider: {
     styleOverrides: {
       thumb: {
@@ -31,8 +38,8 @@ export const componentOverrides = {
     styleOverrides: {
       tooltip: {
         borderRadius: '4px',
-        backgroundColor: isDarkMode ? '#add8e6' : '#fff',
-        color: isDarkMode ? '#fff' : '#000',
+        backgroundColor: getIsDarkMode() ? '#add8e6' : '#fff',
+        color: getIsDarkMode() ? '#fff' : '#000',
         fontFamily: `'Baloo Da 2', cursive`,
       },
     },

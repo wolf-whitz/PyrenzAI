@@ -8,6 +8,8 @@ import {
   ListItemIcon,
   ListItemText,
   Box,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import {
   Home as HomeIcon,
@@ -29,6 +31,8 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { t } = useTranslation();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   useEffect(() => {
     const checkUserSession = async () => {
@@ -80,121 +84,125 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
           </h1>
         </div>
 
-        <div className="hidden md:flex items-center space-x-8">
-          {menuItems.map(({ name, icon, link, external }) => (
-            <MuiBlueButton
-              key={name}
-              startIcon={icon}
-              className="font-baloo hover:text-blue-600"
-              onClick={() =>
-                external
-                  ? window.open(link, '_blank')
-                  : (window.location.href = link)
-              }
-              Blue={true}
-            >
-              {name}
-            </MuiBlueButton>
-          ))}
-          {!isLoggedIn && (
-            <>
+        {!isMobile && (
+          <div className="hidden md:flex items-center space-x-8">
+            {menuItems.map(({ name, icon, link, external }) => (
               <MuiBlueButton
+                key={name}
+                startIcon={icon}
                 className="font-baloo hover:text-blue-600"
-                onClick={() => setShowLogin(true)}
+                onClick={() =>
+                  external
+                    ? window.open(link, '_blank')
+                    : (window.location.href = link)
+                }
                 Blue={true}
               >
-                {t('buttons.login')}
+                {name}
               </MuiBlueButton>
-              <MuiBlueButton
-                variant="contained"
-                className="bg-[#E03201] font-baloo hover:bg-blue-600"
-                onClick={() => setShowRegister(true)}
-                Blue={true}
-              >
-                {t('buttons.signUp')}
-              </MuiBlueButton>
-            </>
-          )}
-        </div>
+            ))}
+            {!isLoggedIn && (
+              <>
+                <MuiBlueButton
+                  className="font-baloo hover:text-blue-600"
+                  onClick={() => setShowLogin(true)}
+                  Blue={true}
+                >
+                  {t('buttons.login')}
+                </MuiBlueButton>
+                <MuiBlueButton
+                  variant="contained"
+                  className="bg-[#E03201] font-baloo hover:bg-blue-600"
+                  onClick={() => setShowRegister(true)}
+                  Blue={true}
+                >
+                  {t('buttons.signUp')}
+                </MuiBlueButton>
+              </>
+            )}
+          </div>
+        )}
 
-        <div className="md:hidden">
-          <IconButton onClick={() => setMenuOpen(true)}>
-            <MenuIcon />
-          </IconButton>
-          <MuiStyledDrawer
-            isOpen={menuOpen}
-            onClose={() => setMenuOpen(false)}
-            profileData={{ name: 'User', avatarUrl: '/path-to-avatar.jpg' }}
-          >
-            <Box
-              sx={{ width: 250, backgroundColor: 'gray.900' }}
-              role="presentation"
-              onClick={() => setMenuOpen(false)}
-              onKeyDown={() => setMenuOpen(false)}
+        {isMobile && (
+          <div className="md:hidden">
+            <IconButton onClick={() => setMenuOpen(true)}>
+              <MenuIcon />
+            </IconButton>
+            <MuiStyledDrawer
+              isOpen={menuOpen}
+              onClose={() => setMenuOpen(false)}
+              profileData={{ name: 'User', avatarUrl: '/path-to-avatar.jpg' }}
             >
-              <List>
-                {menuItems.map(({ name, icon, link, external }) => (
-                  <ListItem
-                    key={name}
-                    component="button"
-                    onClick={() =>
-                      external
-                        ? window.open(link, '_blank')
-                        : (window.location.href = link)
-                    }
-                    sx={{
-                      '&:hover': {
-                        backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                        borderRadius: '50px',
-                        transform: 'scale(1.05)',
-                        transition:
-                          'transform 0.3s ease, background-color 0.3s ease',
-                      },
-                    }}
-                  >
-                    <ListItemIcon>{icon}</ListItemIcon>
-                    <ListItemText primary={name} />
-                  </ListItem>
-                ))}
-                {!isLoggedIn && (
-                  <>
+              <Box
+                sx={{ width: 250, backgroundColor: 'gray.900' }}
+                role="presentation"
+                onClick={() => setMenuOpen(false)}
+                onKeyDown={() => setMenuOpen(false)}
+              >
+                <List>
+                  {menuItems.map(({ name, icon, link, external }) => (
                     <ListItem
+                      key={name}
                       component="button"
-                      onClick={() => setShowLogin(true)}
+                      onClick={() =>
+                        external
+                          ? window.open(link, '_blank')
+                          : (window.location.href = link)
+                      }
                       sx={{
-                        backgroundColor: 'red',
-                        borderRadius: '50px',
-                        '&:hover': {
-                          backgroundColor: 'darkred',
-                          transform: 'scale(1.05)',
-                          transition:
-                            'transform 0.3s ease, background-color 0.3s ease',
-                        },
-                      }}
-                    >
-                      <ListItemText primary={t('buttons.login')} />
-                    </ListItem>
-                    <ListItem
-                      component="button"
-                      onClick={() => setShowRegister(true)}
-                      sx={{
-                        borderRadius: '50px',
                         '&:hover': {
                           backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                          borderRadius: '50px',
                           transform: 'scale(1.05)',
                           transition:
                             'transform 0.3s ease, background-color 0.3s ease',
                         },
                       }}
                     >
-                      <ListItemText primary={t('buttons.signUp')} />
+                      <ListItemIcon>{icon}</ListItemIcon>
+                      <ListItemText primary={name} />
                     </ListItem>
-                  </>
-                )}
-              </List>
-            </Box>
-          </MuiStyledDrawer>
-        </div>
+                  ))}
+                  {!isLoggedIn && (
+                    <>
+                      <ListItem
+                        component="button"
+                        onClick={() => setShowLogin(true)}
+                        sx={{
+                          backgroundColor: 'red',
+                          borderRadius: '50px',
+                          '&:hover': {
+                            backgroundColor: 'darkred',
+                            transform: 'scale(1.05)',
+                            transition:
+                              'transform 0.3s ease, background-color 0.3s ease',
+                          },
+                        }}
+                      >
+                        <ListItemText primary={t('buttons.login')} />
+                      </ListItem>
+                      <ListItem
+                        component="button"
+                        onClick={() => setShowRegister(true)}
+                        sx={{
+                          borderRadius: '50px',
+                          '&:hover': {
+                            backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                            transform: 'scale(1.05)',
+                            transition:
+                              'transform 0.3s ease, background-color 0.3s ease',
+                          },
+                        }}
+                      >
+                        <ListItemText primary={t('buttons.signUp')} />
+                      </ListItem>
+                    </>
+                  )}
+                </List>
+              </Box>
+            </MuiStyledDrawer>
+          </div>
+        )}
       </Toolbar>
     </AppBar>
   );
