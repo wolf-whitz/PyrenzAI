@@ -17,9 +17,7 @@ interface PaginationProps {
 
 export function Pagination({
   currentPage,
-  totalPages,
   itemsPerPage,
-  userUUID,
   setCurrentPage,
   t,
   searchQuery = '',
@@ -68,7 +66,7 @@ export function Pagination({
           disabled={isLoading}
           sx={{
             color: '#fff',
-            borderColor: 'blue',
+            borderColor: '#add8e6',
             borderRadius: '9999px',
             padding: '0.5rem 1rem',
             cursor: isLoading ? 'not-allowed' : 'pointer',

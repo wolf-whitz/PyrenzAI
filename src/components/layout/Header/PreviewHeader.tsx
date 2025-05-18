@@ -76,7 +76,7 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
             className="h-8 w-8"
           />
           <h1 className="text-2xl font-bold font-baloo">
-            Pyrenz<span className="text-blue-600">AI</span>
+            Pyrenz<span className="text-[#add8e6]">AI</span>
           </h1>
         </div>
 
