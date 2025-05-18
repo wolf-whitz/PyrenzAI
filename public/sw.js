@@ -1,46 +1,62 @@
-/**
- * Service Worker, What is it?
- * @ServiceWorker is a script that the browser runs in the background, separate from a web page, opening the door to features that don't need a web page or user interaction.
- * For example, it enables the creation of push notifications and background syncs.
- * It also allows you to intercept network requests and cache resources, enabling offline functionality and many more features.
- * @see https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API
- */
-
-const CACHE_NAME = 'cache-v1';
-const OFFLINE_URL = '/Html/Offline.html';
-const NOSCRIPT_URL = '/Html/Noscript.html';
-
-const urlsToCache = [OFFLINE_URL, NOSCRIPT_URL];
+const CACHE_NAME = 'pre-cache';
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(urlsToCache);
-    })
-  );
   self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
-        })
-      )
+      Promise.all(keys.map((key) => {
+        if (key !== CACHE_NAME) return caches.delete(key);
+      }))
     )
   );
   self.clients.claim();
 });
 
 self.addEventListener('fetch', (event) => {
+  if (event.request.method !== 'GET') return;
+
+  const reqUrl = new URL(event.request.url);
+  const accept = event.request.headers.get('Accept') || '';
+
+  const isHtml = accept.includes('text/html');
+  const isCss = event.request.destination === 'style' || reqUrl.pathname.endsWith('.css');
+  const isFont = reqUrl.pathname.endsWith('.ttf');
+
   if (event.request.mode === 'navigate') {
     event.respondWith(
-      fetch(event.request).catch(() => {
-        return caches.match(OFFLINE_URL);
+      fetch(event.request)
+        .then((res) => {
+          if (res.ok) {
+            const resClone = res.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, resClone);
+            });
+          }
+          return res;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  if (isCss || isFont) {
+    event.respondWith(
+      caches.match(event.request).then((cached) => {
+        const fetchAndCache = fetch(event.request)
+          .then((res) => {
+            if (res.ok) {
+              const resClone = res.clone();
+              caches.open(CACHE_NAME).then((cache) => {
+                cache.put(event.request, resClone);
+              });
+            }
+            return res;
+          })
+          .catch(() => cached);
+        return cached || fetchAndCache;
       })
     );
   }
