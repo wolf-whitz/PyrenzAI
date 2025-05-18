@@ -2,7 +2,7 @@ import { Character, Message } from '@shared-types/chatTypes';
 import toast from 'react-hot-toast';
 import * as Sentry from '@sentry/react';
 import { supabase } from '~/Utility/supabaseClient';
-import GetChatData from '~/functions/Chats/GetChatData';
+import { getChatData } from '@functions';
 
 interface ChatMessageWithId {
   id: string;
@@ -27,7 +27,7 @@ export const fetchChatData = async (
   }
 
   try {
-    const characterData = await GetChatData(conversation_id);
+    const characterData = await getChatData(conversation_id);
 
     if (characterData.error) {
       toast.error(characterData.error);

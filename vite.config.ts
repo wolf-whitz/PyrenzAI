@@ -1,18 +1,24 @@
 import { defineConfig } from 'vite';
-import preact from '@preact/preset-vite'
+import react from '@vitejs/plugin-react-swc';
 import path from 'path';
 import tailwindcss from 'tailwindcss';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
 import { cspPlugin } from './plugin/DevheaderCsp';
 import { createHtmlPlugin } from 'vite-plugin-html';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
   plugins: [
-    preact(),
+    react(),
+
     sentryVitePlugin({
       org: 'pyrenzai',
       project: 'pyrenzai',
       authToken: process.env.VITE_SENTRY_AUTH_TOKEN,
+    }),
+
+    tsconfigPaths({
+      projects: ['tsconfig.app.json'],
     }),
 
     cspPlugin(),
@@ -30,35 +36,24 @@ export default defineConfig({
       },
     }),
   ],
+
   css: {
     postcss: {
       plugins: [tailwindcss()],
     },
   },
+
   publicDir: 'public',
   cacheDir: 'node_modules/.vite_cache',
+
   build: {
     outDir: 'build',
     assetsDir: 'assets',
-    chunkSizeWarningLimit: 5000,
-    minify: 'terser',
+    chunkSizeWarningLimit: 50,
+    minify: 'esbuild',
     sourcemap: true,
-    target: 'es2020',
+    target: 'esnext',
     cssCodeSplit: true,
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true,
-        passes: 3,
-        pure_getters: true,
-        unsafe: true,
-        unsafe_comps: true,
-      },
-      format: {
-        comments: false,
-        beautify: false,
-      },
-    },
     rollupOptions: {
       output: {
         entryFileNames: 'assets/[name].[hash].js',
@@ -66,7 +61,6 @@ export default defineConfig({
         assetFileNames: 'assets/[name].[hash].[ext]',
         compact: true,
       },
-      input: path.resolve(__dirname, 'index.html'),
       treeshake: {
         moduleSideEffects: 'no-external',
       },
@@ -75,31 +69,15 @@ export default defineConfig({
       transformMixedEsModules: true,
     },
   },
+
   server: {
     open: true,
     port: 8080,
   },
-  resolve: {
-    alias: {
-      '~': path.resolve(__dirname, 'src'),
-      '@public': path.resolve(__dirname, 'public'),
-      '@components': path.resolve(__dirname, 'src/components'),
-      '@ui': path.resolve(__dirname, 'src/components/common/ui'),
-      '@layout': path.resolve(__dirname, 'src/components/common/layout'),
-      '@shared-types': path.resolve(
-        __dirname,
-        'src/components/common/shared-types'
-      ),
-      '@store': path.resolve(__dirname, 'src/store'),
-      '@libs': path.resolve(__dirname, 'src/lib'),
-      '@functions': path.resolve(__dirname, 'src/functions'),
-      '@hooks': path.resolve(__dirname, 'src/components/common/hooks'),
-      react: 'preact/compat',
-      'react-dom': 'preact/compat',
-    },
-  },
+
   optimizeDeps: {
     include: ['react', 'react-dom'],
   },
+
   assetsInclude: ['**/*.png', '**/*.jpg'],
 });

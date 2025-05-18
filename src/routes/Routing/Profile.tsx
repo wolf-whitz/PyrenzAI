@@ -6,7 +6,7 @@ import {
   UserProfileHeader,
 } from '~/components';
 import { Box, Typography } from '@mui/material';
-import { GetUserCreatedCharacters } from '@functions/index';
+import { GetUserCreatedCharacters } from '@functions';
 
 export function ProfilePage() {
   const { uuid } = useParams();

@@ -1,9 +1,8 @@
 import React, { useState, DragEvent, useEffect } from 'react';
 import { TextField, Typography, Button, Box } from '@mui/material';
-import { Textarea } from '@components/index';
 import { supabase } from '~/Utility/supabaseClient';
 import { Utils } from '~/Utility/Utility';
-import { GetUserUUID } from '@functions/General/GetUserUUID';
+import { GetUserUUID } from '@functions';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
 interface ApiResponse {

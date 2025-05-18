@@ -21,14 +21,16 @@
     "paths": {
       "~/*": ["src/*"],
       "@public/*": ["public/*"],
-      "@components/*": ["src/components/*"],
-      "@ui/*": ["src/components/common/ui/*"],
-      "@layout/*": ["src/components/common/layout/*"],
-      "@shared-types/*": ["src/components/common/shared-types/*"],
+
+      "@ui": ["src/components"],
+      "@layout": ["src/components"],
+      "@functions": ["src/components"],
+      "@hooks": ["src/components"],
+      "@api": ["src/api"],
+
       "@store/*": ["src/store/*"],
       "@libs/*": ["src/lib/*"],
-      "@functions/*": ["src/functions/*"],
-      "@hooks/*": ["src/components/common/hooks/*"]
+      "@shared-types/*": ["src/components/shared-types/*"]
     }
   },
   "include": ["src/**/*"]

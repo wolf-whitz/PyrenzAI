@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { LanguageModal } from '@components/index';
+import { LanguageModal } from '@ui';
 import { ChevronLeft } from 'lucide-react';
 import { supabase } from '~/Utility/supabaseClient';
-import { Utils } from '~/Utility/Utility';
 import { User } from '@supabase/supabase-js';
 import { useNavigate } from 'react-router-dom';
 import {
   Avatar,
   Button,
-  Container,
   Typography,
   Box,
   Dialog,

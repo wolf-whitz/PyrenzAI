@@ -2,16 +2,18 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Container } from '@mui/material';
 import {
-  Sidebar,
+  CustomButton,
+  Pagination,
   Banner,
+} from '@ui';
+import { 
+  Sidebar,
   SearchBar,
   Footer,
-  CustomButton,
-  CharacterList,
-  Pagination,
   PreviewHeader,
-} from '~/components';
-import { useHomepageAPI } from '~/api';
+  CharacterList,
+} from '@layout'
+import { useHomepageAPI } from '@api';
 
 export function Home() {
   const {

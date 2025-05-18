@@ -1,9 +1,9 @@
-import { GetUserUUID, GetUserData } from '~/functions';
+import { GetUserUUID, GetUserData } from '@functions';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useChatStore } from '~/store';
-import { fetchChatData } from '~/api';
+import { fetchChatData } from '@api';
 import { Sidebar, ChatContainer, PreviousChat } from '~/components';
 import { Box, CircularProgress, Typography } from '@mui/material';
 

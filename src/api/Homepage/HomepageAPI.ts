@@ -7,12 +7,13 @@ import {
   GetLatestCharacters,
   GetRandomCharacters,
   GetCharactersWithTags,
-} from '~/functions';
+} from '@functions';
 import {
   useFetchUserUUID,
   useSyncSearchParams,
   useFetchCharacters,
-} from '~/components';
+} from '@hooks';
+
 import { supabase } from '~/Utility/supabaseClient';
 import { Utils } from '~/Utility/Utility';
 import { sendUserDataToUserDataTable } from '~/api';

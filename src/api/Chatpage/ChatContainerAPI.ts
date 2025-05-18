@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { Utils } from '~/Utility/Utility';
 import { GenerateResponse, Message } from '@shared-types/chatTypes';
 import toast from 'react-hot-toast';
-import { GetUserUUID } from '~/functions';
+import { GetUserUUID } from '@functions';
 import { supabase } from '~/Utility/supabaseClient';
 
 interface GenerateMessageResponse {

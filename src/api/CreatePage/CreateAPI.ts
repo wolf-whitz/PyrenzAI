@@ -1,4 +1,4 @@
-import { GetUserUUID, CreateNewChat } from '~/functions';
+import { GetUserUUID, CreateNewChat } from '@functions';
 import { useState, useEffect } from 'react';
 import { useCharacterStore } from '~/store';
 import { supabase } from '~/Utility/supabaseClient';

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { motion } from 'framer-motion';
-import { SettingsPageLoader, Sidebar } from '@components/index';
+import { SettingsPageLoader, Sidebar } from '@ui';
 import { supabase } from '~/Utility/supabaseClient';
 import { User } from '@supabase/supabase-js';
 import {

@@ -1,0 +1,6 @@
+{
+    "directory": ["src/components"],
+    "exclude": ["__tests__", "types", "styles"],
+    "structure": "flat"
+  }
+  
