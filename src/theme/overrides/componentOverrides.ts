@@ -19,6 +19,7 @@ export const componentOverrides = {
     styleOverrides: {
       root: {
         borderRadius: '4px',
+        color: '#add8e6', 
         '&:hover': {
           backgroundColor: 'transparent',
           color: 'grey',
@@ -30,7 +31,7 @@ export const componentOverrides = {
     styleOverrides: {
       tooltip: {
         borderRadius: '4px',
-        backgroundColor: isDarkMode ? '#333' : '#fff',
+        backgroundColor: isDarkMode ? '#add8e6' : '#fff',
         color: isDarkMode ? '#fff' : '#000',
         fontFamily: `'Baloo Da 2', cursive`,
       },
@@ -39,7 +40,7 @@ export const componentOverrides = {
   MuiListItemText: {
     styleOverrides: {
       root: {
-        color: '#ffffff',
+        color: '#add8e6',
         fontFamily: `'Baloo Da 2', cursive`,
         '&:hover': {
           textDecoration: 'none',
@@ -50,7 +51,7 @@ export const componentOverrides = {
   MuiButton: {
     styleOverrides: {
       root: {
-        borderColor: '#ffffff',
+        borderColor: '#add8e6',
         minWidth: 'auto',
         padding: '6px 12px',
       },
@@ -63,14 +64,14 @@ export const componentOverrides = {
   MuiListItem: {
     styleOverrides: {
       root: {
-        color: '#ffffff',
+        color: '#add8e6',
       },
     },
   },
   MuiListItemIcon: {
     styleOverrides: {
       root: {
-        color: '#ffffff',
+        color: '#add8e6',
       },
     },
   },

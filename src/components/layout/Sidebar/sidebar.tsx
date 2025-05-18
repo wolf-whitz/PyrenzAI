@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import clsx from 'clsx';
@@ -201,7 +202,7 @@ function SidebarItem({
         onMouseEnter={() => setHovered(item.name)}
         onMouseLeave={() => setHovered(null)}
       >
-        {item.icon}
+        {React.cloneElement(item.icon, { style: { color: 'inherit' } })}
       </IconButton>
     </Tooltip>
   );

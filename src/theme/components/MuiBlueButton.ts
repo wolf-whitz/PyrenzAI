@@ -6,8 +6,8 @@ interface MuiBlueButtonProps {
 
 export const MuiBlueButton = styled(Button)<MuiBlueButtonProps>(({ Blue }) => ({
   fontFamily: 'font-baloo, sans-serif',
-  backgroundColor: Blue ? 'transparent' : '#2196F3',
-  color: Blue ? '#2196F3' : '#FFFFFF',
+  backgroundColor: Blue ? 'transparent' : '#add8e6',
+  color: Blue ? '#add8e6' : '#FFFFFF',
   transition: 'all 0.3s ease',
   '&:hover': {
     backgroundColor: Blue ? 'rgba(33, 150, 243, 0.1)' : '#1976D2',
