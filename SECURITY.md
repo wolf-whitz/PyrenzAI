@@ -30,8 +30,8 @@ Here’s how we roll:
 You can help make this project more secure by:
 
 - **Submitting Patches**: Found something? Fix it, fam. Submit a pull request or report the problem.
-- **Reporting Bugs**: If you find something sketchy, we’ll appreciate a heads-up. Better safe than sorry!
+- **Reporting Bugs**: If you find something sketchy, we’ll appreciate a heads-up!
 
-## License
+### © 2025 Pyrenz AI. All rights reserved. Under the GPL 3.0 License
 
-This project is licensed under the [GNU General Public License v3.0 License](LICENSE), so feel free to check the terms and conditions for contributing.
+All changes must comply with our Terms of Service and Privacy Policy. You must also agree to keep the app's source code public.
