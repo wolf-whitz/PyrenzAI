@@ -73,7 +73,7 @@ export function Home() {
           className="hidden md:flex md:pl-[50px] mt-16"
           aria-label={t('ariaLabels.mainNavigation')}
         >
-          <Sidebar />
+          <Sidebar className="hidden md:flex" />
         </nav>
 
         <main className="p-6 flex-1 flex flex-col items-center">
@@ -133,7 +133,7 @@ export function Home() {
       </Container>
 
       <nav className="fixed bottom-0 left-0 w-full bg-gray-900 text-white flex justify-around p-2 shadow-lg z-40 md:hidden">
-        <Sidebar />
+        <Sidebar className="md:hidden" />
       </nav>
 
       <footer className="px-4" role="contentinfo">
