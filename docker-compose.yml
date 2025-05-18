@@ -1,0 +1,9 @@
+version: '3.9'
+
+services:
+  pyrenzai:
+    build: .
+    container_name: pyrenzai
+    ports:
+      - "8080:8080"
+    restart: always
