@@ -7,6 +7,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import { speakMessage } from '@api';
+import { PyrenzMessageBox } from '~/theme';
 
 export function ChatMessages({
   previous_message,
@@ -102,10 +103,7 @@ export function ChatMessages({
               />
             )}
 
-            <Box
-              className={`flex flex-col max-w-md p-3 rounded-lg shadow-md ${
-                isUser ? 'bg-gray-500 text-white' : 'bg-gray-700 text-white'
-              }`}
+            <PyrenzMessageBox
               sx={{ marginLeft: !isUser ? 2 : 0, marginRight: isUser ? 2 : 0 }}
               onClick={(event) => handleMessageClick(event, msg.id || '')}
             >
@@ -113,7 +111,7 @@ export function ChatMessages({
                 !isUser &&
                 index === previous_message.length - 1 && <TypingIndicator />}
               <CustomMarkdown text={msg.text} user={user} char={char} />
-            </Box>
+            </PyrenzMessageBox>
 
             {msg.error && (
               <Box display="flex" alignItems="center" ml={1} mt={1}>

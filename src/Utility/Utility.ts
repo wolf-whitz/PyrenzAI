@@ -14,7 +14,7 @@
  */
 
 import { supabase } from '~/Utility/supabaseClient';
-import { useQuery, UseQueryResult } from '@tanstack/react-query';
+import useSWR from 'swr';
 import { SERVER_API_URL as BASE_URL } from '~/config';
 
 type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
@@ -28,6 +28,17 @@ const getCookie = (name: string) => {
 };
 
 const pendingRequests = new Map<string, Promise<any>>();
+
+const fetcher = async (url: string) => {
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    const error = new Error('An error occurred while fetching the data.');
+    throw error;
+  }
+
+  return response.json();
+};
 
 export const Utils = {
   async request<T>(
@@ -126,13 +137,22 @@ export const Utils = {
   useFetch<T>(
     endpoint: string,
     params: Record<string, any> = {}
-  ): UseQueryResult<T, Error> {
-    return useQuery<T, Error>({
-      queryKey: [`${BASE_URL}${endpoint}`, params],
-      queryFn: async () => {
-        return await this.request<T>('GET', endpoint, {}, params, false);
-      },
-    });
+  ): { data: T | undefined; error: Error | undefined } {
+    const url = new URL(`${BASE_URL}${endpoint}`);
+
+    if (Object.keys(params).length) {
+      const searchParams = new URLSearchParams();
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          searchParams.append(key, String(value));
+        }
+      });
+      url.search = searchParams.toString();
+    }
+
+    const { data, error } = useSWR<T>(url.toString(), fetcher);
+
+    return { data, error };
   },
 
   post<T>(
