@@ -1,3 +1,3 @@
 export * from './GuidelineSidebar';
 export * from './SettingsSidebar';
-export * from './Sidebar';
+export { Sidebar } from './Sidebar';
