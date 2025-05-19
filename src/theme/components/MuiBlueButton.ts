@@ -9,10 +9,13 @@ export const MuiBlueButton = styled(Button)<MuiBlueButtonProps>(({ Blue }) => ({
   backgroundColor: Blue ? 'transparent' : '#add8e6',
   color: Blue ? '#add8e6' : '#FFFFFF',
   transition: 'all 0.3s ease',
+  borderRadius: '20px',
+  justifyContent: 'center',
   '&:hover': {
     backgroundColor: Blue ? 'rgba(33, 150, 243, 0.1)' : '#1976D2',
     color: Blue ? '#FFFFFF' : '#FFFFFF',
     borderColor: '#2196F3',
     transform: 'scale(1.05)',
+    borderRadius: '20px',
   },
 }));

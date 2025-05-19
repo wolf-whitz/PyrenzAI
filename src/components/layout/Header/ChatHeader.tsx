@@ -1,0 +1,84 @@
+import React, { useState } from 'react';
+import { Avatar, Typography, IconButton, useTheme, useMediaQuery, Box, Fade, Container } from '@mui/material';
+import { ArrowLeft, ArrowRight, Settings } from 'lucide-react';
+
+interface ChatHeaderProps {
+  char: {
+    character_name?: string;
+    icon?: string;
+  };
+  handleGoHome: () => void;
+  toggleSettings: () => void;
+}
+
+export function ChatHeader({ char, handleGoHome, toggleSettings }: ChatHeaderProps) {
+  const theme = useTheme();
+  const isMdScreen = useMediaQuery(theme.breakpoints.up('lg'));
+  const [arrowDirection, setArrowDirection] = useState<'left' | 'right'>('left');
+
+  const toggleArrowDirection = () => {
+    setArrowDirection(prevDirection => prevDirection === 'left' ? 'right' : 'left');
+  };
+
+  return (
+    <Fade in={true} timeout={500}>
+      <Container>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+            }}
+          >
+            <IconButton
+              onClick={toggleArrowDirection}
+              sx={{ color: 'grey', '&:hover': { color: 'white' } }}
+              aria-label="Toggle arrow"
+            >
+              {arrowDirection === 'left' ? (
+                <ArrowLeft size={24} />
+              ) : (
+                <ArrowRight size={24} />
+              )}
+            </IconButton>
+            <IconButton
+              onClick={handleGoHome}
+              sx={{ color: 'grey', '&:hover': { color: 'white' } }}
+              aria-label="Go home"
+            >
+              <Avatar
+                alt={char.character_name || 'Anon'}
+                src={char.icon || ''}
+                sx={{ width: 40, height: 40 }}
+              />
+            </IconButton>
+            <Typography variant="h6" sx={{ fontSize: '1rem' }}>
+              {char.character_name || 'Anon'}
+            </Typography>
+            <IconButton
+              onClick={toggleSettings}
+              sx={{
+                color: 'grey',
+                transition: 'transform 0.3s ease, color 0.3s ease',
+                '&:hover': {
+                  transform: 'rotate(90deg)',
+                  color: 'white',
+                },
+              }}
+              aria-label="Settings"
+            >
+              <Settings size={24} />
+            </IconButton>
+          </Box>
+        </Box>
+      </Container>
+    </Fade>
+  );
+}
