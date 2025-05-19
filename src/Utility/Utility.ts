@@ -1,18 +1,3 @@
-/**
- * Utility functions for making API requests and handling responses without the need of a dedicated fetch function.
- * This module provides a generic request function that can handle different HTTP methods and data formats.
- * It also includes a custom hook for data fetching using SWR (stale-while-revalidate) for caching and revalidation.
- * @example
- * import { Utils } from '~/Utility/Utility';
- * Utils.request('GET', '/api/endpoint', { param1: 'value1' })
- *   .then(response => console.log(response))
- *  .catch(error => console.error(error));
- */
-
-/**
- * For ease in development future dev can use this utility to make API calls without the need of a dedicated fetch function and having to paste the same baseurl for every request.
- */
-
 import { supabase } from '~/Utility/supabaseClient';
 import useSWR from 'swr';
 import { SERVER_API_URL as BASE_URL } from '~/config';
@@ -48,9 +33,7 @@ export const Utils = {
     params: Record<string, any> = {},
     isImageRequest: boolean = false
   ): Promise<T> {
-    // Convert endpoint to lowercase
-    const lowerCaseEndpoint = endpoint.toLowerCase();
-    const url = new URL(`${BASE_URL}${lowerCaseEndpoint}`);
+    const url = new URL(`${BASE_URL}${endpoint}`);
 
     if (
       (method === 'GET' || method === 'DELETE') &&
@@ -82,6 +65,7 @@ export const Utils = {
       }
 
       const captchaCookie = getCookie('captcha-cookie');
+      const visitorId = localStorage.getItem('visitorId');
 
       const headers: HeadersInit = {
         'Content-Type': 'application/json',
@@ -90,6 +74,7 @@ export const Utils = {
 
       if (session) headers.Authorization = `Bearer ${session.access_token}`;
       if (captchaCookie) headers['captcha_key'] = captchaCookie;
+      if (visitorId) headers['visitor-id'] = visitorId;
 
       const options: RequestInit = {
         method,
@@ -140,9 +125,7 @@ export const Utils = {
     endpoint: string,
     params: Record<string, any> = {}
   ): { data: T | undefined; error: Error | undefined } {
-    // Convert endpoint to lowercase
-    const lowerCaseEndpoint = endpoint.toLowerCase();
-    const url = new URL(`${BASE_URL}${lowerCaseEndpoint}`);
+    const url = new URL(`${BASE_URL}${endpoint}`);
 
     if (Object.keys(params).length) {
       const searchParams = new URLSearchParams();

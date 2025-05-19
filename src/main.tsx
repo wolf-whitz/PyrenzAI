@@ -9,7 +9,7 @@
 
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { App } from './App.tsx';
+import { App } from './App';
 import './GlobalStyles.css';
 
 import { Analytics } from '@vercel/analytics/react';
@@ -21,11 +21,13 @@ import { ThemeProvider, CssBaseline } from '@mui/material';
 import { I18nextProvider } from 'react-i18next';
 import { GetTheme } from '~/theme';
 import i18n from '~/provider/TranslationProvider.ts';
-import { ToastProvider } from '~/provider/ToastProvider.tsx';
-import { SentryProvider } from './provider/SentryProvider.tsx';
+import { ToastProvider } from '~/provider/ToastProvider';
+import { SentryProvider } from './provider/SentryProvider';
 import * as Sentry from '@sentry/react';
 
-import ErrorBoundary from './routes/ErrorBoundary.tsx';
+import ErrorBoundary from './routes/ErrorBoundary';
+
+import { DeviceTest } from '~/Utility/DeviceTest';
 
 const theme = GetTheme();
 
@@ -58,6 +60,8 @@ if ('serviceWorker' in navigator) {
       });
   });
 }
+
+DeviceTest();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
