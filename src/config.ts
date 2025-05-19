@@ -9,7 +9,7 @@ const VITE_PUBLIC_POSTHOG_KEY =
 const POSTHOG_API_HOST = 'https://us.i.posthog.com';
 
 const SERVER_API_URL =
-  import.meta.env.VITE_SERVER_API_URL || 'http://localhost:3000';
+  import.meta.env.VITE_SERVER_API_URL;
 
 const posthogConfig = {
   apiKey: VITE_PUBLIC_POSTHOG_KEY,
