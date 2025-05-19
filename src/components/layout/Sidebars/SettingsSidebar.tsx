@@ -31,43 +31,6 @@ export function SettingsSidebar({
     fetchUserUuid();
   }, []);
 
-  const fetchPersona = async () => {
-    if (!userUuid) return;
-
-    setLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from('personas')
-        .select('persona_name, persona_description, persona_profile');
-
-      if (error) {
-        throw error;
-      }
-
-      const mappedData = data.map((item) => ({
-        id: item.persona_profile,
-        name: item.persona_name,
-        description: item.persona_description,
-      }));
-
-      setPersonaData(mappedData);
-    } catch (error) {
-      console.error('Failed to fetch persona data', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (settingsOpen && userUuid) {
-      fetchPersona();
-    }
-  }, [settingsOpen, userUuid]);
-
-  const updatePersonaData = (newPersona: PersonaCard) => {
-    setPersonaData((prevData) => [...prevData, newPersona]);
-  };
-
   return (
     <Drawer
       anchor="right"
@@ -87,11 +50,7 @@ export function SettingsSidebar({
       </Box>
 
       <Box className="flex justify-center mt-4">
-        <Persona
-          personaData={personaData}
-          loading={loading}
-          updatePersonaData={updatePersonaData}
-        />
+        <Persona />
       </Box>
     </Drawer>
   );
