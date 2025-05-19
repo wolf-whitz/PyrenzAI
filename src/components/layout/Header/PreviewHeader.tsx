@@ -32,7 +32,7 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { t } = useTranslation();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isMediumOrSmaller = useMediaQuery(theme.breakpoints.down('md'));
 
   useEffect(() => {
     const checkUserSession = async () => {
@@ -71,7 +71,7 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
     >
       <Toolbar className="flex justify-between items-center w-full max-w-screen-2xl mx-auto px-6">
         <div
-          className="flex items-center space-x-4 cursor-pointer md:ml-[60px]"
+          className="flex items-center space-x-4 cursor-pointer lg:ml-[60px]"
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         >
           <img
@@ -84,7 +84,7 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
           </h1>
         </div>
 
-        {!isMobile && (
+        {!isMediumOrSmaller && (
           <div className="hidden md:flex items-center space-x-8">
             {menuItems.map(({ name, icon, link, external }) => (
               <MuiBlueButton
@@ -123,8 +123,8 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
           </div>
         )}
 
-        {isMobile && (
-          <div className="md:hidden">
+        {isMediumOrSmaller && (
+          <div>
             <IconButton onClick={() => setMenuOpen(true)}>
               <MenuIcon />
             </IconButton>

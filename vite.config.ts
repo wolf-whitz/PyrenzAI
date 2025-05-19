@@ -49,7 +49,7 @@ export default defineConfig({
   build: {
     outDir: 'build',
     assetsDir: 'assets',
-    chunkSizeWarningLimit: 50,
+    chunkSizeWarningLimit: 1024,
     minify: 'esbuild',
     sourcemap: true,
     target: 'esnext',
@@ -61,6 +61,9 @@ export default defineConfig({
         chunkFileNames: 'assets/[name].[hash:8].js',
         assetFileNames: 'assets/[name].[hash:8].[ext]',
         compact: true,
+      },
+      treeshake: {
+        moduleSideEffects: 'no-external',
       },
     },
     commonjsOptions: {
