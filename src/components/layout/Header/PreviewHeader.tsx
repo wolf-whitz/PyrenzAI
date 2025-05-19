@@ -20,14 +20,20 @@ import {
 import { FaDiscord } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '~/Utility/supabaseClient';
-import { MuiStyledDrawer, MuiBlueButton } from '~/theme';
+import { MuiStyledDrawer, PyrenzBlueButton } from '~/theme';
 
 interface HeaderProps {
   setShowLogin: (value: boolean) => void;
   setShowRegister: (value: boolean) => void;
+  user: User;
 }
 
-export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
+interface User {
+  username: string;
+  icon?: string;
+}
+
+export function PreviewHeader({ setShowLogin, setShowRegister, user }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { t } = useTranslation();
@@ -87,7 +93,7 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
         {!isMediumOrSmaller && (
           <div className="hidden md:flex items-center space-x-8">
             {menuItems.map(({ name, icon, link, external }) => (
-              <MuiBlueButton
+              <PyrenzBlueButton
                 key={name}
                 startIcon={icon}
                 className="font-baloo hover:text-blue-600"
@@ -96,28 +102,25 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
                     ? window.open(link, '_blank')
                     : (window.location.href = link)
                 }
-                Blue={true}
               >
                 {name}
-              </MuiBlueButton>
+              </PyrenzBlueButton>
             ))}
             {!isLoggedIn && (
               <>
-                <MuiBlueButton
+                <PyrenzBlueButton
                   className="font-baloo hover:text-blue-600"
                   onClick={() => setShowLogin(true)}
-                  Blue={true}
                 >
                   {t('buttons.login')}
-                </MuiBlueButton>
-                <MuiBlueButton
+                </PyrenzBlueButton>
+                <PyrenzBlueButton
                   variant="contained"
                   className="bg-[#E03201] font-baloo hover:bg-blue-600"
                   onClick={() => setShowRegister(true)}
-                  Blue={true}
                 >
                   {t('buttons.signUp')}
-                </MuiBlueButton>
+                </PyrenzBlueButton>
               </>
             )}
           </div>
@@ -131,7 +134,7 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
             <MuiStyledDrawer
               isOpen={menuOpen}
               onClose={() => setMenuOpen(false)}
-              profileData={{ name: 'User', avatarUrl: '/path-to-avatar.jpg' }}
+              profileData={{ name: user.username, avatarUrl: user.icon || '/path-to-avatar.jpg' }}
             >
               <Box
                 sx={{ width: 250, backgroundColor: 'gray.900' }}

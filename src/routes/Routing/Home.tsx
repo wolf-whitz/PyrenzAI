@@ -10,7 +10,8 @@ import {
   MobileNav,
   CustomButton,
   Pagination,
-  Banner
+  Banner,
+  GetUserData,
 } from '@components';
 import { useHomepageAPI } from '@api';
 
@@ -34,6 +35,7 @@ export function Home() {
 
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
+  const [user, setUser] = useState({ username: '', icon: '' });
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -46,6 +48,27 @@ export function Home() {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const userData = await GetUserData();
+        if ('error' in userData) {
+          console.error('Error fetching user:', userData.error);
+        } else {
+          setUser({
+            username: userData.username,
+            icon: userData.icon,
+          });
+          console.log('User data:', userData);
+        }
+      } catch (error) {
+        console.error('Error fetching user:', error);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
@@ -66,6 +89,7 @@ export function Home() {
           <PreviewHeader
             setShowLogin={setShowLogin}
             setShowRegister={setShowRegister}
+            user={user}
           />
         </Box>
 

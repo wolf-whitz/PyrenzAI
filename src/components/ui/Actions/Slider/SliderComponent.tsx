@@ -1,8 +1,9 @@
 import React from 'react';
-import Slider from '@mui/material/Slider';
+import { PyrenzSlider } from '~/theme';
 import { HelpCircle } from 'lucide-react';
 import Popover from '@mui/material/Popover';
 import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 
 interface SliderComponentProps {
   sliderKey: string;
@@ -36,13 +37,14 @@ export function SliderComponent({
   const open = Boolean(anchorEl);
 
   return (
-    <div key={sliderKey} className={`mb-4 ${className}`}>
-      <div className="flex items-center justify-between">
-        <label className="block text-sm font-medium text-gray-300">
+    <Box key={sliderKey} className={className} sx={{ mb: 4 }}>
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Typography variant="body2" color="text.secondary">
           {sliderKey.charAt(0).toUpperCase() +
             sliderKey.slice(1).replace(/([A-Z])/g, ' $1')}
-        </label>
-        <button
+        </Typography>
+        <Box
+          component="button"
           aria-owns={open ? 'mouse-over-popover' : undefined}
           aria-haspopup="true"
           onMouseEnter={handlePopoverOpen}
@@ -51,10 +53,10 @@ export function SliderComponent({
             handlePopoverOpen(e);
             setShowPopover(sliderKey);
           }}
-          className="text-gray-400 hover:text-gray-300 focus:outline-none"
+          sx={{ color: 'text.secondary', '&:hover': { color: 'text.primary' }, focus: { outline: 'none' } }}
         >
           <HelpCircle />
-        </button>
+        </Box>
         <Popover
           id="mouse-over-popover"
           sx={{
@@ -80,8 +82,8 @@ export function SliderComponent({
             {sliderDescriptions[sliderKey]}
           </Typography>
         </Popover>
-      </div>
-      <Slider
+      </Box>
+      <PyrenzSlider
         value={stateValue}
         onChange={(event, value) => stateSetter(value as number)}
         max={maxValue}
@@ -89,7 +91,9 @@ export function SliderComponent({
         step={sliderKey === 'maxTokens' ? 1 : sliderKey === 'topP' ? 0.01 : 0.1}
         valueLabelDisplay="auto"
       />
-      <span className="text-sm text-gray-400">{stateValue}</span>
-    </div>
+      <Typography variant="caption" color="text.secondary">
+        {stateValue}
+      </Typography>
+    </Box>
   );
 }

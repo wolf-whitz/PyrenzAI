@@ -1,5 +1,5 @@
-import React from 'react';
-import { MenuItem, Select } from '@mui/material';
+import { MenuItem, Select, Box } from '@mui/material';
+import { PyrenzFormControl, PyrenzOutlinedInput, PyrenzInputLabel } from '~/theme';
 
 interface ModelSelectionProps {
   preferredModel: string;
@@ -13,23 +13,27 @@ export function ModelSelection({
   modelOptions,
 }: ModelSelectionProps) {
   return (
-    <div className="mt-4">
-      <label className="block text-sm font-medium text-gray-300 mb-2">
-        Preferred Model
-      </label>
-      <Select
-        value={preferredModel}
-        onChange={(e) => setPreferredModel(e.target.value)}
-        variant="outlined"
-        fullWidth
-        className="mb-4"
-      >
-        {modelOptions.map((option) => (
-          <MenuItem key={option.value} value={option.value}>
-            {option.label}
-          </MenuItem>
-        ))}
-      </Select>
-    </div>
+    <Box sx={{ mt: 4 }}>
+      <PyrenzFormControl fullWidth variant="outlined">
+        <PyrenzInputLabel id="preferred-model-label">
+          Preferred Model
+        </PyrenzInputLabel>
+        <Select
+          labelId="preferred-model-label"
+          id="preferred-model"
+          value={preferredModel}
+          label="Preferred Model"
+          onChange={(e) => setPreferredModel(e.target.value)}
+          input={<PyrenzOutlinedInput label="Preferred Model" />}
+          sx={{ mb: 4 }}
+        >
+          {modelOptions.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </Select>
+      </PyrenzFormControl>
+    </Box>
   );
 }

@@ -1,4 +1,4 @@
-import { MuiBlueButton } from '~/theme';
+import { PyrenzBlueButton } from '~/theme';
 import React, { useState, useRef, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -32,7 +32,7 @@ export function CustomButton({ onButtonClick }: CustomButtonProps) {
     >
       {visibleButtons.map((btn, index) => (
         <motion.div key={index}>
-          <MuiBlueButton
+          <PyrenzBlueButton
             variant="contained"
             startIcon={<btn.icon size={18} />}
             onClick={() =>
@@ -44,20 +44,18 @@ export function CustomButton({ onButtonClick }: CustomButtonProps) {
                 btn.tag
               )
             }
-            Blue={true}
           >
             {t(btn.label)}
-          </MuiBlueButton>
+          </PyrenzBlueButton>
         </motion.div>
       ))}
       <motion.div>
-        <MuiBlueButton
+        <PyrenzBlueButton
           variant="contained"
           onClick={() => setIsModalOpen(true)}
-          Blue={true}
         >
           {t('HomePageMoreButtons.btn.more')}
-        </MuiBlueButton>
+        </PyrenzBlueButton>
       </motion.div>
 
       {isModalOpen && (

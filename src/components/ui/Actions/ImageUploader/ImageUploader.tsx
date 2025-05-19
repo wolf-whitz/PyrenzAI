@@ -13,7 +13,7 @@ import {
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import { Utils } from '~/Utility/Utility';
 import { toast } from 'react-hot-toast';
-import { MuiBlueButton } from '~/theme';
+import { PyrenzBlueButton } from '~/theme';
 
 interface CreateImageResponse {
   image: string;
@@ -114,15 +114,14 @@ export function ImageUploader({ onImageSelect }: ImageUploaderProps) {
         className="bg-gray-800 border-dashed border-2 border-gray-500"
       />
       <div className="flex items-center mt-4">
-        <MuiBlueButton
+        <PyrenzBlueButton
           variant="contained"
           startIcon={<AddPhotoAlternateIcon />}
           className="mr-2"
           onClick={handleOpen}
-          Blue={true}
         >
           Generate Image
-        </MuiBlueButton>
+        </PyrenzBlueButton>
       </div>
 
       <Modal
@@ -183,21 +182,19 @@ export function ImageUploader({ onImageSelect }: ImageUploaderProps) {
             </Card>
           )}
           <div className="flex justify-end mt-4">
-            <MuiBlueButton
+            <PyrenzBlueButton
               variant="outlined"
               onClick={handleClear}
               sx={{ mr: 2 }}
-              Blue={true}
             >
               Clear
-            </MuiBlueButton>
-            <MuiBlueButton
+            </PyrenzBlueButton>
+            <PyrenzBlueButton
               variant="contained"
               onClick={handleSubmit}
-              Blue={true}
             >
               Submit
-            </MuiBlueButton>
+            </PyrenzBlueButton>
           </div>
         </Box>
       </Modal>

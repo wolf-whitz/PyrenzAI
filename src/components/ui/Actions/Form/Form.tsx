@@ -6,7 +6,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import DescriptionIcon from '@mui/icons-material/Description';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { CharacterData, Draft } from '@shared-types/CharacterProp';
-import { MuiBlueButton } from '~/theme';
+import { PyrenzBlueButton } from '~/theme';
 
 interface FormActionsProps {
   onClear: () => void;
@@ -52,7 +52,7 @@ export function FormActions({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <MuiBlueButton
+      <PyrenzBlueButton
         variant="contained"
         onClick={onClear}
         className="w-full sm:w-auto"
@@ -62,11 +62,10 @@ export function FormActions({
           '&:hover': { bgcolor: 'gray.700' },
           '&:focus': { outline: 'none', ring: '2px solid gray.500' },
         }}
-        Blue={true}
       >
         Clear
-      </MuiBlueButton>
-      <MuiBlueButton
+      </PyrenzBlueButton>
+      <PyrenzBlueButton
         variant="contained"
         color="primary"
         onClick={onSave}
@@ -79,30 +78,27 @@ export function FormActions({
             <SaveIcon className="text-xl" />
           )
         }
-        Blue={true}
       >
         {saveLoading ? 'Saving...' : 'Save'}
-      </MuiBlueButton>
-      <MuiBlueButton
+      </PyrenzBlueButton>
+      <PyrenzBlueButton
         variant="contained"
         color="primary"
         onClick={handleOpenDraftModal}
         className="w-full sm:w-auto"
         startIcon={<DescriptionIcon className="text-xl" />}
-        Blue={true}
       >
         Drafts
-      </MuiBlueButton>
-      <MuiBlueButton
+      </PyrenzBlueButton>
+      <PyrenzBlueButton
         variant="contained"
         color="primary"
         onClick={handleOpenImportCharacterModal}
         className="w-full sm:w-auto"
         startIcon={<UploadFileIcon className="text-xl" />}
-        Blue={true}
       >
         Import Character
-      </MuiBlueButton>
+      </PyrenzBlueButton>
       <CreateButton loading={loading} className="w-full sm:w-auto" />
       {isDraftModalOpen && (
         <DraftsModal onClose={handleCloseDraftModal} onSelect={onSelectDraft} />

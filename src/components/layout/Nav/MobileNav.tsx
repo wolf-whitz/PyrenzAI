@@ -70,6 +70,12 @@ export function MobileNav({ setShowLoginModal }: { setShowLoginModal: SetShowLog
                 navigate(item.path);
               }
             }}
+            sx={{
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                transform: 'scale(1.05)',
+              },
+            }}
           />
         ))}
       </BottomNavigation>

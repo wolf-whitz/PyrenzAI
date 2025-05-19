@@ -130,7 +130,7 @@ export function MoreButtonsModal({
         initial={{ scale: 0.5 }}
         animate={{ scale: 1 }}
         exit={{ scale: 0.5 }}
-        className="bg-black p-6 rounded-lg border border-blue-500 w-full max-w-xs"
+        className="bg-black p-6 rounded-lg border border-[#add8e6] w-full max-w-xs"
       >
         <TextField
           label={t('search.placeholder')}
@@ -169,10 +169,10 @@ export function MoreButtonsModal({
                   fullWidth
                   className="justify-start normal-case text-base"
                   sx={{
-                    borderColor: '#3B82F6',
+                    borderColor: '#add8e6',
                     color: '#fff',
                     '&:hover': {
-                      borderColor: '#3B82F6',
+                      borderColor: '#add8e6',
                     },
                   }}
                 >
