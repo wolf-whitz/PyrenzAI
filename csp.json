@@ -34,7 +34,7 @@
     "https://*.supabase.co",
     "https://*.pyrenzai.com",
     "https://pagead2.googlesyndication.com",
-    "http://localhost:8080",
+    "http://localhost:3000 ",
     "https://*.clerk.accounts.dev",
     "https://*.jsdelivr.net",
     "https://*.pollinations.ai",

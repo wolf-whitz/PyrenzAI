@@ -48,7 +48,9 @@ export const Utils = {
     params: Record<string, any> = {},
     isImageRequest: boolean = false
   ): Promise<T> {
-    const url = new URL(`${BASE_URL}${endpoint}`);
+    // Convert endpoint to lowercase
+    const lowerCaseEndpoint = endpoint.toLowerCase();
+    const url = new URL(`${BASE_URL}${lowerCaseEndpoint}`);
 
     if (
       (method === 'GET' || method === 'DELETE') &&
@@ -138,7 +140,9 @@ export const Utils = {
     endpoint: string,
     params: Record<string, any> = {}
   ): { data: T | undefined; error: Error | undefined } {
-    const url = new URL(`${BASE_URL}${endpoint}`);
+    // Convert endpoint to lowercase
+    const lowerCaseEndpoint = endpoint.toLowerCase();
+    const url = new URL(`${BASE_URL}${lowerCaseEndpoint}`);
 
     if (Object.keys(params).length) {
       const searchParams = new URLSearchParams();

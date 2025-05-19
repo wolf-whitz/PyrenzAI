@@ -20,9 +20,7 @@ export default defineConfig({
     tsconfigPaths({
       projects: ['tsconfig.app.json'],
     }),
-
-    cspPlugin(),
-
+    
     createHtmlPlugin({
       minify: {
         collapseWhitespace: true,
