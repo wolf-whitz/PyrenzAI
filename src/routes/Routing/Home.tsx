@@ -1,7 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Container, useMediaQuery, Box, useTheme } from '@mui/material';
-import { CustomButton, Pagination, Banner } from '@ui';
 import {
   Sidebar,
   SearchBar,
@@ -9,7 +8,10 @@ import {
   PreviewHeader,
   CharacterList,
   MobileNav,
-} from '@layout';
+  CustomButton,
+  Pagination,
+  Banner
+} from '@components';
 import { useHomepageAPI } from '@api';
 
 export function Home() {

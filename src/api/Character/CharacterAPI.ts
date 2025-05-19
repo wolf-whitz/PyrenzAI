@@ -1,7 +1,7 @@
 import { Character } from '@shared-types/CharacterProp';
 import toast from 'react-hot-toast';
 import * as Sentry from '@sentry/react';
-import { fetchCharacters as fetchCharactersFunction } from '@functions';
+import { fetchCharacters as fetchCharactersFunction } from '@components';
 
 export const fetchCharacters = async (
   currentPage: number,

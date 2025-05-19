@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Drawer, Box } from '@mui/material';
-import { Persona } from '@ui';
+import { Persona, GetUserUUID } from '@components';
 import { supabase } from '~/Utility/supabaseClient';
-import { GetUserUUID } from '@functions';
 
 interface SettingsSidebarProps {
   settingsOpen: boolean;

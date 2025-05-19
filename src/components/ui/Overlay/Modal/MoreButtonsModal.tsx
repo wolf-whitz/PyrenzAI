@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Button, TextField, CircularProgress, Modal } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { GetCharactersWithTags } from '@functions';
+import { GetCharactersWithTags } from '@components';
 import {
   ButtonType,
   ModalResultType,

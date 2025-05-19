@@ -1,5 +1,4 @@
-import { CharacterForm } from '@ui';
-import { Sidebar, CommunityGuidelines } from '@layout';
+import { CharacterForm, Sidebar, CommunityGuidelines } from '@components';
 
 export function CreatePage() {
   return (

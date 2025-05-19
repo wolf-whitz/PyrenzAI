@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Avatar, CircularProgress, Typography, Box } from '@mui/material';
 import { supabase } from '~/Utility/supabaseClient';
-import { GetUserUUID } from '@functions';
+import { GetUserUUID } from '@components';
 
 const CustomContextMenu = lazy(() =>
   import('~/components/ui/Actions/ContextMenu/CustomContextMenu').then(

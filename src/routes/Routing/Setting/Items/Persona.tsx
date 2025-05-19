@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import { supabase } from '~/Utility/supabaseClient';
-import { GetUserUUID } from '@functions';
 import {
   CreatePersonaModal,
   CreateCharacterCardImageModal,
   CharacterCardImageModal,
-} from '@ui';
-import { PersonaList } from '@layout';
+  GetUserUUID,
+  PersonaList
+} from '@components';
 
 interface PersonaCard {
   id: string;

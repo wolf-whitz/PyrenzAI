@@ -5,7 +5,7 @@ import {
   TokenSummary,
   FormActions,
   RequiredFieldsPopup,
-} from '@ui';
+} from '@components';
 import { TextareaForm } from './Childrens/TextareaForm';
 import { useNavigate } from 'react-router-dom';
 import { useCreateAPI } from '@api';

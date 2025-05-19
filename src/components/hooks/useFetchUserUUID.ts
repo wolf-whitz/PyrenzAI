@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { GetUserUUID } from '@functions';
+import { GetUserUUID } from '@components';
 
 export function useFetchUserUUID(): string | null {
   const [userUUID, setUserUUID] = useState<string | null>(null);

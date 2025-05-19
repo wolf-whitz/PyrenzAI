@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { CircularProgress, Typography } from '@mui/material';
-import { CreateButton, DraftsModal, ImportCharacterModal } from '~/components';
+import { CreateButton, DraftsModal, ImportCharacterModal } from '@components';
 import SaveIcon from '@mui/icons-material/Save';
 import DescriptionIcon from '@mui/icons-material/Description';
 import UploadFileIcon from '@mui/icons-material/UploadFile';

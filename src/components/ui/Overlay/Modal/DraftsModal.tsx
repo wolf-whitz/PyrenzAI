@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { motion } from 'framer-motion';
 import { supabase } from '~/Utility/supabaseClient';
-import { GetUserUUID } from '@functions';
+import { GetUserUUID } from '@components';
 import { ChevronLeft, ChevronRight, Trash } from 'lucide-react';
 import {
   Typography,

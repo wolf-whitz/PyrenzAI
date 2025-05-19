@@ -10,7 +10,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '~/Utility/supabaseClient';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
-import { AuthenticationModal } from '@ui';
+import { AuthenticationModal } from '@components';
 import {
   Tooltip,
   Button,

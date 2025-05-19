@@ -1,6 +1,5 @@
 import React, { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import { supabase } from '~/Utility/supabaseClient';
-import { GetUserUUID } from '@functions';
 import * as Sentry from '@sentry/react';
 import toast from 'react-hot-toast';
 import { Button, Typography } from '@mui/material';
@@ -9,7 +8,8 @@ import {
   ModelSelection,
   SliderComponent,
   ProviderModals,
-} from '@ui';
+  GetUserUUID
+} from '@components';
 import InfoIcon from '@mui/icons-material/Info';
 import BuildIcon from '@mui/icons-material/Build';
 

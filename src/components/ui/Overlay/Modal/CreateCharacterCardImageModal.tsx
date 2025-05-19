@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
-import { Textarea } from '@ui';
+import { Textarea } from '@components';
 import { Utils } from '~/Utility/Utility';
 import { createPortal } from 'react-dom';
 import toast from 'react-hot-toast';

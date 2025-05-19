@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { LanguageModal } from '@ui';
+import { LanguageModal } from '@components';
 import { ChevronLeft } from 'lucide-react';
 import { supabase } from '~/Utility/supabaseClient';
 import { User } from '@supabase/supabase-js';

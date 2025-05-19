@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, Suspense } from 'react';
 import { useChatStore } from '~/store';
 import { ChatMain } from '~/components';
 import { Message, ChatContainerProps } from '@shared-types/chatTypes';
-import { ChatPageSpinner } from '@ui';
+import { ChatPageSpinner } from '@components';
 
 interface ChatContainerPropsExtended extends ChatContainerProps {
   previous_message?: Message[];

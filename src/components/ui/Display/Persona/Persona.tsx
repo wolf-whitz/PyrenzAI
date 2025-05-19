@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { User } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Typography, Box } from '@mui/material';
-import { PersonaModal } from '@ui';
+import { PersonaModal } from '@components';
 
 interface PersonaCard {
   id: string;

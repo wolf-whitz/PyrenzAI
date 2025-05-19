@@ -2,7 +2,7 @@ import React, { useState, DragEvent, useEffect } from 'react';
 import { TextField, Typography, Button, Box } from '@mui/material';
 import { supabase } from '~/Utility/supabaseClient';
 import { Utils } from '~/Utility/Utility';
-import { GetUserUUID } from '@functions';
+import { GetUserUUID } from '@components';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
 interface ApiResponse {

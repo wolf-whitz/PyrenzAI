@@ -3,7 +3,7 @@ import { Button, Typography, CircularProgress } from '@mui/material';
 import CoffeeIcon from '@mui/icons-material/Coffee';
 import Confetti from 'react-confetti';
 import { Utils } from '~/Utility/Utility';
-import { GetUserUUID } from '@functions';
+import { GetUserUUID } from '@components';
 
 interface AdModalProps {
   isOpen: boolean;

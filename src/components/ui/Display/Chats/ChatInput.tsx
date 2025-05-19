@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, ArrowRight, MoreVertical, Loader2 } from 'lucide-react';
-import { Menu } from '@ui';
+import { Menu } from '@components';
 
 interface ChatInputProps {
   className?: string;

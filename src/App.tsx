@@ -2,7 +2,7 @@ import React, { useEffect, Suspense, lazy, useState } from 'react';
 import { BrowserRouter as Router, useRoutes } from 'react-router-dom';
 import { supabase } from '~/Utility/supabaseClient';
 import { routes as allRoutes } from '~/routes/routes';
-import { Spinner } from '@ui';
+import { Spinner } from '@components';
 
 const RoutesWrapper = lazy(() =>
   Promise.resolve({ default: () => useRoutes(allRoutes) })

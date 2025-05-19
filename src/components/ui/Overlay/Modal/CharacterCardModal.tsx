@@ -1,5 +1,4 @@
-import { AuthenticationModal, WindowAlert } from '@ui';
-import { CreateNewChat, GetUserUUID } from '@functions';
+import { AuthenticationModal, WindowAlert, CreateNewChat, GetUserUUID } from '@components';
 import React, { useState, useEffect, useCallback } from 'react';
 import { CharacterCardProps } from '@shared-types/CharacterProp';
 import { createPortal } from 'react-dom';

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TypingIndicator, CustomContextMenu, CustomMarkdown } from '@ui';
+import { TypingIndicator, CustomContextMenu, CustomMarkdown } from '@components';
 import { Box, Avatar } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { ChatMessagesProps } from '@shared-types/ChatmainTypes';

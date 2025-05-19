@@ -1,6 +1,6 @@
 import React from 'react';
 import { Typography, CircularProgress } from '@mui/material';
-import { PersonaCard } from '@ui';
+import { PersonaCard } from '@components';
 
 interface PersonaCardProps {
   id: string;

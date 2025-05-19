@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, CircularProgress } from '@mui/material';
 import { motion } from 'framer-motion';
-import { fetchCharacters } from '@functions';
+import { fetchCharacters } from '@components';
 import toast from 'react-hot-toast';
 import * as Sentry from '@sentry/react';
 

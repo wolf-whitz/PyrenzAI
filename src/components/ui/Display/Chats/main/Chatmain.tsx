@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { ChatContainerProps, Message } from '@shared-types/chatTypes';
-import { SettingsSidebar, AdModal, ChatMessages, ChatInput, ChatHeader } from '@ui';
+import { SettingsSidebar, AdModal, ChatMessages, ChatInput, ChatHeader } from '@components';
 import { useChatPageAPI } from '@api';
 import { Fade, Slide, Box } from '@mui/material';
 

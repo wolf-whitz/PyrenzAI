@@ -8,7 +8,7 @@ import {
   Modal,
 } from '@mui/material';
 import { PlusCircle } from 'lucide-react';
-import { Textarea } from '@ui';
+import { Textarea } from '@components';
 import { useDropzone } from 'react-dropzone';
 
 interface CreatePersonaModalProps {

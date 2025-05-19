@@ -22,10 +22,7 @@
       "~/*": ["src/*"],
       "@public/*": ["public/*"],
 
-      "@ui": ["src/components"],
-      "@layout": ["src/components"],
-      "@functions": ["src/components"],
-      "@hooks": ["src/components"],
+      "@components": ["src/components"],
       "@api": ["src/api"],
 
       "@store/*": ["src/store/*"],

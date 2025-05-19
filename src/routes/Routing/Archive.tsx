@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '~/Utility/supabaseClient';
-import { Sidebar, CustomContextMenu } from '~/components';
+import { Sidebar, CustomContextMenu } from '@components';
 import {
   Card,
   CardContent,

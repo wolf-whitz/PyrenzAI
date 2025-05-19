@@ -4,9 +4,9 @@ import {
   SkeletonCard,
   CharacterCard,
   UserProfileHeader,
-} from '~/components';
+  GetUserCreatedCharacters
+} from '@components';
 import { Box, Typography } from '@mui/material';
-import { GetUserCreatedCharacters } from '@functions';
 
 export function ProfilePage() {
   const { uuid } = useParams();

@@ -2,7 +2,7 @@ import { Character, Message } from '@shared-types/chatTypes';
 import toast from 'react-hot-toast';
 import * as Sentry from '@sentry/react';
 import { supabase } from '~/Utility/supabaseClient';
-import { getChatData } from '@functions';
+import { getChatData } from '@components';
 
 interface ChatMessageWithId {
   id: string;

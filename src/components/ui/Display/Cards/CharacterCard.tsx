@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { CharacterCardModal } from '~/components';
+import { CharacterCardModal } from '@components';
 import { CharacterCardProps } from '@shared-types/CharacterProp';
 import {
   Box,

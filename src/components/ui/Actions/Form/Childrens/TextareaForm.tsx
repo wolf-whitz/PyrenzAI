@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Menu, MenuItem, Typography, TextField } from '@mui/material';
 import { supabase } from '~/Utility/supabaseClient';
 import { Tag, TextareaFormProps } from '@shared-types/TagTypes';
-import { ImageUploader, Textarea } from '@ui';
+import { ImageUploader, Textarea } from '@components';
 
 export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
