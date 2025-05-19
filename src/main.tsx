@@ -27,10 +27,6 @@ import * as Sentry from '@sentry/react';
 
 import ErrorBoundary from './routes/ErrorBoundary.tsx';
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
-const queryClient = new QueryClient();
-
 const theme = GetTheme();
 
 posthog.init(posthogConfig.apiKey, {
@@ -68,7 +64,6 @@ createRoot(document.getElementById('root')!).render(
     <I18nextProvider i18n={i18n}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <QueryClientProvider client={queryClient}>
           <SentryProvider>
             <ErrorBoundary>
               <App />
@@ -77,7 +72,6 @@ createRoot(document.getElementById('root')!).render(
           <Analytics />
           <SpeedInsights />
           <ToastProvider />
-        </QueryClientProvider>
       </ThemeProvider>
     </I18nextProvider>
   </StrictMode>
