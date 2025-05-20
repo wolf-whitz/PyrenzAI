@@ -38,20 +38,9 @@ export const componentOverrides = {
     styleOverrides: {
       tooltip: {
         borderRadius: '4px',
-        backgroundColor: getIsDarkMode() ? '#add8e6' : '#fff',
+        backgroundColor: '#add8e6',
         color: getIsDarkMode() ? '#fff' : '#000',
         fontFamily: `'Baloo Da 2', cursive`,
-      },
-    },
-  },
-  MuiListItemText: {
-    styleOverrides: {
-      root: {
-        color: '#add8e6',
-        fontFamily: `'Baloo Da 2', cursive`,
-        '&:hover': {
-          textDecoration: 'none',
-        },
       },
     },
   },
@@ -74,20 +63,7 @@ export const componentOverrides = {
       },
     },
   },
-  MuiListItem: {
-    styleOverrides: {
-      root: {
-        color: '#add8e6',
-      },
-    },
-  },
-  MuiListItemIcon: {
-    styleOverrides: {
-      root: {
-        color: '#add8e6',
-      },
-    },
-  },
+
   MuiAppBar: {
     styleOverrides: {
       root: {

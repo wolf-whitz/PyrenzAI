@@ -1,4 +1,5 @@
-import { Button, TextField } from '@mui/material';
+import { Box } from '@mui/material';
+import { PyrenzFormControl, PyrenzOutlinedInput, PyrenzInputLabel, PyrenzBlueButton } from '~/theme';
 
 interface Provider {
   provider_name: string;
@@ -27,44 +28,56 @@ export function CustomModelFields({
   setModalOpen,
 }: CustomModelFieldsProps) {
   return (
-    <div className="mt-4">
-      <TextField
-        label="API Key"
-        variant="outlined"
-        fullWidth
-        value={apiKey}
-        onChange={(e) => setApiKey(e.target.value)}
-        className="mb-4"
-      />
-      <TextField
-        label="Model Name"
-        variant="outlined"
-        fullWidth
-        value={customModelName}
-        onChange={(e) => setCustomModelName(e.target.value)}
-        className="mb-4"
-      />
-      <TextField
-        label="Provider"
-        variant="outlined"
-        fullWidth
-        value={provider?.provider_name || ''}
-        onChange={(e) =>
-          setProvider({
-            ...provider,
-            provider_name: e.target.value,
-          } as Provider)
-        }
-        className="mb-4"
-      />
-      <Button
+    <Box>
+      <Box mb={2}>
+        <PyrenzFormControl fullWidth variant="outlined">
+          <PyrenzInputLabel htmlFor="api-key">API Key</PyrenzInputLabel>
+          <PyrenzOutlinedInput
+            id="api-key"
+            value={apiKey}
+            onChange={(e) => setApiKey(e.target.value)}
+            label="API Key"
+          />
+        </PyrenzFormControl>
+      </Box>
+
+      <Box mb={2}>
+        <PyrenzFormControl fullWidth variant="outlined">
+          <PyrenzInputLabel htmlFor="model-name">Model Name</PyrenzInputLabel>
+          <PyrenzOutlinedInput
+            id="model-name"
+            value={customModelName}
+            onChange={(e) => setCustomModelName(e.target.value)}
+            label="Model Name"
+          />
+        </PyrenzFormControl>
+      </Box>
+
+      <Box mb={2}>
+        <PyrenzFormControl fullWidth variant="outlined">
+          <PyrenzInputLabel htmlFor="provider">Provider</PyrenzInputLabel>
+          <PyrenzOutlinedInput
+            id="provider"
+            value={provider?.provider_name || ''}
+            onChange={(e) =>
+              setProvider({
+                ...provider,
+                provider_name: e.target.value,
+              } as Provider)
+            }
+            label="Provider"
+          />
+        </PyrenzFormControl>
+      </Box>
+
+      <PyrenzBlueButton
         variant="outlined"
         color="primary"
         onClick={() => setModalOpen(true)}
-        className="mt-2"
+        sx={{ mb: 2 }}
       >
         Premade Providers
-      </Button>
-    </div>
+      </PyrenzBlueButton>
+    </Box>
   );
 }

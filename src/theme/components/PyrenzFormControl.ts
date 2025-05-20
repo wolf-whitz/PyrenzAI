@@ -15,9 +15,9 @@ export const PyrenzFormControl = styled(FormControl)({
     },
   },
   '& .MuiInputLabel-root': {
-    color: '#add8e6',
+    color: 'white',
     '&.Mui-focused': {
-      color: '#add8e6',
+      color: 'white',
     },
   },
 });
@@ -37,8 +37,8 @@ export const PyrenzOutlinedInput = styled(MuiOutlinedInput)({
 });
 
 export const PyrenzInputLabel = styled(InputLabel)({
-  color: '#add8e6',
+  color: 'white',
   '&.Mui-focused': {
-    color: '#add8e6',
+    color: 'white',
   },
 });

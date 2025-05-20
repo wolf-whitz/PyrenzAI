@@ -2,16 +2,18 @@ import React, { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import { supabase } from '~/Utility/supabaseClient';
 import * as Sentry from '@sentry/react';
 import toast from 'react-hot-toast';
-import { Button, Typography } from '@mui/material';
+import { Typography, Box } from '@mui/material';
 import {
   CustomModelFields,
   ModelSelection,
   SliderComponent,
   ProviderModals,
-  GetUserUUID
+  GetUserUUID,
+  GetUserData
 } from '@components';
 import InfoIcon from '@mui/icons-material/Info';
 import BuildIcon from '@mui/icons-material/Build';
+import { PyrenzBlueButton } from '~/theme';
 
 interface Provider {
   provider_name: string;
@@ -53,9 +55,10 @@ export function Customization() {
   >(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [modelId, setModelId] = useState<string | null>(null);
+  const [maxTokenLimit, setMaxTokenLimit] = useState(1000);
 
   const stateSetters = {
-    maxTokens: (value: number) => setMaxTokens(Math.min(value, 1000)),
+    maxTokens: (value: number) => setMaxTokens(Math.min(value, maxTokenLimit)),
     temperature: (value: number) =>
       setTemperature(Math.min(Math.max(value, 0), 2)),
     topP: (value: number) => setTopP(Math.min(Math.max(value, 0), 1)),
@@ -90,6 +93,23 @@ export function Customization() {
     fetchModelId();
   }, [preferredModel]);
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userData = await GetUserData();
+        if (userData && 'subscription_data' in userData) {
+          setMaxTokens(userData.subscription_data.max_token);
+          setMaxTokenLimit(userData.subscription_data.max_token);
+        }
+      } catch (error) {
+        Sentry.captureException(error);
+        toast.error('Error fetching user data. Please try again.');
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
   const handleSubmit = async () => {
     const inferenceSettings = {
       model: modelId || preferredModel,
@@ -106,7 +126,7 @@ export function Customization() {
     };
 
     const data = {
-      inference_settings: JSON.stringify(inferenceSettings),
+      inference_settings: inferenceSettings,
     };
 
     try {
@@ -133,7 +153,7 @@ export function Customization() {
   };
 
   return (
-    <div className="p-4 space-y-4">
+    <Box>
       <ModelSelection
         preferredModel={preferredModel}
         setPreferredModel={setPreferredModel}
@@ -141,24 +161,26 @@ export function Customization() {
       />
 
       {preferredModel === 'Custom' && (
-        <CustomModelFields
-          apiKey={apiKey}
-          setApiKey={setApiKey}
-          customModelName={customModelName}
-          setCustomModelName={setCustomModelName}
-          provider={provider}
-          setProvider={setProvider}
-          setModalOpen={setModalOpen}
-        />
+        <Box>
+          <CustomModelFields
+            apiKey={apiKey}
+            setApiKey={setApiKey}
+            customModelName={customModelName}
+            setCustomModelName={setCustomModelName}
+            provider={provider}
+            setProvider={setProvider}
+            setModalOpen={setModalOpen}
+          />
+        </Box>
       )}
 
-      <div className="border p-4 rounded-lg shadow-sm">
-        <div className="flex items-center mb-4">
-          <BuildIcon className="mr-2" />
-          <Typography variant="subtitle1" component="h2">
+      <Box border={1} borderColor="grey.300" borderRadius={2} p={2} boxShadow={1}>
+        <Box display="flex" alignItems="center" mb={2}>
+          <BuildIcon color="action" />
+          <Typography variant="subtitle1" component="h2" ml={1}>
             Manual Parameters
           </Typography>
-        </div>
+        </Box>
         {Object.keys(sliderDescriptions).map((key) => {
           const sliderKey = key as keyof typeof sliderDescriptions;
           const stateValue = {
@@ -173,7 +195,7 @@ export function Customization() {
           let maxValue;
           switch (sliderKey) {
             case 'maxTokens':
-              maxValue = 1000;
+              maxValue = maxTokenLimit;
               break;
             case 'temperature':
               maxValue = 2;
@@ -205,23 +227,24 @@ export function Customization() {
             />
           );
         })}
-      </div>
+      </Box>
 
-      <Button
+      <PyrenzBlueButton
         variant="contained"
         color="primary"
         onClick={handleSubmit}
-        className="w-full mt-4"
+        fullWidth
         startIcon={<InfoIcon />}
+        sx={{ mt: 2 }}
       >
         Submit
-      </Button>
+      </PyrenzBlueButton>
 
       <ProviderModals
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         onSelect={handleProviderSelect}
       />
-    </div>
+    </Box>
   );
 }
