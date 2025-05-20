@@ -26,7 +26,7 @@ export const componentOverrides = {
     styleOverrides: {
       root: {
         borderRadius: '4px',
-        color: '#808080',
+        color: '#add8e6',
         '&:hover': {
           backgroundColor: 'transparent',
           color: 'grey',

@@ -70,6 +70,10 @@ export function Customization() {
 
   useEffect(() => {
     const fetchModelId = async () => {
+      if (preferredModel === 'Custom') {
+        return; 
+      }
+
       try {
         const { data, error } = await supabase
           .from('model_identifiers')
@@ -231,7 +235,6 @@ export function Customization() {
 
       <PyrenzBlueButton
         variant="contained"
-        color="primary"
         onClick={handleSubmit}
         fullWidth
         startIcon={<InfoIcon />}

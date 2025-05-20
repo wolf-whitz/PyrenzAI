@@ -13,8 +13,21 @@ const MoreButtonsModal = React.lazy(() =>
 export function CustomButton({ onButtonClick }: CustomButtonProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [visibleButtons, setVisibleButtons] = useState(buttons);
+  const [loading, setLoading] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const { t } = useTranslation();
+
+  const handleButtonClick = async (
+    func: any,
+    type: string,
+    maxCharacter: number,
+    page: number,
+    tag: string
+  ) => {
+    setLoading(true);
+    await onButtonClick(func, type, maxCharacter, page, tag);
+    setLoading(false);
+  };
 
   return (
     <motion.div
@@ -36,14 +49,15 @@ export function CustomButton({ onButtonClick }: CustomButtonProps) {
             variant="contained"
             startIcon={<btn.icon size={18} />}
             onClick={() =>
-              onButtonClick(
+              handleButtonClick(
                 btn.Function,
                 btn.type,
                 btn.max_character,
                 btn.page,
-                btn.tag
+                btn.tag as string 
               )
             }
+            data-state={loading ? 'loading' : undefined}
           >
             {t(btn.label)}
           </PyrenzBlueButton>
