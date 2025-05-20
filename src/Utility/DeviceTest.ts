@@ -6,6 +6,35 @@ interface ComponentWithValue {
 }
 
 export const DeviceTest = async () => {
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker
+            .register('/sw.js')
+            .then(async (registration) => {
+              console.log('✅ Service Worker registered with scope:', registration.scope);
+
+              const syncReg = registration as ServiceWorkerRegistration & {
+                sync: {
+                  register: (tag: string) => Promise<void>;
+                };
+              };
+
+              if ('sync' in syncReg) {
+                try {
+                  await syncReg.sync.register('retry-post');
+                  console.log('🔁 Background sync "retry-post" registered');
+                } catch (err) {
+                  console.warn('⚠️ Background sync registration failed:', err);
+                }
+              } else {
+                console.warn('🚫 Background sync not supported in this browser');
+              }
+            })
+            .catch((error) => {
+              console.error('❌ Service Worker registration failed:', error);
+            });
+        });
+      }
     try {
         const isOldBrowser = (): boolean => {
             switch (true) {
