@@ -65,6 +65,7 @@ export function MobileNav({ setShowLoginModal }: { setShowLoginModal: SetShowLog
                 ].includes(item.name) &&
                 !user
               ) {
+ 
                 setShowLoginModal(true);
               } else {
                 navigate(item.path);

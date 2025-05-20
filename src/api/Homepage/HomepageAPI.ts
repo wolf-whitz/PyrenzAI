@@ -1,3 +1,4 @@
+import { useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useHomeStore } from '~/store';
 import { useTranslation } from 'react-i18next';
@@ -10,6 +11,7 @@ import {
   useFetchUserUUID,
   useSyncSearchParams,
   useFetchCharacters,
+  GetUserData, // Ensure this is imported
 } from '@components';
 import { supabase } from '~/Utility/supabaseClient';
 import { Utils } from '~/Utility/Utility';
@@ -128,7 +130,7 @@ export const useHomepageAPI = () => {
     isLoading: false,
   });
 
-  const fetchUserData = async () => {
+  const fetchUserData = useCallback(async () => {
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -150,7 +152,32 @@ export const useHomepageAPI = () => {
         return { success: false, error: 'Failed to create user data' };
       }
     }
-  };
+  }, []);
+
+  const fetchUser = useCallback(async () => {
+    try {
+      const userData = await GetUserData(); // Ensure GetUserData is defined or imported
+      if ('error' in userData) {
+        console.error('Error fetching user:', userData.error);
+      } else {
+        return {
+          username: userData.username,
+          icon: userData.icon,
+        };
+      }
+    } catch (error) {
+      console.error('Error fetching user:', error);
+    }
+  }, []);
+
+  const toggleMode = useCallback(() => {
+    return (setShowLogin: (show: boolean) => void, setShowRegister: (show: boolean) => void) => {
+      //@ts-expect-error
+      setShowLogin(prev => !prev);
+      //@ts-expect-error
+      setShowRegister(prev => !prev);
+    };
+  }, []);
 
   return {
     navigate,
@@ -172,5 +199,7 @@ export const useHomepageAPI = () => {
     handleButtonClick,
     transformCharacter,
     fetchUserData,
+    fetchUser,
+    toggleMode,
   };
 };

@@ -68,11 +68,17 @@ export function Auth() {
                 onVerify={handleCaptcha}
                 theme="dark"
               />
+              <span className="sr-only">
+                Please complete the CAPTCHA to verify you are not a robot.
+              </span>
             </motion.article>
           ) : (
             <Box className="text-white animate-pulse flex items-center mb-6">
               <CircularProgress size={24} className="mr-2" />
               <Typography>{t('messages.loadingCaptcha')}</Typography>
+              <span className="sr-only">
+                Loading CAPTCHA, please wait.
+              </span>
             </Box>
           )}
           <Typography

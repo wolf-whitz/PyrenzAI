@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Container, useMediaQuery, Box, useTheme } from '@mui/material';
 import {
@@ -11,7 +11,7 @@ import {
   CustomButton,
   Pagination,
   Banner,
-  GetUserData,
+  AuthenticationModal
 } from '@components';
 import { useHomepageAPI } from '@api';
 
@@ -31,6 +31,8 @@ export function Home() {
     handleButtonClick,
     transformCharacter,
     fetchUserData,
+    fetchUser,
+    toggleMode,
   } = useHomepageAPI();
 
   const [showLogin, setShowLogin] = useState(false);
@@ -39,23 +41,21 @@ export function Home() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  const fetchData = useCallback(() => {
-    fetchUserData().catch(error => {
-      console.error('Error fetching user data:', error);
-    });
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchUserData().catch(error => {
+        console.error('Error fetching user data:', error);
+      });
+    };
+
+    fetchData();
   }, [fetchUserData]);
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
-  useEffect(() => {
-    const fetchUser = async () => {
+    const fetchUserDetails = async () => {
       try {
-        const userData = await GetUserData();
-        if ('error' in userData) {
-          console.error('Error fetching user:', userData.error);
-        } else {
+        const userData = await fetchUser();
+        if (userData) {
           setUser({
             username: userData.username,
             icon: userData.icon,
@@ -67,8 +67,8 @@ export function Home() {
       }
     };
 
-    fetchUser();
-  }, []);
+    fetchUserDetails();
+  }, [fetchUser]);
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
@@ -183,6 +183,18 @@ export function Home() {
           <Footer />
         </footer>
       </motion.section>
+
+      {(showLogin || showRegister) && (
+        <AuthenticationModal
+          mode={showLogin ? 'login' : 'register'}
+          onClose={() => {
+            setShowLogin(false);
+            setShowRegister(false);
+          }}
+          //@ts-expect-error
+          toggleMode={() => toggleMode(setShowLogin, setShowRegister)}
+        />
+      )}
     </Box>
   );
 }
