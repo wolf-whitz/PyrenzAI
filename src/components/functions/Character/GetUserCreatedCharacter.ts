@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '~/Utility/supabaseClient';
 
 type Character = {
-  id: number;
+  id: string;
   char_uuid: string;
   name: string;
   description: string;
@@ -12,7 +12,9 @@ type Character = {
   profile_image: string;
   tags: string[];
   is_public: boolean;
+  is_nsfw: boolean;
   token_total: number;
+  isLoading: boolean;
 };
 
 type UserData = {
@@ -42,7 +44,7 @@ export const GetUserCreatedCharacters = (uuid?: string) => {
             : char.tags?.split(',').map((tag: string) => tag.trim()) || [];
 
           return {
-            id: char.id,
+            id: char.id.toString(),
             char_uuid: char.char_uuid,
             name: char.name,
             description: char.description,
@@ -52,7 +54,9 @@ export const GetUserCreatedCharacters = (uuid?: string) => {
             profile_image: char.profile_image,
             tags: cleanedTags,
             is_public: char.is_public,
+            is_nsfw: char.is_nsfw ?? false,
             token_total: char.token_total ?? 0,
+            isLoading: false,
           };
         });
 

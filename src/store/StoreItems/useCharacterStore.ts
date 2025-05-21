@@ -2,22 +2,26 @@ import { create } from 'zustand';
 
 interface CharacterState {
   persona: string;
-  is_public: boolean;
-  is_nsfw: boolean;
   name: string;
   model_instructions: string;
   scenario: string;
   description: string;
   first_message: string;
+  is_public: boolean;
+  is_nsfw: boolean;
   tags: string | string[];
   gender: string;
   creator: string | null;
   textarea_token: { [key: string]: number };
   token_total: number;
+  profile_image?: string;
+}
+
+interface CharacterActions {
   setCharacterData: (data: Partial<CharacterState>) => void;
 }
 
-export const useCharacterStore = create<CharacterState>((set) => ({
+export const useCharacterStore = create<CharacterState & CharacterActions>((set) => ({
   persona: '',
   is_public: false,
   is_nsfw: false,
@@ -29,16 +33,11 @@ export const useCharacterStore = create<CharacterState>((set) => ({
   tags: '',
   gender: '',
   creator: null,
-  textarea_token: {
-    persona: 0,
-    name: 0,
-    model_instructions: 0,
-    scenario: 0,
-    description: 0,
-    first_message: 0,
-  },
+  textarea_token: {},
   token_total: 0,
-  setCharacterData: (data) =>
+  profile_image: undefined,
+
+  setCharacterData: (data: Partial<CharacterState>) =>
     set((state) => {
       const newTextareaToken = {
         ...state.textarea_token,

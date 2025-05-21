@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { CharacterCardModal } from '@components';
-import { CharacterCardProps } from '@shared-types/CharacterProp';
+import { Character } from '@shared-types/CharacterProp';
 import {
   Box,
   Typography,
@@ -16,22 +16,14 @@ import PublicIcon from '@mui/icons-material/Public';
 import LockIcon from '@mui/icons-material/Lock';
 import { useNavigate } from 'react-router-dom';
 
-export function CharacterCard({
-  id,
-  char_uuid,
-  name,
-  description,
-  creator,
-  creator_uuid,
-  chat_messages_count,
-  profile_image,
-  tags = [],
-  is_public: isPublic = false,
-  token_total,
-  isLoading = false,
-}: CharacterCardProps & { isLoading: boolean; creator_uuid: string }) {
+interface CharacterCardProps {
+  character: Character;
+  isOwner: boolean;
+}
+
+export function CharacterCard({ character, isOwner }: CharacterCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalData, setModalData] = useState<CharacterCardProps | null>(null);
+  const [modalData, setModalData] = useState<Character | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const navigate = useNavigate();
 
@@ -41,45 +33,19 @@ export function CharacterCard({
   }, []);
 
   const handleCardClick = useCallback(() => {
-    setModalData({
-      id,
-      char_uuid,
-      name,
-      description,
-      creator,
-      creator_uuid,
-      chat_messages_count,
-      profile_image,
-      tags,
-      is_public: isPublic,
-      token_total,
-      isLoading,
-    });
+    setModalData(character);
     setIsModalOpen(true);
-  }, [
-    id,
-    char_uuid,
-    name,
-    description,
-    creator,
-    creator_uuid,
-    chat_messages_count,
-    profile_image,
-    tags,
-    isPublic,
-    token_total,
-    isLoading,
-  ]);
+  }, [character]);
 
   const handleCreatorClick = useCallback(
     (e: React.MouseEvent<HTMLElement>) => {
       e.stopPropagation();
-      navigate(`/profile/${creator_uuid}`);
+      navigate(`/profile/${character.creator_uuid}`);
     },
-    [creator_uuid, navigate]
+    [character.creator_uuid, navigate]
   );
 
-  if (isLoading) {
+  if (character.isLoading) {
     return null;
   }
 
@@ -90,7 +56,7 @@ export function CharacterCard({
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: isLoaded ? 1 : 0, scale: isLoaded ? 1 : 0.95 }}
         transition={{ duration: 1.5, ease: 'easeOut' }}
-        aria-label={`Character card for ${name}`}
+        aria-label={`Character card for ${character.name}`}
       >
         <Card
           className="w-full sm:w-56 min-h-[360px] rounded-xl shadow-lg border border-[#add8e6] bg-gray-900 text-white font-baloo overflow-hidden cursor-pointer"
@@ -98,15 +64,15 @@ export function CharacterCard({
         >
           <div className="relative w-full h-48">
             <img
-              src={profile_image}
-              alt={name}
+              src={character.profile_image}
+              alt={character.name}
               className="absolute inset-0 w-full h-full object-cover rounded-t-xl"
             />
           </div>
 
           <CardContent className="p-4">
             <Typography variant="h6" className="font-bold truncate">
-              {name}
+              {character.name}
             </Typography>
             <Typography
               variant="caption"
@@ -114,7 +80,7 @@ export function CharacterCard({
               onClick={handleCreatorClick}
               className="cursor-pointer hover:underline"
             >
-              @{creator}
+              @{character.creator}
             </Typography>
 
             <Typography
@@ -122,13 +88,13 @@ export function CharacterCard({
               color="textSecondary"
               className="mt-2 line-clamp-4"
             >
-              {description?.length > 120
-                ? `${description.substring(0, 120)}...`
-                : description || 'No description available.'}
+              {character.description?.length > 120
+                ? `${character.description.substring(0, 120)}...`
+                : character.description || 'No description available.'}
             </Typography>
 
             <Box className="mt-3 flex flex-wrap gap-2">
-              {isPublic && (
+              {character.is_public && (
                 <Typography
                   component="span"
                   className="bg-black text-white text-xs font-semibold py-1 px-2 rounded-full flex items-center gap-1"
@@ -137,7 +103,7 @@ export function CharacterCard({
                   Public
                 </Typography>
               )}
-              {!isPublic && (
+              {!character.is_public && (
                 <Typography
                   component="span"
                   className="bg-black text-white text-xs font-semibold py-1 px-2 rounded-full flex items-center gap-1"
@@ -152,7 +118,7 @@ export function CharacterCard({
               <Box className="flex items-center gap-1">
                 <MessageIcon fontSize="small" className="text-white" />
                 <Typography variant="caption" className="font-medium">
-                  {chat_messages_count}
+                  {character.chat_messages_count}
                 </Typography>
               </Box>
 
@@ -162,11 +128,11 @@ export function CharacterCard({
                     onClick={(e: React.MouseEvent<HTMLElement>) => {
                       e.stopPropagation();
                       navigator.clipboard.writeText(
-                        `${window.location.origin}/characters/${char_uuid}`
+                        `${window.location.origin}/characters/${character.char_uuid}`
                       );
                       alert('Saved');
                     }}
-                    aria-label={`Share ${name}`}
+                    aria-label={`Share ${character.name}`}
                     className="transition-colors duration-200 hover:text-blue-400"
                   >
                     <ShareIcon fontSize="small" />
@@ -183,6 +149,7 @@ export function CharacterCard({
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           character={modalData}
+          isOwner={isOwner}
         />
       )}
     </>

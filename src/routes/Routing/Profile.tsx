@@ -1,68 +1,99 @@
+import { GetUserUUID } from '@components';
 import { useParams } from 'react-router-dom';
 import {
   Sidebar,
   SkeletonCard,
   CharacterCard,
   UserProfileHeader,
-  GetUserCreatedCharacters
+  GetUserCreatedCharacters,
+  MobileNav
 } from '@components';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { Character } from '@shared-types/CharacterProp';
+import { useEffect, useState } from 'react';
 
 export function ProfilePage() {
   const { uuid } = useParams();
+  const [safeUuid, setSafeUuid] = useState<string | undefined>(undefined);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  const safeUuid = uuid && uuid.trim() !== '' ? uuid : undefined;
+  useEffect(() => {
+    const fetchUserUUID = async () => {
+      if (!uuid || uuid.trim() === '') {
+        try {
+          const userUUID = await GetUserUUID();
+          setSafeUuid(userUUID ?? undefined);
+        } catch (error) {
+          console.error('Error fetching user UUID:', error);
+          setSafeUuid(undefined);
+        }
+      } else {
+        setSafeUuid(uuid);
+      }
+    };
+
+    fetchUserUUID();
+  }, [uuid]);
 
   const { characters, userData, loading } = GetUserCreatedCharacters(safeUuid);
 
   return (
-    <div className="flex">
-      <Sidebar className="flex-shrink-0" />
-      <main className="flex-1 p-4 overflow-auto">
-        <UserProfileHeader loading={loading} userData={userData} />
-        <div className="grid w-full gap-x-6 gap-y-4 pb-4 min-h-[50vh] grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 md:pl-20">
-          {loading ? (
-            Array.from(new Array(6)).map((_, index) => (
-              <div key={index}>
-                <SkeletonCard />
-              </div>
-            ))
-          ) : !userData ? (
-            <Typography
-              variant="h6"
-              style={{ gridColumn: '1 / -1', textAlign: 'center' }}
-            >
-              This user does not exist (·•᷄‎ࡇ•᷅ )
-            </Typography>
-          ) : characters.length > 0 ? (
-            characters.map((character) => (
-              <div key={character.id}>
-                <CharacterCard
-                  id={character.id.toString()}
-                  char_uuid={character.char_uuid}
-                  name={character.name}
-                  description={character.description}
-                  creator={character.creator}
-                  creator_uuid={character.creator_uuid}
-                  chat_messages_count={character.chat_messages_count}
-                  profile_image={character.profile_image}
-                  tags={character.tags}
-                  is_public={character.is_public}
-                  token_total={character.token_total}
-                  isLoading={loading}
-                />
-              </div>
-            ))
-          ) : (
-            <Typography
-              variant="h6"
-              style={{ gridColumn: '1 / -1', textAlign: 'center' }}
-            >
-              This user has not created any characters yet. (๑-﹏-๑)
-            </Typography>
-          )}
-        </div>
-      </main>
-    </div>
+    <Box display="flex" flexDirection="column" minHeight="100vh">
+      <Box display="flex" flex={1}>
+        <Sidebar className="flex-shrink-0" />
+        <Box flex={1} p={4} overflow="auto">
+          <UserProfileHeader loading={loading} userData={userData} />
+          <Box
+            display="grid"
+            gridTemplateColumns={{
+              xs: 'repeat(2, 1fr)',
+              md: 'repeat(3, 1fr)',
+              lg: 'repeat(4, 1fr)',
+              xl: 'repeat(5, 1fr)',
+              xxl: 'repeat(6, 1fr)'
+            }}
+            gap={6}
+            pb={4}
+            minHeight="50vh"
+            pl={{ md: 20 }}
+          >
+            {loading ? (
+              Array.from(new Array(6)).map((_, index) => (
+                <Box key={index}>
+                  <SkeletonCard />
+                </Box>
+              ))
+            ) : !userData ? (
+              <Typography
+                variant="h6"
+                sx={{ gridColumn: '1 / -1', textAlign: 'center' }}
+              >
+                This user does not exist (·•᷄‎ࡇ•᷅ )
+              </Typography>
+            ) : characters.length > 0 ? (
+              characters.map((character: Character) => {
+                const isOwner = character.creator_uuid === safeUuid;
+                console.log('isOwner', isOwner);
+                return (
+                  <Box key={character.id}>
+                    <CharacterCard character={character} isOwner={isOwner} />
+                  </Box>
+                );
+              })
+            ) : (
+              <Typography
+                variant="h6"
+                sx={{ gridColumn: '1 / -1', textAlign: 'center' }}
+              >
+                This user has not created any characters yet. (๑-﹏-๑)
+              </Typography>
+            )}
+          </Box>
+        </Box>
+      </Box>
+      {isMobile && <MobileNav setShowLoginModal={setShowLoginModal} />}
+    </Box>
   );
 }

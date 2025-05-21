@@ -1,22 +1,31 @@
-import { CharacterForm, Sidebar, CommunityGuidelines } from '@components';
+import React, { useState } from 'react';
+import { CharacterForm, Sidebar, CommunityGuidelines, MobileNav } from '@components';
+import { useMediaQuery, useTheme } from '@mui/material';
+import { Box } from '@mui/material';
 
 export function CreatePage() {
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
-    <div className="flex flex-col sm:flex-row w-full h-full">
-      <div className="w-full sm:w-64 p-4 sm:p-0">
+    <Box display="flex" flexDirection="column" width="100%" minHeight="100vh" sx={{ flexDirection: { sm: 'row' } }}>
+      <Box width="100%" sx={{ width: { sm: '256px' } }}>
         <Sidebar />
-      </div>
+      </Box>
 
-      <main className="flex-1 p-4 sm:p-6">
+      <Box flex={1}>
         <CharacterForm />
-        <div className="block sm:hidden mt-4">
+        <Box sx={{ display: { xs: 'block', sm: 'none' }, mt: 2 }}>
           <CommunityGuidelines />
-        </div>
-      </main>
+        </Box>
+      </Box>
 
-      <div className="hidden sm:block sm:w-64 p-4 sm:p-0">
+      <Box sx={{ display: { xs: 'none', sm: 'block' }, width: { sm: '256px' } }}>
         <CommunityGuidelines />
-      </div>
-    </div>
+      </Box>
+
+      {isMobile && <MobileNav setShowLoginModal={setShowLoginModal} />}
+    </Box>
   );
 }

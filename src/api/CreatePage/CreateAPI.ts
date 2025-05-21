@@ -1,37 +1,29 @@
-import { GetUserUUID, CreateNewChat } from '@components';
+import { GetUserUUID, CreateNewChat, createCharacter, handleSaveDraft } from '@components';
 import { useState, useEffect } from 'react';
 import { useCharacterStore } from '~/store';
 import { supabase } from '~/Utility/supabaseClient';
 import * as Sentry from '@sentry/react';
-import { CharacterData, Draft, ApiResponse } from '@shared-types/CharacterProp';
-import { Utils } from '~/Utility/Utility';
+import { CharacterData, Draft } from '@shared-types/CharacterProp';
+import { toast } from 'react-hot-toast';
 
 export const useCreateAPI = (navigate: (path: string) => void) => {
   const [loading, setLoading] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
   const [showRequiredFieldsPopup, setShowRequiredFieldsPopup] = useState(false);
-  const [missingFields, setMissingFields] = useState<string[]>([]);
   const [userUuid, setUserUuid] = useState<string | null>(null);
 
   const characterData = useCharacterStore((state) => state);
   const setCharacterData = useCharacterStore((state) => state.setCharacterData);
-
-  const requiredFields = [
-    'persona',
-    'name',
-    'model_instructions',
-    'scenario',
-    'description',
-    'first_message',
-    'tags',
-    'gender',
-  ];
 
   useEffect(() => {
     const fetchUserUuid = async () => {
       try {
         const uuid = await GetUserUUID();
         setUserUuid(uuid);
+        if (uuid) {
+          const name = await fetchUserName(uuid);
+          setCharacterData({ creator: name });
+        }
       } catch (error) {
         console.error('Error fetching user UUID:', error);
         Sentry.captureException(error);
@@ -39,18 +31,11 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
     };
 
     fetchUserUuid();
-  }, []);
+  }, [setCharacterData]);
 
-  useEffect(() => {
-    const getUserName = async () => {
-      if (userUuid) {
-        const name = await fetchUserName(userUuid);
-        setCharacterData({ creator: name });
-      }
-    };
-
-    getUserName();
-  }, [userUuid, setCharacterData]);
+  const tags = Array.isArray(characterData.tags)
+    ? characterData.tags
+    : (characterData.tags as string).split(',').map((tag: string) => tag.trim());
 
   const fetchUserName = async (userUuid: string): Promise<string> => {
     const { data, error } = await supabase
@@ -72,6 +57,24 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
     setCharacterData({ gender: value });
   };
 
+  const character = {
+    persona: characterData.persona,
+    name: characterData.name,
+    model_instructions: characterData.model_instructions,
+    scenario: characterData.scenario,
+    description: characterData.description,
+    first_message: characterData.first_message,
+    tags: tags,
+    gender: characterData.gender,
+    creator: characterData.creator,
+    is_public: characterData.is_public,
+    is_nsfw: characterData.is_nsfw,
+    profile_image: sessionStorage.getItem('Character_Create_Image_Profile') || '',
+    textarea_token: {},
+    token_total: 0,
+    creator_uuid: userUuid
+  };
+
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -87,7 +90,7 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
   };
 
   const handleClear = () => {
-    const emptyData: Omit<CharacterData, 'textarea_token' | 'token_total'> = {
+    const emptyData = {
       persona: '',
       name: '',
       model_instructions: '',
@@ -96,11 +99,14 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
       first_message: '',
       tags: [],
       gender: '',
+      creator: '',
       is_public: false,
       is_nsfw: false,
-      creator: '',
+      profile_image: '',
+      textarea_token: {},
+      token_total: 0,
     };
-    setCharacterData({ ...emptyData, textarea_token: {}, token_total: 0 });
+    setCharacterData(emptyData);
   };
 
   const handleSave = async () => {
@@ -112,103 +118,47 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
         return;
       }
 
-      const tags = Array.isArray(characterData.tags)
-        ? characterData.tags
-        : (characterData.tags as string)
-            .split(',')
-            .map((tag: string) => tag.trim());
+      const response = await handleSaveDraft(character, userUuid);
 
-      const { setCharacterData, ...characterDataToSave } = characterData;
-
-      const { data, error } = await supabase.from('draft_characters').upsert([
-        {
-          user_uuid: userUuid,
-          ...characterDataToSave,
-          tags,
-        },
-      ]);
-
-      if (error) {
-        alert('Error saving draft: ' + error.message);
-        Sentry.captureException(error);
+      if (!response.success) {
+        alert(`Error saving draft: ${response.error}`);
       } else {
         alert('Saved');
       }
-    } catch (error) {
-      console.error('Unexpected error:', error);
-      Sentry.captureException(error);
     } finally {
       setSaveLoading(false);
     }
   };
 
   const handleSelectDraft = (draft: Draft) => {
-    const tags = Array.isArray(draft.tags)
-      ? draft.tags
-      : (draft.tags as string).split(',').map((tag: string) => tag.trim());
-
     setCharacterData({
-      persona: draft.persona,
-      name: draft.name,
-      model_instructions: draft.model_instructions,
-      scenario: draft.scenario,
-      description: draft.description,
-      first_message: draft.first_message,
-      tags,
-      gender: draft.gender,
-      is_public: draft.is_public,
-      is_nsfw: draft.is_nsfw,
-      textarea_token: draft.textarea_token,
-      token_total: draft.token_total,
-      creator: draft.creator,
+      ...character
     });
   };
 
   const handleImportCharacter = (data: CharacterData | null) => {
-    if (data) {
-      const tags = Array.isArray(data.tags)
-        ? data.tags
-        : (data.tags as string).split(',').map((tag: string) => tag.trim());
-
-      setCharacterData({
-        persona: data.persona || '',
-        name: data.name || '',
-        model_instructions: data.model_instructions || '',
-        scenario: data.scenario || '',
-        description: data.description || '',
-        first_message: data.first_message || '',
-        tags,
-        gender: data.gender || '',
-        is_public: data.is_public || false,
-        is_nsfw: data.is_nsfw || false,
-        textarea_token: data.textarea_token || {},
-        token_total: data.token_total || 0,
-        creator: data.creator || '',
-      });
-    }
+    setCharacterData({
+      ...character,
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    const missing = requiredFields.filter(
-      (field) => !characterData[field as keyof CharacterData]
-    );
+    const fieldsToCheck = [
+      characterData.persona,
+      characterData.name,
+      characterData.model_instructions,
+      characterData.scenario,
+      characterData.description,
+      characterData.first_message,
+    ];
 
-    if (missing.length > 0) {
-      setMissingFields(missing);
-      setShowRequiredFieldsPopup(true);
-      setLoading(false);
-      return;
-    }
+    const isValid = fieldsToCheck.every(field => field && field.length >= 5);
 
-    const profileImage = sessionStorage.getItem(
-      'Character_Create_Image_Profile'
-    );
-
-    if (!profileImage) {
-      alert('Missing required item: Profile Image');
+    if (!isValid) {
+      toast.error('Each field must be at least 25 characters long. (Excluding tags)');
       setLoading(false);
       return;
     }
@@ -220,31 +170,21 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
         return;
       }
 
-      const tags = Array.isArray(characterData.tags)
-        ? characterData.tags
-        : (characterData.tags as string)
-            .split(',')
-            .map((tag: string) => tag.trim());
-
-      const response: ApiResponse = await Utils.post('/api/createCharacter', {
-        ...characterData,
-        tags,
-        profileImage,
-        user_uuid: userUuid,
-        creator: characterData.creator,
-      });
+      const response = await createCharacter(
+          character,
+      );
 
       if (response.error) {
         console.error('Error creating character:', response.error);
         Sentry.captureException(new Error(response.error));
       } else {
-        const characterUuid = response.character_uuid;
+        const characterUuid = response.char_uuid;
         if (characterUuid) {
           const chatResponse = await CreateNewChat(
             characterUuid,
             userUuid,
-            profileImage,
-            characterData.description
+            character.profile_image,
+            character.description
           );
           if (chatResponse.error) {
             console.error('Error creating chat:', chatResponse.error);
@@ -276,19 +216,16 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
   };
 
   const formState = {
-    ...characterData,
-    tags: Array.isArray(characterData.tags)
-      ? characterData.tags.join(', ')
-      : characterData.tags,
-  };
+    ...character
+    };
 
   return {
     loading,
     saveLoading,
     showRequiredFieldsPopup,
     setShowRequiredFieldsPopup,
-    missingFields,
     characterData,
+    character,
     setCharacterData,
     handleDropdownChange,
     handleChange,

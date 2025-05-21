@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Container, useMediaQuery, Box, useTheme } from '@mui/material';
 import {
@@ -11,6 +11,7 @@ import {
   CustomButton,
   Pagination,
   Banner,
+  GetUserData,
   AuthenticationModal
 } from '@components';
 import { useHomepageAPI } from '@api';
@@ -31,8 +32,6 @@ export function Home() {
     handleButtonClick,
     transformCharacter,
     fetchUserData,
-    fetchUser,
-    toggleMode,
   } = useHomepageAPI();
 
   const [showLogin, setShowLogin] = useState(false);
@@ -41,21 +40,23 @@ export function Home() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  useEffect(() => {
-    const fetchData = async () => {
-      await fetchUserData().catch(error => {
-        console.error('Error fetching user data:', error);
-      });
-    };
-
-    fetchData();
+  const fetchData = useCallback(() => {
+    fetchUserData().catch(error => {
+      console.error('Error fetching user data:', error);
+    });
   }, [fetchUserData]);
 
   useEffect(() => {
-    const fetchUserDetails = async () => {
+    fetchData();
+  }, [fetchData]);
+
+  useEffect(() => {
+    const fetchUser = async () => {
       try {
-        const userData = await fetchUser();
-        if (userData) {
+        const userData = await GetUserData();
+        if ('error' in userData) {
+          console.error('Error fetching user:', userData.error);
+        } else {
           setUser({
             username: userData.username,
             icon: userData.icon,
@@ -67,8 +68,13 @@ export function Home() {
       }
     };
 
-    fetchUserDetails();
-  }, [fetchUser]);
+    fetchUser();
+  }, []);
+
+  const toggleMode = () => {
+    setShowLogin(!showLogin);
+    setShowRegister(!showRegister);
+  };
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
@@ -191,8 +197,7 @@ export function Home() {
             setShowLogin(false);
             setShowRegister(false);
           }}
-          //@ts-expect-error
-          toggleMode={() => toggleMode(setShowLogin, setShowRegister)}
+          toggleMode={toggleMode}
         />
       )}
     </Box>

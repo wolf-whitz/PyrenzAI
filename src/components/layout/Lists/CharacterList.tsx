@@ -1,9 +1,6 @@
-import React, { memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SkeletonCard, CharacterCard } from '~/components';
 import { Typography, Box } from '@mui/material';
-
-const MemoizedCharacterCard = memo(CharacterCard);
 
 interface CharacterListProps {
   characters: CharacterCardProps[];
@@ -23,6 +20,7 @@ interface CharacterCardProps {
   profile_image: string;
   tags: string[];
   is_public: boolean;
+  is_nsfw: boolean; 
   token_total: number;
   isLoading: boolean;
 }
@@ -92,7 +90,7 @@ export function CharacterList({
               transition={{ duration: 0.5 }}
               aria-labelledby={`character-${char.name}`}
             >
-              <MemoizedCharacterCard {...char} />
+              <CharacterCard character={char} />
             </Box>
           ))
         ) : (

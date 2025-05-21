@@ -4,7 +4,6 @@ import {
   VisibilityCheckboxes,
   TokenSummary,
   FormActions,
-  RequiredFieldsPopup,
 } from '@components';
 import { TextareaForm } from './Childrens/TextareaForm';
 import { useNavigate } from 'react-router-dom';
@@ -16,7 +15,6 @@ export function CharacterForm() {
     loading,
     saveLoading,
     showRequiredFieldsPopup,
-    missingFields,
     characterData,
     handleDropdownChange,
     handleChange,
@@ -25,8 +23,6 @@ export function CharacterForm() {
     handleSelectDraft,
     handleImportCharacter,
     handleSubmit,
-    formState,
-    setShowRequiredFieldsPopup,
   } = useCreateAPI(navigate);
 
   const [showPopup, setShowPopup] = useState(false);
@@ -35,9 +31,13 @@ export function CharacterForm() {
     setShowPopup(showRequiredFieldsPopup);
   }, [showRequiredFieldsPopup]);
 
-  const handleClosePopup = () => {
-    setShowPopup(false);
-    setShowRequiredFieldsPopup(false);
+  const tagsString = Array.isArray(characterData.tags)
+    ? characterData.tags.join(', ')
+    : characterData.tags;
+
+  const formState = {
+    ...characterData,
+    tags: tagsString,
   };
 
   return (
@@ -66,12 +66,6 @@ export function CharacterForm() {
           onImportCharacter={handleImportCharacter}
         />
       </form>
-      {showPopup && (
-        <RequiredFieldsPopup
-          missingFields={missingFields}
-          onClose={handleClosePopup}
-        />
-      )}
     </div>
   );
 }

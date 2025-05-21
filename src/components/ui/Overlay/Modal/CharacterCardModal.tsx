@@ -5,16 +5,18 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
-import { Box, Typography, Button, CircularProgress } from '@mui/material';
+import { Box, Typography, Button, CircularProgress, IconButton } from '@mui/material';
 import MessageIcon from '@mui/icons-material/Message';
 import PublicIcon from '@mui/icons-material/Public';
 import LockIcon from '@mui/icons-material/Lock';
+import SettingsIcon from '@mui/icons-material/Settings';
 import { ShimmerText } from 'react-shimmer-effects';
 
 interface CharacterCardModalProps {
   isOpen: boolean;
   onClose: () => void;
   character: CharacterCardProps | null;
+  isOwner: boolean;
 }
 
 const truncateText = (text: string, maxLength: number): string => {
@@ -26,6 +28,7 @@ export function CharacterCardModal({
   isOpen,
   onClose,
   character,
+  isOwner,
 }: CharacterCardModalProps) {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -89,6 +92,12 @@ export function CharacterCardModal({
     }
   };
 
+  const handleEditCharacter = () => {
+    if (character) {
+      navigate(`/create/${character.char_uuid}`, { state: { character, isOwner } });
+    }
+  };
+
   if (!character) return null;
 
   return (
@@ -134,6 +143,11 @@ export function CharacterCardModal({
                     <Typography variant="h6" className="mt-3 font-bold">
                       {character.name}
                     </Typography>
+                    {isOwner && (
+                      <IconButton onClick={handleEditCharacter} aria-label="Edit character">
+                        <SettingsIcon fontSize="small" className="text-white ml-2" />
+                      </IconButton>
+                    )}
                   </Box>
                   <Typography
                     variant="caption"

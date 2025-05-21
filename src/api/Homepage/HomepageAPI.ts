@@ -1,8 +1,8 @@
-import { useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useHomeStore } from '~/store';
-import { useTranslation } from 'react-i18next';
-import { toast } from 'react-hot-toast';
+import { useEffect, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useHomeStore } from '~/store'
+import { useTranslation } from 'react-i18next'
+import { toast } from 'react-hot-toast'
 import {
   GetHotCharacters,
   GetLatestCharacters,
@@ -11,19 +11,19 @@ import {
   useFetchUserUUID,
   useSyncSearchParams,
   useFetchCharacters,
-  GetUserData, // Ensure this is imported
-} from '@components';
-import { supabase } from '~/Utility/supabaseClient';
-import { Utils } from '~/Utility/Utility';
-import { sendUserDataToUserDataTable } from '~/api';
-import { Character, CharacterCardProps } from '@shared-types/CharacterProp';
+} from '@components'
+import { supabase } from '~/Utility/supabaseClient'
+import { Utils } from '~/Utility/Utility'
+import { sendUserDataToUserDataTable } from '~/api'
+import type { Character, CharacterCardProps } from '@shared-types/CharacterProp'
 
 interface PostResponse {
-  success: boolean;
+  success: boolean
 }
 
 export const useHomepageAPI = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
+
   const {
     search,
     currentPage,
@@ -36,14 +36,14 @@ export const useHomepageAPI = () => {
     setCharacters,
     setTotal,
     setLoading,
-  } = useHomeStore();
+  } = useHomeStore()
 
-  const { t } = useTranslation();
-  const userUUID = useFetchUserUUID();
-  const itemsPerPage = 10;
-  const totalPages = Math.max(1, Math.ceil(total / itemsPerPage));
+  const { t } = useTranslation()
+  const userUUID = useFetchUserUUID()
+  const itemsPerPage = 10
+  const totalPages = Math.max(1, Math.ceil(total / itemsPerPage))
 
-  useSyncSearchParams({ search, currentPage, setSearch, setCurrentPage });
+  useSyncSearchParams({ search, currentPage, setSearch, setCurrentPage })
 
   useFetchCharacters({
     currentPage,
@@ -53,7 +53,7 @@ export const useHomepageAPI = () => {
     setTotal,
     setLoading,
     t,
-  });
+  })
 
   const handleButtonClick = async (
     functionName: string,
@@ -61,59 +61,47 @@ export const useHomepageAPI = () => {
     maxCharacter: number,
     page: number
   ) => {
-    setLoading(true);
-    setCharacters([]);
+    setLoading(true)
+    setCharacters([])
 
     try {
-      let rawCharacters: any[] = [];
+      let rawCharacters: any[] = []
+
       switch (functionName) {
         case 'GetHotCharacters':
-          rawCharacters = await GetHotCharacters(type, maxCharacter, page);
-          break;
+          rawCharacters = await GetHotCharacters(type, maxCharacter, page)
+          break
         case 'GetLatestCharacters':
-          rawCharacters = await GetLatestCharacters(type, maxCharacter, page);
-          break;
+          rawCharacters = await GetLatestCharacters(type, maxCharacter, page)
+          break
         case 'GetRandomCharacters':
-          rawCharacters = await GetRandomCharacters(type, maxCharacter, page);
-          break;
+          rawCharacters = await GetRandomCharacters(type, maxCharacter, page)
+          break
         case 'GetCharactersWithTags':
           rawCharacters = await GetCharactersWithTags(
             maxCharacter,
             page,
             type,
             search
-          );
-          break;
+          )
+          break
         default:
-          throw new Error('Invalid function name');
+          throw new Error('Invalid function name')
       }
 
-      const characters: Character[] = rawCharacters.map((char) => ({
-        id: char.id,
-        char_uuid: char.char_uuid,
-        name: char.name,
-        description: char.description,
-        creator: char.creator,
-        creator_uuid: char.creator_uuid,
-        chat_messages_count: char.chat_messages_count,
-        profile_image: char.profile_image,
-        tags: char.tags,
-        is_public: char.is_public,
-        token_total: char.token_total,
-      }));
-
-      setCharacters(characters);
-      console.log('Fetched characters:', characters);
+      const transformedCharacters = rawCharacters.map(transformCharacter)
+      setCharacters(transformedCharacters)
+      console.log('Fetched characters:', transformedCharacters)
     } catch (error) {
       if (error instanceof Error) {
-        toast.error(t('errors.callingRPCFunction') + error.message);
+        toast.error(t('errors.callingRPCFunction') + error.message)
       } else {
-        toast.error(t('errors.unknown'));
+        toast.error(t('errors.unknown'))
       }
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const transformCharacter = (char: Character): CharacterCardProps => ({
     id: char.id,
@@ -123,61 +111,38 @@ export const useHomepageAPI = () => {
     creator: char.creator,
     creator_uuid: char.creator_uuid,
     chat_messages_count: char.chat_messages_count,
-    profile_image: char.profile_image,
     tags: char.tags,
+    profile_image: char.profile_image,
     is_public: char.is_public ?? false,
-    token_total: char.token_total,
+    is_nsfw: char.is_nsfw ?? false,
+    token_total: char.token_total ?? 0,
     isLoading: false,
-  });
+  })
 
   const fetchUserData = useCallback(async () => {
     const {
       data: { user },
-    } = await supabase.auth.getUser();
+    } = await supabase.auth.getUser()
+
     if (user) {
       const userData = {
         userUUID: user.id,
-      };
+      }
 
       const response = (await Utils.post(
         '/api/createUserData',
         userData
-      )) as PostResponse;
+      )) as PostResponse
 
       if (response.success) {
-        await sendUserDataToUserDataTable(user);
-        return { success: true, user };
+        await sendUserDataToUserDataTable(user)
+        return { success: true, user }
       } else {
-        console.error('Failed to create user data');
-        return { success: false, error: 'Failed to create user data' };
+        console.error('Failed to create user data')
+        return { success: false, error: 'Failed to create user data' }
       }
     }
-  }, []);
-
-  const fetchUser = useCallback(async () => {
-    try {
-      const userData = await GetUserData(); // Ensure GetUserData is defined or imported
-      if ('error' in userData) {
-        console.error('Error fetching user:', userData.error);
-      } else {
-        return {
-          username: userData.username,
-          icon: userData.icon,
-        };
-      }
-    } catch (error) {
-      console.error('Error fetching user:', error);
-    }
-  }, []);
-
-  const toggleMode = useCallback(() => {
-    return (setShowLogin: (show: boolean) => void, setShowRegister: (show: boolean) => void) => {
-      //@ts-expect-error
-      setShowLogin(prev => !prev);
-      //@ts-expect-error
-      setShowRegister(prev => !prev);
-    };
-  }, []);
+  }, [])
 
   return {
     navigate,
@@ -199,7 +164,5 @@ export const useHomepageAPI = () => {
     handleButtonClick,
     transformCharacter,
     fetchUserData,
-    fetchUser,
-    toggleMode,
-  };
-};
+  }
+}

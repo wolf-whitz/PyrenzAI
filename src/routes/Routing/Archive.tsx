@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '~/Utility/supabaseClient';
-import { Sidebar, CustomContextMenu } from '@components';
+import { Sidebar, CustomContextMenu, MobileNav } from '@components';
 import {
   Card,
   CardContent,
   CardMedia,
   Typography,
   CircularProgress,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -32,7 +34,10 @@ export function ChatArchives() {
     left: number;
   } | null>(null);
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -127,7 +132,7 @@ export function ChatArchives() {
 
   return (
     <motion.div
-      className="flex"
+      className="flex flex-col min-h-screen"
       initial="hidden"
       animate="visible"
       variants={{
@@ -135,82 +140,84 @@ export function ChatArchives() {
         visible: { opacity: 1, transition: { duration: 0.5 } },
       }}
     >
-      <Sidebar />
-      <motion.div
-        className="flex-1 p-4 flex justify-center"
-        initial="hidden"
-        animate="visible"
-        variants={{
-          hidden: { y: 20, opacity: 0 },
-          visible: { y: 0, opacity: 1, transition: { duration: 0.5 } },
-        }}
-      >
-        <div className="w-full max-w-screen-lg">
-          {isLoading ? (
-            <div className="flex justify-center items-center">
-              <CircularProgress />
-            </div>
-          ) : chats.length === 0 ? (
-            <div className="flex justify-center items-center h-64">
-              <Typography variant="h6" color="textSecondary">
-                No chats left, maybe start a new one? (⸝⸝&gt; ᴗ•⸝⸝)
-              </Typography>
-            </div>
-          ) : (
-            <motion.div
-              className="flex flex-wrap -mx-2 justify-center"
-              initial="hidden"
-              animate="visible"
-              variants={{
-                hidden: { opacity: 0 },
-                visible: {
-                  opacity: 1,
-                  transition: {
-                    staggerChildren: 0.1,
+      <div className="flex flex-1">
+        <Sidebar />
+        <motion.div
+          className="flex-1 p-4 flex justify-center"
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: { y: 20, opacity: 0 },
+            visible: { y: 0, opacity: 1, transition: { duration: 0.5 } },
+          }}
+        >
+          <div className="w-full max-w-screen-lg">
+            {isLoading ? (
+              <div className="flex justify-center items-center">
+                <CircularProgress />
+              </div>
+            ) : chats.length === 0 ? (
+              <div className="flex justify-center items-center h-64">
+                <Typography variant="h6" color="textSecondary">
+                  No chats left, maybe start a new one? (⸝⸝&gt; ᴗ•⸝⸝)
+                </Typography>
+              </div>
+            ) : (
+              <motion.div
+                className="flex flex-wrap -mx-2 justify-center"
+                initial="hidden"
+                animate="visible"
+                variants={{
+                  hidden: { opacity: 0 },
+                  visible: {
+                    opacity: 1,
+                    transition: {
+                      staggerChildren: 0.1,
+                    },
                   },
-                },
-              }}
-            >
-              {chats.map((chat) => (
-                <motion.div
-                  key={chat.chat_uuid}
-                  className="w-full sm:w-1/2 lg:w-1/2 p-2"
-                  variants={{
-                    hidden: { y: 20, opacity: 0 },
-                    visible: { y: 0, opacity: 1 },
-                  }}
-                >
+                }}
+              >
+                {chats.map((chat) => (
                   <motion.div
-                    onClick={() => handleCardClick(chat.chat_uuid)}
-                    onContextMenu={(e) => handleContextMenu(e, chat)}
-                    className="cursor-pointer flex"
-                    whileHover={{
-                      scale: 1.05,
-                      boxShadow: '0px 10px 20px rgba(0,0,0,0.1)',
+                    key={chat.chat_uuid}
+                    className="w-full sm:w-1/2 lg:w-1/2 p-2"
+                    variants={{
+                      hidden: { y: 20, opacity: 0 },
+                      visible: { y: 0, opacity: 1 },
                     }}
-                    whileTap={{ scale: 0.95 }}
                   >
-                    <CardMedia
-                      component="img"
-                      style={{ width: 100 }}
-                      image={chat.preview_image}
-                      alt="Preview"
-                    />
-                    <CardContent>
-                      <Typography gutterBottom variant="h6" component="div">
-                        {characters[chat.char_uuid]}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {chat.preview_message}
-                      </Typography>
-                    </CardContent>
+                    <motion.div
+                      onClick={() => handleCardClick(chat.chat_uuid)}
+                      onContextMenu={(e) => handleContextMenu(e, chat)}
+                      className="cursor-pointer flex"
+                      whileHover={{
+                        scale: 1.05,
+                        boxShadow: '0px 10px 20px rgba(0,0,0,0.1)',
+                      }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <CardMedia
+                        component="img"
+                        style={{ width: 100 }}
+                        image={chat.preview_image}
+                        alt="Preview"
+                      />
+                      <CardContent>
+                        <Typography gutterBottom variant="h6" component="div">
+                          {characters[chat.char_uuid]}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {chat.preview_message}
+                        </Typography>
+                      </CardContent>
+                    </motion.div>
                   </motion.div>
-                </motion.div>
-              ))}
-            </motion.div>
-          )}
-        </div>
-      </motion.div>
+                ))}
+              </motion.div>
+            )}
+          </div>
+        </motion.div>
+      </div>
 
       {contextMenuAnchor && (
         <CustomContextMenu
@@ -219,6 +226,8 @@ export function ChatArchives() {
           anchorPosition={contextMenuAnchor}
         />
       )}
+
+      {isMobile && <MobileNav setShowLoginModal={setShowLoginModal} />}
     </motion.div>
   );
 }
