@@ -45,7 +45,7 @@ export const useHomepageAPI = () => {
 
   useSyncSearchParams({ search, currentPage, setSearch, setCurrentPage })
 
-  useFetchCharacters({
+  const { isOwner } = useFetchCharacters({
     currentPage,
     search,
     itemsPerPage,
@@ -164,5 +164,6 @@ export const useHomepageAPI = () => {
     handleButtonClick,
     transformCharacter,
     fetchUserData,
+    isOwner, // Include isOwner in the return object
   }
 }

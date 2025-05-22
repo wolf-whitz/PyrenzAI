@@ -1,28 +1,14 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { SkeletonCard, CharacterCard } from '~/components';
 import { Typography, Box } from '@mui/material';
+import { CharacterCardProps } from '@shared-types/CharacterProp';
 
 interface CharacterListProps {
   characters: CharacterCardProps[];
   loading: boolean;
   itemsPerPage: number;
   t: (key: string, options?: Record<string, any>) => string;
-}
-
-interface CharacterCardProps {
-  id: string;
-  char_uuid: string;
-  name: string;
-  description: string;
-  creator: string | null;
-  creator_uuid: string;
-  chat_messages_count: number;
-  profile_image: string;
-  tags: string[];
-  is_public: boolean;
-  is_nsfw: boolean; 
-  token_total: number;
-  isLoading: boolean;
+  isOwner: boolean;
 }
 
 export function CharacterList({
@@ -30,6 +16,7 @@ export function CharacterList({
   loading,
   itemsPerPage,
   t,
+  isOwner,
 }: CharacterListProps) {
   return (
     <Box
@@ -90,7 +77,7 @@ export function CharacterList({
               transition={{ duration: 0.5 }}
               aria-labelledby={`character-${char.name}`}
             >
-              <CharacterCard character={char} />
+              <CharacterCard character={char} isOwner={isOwner} />
             </Box>
           ))
         ) : (

@@ -24,15 +24,17 @@ export function useFetchCharacters({
   const fetchCharactersData = useCallback(async () => {
     setLoading(true);
     try {
-      const { characters, total } = await fetchCharacters(
+      const { characters, total, isOwner } = await fetchCharacters(
         currentPage,
         itemsPerPage,
         search
       );
       setCharacters(characters);
       setTotal(total);
+      return { isOwner };
     } catch (error) {
       toast.error(t('errors.fetchingCharacters'));
+      return { isOwner: false };
     } finally {
       setLoading(false);
     }
@@ -49,4 +51,6 @@ export function useFetchCharacters({
   useEffect(() => {
     fetchCharactersData();
   }, [fetchCharactersData]);
+
+  return { isOwner: false };
 }

@@ -32,6 +32,7 @@ export function Home() {
     handleButtonClick,
     transformCharacter,
     fetchUserData,
+    isOwner,  
   } = useHomepageAPI();
 
   const [showLogin, setShowLogin] = useState(false);
@@ -169,6 +170,7 @@ export function Home() {
                 loading={loading}
                 itemsPerPage={itemsPerPage}
                 t={t}
+                isOwner={isOwner}   
               />
             </section>
 
