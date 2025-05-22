@@ -1,4 +1,3 @@
-import { motion, AnimatePresence } from 'framer-motion';
 import { SkeletonCard, CharacterCard } from '~/components';
 import { Typography, Box } from '@mui/material';
 import { CharacterCardProps } from '@shared-types/CharacterProp';
@@ -20,86 +19,64 @@ export function CharacterList({
 }: CharacterListProps) {
   return (
     <Box
-      component={motion.div}
       sx={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: 2,
-        pb: 4,
+        display: 'grid',
+        gridTemplateColumns: {
+          xs: 'repeat(2, 1fr)',
+          sm: 'repeat(2, 1fr)',
+          md: 'repeat(3, 1fr)',
+          lg: 'repeat(4, 1fr)',
+          xl: 'repeat(5, 1fr)',
+          xxl: 'repeat(6, 1fr)',
+        },
         minHeight: '50vh',
         justifyContent: { xs: 'center', sm: 'flex-start' },
       }}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
     >
-      <AnimatePresence>
-        {loading ? (
-          Array.from({ length: itemsPerPage }).map((_, i) => (
-            <Box
-              key={i}
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: { xs: '100%', sm: '48%', md: '32%', lg: '24%', xl: '20%' },
-              }}
-            >
-              <motion.article
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.5 }}
-                aria-label={t('ariaLabels.loadingCharacter', {
-                  index: i + 1,
-                })}
-              >
-                <SkeletonCard />
-              </motion.article>
-            </Box>
-          ))
-        ) : characters.length > 0 ? (
-          characters.map((char) => (
-            <Box
-              key={char.id}
-              component={motion.article}
-              sx={{
-                width: { xs: '100%', sm: '48%', md: '32%', lg: '24%', xl: '20%' },
-                transition: 'transform 0.3s ease-in-out',
-                '&:hover': {
-                  transform: 'scale(1.05)',
-                },
-                p: 1,
-              }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.5 }}
-              aria-labelledby={`character-${char.name}`}
-            >
-              <CharacterCard character={char} isOwner={isOwner} />
-            </Box>
-          ))
-        ) : (
+      {loading ? (
+        Array.from({ length: itemsPerPage }).map((_, i) => (
           <Box
-            component={motion.div}
+            key={i}
             sx={{
-              color: 'text.secondary',
-              textAlign: 'center',
-              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
             }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-            aria-live="polite"
           >
-            <Typography variant="body1">
-              {t('messages.noCharactersFound')}
-            </Typography>
+            <SkeletonCard />
           </Box>
-        )}
-      </AnimatePresence>
+        ))
+      ) : characters.length > 0 ? (
+        characters.map((char) => (
+          <Box
+            key={char.id}
+            sx={{
+              transition: 'transform 0.3s ease-in-out',
+              '&:hover': {
+                transform: 'scale(1.05)',
+              },
+              p: 1,
+            }}
+            aria-labelledby={`character-${char.name}`}
+          >
+            <CharacterCard character={char} isOwner={isOwner} />
+          </Box>
+        ))
+      ) : (
+        <Box
+          sx={{
+            color: 'text.secondary',
+            textAlign: 'center',
+            width: '100%',
+            gridColumn: '1 / -1',
+          }}
+          aria-live="polite"
+        >
+          <Typography variant="body1">
+            {t('messages.noCharactersFound')}
+          </Typography>
+        </Box>
+      )}
     </Box>
   );
 }

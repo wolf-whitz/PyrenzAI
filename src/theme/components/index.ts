@@ -5,3 +5,4 @@ export * from './PyrenzSlider'
 export * from './MuiStyledDrawer'
 
 export * from './PyrenzMessageBox'
+export * from './PyrenzCharacteCard'
