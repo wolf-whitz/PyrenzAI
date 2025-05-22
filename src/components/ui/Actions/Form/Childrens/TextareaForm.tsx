@@ -1,15 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Menu, MenuItem, Typography, TextField } from '@mui/material';
 import { supabase } from '~/Utility/supabaseClient';
 import { Tag, TextareaFormProps } from '@shared-types/TagTypes';
 import { ImageUploader, Textarea } from '@components';
+import { v4 as uuidv4 } from 'uuid';
 
 export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [tags, setTags] = useState<Tag[]>([]);
   const [filteredTags, setFilteredTags] = useState<Tag[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imageBlobUrl, setImageBlobUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (formState.profile_image) {
+      setImageBlobUrl(formState.profile_image);
+    }
+  }, [formState.profile_image]);
 
   const handleOpenDropdown = async (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -49,17 +56,31 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
     );
   };
 
-  const handleImageSelect = (file: File | null) => {
+  const handleImageSelect = async (file: File | null) => {
     if (file) {
-      setSelectedImage(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        sessionStorage.setItem(
-          'Character_Create_Image_Profile',
-          reader.result as string
-        );
-      };
-      reader.readAsDataURL(file);
+      const blobUrl = URL.createObjectURL(file);
+      setImageBlobUrl(blobUrl);
+
+      const fileName = `character-image/${uuidv4()}-${file.name}`;
+      const { data, error } = await supabase.storage
+        .from('character-image')
+        .upload(fileName, file);
+
+      if (error) {
+        console.error('Error uploading image:', error);
+        return;
+      }
+
+      const { data: publicUrlData } = supabase.storage
+        .from('character-image')
+        .getPublicUrl(fileName);
+
+      handleChange({
+        target: {
+          name: 'profile_image',
+          value: publicUrlData.publicUrl,
+        },
+      } as React.ChangeEvent<HTMLTextAreaElement>);
     }
   };
 
@@ -74,7 +95,7 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
         maxLength={50}
       />
 
-      <ImageUploader onImageSelect={handleImageSelect} />
+      <ImageUploader onImageSelect={handleImageSelect} initialImage={imageBlobUrl} />
 
       <Textarea
         name="description"

@@ -50,6 +50,7 @@ export const CharacterDataSchema = z.object({
   is_nsfw: z.boolean(),
   textarea_token: z.record(z.number()),
   token_total: z.number(),
+  profile_image: z.string(),
 });
 
 export type CharacterData = z.infer<typeof CharacterDataSchema>;

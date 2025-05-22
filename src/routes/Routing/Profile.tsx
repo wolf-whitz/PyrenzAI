@@ -43,7 +43,7 @@ export function ProfilePage() {
     <Box display="flex" flexDirection="column" minHeight="100vh">
       <Box display="flex" flex={1}>
         <Sidebar className="flex-shrink-0" />
-        <Box flex={1} p={4} overflow="auto">
+        <Box flex={1} overflow="auto">
           <UserProfileHeader loading={loading} userData={userData} />
           <Box
             display="grid"
@@ -57,7 +57,7 @@ export function ProfilePage() {
             gap={6}
             pb={4}
             minHeight="50vh"
-            pl={{ md: 20 }}
+            pl={{ md: 15 }}
           >
             {loading ? (
               Array.from(new Array(6)).map((_, index) => (

@@ -2,50 +2,54 @@ import { useDropzone, Accept } from 'react-dropzone';
 import PersonIcon from '@mui/icons-material/Person';
 import { Box, Typography } from '@mui/material';
 import clsx from 'clsx';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface DropzoneProps {
   onDrop: (acceptedFiles: File[]) => void;
   label?: string;
   className: string;
+  initialImage?: string | null;
 }
 
 export function Dropzone({
   onDrop,
   label = 'Drag & drop a file here or click to upload',
   className,
+  initialImage,
 }: DropzoneProps) {
-  const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(
-    null
-  );
+  const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(initialImage || null);
 
-  const handleDrop = async (acceptedFiles: File[]) => {
-    if (acceptedFiles.length > 0) {
-      const file = acceptedFiles[0];
-
-      if (file.size > 1024 * 1024) {
-        alert('File size exceeds 1 MB. Please choose a smaller file.');
-        return;
-      }
-
-      const reader = new FileReader();
-
-      reader.onloadend = () => {
-        const base64data = reader.result as string;
-        setBannerImagePreview(base64data);
-      };
-
-      reader.readAsDataURL(file);
+  useEffect(() => {
+    if (initialImage) {
+      setBannerImagePreview(initialImage);
     }
-    onDrop(acceptedFiles);
-  };
+  }, [initialImage]);
 
   const {
     getRootProps: getBannerRootProps,
     getInputProps: getBannerInputProps,
     isDragActive: isBannerDragActive,
   } = useDropzone({
-    onDrop: handleDrop,
+    onDrop: (acceptedFiles) => {
+      if (acceptedFiles.length > 0) {
+        const file = acceptedFiles[0];
+
+        if (file.size > 1024 * 1024) {
+          alert('File size exceeds 1 MB. Please choose a smaller file.');
+          return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onloadend = () => {
+          const base64data = reader.result as string;
+          setBannerImagePreview(base64data);
+        };
+
+        reader.readAsDataURL(file);
+      }
+      onDrop(acceptedFiles);
+    },
     accept: {
       'image/*': ['.jpeg', '.png'],
     } as Accept,

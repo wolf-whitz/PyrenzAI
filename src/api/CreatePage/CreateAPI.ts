@@ -6,11 +6,12 @@ import * as Sentry from '@sentry/react';
 import { CharacterData, Draft } from '@shared-types/CharacterProp';
 import { toast } from 'react-hot-toast';
 
-export const useCreateAPI = (navigate: (path: string) => void) => {
+export const useCreateAPI = (navigate: (path: string) => void, propCharacterData?: CharacterData) => {
   const [loading, setLoading] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
   const [showRequiredFieldsPopup, setShowRequiredFieldsPopup] = useState(false);
   const [userUuid, setUserUuid] = useState<string | null>(null);
+  const [profileImageBlobUrl, setProfileImageBlobUrl] = useState<string | null>(null);
 
   const characterData = useCharacterStore((state) => state);
   const setCharacterData = useCharacterStore((state) => state.setCharacterData);
@@ -32,6 +33,12 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
 
     fetchUserUuid();
   }, [setCharacterData]);
+
+  useEffect(() => {
+    if (propCharacterData) {
+      setCharacterData(propCharacterData);
+    }
+  }, [propCharacterData, setCharacterData]);
 
   const tags = Array.isArray(characterData.tags)
     ? characterData.tags
@@ -57,6 +64,14 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
     setCharacterData({ gender: value });
   };
 
+  const handleImageSelect = (file: File | null) => {
+    if (file) {
+      const blobUrl = URL.createObjectURL(file);
+      setProfileImageBlobUrl(blobUrl);
+      setCharacterData({ profile_image: blobUrl });
+    }
+  };
+
   const character = {
     persona: characterData.persona,
     name: characterData.name,
@@ -69,7 +84,7 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
     creator: characterData.creator,
     is_public: characterData.is_public,
     is_nsfw: characterData.is_nsfw,
-    profile_image: sessionStorage.getItem('Character_Create_Image_Profile') || '',
+    profile_image: profileImageBlobUrl || '',
     textarea_token: {},
     token_total: 0,
     creator_uuid: userUuid
@@ -107,6 +122,10 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
       token_total: 0,
     };
     setCharacterData(emptyData);
+    if (profileImageBlobUrl) {
+      URL.revokeObjectURL(profileImageBlobUrl);
+      setProfileImageBlobUrl(null);
+    }
   };
 
   const handleSave = async () => {
@@ -235,5 +254,6 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
     handleImportCharacter,
     handleSubmit,
     formState,
+    handleImageSelect,
   };
 };

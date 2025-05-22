@@ -50,6 +50,7 @@ export const routes: RouteObject[] = [
   { path: '/', element: <ProtectedRoute element={<Home />} /> },
   { path: '/Home', element: <ProtectedRoute element={<Home />} /> },
   { path: '/Create', element: <ProtectedRoute element={<Create />} /> },
+  { path: '/Create/:uuid', element: <ProtectedRoute element={<Create />} /> },
   {
     path: '/Profile/:uuid',
     element: <ProtectedRoute element={<Profile />} />,

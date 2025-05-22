@@ -1,11 +1,9 @@
-import React from 'react';
 import { Typography, Box } from '@mui/material';
+import { useCharacterStore } from '~/store';
 
-interface TokenSummaryProps {
-  tokenTotal: number;
-}
-
-export function TokenSummary({ tokenTotal }: TokenSummaryProps) {
+export function TokenSummary() {
+  const tokenTotal = useCharacterStore(state => state.token_total);
+  console.log('TokenSummary', tokenTotal);
   return (
     <Box className="mt-4">
       <Typography variant="h6" component="strong" className="text-gray-400">

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Dropzone, Textarea } from '@components';
 import {
@@ -21,12 +21,11 @@ interface CreateImageResponse {
 
 interface ImageUploaderProps {
   onImageSelect: (file: File | null) => void;
+  initialImage?: string | null;
 }
 
-export function ImageUploader({ onImageSelect }: ImageUploaderProps) {
-  const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(
-    null
-  );
+export function ImageUploader({ onImageSelect, initialImage }: ImageUploaderProps) {
+  const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(initialImage || null);
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [textareaValue, setTextareaValue] = useState('');
@@ -34,31 +33,33 @@ export function ImageUploader({ onImageSelect }: ImageUploaderProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
+  useEffect(() => {
+    if (initialImage) {
+      setBannerImagePreview(initialImage);
+    }
+  }, [initialImage]);
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
-  const onDrop = (acceptedFiles: File[]) => {
-    const file = acceptedFiles[0] || null;
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setBannerImagePreview(reader.result as string);
-        onImageSelect(file);
-        sessionStorage.setItem(
-          'Character_Create_Image_Profile',
-          reader.result as string
-        );
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   const handleClear = () => {
     setInputValue('');
     setTextareaValue('');
     setImageUrl(null);
     setIsSubmitted(false);
-    sessionStorage.removeItem('Character_Create_Image_Profile');
+    if (bannerImagePreview) {
+      URL.revokeObjectURL(bannerImagePreview);
+      setBannerImagePreview(null);
+    }
+  };
+
+  const handleDrop = (acceptedFiles: File[]) => {
+    const file = acceptedFiles[0] || null;
+    if (file) {
+      const blobUrl = URL.createObjectURL(file);
+      setBannerImagePreview(blobUrl);
+    }
+    onImageSelect(file);
   };
 
   const handleSubmit = async () => {
@@ -80,17 +81,15 @@ export function ImageUploader({ onImageSelect }: ImageUploaderProps) {
       const typedResponse = response as CreateImageResponse;
       if (typedResponse.image) {
         setImageUrl(typedResponse.image);
-        sessionStorage.setItem(
-          'Character_Create_Image_Profile',
-          typedResponse.image
-        );
         fetch(typedResponse.image)
           .then((res) => res.blob())
           .then((blob) => {
+            const blobUrl = URL.createObjectURL(blob);
             const file = new File([blob], 'generated-image.png', {
               type: 'image/png',
             });
             onImageSelect(file);
+            setBannerImagePreview(blobUrl);
           });
       }
     } catch (error) {
@@ -109,9 +108,10 @@ export function ImageUploader({ onImageSelect }: ImageUploaderProps) {
       transition={{ duration: 0.5 }}
     >
       <Dropzone
-        onDrop={onDrop}
+        onDrop={handleDrop}
         label="Drop a banner image here&nbsp;&nbsp;&nbsp;(ᵕ—ᴗ—)"
         className="bg-gray-800 border-dashed border-2 border-gray-500"
+        initialImage={bannerImagePreview}
       />
       <div className="flex items-center mt-4">
         <PyrenzBlueButton

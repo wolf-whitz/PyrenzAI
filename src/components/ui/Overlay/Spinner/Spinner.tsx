@@ -28,7 +28,7 @@ const SpinnerBase = ({
   </motion.div>
 );
 
-const Spinner = () => (
+export const Spinner = () => (
   <SpinnerBase
     message={
       <>
@@ -39,7 +39,7 @@ const Spinner = () => (
   />
 );
 
-const ChatPageSpinner = () => (
+export const ChatPageSpinner = () => (
   <SpinnerBase
     message={
       <>
@@ -53,7 +53,7 @@ const ChatPageSpinner = () => (
   />
 );
 
-const SettingsPageLoader = () => (
+export const SettingsPageLoader = () => (
   <SpinnerBase
     message={
       <>
@@ -67,4 +67,15 @@ const SettingsPageLoader = () => (
   />
 );
 
-export { Spinner, ChatPageSpinner, SettingsPageLoader };
+export const CreatePageLoader = () => (
+  <SpinnerBase
+    message={
+      <>
+        Loading.. Please Wait While{' '}
+        <span className="font-baloo text-blue-500">Pyrenz</span> loads the Chatpage.
+      </>
+    }
+    subMessage="It may take a few seconds."
+    no_bg
+  />
+);

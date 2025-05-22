@@ -9,7 +9,7 @@ import { Box, Typography, Button, CircularProgress, IconButton } from '@mui/mate
 import MessageIcon from '@mui/icons-material/Message';
 import PublicIcon from '@mui/icons-material/Public';
 import LockIcon from '@mui/icons-material/Lock';
-import SettingsIcon from '@mui/icons-material/Settings';
+import EditIcon from '@mui/icons-material/Edit'; // Import EditIcon
 import { ShimmerText } from 'react-shimmer-effects';
 
 interface CharacterCardModalProps {
@@ -144,9 +144,18 @@ export function CharacterCardModal({
                       {character.name}
                     </Typography>
                     {isOwner && (
-                      <IconButton onClick={handleEditCharacter} aria-label="Edit character">
-                        <SettingsIcon fontSize="small" className="text-white ml-2" />
-                      </IconButton>
+                      <Button
+                        onClick={handleEditCharacter}
+                        aria-label="Edit character"
+                        startIcon={<EditIcon fontSize="small" />}
+                        sx={{
+                          color: 'white',
+                          marginLeft: '8px',
+                          textTransform: 'none',
+                        }}
+                      >
+                        Edit Character
+                      </Button>
                     )}
                   </Box>
                   <Typography

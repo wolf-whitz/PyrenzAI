@@ -12,6 +12,7 @@ export interface TextareaFormProps {
     description: string;
     first_message: string;
     tags: string;
+    profile_image: string;
   };
   handleChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }
