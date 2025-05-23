@@ -62,7 +62,6 @@ export function Home() {
             username: userData.username,
             icon: userData.icon,
           });
-          console.log('User data:', userData);
         }
       } catch (error) {
         console.error('Error fetching user:', error);

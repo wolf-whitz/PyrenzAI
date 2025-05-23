@@ -24,8 +24,7 @@
 
       "@components": ["src/components"],
       "@api": ["src/api"],
-
-      "@store/*": ["src/store/*"],
+      
       "@libs/*": ["src/lib/*"],
       "@shared-types/*": ["src/components/shared-types/*"]
     }

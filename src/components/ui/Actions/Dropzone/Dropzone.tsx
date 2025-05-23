@@ -3,6 +3,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import { Box, Typography } from '@mui/material';
 import clsx from 'clsx';
 import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 
 interface DropzoneProps {
   onDrop: (acceptedFiles: File[]) => void;
@@ -34,8 +35,13 @@ export function Dropzone({
       if (acceptedFiles.length > 0) {
         const file = acceptedFiles[0];
 
+        if (!file.type.startsWith('image/')) {
+          toast.error('Please upload an image file.');
+          return;
+        }
+
         if (file.size > 1024 * 1024) {
-          alert('File size exceeds 1 MB. Please choose a smaller file.');
+          toast.error('File size exceeds 1 MB. Please choose a smaller file.');
           return;
         }
 
