@@ -11,12 +11,14 @@ import { useNavigate } from 'react-router-dom';
 import { useCreateAPI } from '@api';
 import { ChangeEvent } from 'react';
 import { useCharacterStore } from '~/store';
+import { CharacterData } from '@shared-types/CharacterProp';
 
-export function CharacterForm({
-  isDataLoaded,
-}: {
+interface CharacterFormProps {
+  characterData: CharacterData | undefined;
   isDataLoaded: boolean;
-}) {
+}
+
+export function CharacterForm({ characterData, isDataLoaded }: CharacterFormProps) {
   const navigate = useNavigate();
   const {
     loading,
@@ -30,7 +32,6 @@ export function CharacterForm({
     handleSubmit,
   } = useCreateAPI(navigate);
 
-  const characterData = useCharacterStore((state) => state);
   const setCharacterData = useCharacterStore((state) => state.setCharacterData);
   const [showPopup, setShowPopup] = useState(showRequiredFieldsPopup);
 
@@ -66,6 +67,7 @@ export function CharacterForm({
         scenario: characterData.scenario || '',
         first_message: characterData.first_message || '',
         profile_image: characterData.profile_image || '',
+        textarea_token: characterData.textarea_token || {}, // Ensure textarea_token is an object
       });
 
       setIsInitialized(true);

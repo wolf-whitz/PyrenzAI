@@ -59,6 +59,9 @@ export default defineConfig({
         chunkFileNames: 'assets/[name].[hash:8].js',
         assetFileNames: 'assets/[name].[hash:8].[ext]',
         compact: true,
+        manualChunks: {
+          sidebars: ['src/components/layout/Sidebars/Sidebar.tsx', 'src/components/layout/Sidebars/index.ts'],
+        },
       },
       treeshake: {
         moduleSideEffects: 'no-external',
