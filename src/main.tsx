@@ -1,13 +1,4 @@
-/**
- * @file main.tsx
- * Main entry point for the application and where we also set up the global providers such as:
- * @ThemeProvider
- * @I18nextProvider
- * @ErrorBoundary
- * And such.
- */
-
-import { StrictMode } from 'react';
+import { StrictMode, useState, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
 import './GlobalStyles.css';
@@ -17,7 +8,7 @@ import { SpeedInsights } from '@vercel/speed-insights/react';
 import posthog from 'posthog-js';
 import { posthogConfig } from '~/config';
 
-import { ThemeProvider, CssBaseline } from '@mui/material';
+import { ThemeProvider, CssBaseline, Box, Fade } from '@mui/material';
 import { I18nextProvider } from 'react-i18next';
 import { GetTheme } from '~/theme';
 import i18n from '~/provider/TranslationProvider.ts';
@@ -26,10 +17,10 @@ import { SentryProvider } from './provider/SentryProvider';
 import * as Sentry from '@sentry/react';
 
 import ErrorBoundary from './routes/ErrorBoundary';
-
 import { DeviceTest } from '~/Utility/DeviceTest';
 
 const theme = GetTheme();
+const currentTheme = theme.palette.mode;
 
 posthog.init(posthogConfig.apiKey, {
   api_host: posthogConfig.apiHost,
@@ -47,19 +38,66 @@ Sentry.init({
 
 DeviceTest();
 
+const Main = () => {
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => setShow(true), 50);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <Fade in={show} timeout={600}>
+      <Box
+        component="main"
+        data-mui-theme={`theme-${currentTheme}`}
+        role="main"
+        aria-label="PyrenzAI"
+        tabIndex={-1}
+        sx={{
+          scrollBehavior: 'smooth',
+          overscrollBehavior: 'auto',
+          overflowY: 'auto',
+          height: '100vh',
+          scrollbarWidth: 'thin',
+          scrollbarColor: 'transparent transparent',
+          '&::-webkit-scrollbar': {
+            width: 8,
+            opacity: 0.2,
+            transition: 'opacity 0.3s ease',
+          },
+          '&:hover::-webkit-scrollbar': {
+            opacity: 1,
+          },
+          '&::-webkit-scrollbar-track': {
+            background: 'transparent',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: 'rgba(100, 100, 100, 0.4)',
+            borderRadius: 10,
+            border: '2px solid transparent',
+            backgroundClip: 'content-box',
+          },
+        }}
+      >
+        <App />
+      </Box>
+    </Fade>
+  );
+};
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <I18nextProvider i18n={i18n}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-          <SentryProvider>
-            <ErrorBoundary>
-              <App />
-            </ErrorBoundary>
-          </SentryProvider>
-          <Analytics />
-          <SpeedInsights />
-          <ToastProvider />
+        <SentryProvider>
+          <ErrorBoundary>
+            <Main />
+          </ErrorBoundary>
+        </SentryProvider>
+        <Analytics />
+        <SpeedInsights />
+        <ToastProvider />
       </ThemeProvider>
     </I18nextProvider>
   </StrictMode>

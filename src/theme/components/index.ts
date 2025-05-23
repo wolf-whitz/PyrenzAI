@@ -6,3 +6,5 @@ export * from './MuiStyledDrawer'
 
 export * from './PyrenzMessageBox'
 export * from './PyrenzCharacteCard'
+
+export * from './PyrenzChatsCharacterCard'

@@ -164,6 +164,6 @@ export const useHomepageAPI = () => {
     handleButtonClick,
     transformCharacter,
     fetchUserData,
-    isOwner, // Include isOwner in the return object
+    isOwner, 
   }
 }

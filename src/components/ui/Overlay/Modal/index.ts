@@ -9,3 +9,4 @@ export * from './LanguageModal';
 export * from './MoreButtonsModal';
 export * from './PersonaCardModal';
 export * from './ProvidersModal';
+export * from './ArchiveModal';

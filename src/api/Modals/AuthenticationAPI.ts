@@ -24,20 +24,16 @@ export const sendUserDataToUserDataTable = async (user: AppUser) => {
           username: user.user_metadata?.full_name || user.email?.split('@')[0],
           last_sign_in_at: new Date().toISOString(),
         },
-        { onConflict: 'user_uuid' } // Prevents duplicated entries within the database
+        { onConflict: 'user_uuid' }
       );
 
     if (userError) throw userError;
 
     const { data: emailData, error: emailError } = await supabase
-      .from('emails')
-      .upsert(
-        {
-          user_uuid: user.id,
-          email: user.email,
-        },
-        { onConflict: 'user_uuid' } // Prevents duplicated entries within the database
-      );
+      .rpc('insert_email', {
+        p_user_uuid: user.id,
+        p_email: user.email,
+      });
 
     if (emailError) throw emailError;
 

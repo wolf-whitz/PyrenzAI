@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Avatar, Typography, IconButton, useTheme, useMediaQuery, Box, Fade, Container } from '@mui/material';
-import { ArrowLeft, ArrowRight, Settings } from 'lucide-react';
+import { ArrowLeft, Settings } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface ChatHeaderProps {
   char: {
@@ -13,11 +14,10 @@ interface ChatHeaderProps {
 
 export function ChatHeader({ char, handleGoHome, toggleSettings }: ChatHeaderProps) {
   const theme = useTheme();
-  const isMdScreen = useMediaQuery(theme.breakpoints.up('lg'));
-  const [arrowDirection, setArrowDirection] = useState<'left' | 'right'>('left');
+  const navigate = useNavigate(); 
 
-  const toggleArrowDirection = () => {
-    setArrowDirection(prevDirection => prevDirection === 'left' ? 'right' : 'left');
+  const handleArrowLeftClick = () => {
+    navigate('/#');
   };
 
   return (
@@ -38,15 +38,11 @@ export function ChatHeader({ char, handleGoHome, toggleSettings }: ChatHeaderPro
             }}
           >
             <IconButton
-              onClick={toggleArrowDirection}
+              onClick={handleArrowLeftClick}
               sx={{ color: 'grey', '&:hover': { color: 'white' } }}
-              aria-label="Toggle arrow"
+              aria-label="Go to home"
             >
-              {arrowDirection === 'left' ? (
-                <ArrowLeft size={24} />
-              ) : (
-                <ArrowRight size={24} />
-              )}
+              <ArrowLeft size={24} />
             </IconButton>
             <IconButton
               onClick={handleGoHome}

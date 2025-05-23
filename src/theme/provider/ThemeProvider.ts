@@ -3,11 +3,14 @@ import { componentOverrides } from '../overrides/componentOverrides';
 import { CreateLightTheme } from '../themes/LightTheme';
 
 export function GetTheme() {
-  const isDarkMode =
-    document.documentElement.getAttribute('data-mui-theme') === 'theme-dark';
+  const themeAttr = document.documentElement.getAttribute('data-mui-theme');
 
-  if (isDarkMode) {
-    const theme = createTheme({
+  const isLightMode = themeAttr === 'theme-light';
+
+  if (isLightMode) {
+    return CreateLightTheme();
+  } else {
+    return createTheme({
       typography: {
         fontFamily: 'Baloo Tammudu 2, system-ui',
       },
@@ -29,9 +32,5 @@ export function GetTheme() {
         ...componentOverrides,
       },
     });
-
-    return theme;
-  } else {
-    return CreateLightTheme();
   }
 }

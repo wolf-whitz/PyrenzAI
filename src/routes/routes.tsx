@@ -17,10 +17,6 @@ const Profile = lazyNamed(() => import('./Routing/Profile'), 'ProfilePage');
 const Chat = lazyNamed(() => import('./Routing/Chat'), 'ChatPage');
 const Setting = lazyNamed(() => import('./Routing/Setting/Setting'), 'Setting');
 const ErrorPage = lazyNamed(() => import('./Routing/404page'), 'ErrorPage');
-const ChatArchives = lazyNamed(
-  () => import('./Routing/Archive'),
-  'ChatArchives'
-);
 
 const getCookie = (name: string) => {
   const value = `; ${document.cookie}`;
@@ -64,6 +60,5 @@ export const routes: RouteObject[] = [
     element: <ProtectedRoute element={<Chat />} />,
   },
   { path: '/Settings', element: <ProtectedRoute element={<Setting />} /> },
-  { path: '/Archive', element: <ProtectedRoute element={<ChatArchives />} /> },
   { path: '*', element: <ErrorPage /> },
 ];

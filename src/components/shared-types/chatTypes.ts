@@ -71,3 +71,10 @@ export interface GenerateResponse {
   }>;
   remainingMessages: number;
 }
+
+export type Chat = {
+  chat_uuid: string;      
+  char_uuid: string;      
+  preview_message: string; 
+  preview_image: string;  
+};

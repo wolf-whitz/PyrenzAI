@@ -1,3 +1,4 @@
+import { ArchiveModal } from '@components';
 import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import {
@@ -19,13 +20,14 @@ import {
   useTheme,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { PyrenzBlueButton } from '~/theme'; 
+import { PyrenzBlueButton } from '~/theme';
 
 export function Sidebar({ className }: { className?: string }) {
   const [hovered, setHovered] = useState<string | null>(null);
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [modalMode, setModalMode] = useState<'login' | 'register'>('login');
+  const [showArchiveModal, setShowArchiveModal] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
   const theme = useTheme();
@@ -102,6 +104,7 @@ export function Sidebar({ className }: { className?: string }) {
                 navigate={navigate}
                 setShowLoginModal={setShowLoginModal}
                 user={user}
+                setShowArchiveModal={setShowArchiveModal}
               />
             ))}
           </List>
@@ -115,6 +118,13 @@ export function Sidebar({ className }: { className?: string }) {
           toggleMode={toggleModalMode}
         />
       )}
+
+      {showArchiveModal && (
+        <ArchiveModal
+          open={showArchiveModal}
+          onClose={() => setShowArchiveModal(false)}
+        />
+      )}
     </>
   );
 }
@@ -126,6 +136,7 @@ function SidebarItem({
   navigate,
   setShowLoginModal,
   user,
+  setShowArchiveModal, 
 }: any) {
   const { t } = useTranslation();
 
@@ -133,12 +144,13 @@ function SidebarItem({
     if (
       [
         t('navigation.settings'),
-        t('navigation.chats'),
         t('navigation.create'),
       ].includes(item.name) &&
       !user
     ) {
       setShowLoginModal(true);
+    } else if (item.name === t('navigation.chats')) {
+      setShowArchiveModal(true);
     } else {
       navigate(item.path);
     }
