@@ -85,22 +85,6 @@ export function Textarea({
     }
   };
 
-  const handleTagClick = (tag: string) => {
-    const newValue = value
-      ? `${value.trim()}${value.trim().endsWith(',') ? '' : ', '}${tag}`
-      : tag;
-    const event = {
-      target: {
-        value: newValue,
-        name: name,
-      },
-    } as React.ChangeEvent<HTMLTextAreaElement>;
-    onChange(event);
-  };
-
-  const textareaId =
-    name || `textarea-${Math.random().toString(36).substr(2, 9)}`;
-
   return (
     <motion.div
       className={clsx('w-full mb-4 relative', className)}
@@ -112,7 +96,6 @@ export function Textarea({
         <Typography
           variant="body1"
           component="label"
-          htmlFor={textareaId}
           className="text-white"
         >
           {label}
@@ -129,7 +112,6 @@ export function Textarea({
         )}
       </div>
       <TextField
-        id={textareaId}
         name={name}
         value={value}
         onChange={handleChange}
@@ -142,7 +124,7 @@ export function Textarea({
         helperText={!isLinkValid ? 'Please enter a valid link.' : ''}
         InputProps={{
           className: clsx(
-            'text-white bg-gray-800 border-none focus:outline-none focus:ring-2 shadow-md transition-all duration-300 ease-in-out rounded-md',
+            'text-white bg-gray-800 border-none focus:outline-none focus:ring-2 shadow-md transition-all duration-300 ease-in-out rounded-md focus:text-blue-500',
             {
               'ring-red-500': isMaxLengthExceeded,
               'focus:ring-gray-600 hover:ring-gray-700': !isMaxLengthExceeded,

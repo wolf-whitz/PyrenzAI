@@ -3,9 +3,6 @@ import { componentOverrides } from '../overrides/componentOverrides';
 
 export function CreateLightTheme() {
   const theme = createTheme({
-    typography: {
-      fontFamily: `'Baloo 2', cursive`,
-    },
     palette: {
       mode: 'light',
       primary: {

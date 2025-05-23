@@ -9,7 +9,7 @@ export function GetTheme() {
   if (isDarkMode) {
     const theme = createTheme({
       typography: {
-        fontFamily: 'Baloo Tammudu 2',
+        fontFamily: 'Baloo Tammudu 2, system-ui',
       },
       palette: {
         mode: 'dark',

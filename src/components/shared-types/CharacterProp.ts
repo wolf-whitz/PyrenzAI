@@ -48,9 +48,9 @@ export const CharacterDataSchema = z.object({
   creator: z.string().nullable(),
   is_public: z.boolean(),
   is_nsfw: z.boolean(),
-  textarea_token: z.record(z.number()),
   token_total: z.number(),
   profile_image: z.string(),
+  textarea_token: z.record(z.number()).optional(),
 });
 
 export type CharacterData = z.infer<typeof CharacterDataSchema>;

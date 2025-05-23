@@ -6,12 +6,11 @@ import * as Sentry from '@sentry/react';
 import { CharacterData, Draft } from '@shared-types/CharacterProp';
 import { toast } from 'react-hot-toast';
 
-export const useCreateAPI = (navigate: (path: string) => void, propCharacterData?: CharacterData) => {
+export const useCreateAPI = (navigate: (path: string) => void) => {
   const [loading, setLoading] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
   const [showRequiredFieldsPopup, setShowRequiredFieldsPopup] = useState(false);
   const [userUuid, setUserUuid] = useState<string | null>(null);
-  const [profileImageBlobUrl, setProfileImageBlobUrl] = useState<string | null>(null);
 
   const characterData = useCharacterStore((state) => state);
   const setCharacterData = useCharacterStore((state) => state.setCharacterData);
@@ -34,12 +33,6 @@ export const useCreateAPI = (navigate: (path: string) => void, propCharacterData
     fetchUserUuid();
   }, [setCharacterData]);
 
-  useEffect(() => {
-    if (propCharacterData) {
-      setCharacterData(propCharacterData);
-    }
-  }, [propCharacterData, setCharacterData]);
-
   const tags = Array.isArray(characterData.tags)
     ? characterData.tags
     : (characterData.tags as string).split(',').map((tag: string) => tag.trim());
@@ -60,14 +53,9 @@ export const useCreateAPI = (navigate: (path: string) => void, propCharacterData
     return data.username || '';
   };
 
-  const handleDropdownChange = (value: string) => {
-    setCharacterData({ gender: value });
-  };
-
   const handleImageSelect = (file: File | null) => {
     if (file) {
       const blobUrl = URL.createObjectURL(file);
-      setProfileImageBlobUrl(blobUrl);
       setCharacterData({ profile_image: blobUrl });
     }
   };
@@ -84,7 +72,7 @@ export const useCreateAPI = (navigate: (path: string) => void, propCharacterData
     creator: characterData.creator,
     is_public: characterData.is_public,
     is_nsfw: characterData.is_nsfw,
-    profile_image: profileImageBlobUrl || '',
+    profile_image: characterData.profile_image || '',
     textarea_token: {},
     token_total: 0,
     creator_uuid: userUuid
@@ -122,9 +110,8 @@ export const useCreateAPI = (navigate: (path: string) => void, propCharacterData
       token_total: 0,
     };
     setCharacterData(emptyData);
-    if (profileImageBlobUrl) {
-      URL.revokeObjectURL(profileImageBlobUrl);
-      setProfileImageBlobUrl(null);
+    if (characterData.profile_image) {
+      URL.revokeObjectURL(characterData.profile_image);
     }
   };
 
@@ -167,11 +154,11 @@ export const useCreateAPI = (navigate: (path: string) => void, propCharacterData
 
     const fieldsToCheck = [
       characterData.persona,
-      characterData.name,
       characterData.model_instructions,
       characterData.scenario,
       characterData.description,
       characterData.first_message,
+      characterData.gender
     ];
 
     const isValid = fieldsToCheck.every(field => field && field.length >= 5);
@@ -246,7 +233,6 @@ export const useCreateAPI = (navigate: (path: string) => void, propCharacterData
     characterData,
     character,
     setCharacterData,
-    handleDropdownChange,
     handleChange,
     handleClear,
     handleSave,

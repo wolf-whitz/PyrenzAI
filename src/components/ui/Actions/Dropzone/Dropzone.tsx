@@ -68,7 +68,7 @@ export function Dropzone({
           'rounded-lg'
         )}
         sx={{
-          height: '200px',
+          height: '490px',
           width: '300px',
         }}
       >

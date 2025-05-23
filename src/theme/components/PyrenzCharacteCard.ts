@@ -42,7 +42,6 @@ export const PyrenzCharacterCardImageImg = styled('img')({
 });
 
 export const PyrenzCharacterCardTitle = styled(Typography)({
-  fontFamily: 'font-baloo, sans-serif',
   fontSize: '1.25rem',
   fontWeight: 'bold',
   marginBottom: '8px',
@@ -50,7 +49,6 @@ export const PyrenzCharacterCardTitle = styled(Typography)({
 });
 
 export const PyrenzCharacterCardDescription = styled(Typography)({
-  fontFamily: 'font-baloo, sans-serif',
   fontSize: '0.875rem',
   color: '#adb5bd',
   marginBottom: '16px',
@@ -65,7 +63,6 @@ export const PyrenzCharacterCardTags = styled(Box)({
 });
 
 export const PyrenzCharacterCardTag = styled(Typography)({
-  fontFamily: 'font-baloo, sans-serif',
   fontSize: '0.75rem',
   backgroundColor: '#0a0f1c',
   color: '#a5a5a6',
@@ -78,7 +75,6 @@ export const PyrenzCharacterCardTag = styled(Typography)({
 });
 
 export const PyrenzAltTag = styled(Typography)({
-  fontFamily: 'font-baloo, sans-serif',
   fontSize: '0.75rem',
   color: '#a5a5a6',
   borderRadius: '12px',

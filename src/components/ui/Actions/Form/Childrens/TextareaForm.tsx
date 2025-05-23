@@ -15,6 +15,7 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
   useEffect(() => {
     if (formState.profile_image) {
       setImageBlobUrl(formState.profile_image);
+      console.log('Image URL:', formState.profile_image);
     }
   }, [formState.profile_image]);
 

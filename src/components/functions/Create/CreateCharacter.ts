@@ -14,10 +14,12 @@ export const createCharacter = async (
   try {
     const characterUuid = uuidv4();
 
+     const { textarea_token, ...filteredCharacterData } = characterData;
+
     const { data, error } = await supabase.from('characters').insert([
       {
         char_uuid: characterUuid,
-        ...characterData,
+        ...filteredCharacterData,
       },
     ]);
 
@@ -28,6 +30,7 @@ export const createCharacter = async (
     }
 
     return { char_uuid: characterUuid };
+    
   } catch (error) {
     console.error('Unexpected error:', error);
     Sentry.captureException(error);

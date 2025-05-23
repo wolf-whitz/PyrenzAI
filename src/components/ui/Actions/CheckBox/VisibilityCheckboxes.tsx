@@ -39,6 +39,12 @@ export function VisibilityCheckboxes({
                 } as any)
               }
               inputProps={{ 'aria-label': 'Public' }}
+              sx={{
+                color: '#fff',
+                '&.Mui-checked': {
+                  color: '#fff',
+                },
+              }}
             />
           }
           label="Public"
@@ -54,6 +60,12 @@ export function VisibilityCheckboxes({
                 } as any)
               }
               inputProps={{ 'aria-label': 'NSFW' }}
+              sx={{
+                color: '#fff',
+                '&.Mui-checked': {
+                  color: '#fff',
+                },
+              }}
             />
           }
           label="NSFW"

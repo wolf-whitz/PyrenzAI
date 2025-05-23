@@ -9,15 +9,11 @@ import {
   Card,
   CardMedia,
   CircularProgress,
+  Typography,
 } from '@mui/material';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
-import { Utils } from '~/Utility/Utility';
 import { toast } from 'react-hot-toast';
 import { PyrenzBlueButton } from '~/theme';
-
-interface CreateImageResponse {
-  image: string;
-}
 
 interface ImageUploaderProps {
   onImageSelect: (file: File | null) => void;
@@ -27,7 +23,6 @@ interface ImageUploaderProps {
 export function ImageUploader({ onImageSelect, initialImage }: ImageUploaderProps) {
   const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(initialImage || null);
   const [open, setOpen] = useState(false);
-  const [inputValue, setInputValue] = useState('');
   const [textareaValue, setTextareaValue] = useState('');
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -43,7 +38,6 @@ export function ImageUploader({ onImageSelect, initialImage }: ImageUploaderProp
   const handleClose = () => setOpen(false);
 
   const handleClear = () => {
-    setInputValue('');
     setTextareaValue('');
     setImageUrl(null);
     setIsSubmitted(false);
@@ -71,30 +65,35 @@ export function ImageUploader({ onImageSelect, initialImage }: ImageUploaderProp
     setIsLoading(true);
     setIsSubmitted(true);
 
-    const payload = {
-      negative_prompt: inputValue,
-      prompt: textareaValue,
-    };
+    const prompt = `${textareaValue}`;
+    const model = "turbo";
+    const nologo = "true";
+    const enhance = "true";
 
     try {
-      const response = await Utils.post('/api/CreateImage', payload);
-      const typedResponse = response as CreateImageResponse;
-      if (typedResponse.image) {
-        setImageUrl(typedResponse.image);
-        fetch(typedResponse.image)
-          .then((res) => res.blob())
-          .then((blob) => {
-            const blobUrl = URL.createObjectURL(blob);
-            const file = new File([blob], 'generated-image.png', {
-              type: 'image/png',
-            });
-            onImageSelect(file);
-            setBannerImagePreview(blobUrl);
-          });
+      const queryParams = `${prompt}&model=${model}&nologo=${nologo}&enhance=${enhance}`;
+      const url = `https://image.pollinations.ai/prompt/${queryParams}`;
+
+      const response = await fetch(url, {
+        method: 'GET',
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
       }
+
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      setImageUrl(blobUrl);
+
+      const file = new File([blob], 'generated-image.png', {
+        type: 'image/png',
+      });
+      onImageSelect(file);
+      setBannerImagePreview(blobUrl);
     } catch (error) {
-      toast.error('Error creating image');
       console.error('Error creating image:', error);
+      toast.error('Error creating image');
     } finally {
       setIsLoading(false);
     }
@@ -143,15 +142,6 @@ export function ImageUploader({ onImageSelect, initialImage }: ImageUploaderProp
             p: 4,
           }}
         >
-          <TextField
-            fullWidth
-            label="negative_prompt"
-            placeholder="keywords of what you **do not** wish to see in the output image"
-            variant="outlined"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            sx={{ mb: 2 }}
-          />
           <Textarea
             value={textareaValue}
             onChange={(e) => setTextareaValue(e.target.value)}
@@ -196,6 +186,13 @@ export function ImageUploader({ onImageSelect, initialImage }: ImageUploaderProp
               Submit
             </PyrenzBlueButton>
           </div>
+          <Typography
+            variant="caption"
+            display="block"
+            sx={{ mt: 2, textAlign: 'center', color: 'text.secondary' }}
+          >
+            Powered by Pollination AI image generation
+          </Typography>
         </Box>
       </Modal>
     </motion.div>

@@ -1,5 +1,5 @@
 import { CreatePageLoader } from '@components';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   GenderDropdown,
   VisibilityCheckboxes,
@@ -9,14 +9,12 @@ import {
 import { TextareaForm } from './Childrens/TextareaForm';
 import { useNavigate } from 'react-router-dom';
 import { useCreateAPI } from '@api';
-import { CharacterData } from '@shared-types/CharacterProp';
 import { ChangeEvent } from 'react';
+import { useCharacterStore } from '~/store';
 
 export function CharacterForm({
-  characterData: propCharacterData,
   isDataLoaded,
 }: {
-  characterData?: CharacterData;
   isDataLoaded: boolean;
 }) {
   const navigate = useNavigate();
@@ -24,16 +22,16 @@ export function CharacterForm({
     loading,
     saveLoading,
     showRequiredFieldsPopup,
-    characterData: apiCharacterData,
-    handleDropdownChange,
     handleChange: apiHandleChange,
     handleClear,
     handleSave,
     handleSelectDraft,
     handleImportCharacter,
     handleSubmit,
-  } = useCreateAPI(navigate, propCharacterData);
+  } = useCreateAPI(navigate);
 
+  const characterData = useCharacterStore((state) => state);
+  const setCharacterData = useCharacterStore((state) => state.setCharacterData);
   const [showPopup, setShowPopup] = useState(showRequiredFieldsPopup);
 
   const [formState, setFormState] = useState({
@@ -54,24 +52,25 @@ export function CharacterForm({
 
   const [isInitialized, setIsInitialized] = useState(false);
 
-  if ((propCharacterData || apiCharacterData) && !isInitialized && isDataLoaded) {
-    const characterData = propCharacterData || apiCharacterData;
-    const tagsString = Array.isArray(characterData.tags)
-      ? characterData.tags.join(', ')
-      : characterData.tags;
+  useEffect(() => {
+    if (characterData && !isInitialized && isDataLoaded) {
+      const tagsString = Array.isArray(characterData.tags)
+        ? characterData.tags.join(', ')
+        : characterData.tags;
 
-    setFormState({
-      ...characterData,
-      tags: tagsString,
-      persona: characterData.persona || '',
-      model_instructions: characterData.model_instructions || '',
-      scenario: characterData.scenario || '',
-      first_message: characterData.first_message || '',
-      profile_image: characterData.profile_image || '',
-    });
+      setFormState({
+        ...characterData,
+        tags: tagsString,
+        persona: characterData.persona || '',
+        model_instructions: characterData.model_instructions || '',
+        scenario: characterData.scenario || '',
+        first_message: characterData.first_message || '',
+        profile_image: characterData.profile_image || '',
+      });
 
-    setIsInitialized(true);
-  }
+      setIsInitialized(true);
+    }
+  }, [characterData, isDataLoaded, isInitialized]);
 
   const handleFormChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = event.target;
@@ -83,6 +82,21 @@ export function CharacterForm({
     }));
 
     apiHandleChange(event);
+  };
+
+  const handleDropdownChange = (value: string) => {
+    setCharacterData({ gender: value });
+    setFormState(prevState => ({
+      ...prevState,
+      gender: value,
+    }));
+  };
+
+  const updateTokenTotal = (total: number) => {
+    setFormState(prevState => ({
+      ...prevState,
+      token_total: total,
+    }));
   };
 
   return (
@@ -101,7 +115,7 @@ export function CharacterForm({
           isNSFW={formState.is_nsfw}
           handleChange={handleFormChange}
         />
-        <TokenSummary/>
+        <TokenSummary updateTokenTotal={updateTokenTotal} />
         <FormActions
           onClear={handleClear}
           onSave={handleSave}
