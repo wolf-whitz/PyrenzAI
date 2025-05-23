@@ -3,7 +3,6 @@ import react from '@vitejs/plugin-react-swc';
 import path from 'path';
 import tailwindcss from 'tailwindcss';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
-import { cspPlugin } from './plugin/DevheaderCsp';
 import { createHtmlPlugin } from 'vite-plugin-html';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
@@ -31,13 +30,27 @@ export default defineConfig({
         useShortDoctype: true,
         minifyCSS: true,
         minifyJS: true,
+        inject: {
+          data: {
+            APP_VERSION: process.env.npm_package_version,
+            BUILD_DATE: new Date().toISOString(),
+          },
+        },
       },
     }),
   ],
 
+  define: {
+    __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
+    __BUILD_DATE__: JSON.stringify(new Date().toISOString()),
+  },
+  
   css: {
     postcss: {
       plugins: [tailwindcss()],
+    },
+    modules: {
+      generateScopedName: '[hash:base64:8]',
     },
   },
 
