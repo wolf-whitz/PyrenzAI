@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { supabase } from '~/Utility/supabaseClient';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 import HomeIcon from '@mui/icons-material/Home';
 import PlusIcon from '@mui/icons-material/Add';
@@ -8,9 +9,7 @@ import MessageSquareIcon from '@mui/icons-material/Message';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useNavigate } from 'react-router-dom';
 import { ArchiveModal } from '@components';
-import { GetUserUUID } from '@components';
-
-type SetShowLoginModal = (show: boolean) => void;
+ type SetShowLoginModal = (show: boolean) => void;
 
 export function MobileNav({ setShowLoginModal }: { setShowLoginModal: SetShowLoginModal }) {
   const { t } = useTranslation();
@@ -42,13 +41,12 @@ export function MobileNav({ setShowLoginModal }: { setShowLoginModal: SetShowLog
   ];
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      const { uuid, user_exists } = await GetUserUUID();
-      if (user_exists && uuid) {
-        setUser({ id: uuid } as SupabaseUser);
-      }
+    const checkUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      setUser(data.user);
     };
-    fetchUserData();
+
+    checkUser();
   }, []);
 
   return (

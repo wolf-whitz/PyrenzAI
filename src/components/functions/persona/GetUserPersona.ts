@@ -1,5 +1,4 @@
 import { supabase } from '~/Utility/supabaseClient';
-import { GetUserUUID } from '@components'; 
 
 interface UserDataResponse {
   username: string;
@@ -15,16 +14,18 @@ interface UserDataResponse {
 export async function GetUserData(): Promise<
   UserDataResponse | { error: string }
 > {
-  const { uuid, user_exists } = await GetUserUUID();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!user_exists || !uuid) {
+  if (!user) {
     return { error: 'User not authenticated' };
   }
 
   const { data: userData, error: userError } = await supabase
     .from('user_data')
     .select('username, avatar_url')
-    .eq('user_uuid', uuid)
+    .eq('user_uuid', user.id)
     .single();
 
   if (userError || !userData) {
@@ -35,7 +36,7 @@ export async function GetUserData(): Promise<
     await supabase
       .from('subscription_plan')
       .select('subscription_plan')
-      .eq('user_uuid', uuid)
+      .eq('user_uuid', user.id)
       .single();
 
   if (subscriptionError || !subscriptionPlanData) {
