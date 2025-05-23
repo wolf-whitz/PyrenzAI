@@ -1,14 +1,8 @@
-import React, { useEffect, Suspense, lazy, useState } from 'react';
-import { BrowserRouter as Router, useRoutes } from 'react-router-dom';
+import React, { useEffect, Suspense, useState } from 'react';
+import { BrowserRouter as Router, Routes } from 'react-router-dom';
 import { supabase } from '~/Utility/supabaseClient';
-import { routes as allRoutes } from '~/routes/routes';
+import { AppRoutes } from '~/routes/routes';
 import { Spinner } from '@components';
-import AOS from 'aos';
-import 'aos/dist/aos.css';
-
-const RoutesWrapper = lazy(() =>
-  Promise.resolve({ default: () => useRoutes(allRoutes) })
-);
 
 export function App() {
   const [isSessionChecked, setIsSessionChecked] = useState(false);
@@ -34,33 +28,14 @@ export function App() {
     };
 
     handleSession();
-    AOS.init({
-      disable: false,
-      startEvent: 'DOMContentLoaded',
-      initClassName: 'aos-init',
-      animatedClassName: 'aos-animate',
-      useClassNames: false,
-      disableMutationObserver: false,
-      debounceDelay: 50,
-      throttleDelay: 99,
-      offset: 120,
-      delay: 0,
-      duration: 400,
-      easing: 'ease',
-      once: false,
-      mirror: false,
-      anchorPlacement: 'top-bottom',
-    });
   }, []);
 
-  if (!isSessionChecked) {
-    return <Spinner />;
-  }
+  if (!isSessionChecked) return <Spinner />;
 
   return (
     <Router>
       <Suspense fallback={<Spinner />}>
-        <RoutesWrapper />
+        <Routes>{AppRoutes}</Routes>
       </Suspense>
     </Router>
   );

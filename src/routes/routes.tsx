@@ -1,5 +1,5 @@
 import React, { lazy } from 'react';
-import { RouteObject, Navigate } from 'react-router-dom';
+import { Navigate, Route } from 'react-router-dom';
 
 function lazyNamed<T>(
   factory: () => Promise<{ [key: string]: T }>,
@@ -21,44 +21,32 @@ const ErrorPage = lazyNamed(() => import('./Routing/404page'), 'ErrorPage');
 const getCookie = (name: string) => {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop()?.split(';').shift();
+  if (parts.length === 2) return parts.pop()?.split(';')[0];
 };
 
-const ProtectedRoute = ({
-  element,
-  ...props
-}: {
-  element: JSX.Element;
-  [key: string]: any;
-}) => {
-  const captchaCookie = getCookie('captcha-cookie');
-  const isAuthenticated = !!captchaCookie;
+const ProtectedRoute = ({ element }: { element: JSX.Element }) => {
+  const isAuthenticated = !!getCookie('captcha-cookie');
 
-  if (!isAuthenticated) {
-    return <Navigate to="/Auth" replace />;
-  }
+  if (!isAuthenticated) return <Navigate to="/Auth" replace />;
 
-  return React.cloneElement(element, props);
+  return (
+    <React.Fragment key={location.pathname}>
+      {element}
+    </React.Fragment>
+  );
 };
 
-export const routes: RouteObject[] = [
-  { path: '/Auth', element: <Auth /> },
-  { path: '/', element: <ProtectedRoute element={<Home />} /> },
-  { path: '/Home', element: <ProtectedRoute element={<Home />} /> },
-  { path: '/Create', element: <ProtectedRoute element={<Create />} /> },
-  { path: '/Create/:uuid', element: <ProtectedRoute element={<Create />} /> },
-  {
-    path: '/Profile/:uuid',
-    element: <ProtectedRoute element={<Profile />} />,
-  },
-  {
-    path: '/Profile',
-    element: <ProtectedRoute element={<Profile />} />,
-  },
-  {
-    path: '/Chat/:conversation_id',
-    element: <ProtectedRoute element={<Chat />} />,
-  },
-  { path: '/Settings', element: <ProtectedRoute element={<Setting />} /> },
-  { path: '*', element: <ErrorPage /> },
-];
+export const AppRoutes = (
+  <>
+    <Route path="/Auth" element={<Auth />} />
+    <Route path="/" element={<ProtectedRoute element={<Home />} />} />
+    <Route path="/Home" element={<ProtectedRoute element={<Home />} />} />
+    <Route path="/Create" element={<ProtectedRoute element={<Create />} />} />
+    <Route path="/Create/:uuid" element={<ProtectedRoute element={<Create />} />} />
+    <Route path="/Profile/:uuid" element={<ProtectedRoute element={<Profile />} />} />
+    <Route path="/Profile" element={<ProtectedRoute element={<Profile />} />} />
+    <Route path="/Chat/:conversation_id" element={<ProtectedRoute element={<Chat />} />} />
+    <Route path="/Settings" element={<ProtectedRoute element={<Setting />} />} />
+    <Route path="*" element={<ErrorPage />} />
+  </>
+);

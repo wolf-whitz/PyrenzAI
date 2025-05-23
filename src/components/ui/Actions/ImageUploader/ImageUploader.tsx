@@ -86,7 +86,7 @@ export function ImageUploader({ onImageSelect, initialImage }: ImageUploaderProp
       const blobUrl = URL.createObjectURL(blob);
       setImageUrl(blobUrl);
 
-      const file = new File([blob], 'generated-image.png', {
+      const file = new File([blob], '', {
         type: 'image/png',
       });
       onImageSelect(file);

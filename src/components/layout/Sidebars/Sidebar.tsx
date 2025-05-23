@@ -56,7 +56,6 @@ export function Sidebar({ className }: { className?: string }) {
     {
       name: t('navigation.chats'),
       icon: <MessageSquareIcon fontSize="small" />,
-      path: '/Archive',
     },
     {
       name: t('navigation.settings'),
@@ -136,7 +135,7 @@ function SidebarItem({
   navigate,
   setShowLoginModal,
   user,
-  setShowArchiveModal, 
+  setShowArchiveModal,
 }: any) {
   const { t } = useTranslation();
 
@@ -166,7 +165,7 @@ function SidebarItem({
         onClick={handleClick}
         onMouseEnter={() => setHovered(item.name)}
         onMouseLeave={() => setHovered(null)}
-       >
+      >
         <ListItemIcon>{item.icon}</ListItemIcon>
       </PyrenzBlueButton>
     </Tooltip>
