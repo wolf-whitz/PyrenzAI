@@ -30,6 +30,20 @@ export function GetTheme() {
       },
       components: {
         ...componentOverrides,
+        MuiAlert: {
+          styleOverrides: {
+            root: {
+              fontFamily: 'Baloo Tammudu 2, system-ui',
+            },
+          },
+        },
+        MuiAlertTitle: {
+          styleOverrides: {
+            root: {
+              fontFamily: 'Baloo Tammudu 2, system-ui',
+            },
+          },
+        },
       },
     });
   }

@@ -1,4 +1,5 @@
-import { AuthenticationModal, WindowAlert, CreateNewChat, GetUserUUID } from '@components';
+import { AuthenticationModal, CreateNewChat, GetUserUUID } from '@components';
+import { PyrenzAlert } from '@components'
 import React, { useState, useEffect, useCallback } from 'react';
 import { CharacterCardProps } from '@shared-types/CharacterProp';
 import { createPortal } from 'react-dom';
@@ -9,7 +10,7 @@ import { Box, Typography, Button, CircularProgress, IconButton } from '@mui/mate
 import MessageIcon from '@mui/icons-material/Message';
 import PublicIcon from '@mui/icons-material/Public';
 import LockIcon from '@mui/icons-material/Lock';
-import EditIcon from '@mui/icons-material/Edit'; // Import EditIcon
+import EditIcon from '@mui/icons-material/Edit'; 
 import { ShimmerText } from 'react-shimmer-effects';
 
 interface CharacterCardModalProps {
@@ -81,12 +82,12 @@ export function CharacterCardModal({
         navigate(`/chat/${response.chat_uuid}`);
       } else {
         console.error('Failed to generate chat_uuid');
-        WindowAlert('error', 'Failed to generate chat_uuid');
+    <PyrenzAlert mode="Alert" message="This is a success message!" />
       }
     } catch (error) {
       console.error('Error generating chat_uuid:', error);
       Sentry.captureException(error);
-      WindowAlert('error', 'Error generating chat_uuid');
+  <PyrenzAlert mode="Alert" message="This is a success message!" />
     } finally {
       setIsLoading(false);
     }

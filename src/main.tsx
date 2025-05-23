@@ -12,7 +12,6 @@ import { ThemeProvider, CssBaseline, Box, Fade } from '@mui/material';
 import { I18nextProvider } from 'react-i18next';
 import { GetTheme } from '~/theme';
 import i18n from '~/provider/TranslationProvider.ts';
-import { ToastProvider } from '~/provider/ToastProvider';
 import { SentryProvider } from './provider/SentryProvider';
 import * as Sentry from '@sentry/react';
 
@@ -97,7 +96,6 @@ createRoot(document.getElementById('root')!).render(
         </SentryProvider>
         <Analytics />
         <SpeedInsights />
-        <ToastProvider />
       </ThemeProvider>
     </I18nextProvider>
   </StrictMode>

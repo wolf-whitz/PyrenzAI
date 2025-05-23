@@ -1,80 +1,103 @@
-import ReactDOM from 'react-dom/client';
-import { createPortal } from 'react-dom';
+import React, { useState, useEffect } from 'react';
+import { Alert, AlertTitle, IconButton } from '@mui/material';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaTimes } from 'react-icons/fa';
+import ReactDOM from 'react-dom';
 
-interface AlertProps {
-  type: 'error' | 'info';
+type PyrenzAlertProps = {
+  mode: 'Success' | 'Alert';
   message: string;
-  onClose: () => void;
-}
+};
 
-export function Alert({ type, message, onClose }: AlertProps) {
-  const alertStyles = {
-    error: 'border rounded-md border-red-500 bg-red-500/10 text-white',
-    info: 'border rounded-md border-blue-500 bg-blue-500/10 text-white',
-  };
+export const PyrenzAlert = ({ mode, message }: PyrenzAlertProps) => {
+  const [open, setOpen] = useState(true);
 
-  return createPortal(
-    <AnimatePresence>
-      <motion.div
-        className="fixed inset-0 flex items-center justify-center z-50"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0, transition: { duration: 0.4, ease: 'easeOut' } }}
-      >
-        <motion.div
-          className={`p-6 shadow-2xl w-11/12 sm:w-[400px] flex items-center justify-between relative ${alertStyles[type]}`}
-          initial={{ opacity: 0, y: 50, scale: 0.9 }}
-          animate={{ opacity: 1, y: -300, scale: 1 }}
-          exit={{
-            opacity: 0,
-            y: 40,
-            scale: 0.8,
-            rotate: -8,
-            transition: { duration: 0.35, ease: 'easeInOut' },
-          }}
-        >
-          <p className="text-lg font-semibold font-baloo">{message}</p>
-          <button
-            className="ml-4 w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-white text-xl hover:scale-110 transition-all duration-300"
-            onClick={onClose}
-            aria-label="Close alert"
-          >
-            <FaTimes />
-          </button>
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>,
-    document.body
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setOpen(false);
+    }, 10000);
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey && event.key === 'c') {
+        setOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+  const alertIcon = mode === 'Success' ? (
+    <CheckCircleOutlineIcon style={{ color: 'green' }} />
+  ) : (
+    <ErrorOutlineIcon style={{ color: 'red' }} />
   );
-}
 
-export function WindowAlert(type: 'error' | 'info', message: string) {
-  const alertContainer = document.createElement('div');
-  document.body.appendChild(alertContainer);
-
-  let root: ReactDOM.Root | null = null;
-
-  const closeAlert = () => {
-    if (root) {
-      root.unmount();
-      document.body.removeChild(alertContainer);
+  const handleDragEnd = (event: MouseEvent, info: any) => {
+    if (info.offset.y > 100) {
+      setOpen(false);
     }
   };
 
-  const AlertComponent = () => (
-    <Alert type={type} message={message} onClose={closeAlert} />
-  );
+  const notificationRoot = document.getElementById('notification-root');
 
-  if (!root) {
-    root = ReactDOM.createRoot(alertContainer);
+  if (!notificationRoot) {
+    return null;
   }
-  root.render(<AlertComponent />);
-}
 
-if (typeof window !== 'undefined') {
-  window.alert = (message: string) => {
-    WindowAlert('info', message);
-  };
-}
+  return ReactDOM.createPortal(
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -50 }}
+          transition={{ type: 'spring', damping: 25, stiffness: 120 }}
+          drag="y"
+          dragConstraints={{ top: 0, bottom: 0 }}
+          onDragEnd={handleDragEnd}
+          style={{
+            position: 'fixed',
+            top: 20,
+            right: 20,
+            zIndex: 9999,
+            cursor: 'grab',
+          }}
+          role="alert"
+          aria-live="assertive"
+        >
+          <Alert
+            severity={mode === 'Success' ? 'success' : 'error'}
+            icon={alertIcon}
+            action={
+              <IconButton
+                aria-label="Close alert"
+                color="inherit"
+                size="small"
+                onClick={() => {
+                  setOpen(false);
+                }}
+                style={{ marginBottom: '20px' }}
+                tabIndex={-1}
+              >
+              </IconButton>
+            }
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <AlertTitle>{mode}</AlertTitle>
+            {message}
+          </Alert>
+        </motion.div>
+      )}
+    </AnimatePresence>,
+    notificationRoot
+  );
+};
