@@ -11,10 +11,10 @@ import {
   Skeleton,
   Button,
 } from '@mui/material';
-import toast from 'react-hot-toast';
 import { supabase } from '~/Utility/supabaseClient';
 import * as Sentry from '@sentry/react';
 import { X } from 'lucide-react';
+import { PyrenzAlert } from '@components';
 
 interface CharacterCard {
   id: string;
@@ -68,7 +68,7 @@ export function CharacterCardImageModal({
       ]);
     } catch (error) {
       console.error('Failed to fetch character cards', error);
-      toast.error('Failed to fetch character cards. Please try again.');
+      PyrenzAlert('Failed to fetch character cards. Please try again.', 'Alert');
       Sentry.captureException(error);
     } finally {
       setIsFetching(false);

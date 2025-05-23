@@ -1,8 +1,8 @@
 import { Character, Message } from '@shared-types/chatTypes';
-import toast from 'react-hot-toast';
 import * as Sentry from '@sentry/react';
 import { supabase } from '~/Utility/supabaseClient';
 import { getChatData } from '@components';
+import { PyrenzAlert } from '@components';
 
 interface ChatMessageWithId {
   id: string;
@@ -22,7 +22,7 @@ export const fetchChatData = async (
   firstMessage: string;
 }> => {
   if (!conversation_id) {
-    toast.error('Missing conversation_id');
+    PyrenzAlert('Missing conversation_id', 'Alert');
     throw new Error('Missing conversation_id');
   }
 
@@ -30,7 +30,7 @@ export const fetchChatData = async (
     const characterData = await getChatData(conversation_id);
 
     if (characterData.error) {
-      toast.error(characterData.error);
+      PyrenzAlert(characterData.error, 'Alert');
       throw new Error(characterData.error);
     }
 
@@ -53,7 +53,7 @@ export const fetchChatData = async (
       .order('created_at', { ascending: false });
 
     if (error) {
-      toast.error('Error fetching messages from Supabase: ' + error.message);
+      PyrenzAlert('Error fetching messages from Supabase: ' + error.message, 'Alert');
       Sentry.captureException(error);
       throw error;
     }
@@ -96,10 +96,10 @@ export const fetchChatData = async (
     };
   } catch (error) {
     if (error instanceof Error) {
-      toast.error('Error fetching chat data: ' + error.message);
+      PyrenzAlert('Error fetching chat data: ' + error.message, 'Alert');
       Sentry.captureException(error);
     } else {
-      toast.error('An unknown error occurred.');
+      PyrenzAlert('An unknown error occurred.', 'Alert');
       Sentry.captureException(error);
     }
     throw error;

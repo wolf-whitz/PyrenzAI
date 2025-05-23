@@ -1,5 +1,5 @@
-import toast from 'react-hot-toast';
 import * as Sentry from '@sentry/react';
+import { PyrenzAlert } from '@components';
 
 export const speakMessage = async (
   message: string,
@@ -53,7 +53,7 @@ export const speakMessage = async (
     const audio = new Audio(audioUrl);
     audio.play();
 
-    toast.success('Playing audio...');
+    PyrenzAlert('Playing audio...', 'Success');
 
     audio.onended = () => {
       URL.revokeObjectURL(audioUrl);
@@ -63,7 +63,7 @@ export const speakMessage = async (
     };
   } catch (error) {
     console.error('Error fetching or playing the audio:', error);
-    toast.error('Failed to fetch or play the audio.');
+    PyrenzAlert('Failed to fetch or play the audio.', 'Alert');
     Sentry.captureException(error);
   }
 };

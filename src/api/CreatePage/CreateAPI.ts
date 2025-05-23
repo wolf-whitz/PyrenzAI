@@ -4,7 +4,7 @@ import { useCharacterStore } from '~/store';
 import { supabase } from '~/Utility/supabaseClient';
 import * as Sentry from '@sentry/react';
 import { CharacterData, Draft } from '@shared-types/CharacterProp';
-import { toast } from 'react-hot-toast';
+import { PyrenzAlert } from '@components';
 
 export const useCreateAPI = (navigate: (path: string) => void) => {
   const [loading, setLoading] = useState(false);
@@ -164,7 +164,7 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
     const isValid = fieldsToCheck.every(field => field && field.length >= 5);
 
     if (!isValid) {
-      toast.error('Each field must be at least 25 characters long. (Excluding tags)');
+      PyrenzAlert('Each field must be at least 25 characters long. (Excluding tags)', 'Alert');
       setLoading(false);
       return;
     }

@@ -8,19 +8,22 @@ import ReactDOM from 'react-dom';
 type PyrenzAlertProps = {
   mode: 'Success' | 'Alert';
   message: string;
+  onClose: () => void;
 };
 
-export const PyrenzAlert = ({ mode, message }: PyrenzAlertProps) => {
+const PyrenzAlertComponent = ({ mode, message, onClose }: PyrenzAlertProps) => {
   const [open, setOpen] = useState(true);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setOpen(false);
+      onClose();
     }, 10000);
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.ctrlKey && event.key === 'c') {
         setOpen(false);
+        onClose();
       }
     };
 
@@ -30,7 +33,7 @@ export const PyrenzAlert = ({ mode, message }: PyrenzAlertProps) => {
       clearTimeout(timer);
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, []);
+  }, [onClose]);
 
   const alertIcon = mode === 'Success' ? (
     <CheckCircleOutlineIcon style={{ color: 'green' }} />
@@ -41,6 +44,7 @@ export const PyrenzAlert = ({ mode, message }: PyrenzAlertProps) => {
   const handleDragEnd = (event: MouseEvent, info: any) => {
     if (info.offset.y > 100) {
       setOpen(false);
+      onClose();
     }
   };
 
@@ -81,6 +85,7 @@ export const PyrenzAlert = ({ mode, message }: PyrenzAlertProps) => {
                 size="small"
                 onClick={() => {
                   setOpen(false);
+                  onClose();
                 }}
                 style={{ marginBottom: '20px' }}
                 tabIndex={-1}
@@ -100,4 +105,27 @@ export const PyrenzAlert = ({ mode, message }: PyrenzAlertProps) => {
     </AnimatePresence>,
     notificationRoot
   );
+};
+
+const notificationRoot = document.createElement('div');
+notificationRoot.id = 'notification-root';
+document.body.appendChild(notificationRoot);
+
+export const PyrenzAlert = (message: string, mode: 'Success' | 'Alert') => {
+  const [alertState, setAlertState] = useState<{ message: string; mode: 'Success' | 'Alert' } | null>(null);
+
+  const showAlert = (message: string, mode: 'Success' | 'Alert') => {
+    setAlertState({ message, mode });
+  };
+
+  const handleClose = () => {
+    setAlertState(null);
+  };
+
+  if (alertState) {
+    return <PyrenzAlertComponent mode={alertState.mode} message={alertState.message} onClose={handleClose} />;
+  }
+
+  showAlert(message, mode);
+  return null;
 };

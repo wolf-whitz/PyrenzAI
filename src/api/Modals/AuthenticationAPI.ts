@@ -1,7 +1,7 @@
 import posthog from 'posthog-js';
 import { supabase } from '~/Utility/supabaseClient';
 import * as Sentry from '@sentry/react';
-import toast from 'react-hot-toast';
+import { PyrenzAlert } from '@components';
 
 interface AppUser {
   id: string;
@@ -107,8 +107,9 @@ export const handleSignUp = async (
 
     if (error) throw new Error(error.message);
 
-    toast.success(
-      'Signed up successfully! Please check your email to confirm your account. ₍ᐢ. .ᐢ₎'
+    PyrenzAlert(
+      'Signed up successfully! Please check your email to confirm your account. ₍ᐢ. .ᐢ₎',
+      'Success'
     );
 
     return { success: true };

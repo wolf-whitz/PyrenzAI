@@ -4,7 +4,7 @@ import { useDropzone } from 'react-dropzone';
 import { Textarea } from '@components';
 import { Utils } from '~/Utility/Utility';
 import { createPortal } from 'react-dom';
-import toast from 'react-hot-toast';
+import { PyrenzAlert } from '@components';
 
 interface CreateCharacterCardImageModalProps {
   isModalOpen: boolean;
@@ -28,15 +28,15 @@ export function CreateCharacterCardImageModal({
 
   const handleSubmit = async () => {
     if (!name) {
-      toast.error('Name is required');
+      PyrenzAlert('Name is required', 'Alert');
       return;
     }
     if (!description) {
-      toast.error('Description is required');
+      PyrenzAlert('Description is required', 'Alert');
       return;
     }
     if (!image) {
-      toast.error('Image is required');
+      PyrenzAlert('Image is required', 'Alert');
       return;
     }
 
@@ -67,13 +67,13 @@ export function CreateCharacterCardImageModal({
           setDescription('');
           setImage(null);
 
-          toast.success('Profile card uploaded successfully');
+          PyrenzAlert('Profile card uploaded successfully', 'Success');
         } else {
-          toast.error(response.message || 'Failed to upload profile card');
+          PyrenzAlert(response.message || 'Failed to upload profile card', 'Alert');
         }
       } catch (error) {
         console.error('Error uploading profile card:', error);
-        toast.error('Error uploading profile card');
+        PyrenzAlert('Error uploading profile card', 'Alert');
       } finally {
         setLoading(false);
       }

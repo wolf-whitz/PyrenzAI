@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 import { Utils } from '~/Utility/Utility';
 import { GenerateResponse, Message } from '@shared-types/chatTypes';
-import toast from 'react-hot-toast';
 import { GetUserUUID } from '@components';
 import { supabase } from '~/Utility/supabaseClient';
+import { PyrenzAlert } from '@components';
 
 interface GenerateMessageResponse {
   remainingMessages: number;
@@ -121,7 +121,7 @@ export const useGenerateMessage = () => {
           return updatedMessages;
         });
 
-        toast.error('Failed to generate response.');
+        PyrenzAlert('Failed to generate response.', 'Alert');
         return { remainingMessages: 0 };
       } finally {
         setIsGenerating(false);

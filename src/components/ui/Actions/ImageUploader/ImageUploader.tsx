@@ -12,7 +12,7 @@ import {
   Typography,
 } from '@mui/material';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
-import { toast } from 'react-hot-toast';
+import { PyrenzAlert } from '@components';
 import { PyrenzBlueButton } from '~/theme';
 
 interface ImageUploaderProps {
@@ -58,7 +58,7 @@ export function ImageUploader({ onImageSelect, initialImage }: ImageUploaderProp
 
   const handleSubmit = async () => {
     if (!textareaValue.trim()) {
-      toast.error('Prompt cannot be empty');
+      PyrenzAlert('Prompt cannot be empty', 'Alert');
       return;
     }
 
@@ -93,7 +93,7 @@ export function ImageUploader({ onImageSelect, initialImage }: ImageUploaderProp
       setBannerImagePreview(blobUrl);
     } catch (error) {
       console.error('Error creating image:', error);
-      toast.error('Error creating image');
+      PyrenzAlert('Error creating image', 'Alert');
     } finally {
       setIsLoading(false);
     }

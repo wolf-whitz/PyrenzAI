@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react';
-import toast from 'react-hot-toast';
 import { fetchCharacters } from '~/api';
+import { PyrenzAlert } from '@components';
 
 interface UseFetchCharactersProps {
   currentPage: number;
@@ -33,7 +33,7 @@ export function useFetchCharacters({
       setTotal(total);
       return { isOwner };
     } catch (error) {
-      toast.error(t('errors.fetchingCharacters'));
+      PyrenzAlert(t('errors.fetchingCharacters'), 'Alert');
       return { isOwner: false };
     } finally {
       setLoading(false);

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import { supabase } from '~/Utility/supabaseClient';
 import * as Sentry from '@sentry/react';
-import toast from 'react-hot-toast';
 import { Typography, Box } from '@mui/material';
 import {
   CustomModelFields,
@@ -14,6 +13,7 @@ import {
 import InfoIcon from '@mui/icons-material/Info';
 import BuildIcon from '@mui/icons-material/Build';
 import { PyrenzBlueButton } from '~/theme';
+import { PyrenzAlert } from '@components';
 
 interface Provider {
   provider_name: string;
@@ -71,7 +71,7 @@ export function Customization() {
   useEffect(() => {
     const fetchModelId = async () => {
       if (preferredModel === 'Custom') {
-        return; 
+        return;
       }
 
       try {
@@ -90,7 +90,7 @@ export function Customization() {
         }
       } catch (error) {
         Sentry.captureException(error);
-        toast.error('Error fetching model identifier. Please try again.');
+        PyrenzAlert('Error fetching model identifier. Please try again.', 'Alert');
       }
     };
 
@@ -107,7 +107,7 @@ export function Customization() {
         }
       } catch (error) {
         Sentry.captureException(error);
-        toast.error('Error fetching user data. Please try again.');
+        PyrenzAlert('Error fetching user data. Please try again.', 'Alert');
       }
     };
 
@@ -144,10 +144,10 @@ export function Customization() {
         throw error;
       }
 
-      toast.success('Customization data submitted successfully!');
+      PyrenzAlert('Customization data submitted successfully!', 'Success');
     } catch (error) {
       Sentry.captureException(error);
-      toast.error('Error submitting data. Please try again.');
+      PyrenzAlert('Error submitting data. Please try again.', 'Alert');
     }
   };
 

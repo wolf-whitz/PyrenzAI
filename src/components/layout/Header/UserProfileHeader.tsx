@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Typography, Avatar, Skeleton, IconButton } from '@mui/material';
 import LinkIcon from '@mui/icons-material/Link';
-import toast from 'react-hot-toast';
+import { PyrenzAlert } from '@components';
 
 interface UserProfileHeaderProps {
   loading: boolean;
@@ -22,11 +22,11 @@ export function UserProfileHeader({
       navigator.clipboard
         .writeText(profileUrl)
         .then(() => {
-          toast.success('Profile URL copied to clipboard!');
+          PyrenzAlert('Profile URL copied to clipboard!', 'Success');
         })
         .catch((err) => {
           console.error('Failed to copy URL: ', err);
-          toast.error('Failed to copy URL');
+          PyrenzAlert('Failed to copy URL', 'Alert');
         });
     }
   };

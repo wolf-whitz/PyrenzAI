@@ -8,8 +8,8 @@ import {
 } from '@mui/material';
 import { Textarea, AISelectDropdown } from '~/components';
 import { Utils } from '~/Utility/Utility';
-import toast from 'react-hot-toast';
 import * as Sentry from '@sentry/react';
+import { PyrenzAlert } from '@components';
 
 interface ImportCharacterModalProps {
   onClose: () => void;
@@ -122,7 +122,7 @@ export function ImportCharacterModal({
 
   const handleImport = async () => {
     if (!link || !selectedAI) {
-      toast.error('Please complete all required fields.');
+      PyrenzAlert('Please complete all required fields.', 'Alert');
       return;
     }
 
@@ -134,7 +134,7 @@ export function ImportCharacterModal({
       );
 
       if (response.success && response.data.error) {
-        toast.error('Error importing character: ' + response.data.error);
+        PyrenzAlert('Error importing character: ' + response.data.error, 'Alert');
         Sentry.captureMessage('Error importing character', {
           extra: {
             error: response.data.error,
@@ -147,23 +147,23 @@ export function ImportCharacterModal({
         }
 
         const extractedData = {
-          first_message: data.first_message || data.char_greeting || '',
-          tags: data.tags ? data.tags.map((tag) => tag.name) : [],
-          persona: data.char_persona || data.personality || '',
-          scenario: data.world_scenario || data.scenario || '',
-          example_dialogue: data.example_dialogue || data.mes_example || '',
-          name: data.name || data.char_name || data.title || '',
-          description: data.description || '',
+          first_message: data.first_message,
+          tags: data.tags,
+          persona: data.char_persona,
+          scenario: data.world_scenario,
+          example_dialogue: data.example_dialogue,
+          name: data.name,
+          description: data.description,
         };
 
         onImport(extractedData);
-        toast.success('Character imported successfully!');
+        PyrenzAlert('Character imported successfully!', 'Success');
         onClose();
       }
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      toast.error('Error importing character: ' + errorMessage);
+      PyrenzAlert('Error importing character: ' + errorMessage, 'Alert');
       Sentry.captureException(error);
     } finally {
       setLoading(false);

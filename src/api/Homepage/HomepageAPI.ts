@@ -2,7 +2,6 @@ import { useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useHomeStore } from '~/store'
 import { useTranslation } from 'react-i18next'
-import { toast } from 'react-hot-toast'
 import {
   GetHotCharacters,
   GetLatestCharacters,
@@ -16,6 +15,7 @@ import { supabase } from '~/Utility/supabaseClient'
 import { Utils } from '~/Utility/Utility'
 import { sendUserDataToUserDataTable } from '~/api'
 import type { Character, CharacterCardProps } from '@shared-types/CharacterProp'
+import { PyrenzAlert } from '@components'
 
 interface PostResponse {
   success: boolean
@@ -91,12 +91,11 @@ export const useHomepageAPI = () => {
 
       const transformedCharacters = rawCharacters.map(transformCharacter)
       setCharacters(transformedCharacters)
-      console.log('Fetched characters:', transformedCharacters)
     } catch (error) {
       if (error instanceof Error) {
-        toast.error(t('errors.callingRPCFunction') + error.message)
+        PyrenzAlert(t('errors.callingRPCFunction') + error.message, 'Alert')
       } else {
-        toast.error(t('errors.unknown'))
+        PyrenzAlert(t('errors.unknown'), 'Alert')
       }
     } finally {
       setLoading(false)
@@ -164,6 +163,6 @@ export const useHomepageAPI = () => {
     handleButtonClick,
     transformCharacter,
     fetchUserData,
-    isOwner, 
+    isOwner,
   }
 }
