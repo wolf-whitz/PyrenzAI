@@ -44,6 +44,19 @@ export function CustomContextMenu({
     setOpen(true);
   }, [anchorPosition]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        handleClose();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
     <AnimatePresence>
       {open && (
@@ -79,6 +92,7 @@ export function CustomContextMenu({
             MenuListProps={{
               'aria-labelledby': 'custom-context-menu',
               role: 'menu',
+              autoFocus: true,
             }}
           >
             {items.map((item, index) => (
