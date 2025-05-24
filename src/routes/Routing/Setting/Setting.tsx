@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { motion } from 'framer-motion';
-import { Sidebar } from '@components';
+import { Sidebar, MobileNav } from '@components';
 import { supabase } from '~/Utility/supabaseClient';
 import { User } from '@supabase/supabase-js';
 import {
@@ -45,7 +45,7 @@ export function Setting() {
   const [startIndex, setStartIndex] = useState(0);
 
   const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -134,7 +134,7 @@ export function Setting() {
             position: 'relative',
           }}
         >
-          {isSmallScreen && (
+          {isMobile && (
             <IconButton
               onClick={handlePrevious}
               disabled={startIndex === 0}
@@ -144,9 +144,9 @@ export function Setting() {
             </IconButton>
           )}
           <motion.div
-            initial={{ x: isSmallScreen ? -100 : 0 }}
+            initial={{ x: isMobile ? -100 : 0 }}
             animate={{ x: 0 }}
-            exit={{ x: isSmallScreen ? 100 : 0 }}
+            exit={{ x: isMobile ? 100 : 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             style={{ display: 'flex', overflow: 'hidden' }}
           >
@@ -156,7 +156,7 @@ export function Setting() {
               variant="scrollable"
               scrollButtons="auto"
             >
-              {(isSmallScreen
+              {(isMobile
                 ? visibleTabs.slice(startIndex, startIndex + 3)
                 : visibleTabs
               ).map((tab) => (
@@ -168,7 +168,7 @@ export function Setting() {
               ))}
             </Tabs>
           </motion.div>
-          {isSmallScreen && (
+          {isMobile && (
             <IconButton
               onClick={handleNext}
               disabled={startIndex >= visibleTabs.length - 3}
@@ -197,6 +197,7 @@ export function Setting() {
           </motion.div>
         </Suspense>
       </div>
+      {isMobile && <MobileNav setShowLoginModal={() => {}} />}
     </div>
   );
 }

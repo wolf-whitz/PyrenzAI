@@ -1,13 +1,8 @@
 import { Typography, Box } from '@mui/material';
 import { useCharacterStore } from '~/store';
-import { useEffect } from 'react';
 
-export function TokenSummary({ updateTokenTotal }: { updateTokenTotal: (total: number) => void }) {
+export function TokenSummary() {
   const tokenTotal = useCharacterStore(state => state.token_total);
-
-  useEffect(() => {
-    updateTokenTotal(Math.round(tokenTotal));
-  }, [tokenTotal, updateTokenTotal]);
 
   return (
     <Box className="mt-4">

@@ -1,4 +1,3 @@
-import { CreatePageLoader } from '@components';
 import React, { useState, useEffect } from 'react';
 import {
   GenderDropdown,
@@ -24,7 +23,6 @@ export function CharacterForm({ characterData, isDataLoaded }: CharacterFormProp
     loading,
     saveLoading,
     showRequiredFieldsPopup,
-    handleChange: apiHandleChange,
     handleClear,
     handleSave,
     handleSelectDraft,
@@ -67,13 +65,27 @@ export function CharacterForm({ characterData, isDataLoaded }: CharacterFormProp
         scenario: characterData.scenario || '',
         first_message: characterData.first_message || '',
         profile_image: characterData.profile_image || '',
-        textarea_token: characterData.textarea_token || {}, // Ensure textarea_token is an object
+        textarea_token: characterData.textarea_token || {},
       });
 
       setIsInitialized(true);
     }
   }, [characterData, isDataLoaded, isInitialized]);
 
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    const { name, value, type } = e.target;
+
+    if (type === 'checkbox' && e.target instanceof HTMLInputElement) {
+      setCharacterData({ [name]: e.target.checked });
+    } else {
+      setCharacterData({ [name]: value });
+    }
+  };
+  
   const handleFormChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = event.target;
     const checked = type === 'checkbox' ? (event.target as HTMLInputElement).checked : undefined;
@@ -83,7 +95,7 @@ export function CharacterForm({ characterData, isDataLoaded }: CharacterFormProp
       [name]: type === 'checkbox' ? checked : value,
     }));
 
-    apiHandleChange(event);
+    handleChange(event);
   };
 
   const handleDropdownChange = (value: string) => {
@@ -94,15 +106,10 @@ export function CharacterForm({ characterData, isDataLoaded }: CharacterFormProp
     }));
   };
 
-  const updateTokenTotal = (total: number) => {
-    setFormState(prevState => ({
-      ...prevState,
-      token_total: total,
-    }));
-  };
+  
 
   return (
-    <div className="flex flex-col items-center justify-center bg-gray-900 p-6 min-h-screen">
+    <div className="flex flex-col items-center justify-center bg-gray-900 p-6">
       <form
         onSubmit={handleSubmit}
         className="bg-black p-8 rounded-lg shadow-lg w-full flex flex-col space-y-6"
@@ -112,12 +119,8 @@ export function CharacterForm({ characterData, isDataLoaded }: CharacterFormProp
           value={formState.gender}
           onChange={handleDropdownChange}
         />
-        <VisibilityCheckboxes
-          isPublic={formState.is_public}
-          isNSFW={formState.is_nsfw}
-          handleChange={handleFormChange}
-        />
-        <TokenSummary updateTokenTotal={updateTokenTotal} />
+        <VisibilityCheckboxes/>
+        <TokenSummary/>
         <FormActions
           onClear={handleClear}
           onSave={handleSave}

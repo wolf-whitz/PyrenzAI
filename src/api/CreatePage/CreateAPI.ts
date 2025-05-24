@@ -78,20 +78,6 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
     creator_uuid: userUuid
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value, type } = e.target;
-
-    if (type === 'checkbox' && e.target instanceof HTMLInputElement) {
-      setCharacterData({ [name]: e.target.checked });
-    } else {
-      setCharacterData({ [name]: value });
-    }
-  };
-
   const handleClear = () => {
     const emptyData = {
       persona: '',
@@ -233,7 +219,6 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
     characterData,
     character,
     setCharacterData,
-    handleChange,
     handleClear,
     handleSave,
     handleSelectDraft,

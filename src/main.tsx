@@ -54,9 +54,6 @@ const Main = () => {
         tabIndex={-1}
         sx={{
           scrollBehavior: 'smooth',
-          overscrollBehavior: 'auto',
-          overflowY: 'auto',
-          height: '100vh',
           scrollbarWidth: 'thin',
           scrollbarColor: 'transparent transparent',
           '&::-webkit-scrollbar': {

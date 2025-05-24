@@ -1,22 +1,18 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Checkbox, FormControlLabel, Typography } from '@mui/material';
+import { useCharacterStore } from '~/store';
 
-interface VisibilityCheckboxesProps {
-  isPublic: boolean;
-  isNSFW: boolean;
-  handleChange: (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => void;
-}
+export function VisibilityCheckboxes() {
+  const setCharacterData = useCharacterStore((state) => state.setCharacterData);
+  const isPublic = useCharacterStore((state) => state.is_public);
+  const isNSFW = useCharacterStore((state) => state.is_nsfw);
 
-export function VisibilityCheckboxes({
-  isPublic,
-  isNSFW,
-  handleChange,
-}: VisibilityCheckboxesProps) {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.target;
+    setCharacterData({ [name]: checked });
+  };
+
   return (
     <motion.div
       className="flex flex-col space-y-2"
@@ -33,11 +29,7 @@ export function VisibilityCheckboxes({
             <Checkbox
               name="is_public"
               checked={isPublic}
-              onChange={(e) =>
-                handleChange({
-                  target: { name: 'is_public', value: e.target.checked },
-                } as any)
-              }
+              onChange={handleChange}
               inputProps={{ 'aria-label': 'Public' }}
               sx={{
                 color: '#fff',
@@ -54,11 +46,7 @@ export function VisibilityCheckboxes({
             <Checkbox
               name="is_nsfw"
               checked={isNSFW}
-              onChange={(e) =>
-                handleChange({
-                  target: { name: 'is_nsfw', value: e.target.checked },
-                } as any)
-              }
+              onChange={handleChange}
               inputProps={{ 'aria-label': 'NSFW' }}
               sx={{
                 color: '#fff',
