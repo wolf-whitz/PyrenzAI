@@ -17,7 +17,7 @@ export const useGenerateMessage = () => {
       text: string,
       user: any,
       char: any,
-      conversation_id: string,
+      chat_uuid: string,
       setMessages: React.Dispatch<React.SetStateAction<Message[]>>,
       messageIdRef: React.MutableRefObject<{
         charId: string | null;
@@ -25,7 +25,7 @@ export const useGenerateMessage = () => {
       }>,
       setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>
     ): Promise<GenerateMessageResponse> => {
-      if (!user || !char || !conversation_id) {
+      if (!user || !char || !chat_uuid) {
         return { remainingMessages: 0 };
       }
 
@@ -75,7 +75,7 @@ export const useGenerateMessage = () => {
 
         const payload: any = {
           Type: 'Generate',
-          ConversationId: conversation_id,
+          chat_uuid: chat_uuid,
           Message: { User: text },
           Engine: 'b234e3de-7dbb-4a4c-b7c0-d8d4dce4f3c5',
           inference_settings,

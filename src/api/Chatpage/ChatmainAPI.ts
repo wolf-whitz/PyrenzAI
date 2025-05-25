@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '~/Utility/supabaseClient';
-import { useGenerateMessage } from '~/api/Chatpage/ChatContainerAPI';
+import { useGenerateMessage } from '@api';
 
 export const useChatPageAPI = (
   messagesEndRef: React.RefObject<HTMLDivElement>,
