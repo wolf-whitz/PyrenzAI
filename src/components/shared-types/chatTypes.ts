@@ -12,7 +12,7 @@ export interface Message {
   isFirst?: boolean;
   token?: number | null;
   role?: string;
-  conversation_id?: string;
+  chat_uuid?: string;
   error?: boolean;
   gender?: string;
 }

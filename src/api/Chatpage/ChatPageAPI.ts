@@ -7,12 +7,12 @@ interface ChatMessageWithId {
   id: string;
   user_message: string | null;
   char_message: string | null;
-  conversation_id: string;
+  chat_uuid: string;
   created_at: string;
 }
 
 export const fetchChatData = async (
-  conversation_id: string,
+  chat_uuid: string,
   username: string,
   avatar_url: string
 ): Promise<{
@@ -20,12 +20,12 @@ export const fetchChatData = async (
   messages: Message[];
   firstMessage: string;
 }> => {
-  if (!conversation_id) {
-    throw new Error('Missing conversation_id');
+  if (!chat_uuid) {
+    throw new Error('Missing chat_uuid');
   }
 
   try {
-    const characterData = await getChatData(conversation_id);
+    const characterData = await getChatData(chat_uuid);
 
     if (characterData.error) {
       throw new Error(characterData.error);
@@ -45,8 +45,8 @@ export const fetchChatData = async (
 
     const { data, error } = await supabase
       .from('chat_messages')
-      .select('id, user_message, char_message, conversation_id, created_at')
-      .eq('conversation_id', conversation_id)
+      .select('id, user_message, char_message, chat_uuid, created_at')
+      .eq('chat_uuid', chat_uuid)
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -66,7 +66,7 @@ export const fetchChatData = async (
             text: msg.user_message,
             icon: avatar_url || '',
             type: 'user',
-            conversation_id,
+            chat_uuid,
           });
         }
 
@@ -76,7 +76,7 @@ export const fetchChatData = async (
             text: msg.char_message,
             icon: character.profile_image || '',
             type: 'assistant',
-            conversation_id,
+            chat_uuid,
             gender: character.gender,
           });
         }

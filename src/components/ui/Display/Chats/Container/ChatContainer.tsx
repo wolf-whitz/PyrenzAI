@@ -7,7 +7,7 @@ import { ChatPageSpinner } from '@components';
 interface ChatContainerPropsExtended extends ChatContainerProps {
   previous_message?: Message[];
   className?: string;
-  conversation_id: string;
+  chat_uuid: string;
 }
 
 export function ChatContainer({
@@ -16,7 +16,7 @@ export function ChatContainer({
   firstMessage,
   previous_message = [],
   className = '',
-  conversation_id,
+  chat_uuid,
 }: ChatContainerPropsExtended) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messageIdRef = useRef<{ charId: string | null; userId: string | null }>(
@@ -65,7 +65,7 @@ export function ChatContainer({
           setMessages={setMessages}
           messageIdRef={messageIdRef}
           setIsGenerating={setIsGenerating}
-          conversation_id={conversation_id}
+          chat_uuid={chat_uuid}
         />
       </div>
     </Suspense>

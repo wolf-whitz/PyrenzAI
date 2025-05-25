@@ -9,7 +9,7 @@ export const useChatPageAPI = (
   setMessages: React.Dispatch<React.SetStateAction<any[]>>,
   user: any,
   char: any,
-  conversation_id: string,
+  chat_uuid: string,
   messageIdRef: React.MutableRefObject<{
     charId: string | null;
     userId: string | null;
@@ -63,7 +63,7 @@ export const useChatPageAPI = (
         trimmedMessage,
         user,
         char,
-        conversation_id,
+        chat_uuid,
         setMessages,
         messageIdRef,
         setIsGenerating

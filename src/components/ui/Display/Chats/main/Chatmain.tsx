@@ -11,7 +11,7 @@ interface ChatMainProps extends ChatContainerProps {
     userId: string | null;
   }>;
   setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>;
-  conversation_id: string;
+  chat_uuid: string;
   isGenerating: boolean;
 }
 
@@ -23,7 +23,7 @@ export function ChatMain({
   setMessages,
   messageIdRef,
   setIsGenerating,
-  conversation_id,
+  chat_uuid,
 }: ChatMainProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [contextMenu, setContextMenu] = useState<{
@@ -47,7 +47,7 @@ export function ChatMain({
     setMessages,
     user,
     char,
-    conversation_id,
+    chat_uuid,
     messageIdRef,
     setIsGenerating
   );

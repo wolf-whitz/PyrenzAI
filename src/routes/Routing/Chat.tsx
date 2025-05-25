@@ -14,7 +14,7 @@ interface PersonaResponse {
 }
 
 export function ChatPage() {
-  const { conversation_id } = useParams<{ conversation_id: string }>();
+  const { chat_uuid } = useParams<{ chat_uuid: string }>();
   const navigate = useNavigate();
 
   const [chatData, setChatData] = useState<any>(null);
@@ -37,12 +37,12 @@ export function ChatPage() {
 
   useEffect(() => {
     const getChatData = async () => {
-      if (conversation_id && userUuid && userData && !chatDataFetched) {
+      if (chat_uuid && userUuid && userData && !chatDataFetched) {
         try {
           clearData();
           setChatDataFetched(true);
           const result = await fetchChatData(
-            conversation_id,
+            chat_uuid,
             userData.username,
             userData.icon
           );
@@ -71,7 +71,7 @@ export function ChatPage() {
 
     getChatData();
   }, [
-    conversation_id,
+    chat_uuid,
     userUuid,
     userData,
     setFirstMessage,
@@ -120,7 +120,7 @@ export function ChatPage() {
     );
   }
 
-  if (fetchError || !chatData || !conversation_id) {
+  if (fetchError || !chatData || !chat_uuid) {
     return (
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -190,7 +190,7 @@ export function ChatPage() {
             char={character}
             firstMessage={firstMessage || character.first_message}
             previous_message={messages}
-            conversation_id={conversation_id}
+            chat_uuid={chat_uuid}
           />
         </Box>
 

@@ -22,7 +22,6 @@ export const useArchiveChatModalAPI = (open: boolean, onClose: () => void) => {
     top: number;
     left: number;
   } | null>(null);
-  const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
   const navigate = useNavigate();
 
@@ -84,16 +83,8 @@ export const useArchiveChatModalAPI = (open: boolean, onClose: () => void) => {
 
   const handleCardClick = (chatUuid: string) => {
     navigate(`/chat/${chatUuid}`);
+    console.log('Navigating to chat:', chatUuid);
     onClose();
-  };
-
-  const handleContextMenu = (event: React.MouseEvent, chat: Chat) => {
-    event.preventDefault();
-    setContextMenuAnchor({
-      top: event.clientY + 2,
-      left: event.clientX - 6,
-    });
-    setSelectedChat(chat);
   };
 
   const handleDeleteChat = async (chatUuid: string) => {
@@ -127,15 +118,11 @@ export const useArchiveChatModalAPI = (open: boolean, onClose: () => void) => {
     characters,
     isLoading,
     contextMenuAnchor,
-    selectedChat,
     handleCardClick,
-    handleContextMenu,
     handleDeleteChat,
     currentPage,
     totalPages,
     goToNextPage,
     goToPreviousPage,
-    setContextMenuAnchor,
-    setSelectedChat,
   };
 };

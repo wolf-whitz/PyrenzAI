@@ -45,7 +45,7 @@ export const AppRoutes = (
     <Route path="/Create/:uuid" element={<ProtectedRoute element={<Create />} />} />
     <Route path="/Profile/:uuid" element={<ProtectedRoute element={<Profile />} />} />
     <Route path="/Profile" element={<ProtectedRoute element={<Profile />} />} />
-    <Route path="/Chat/:conversation_id" element={<ProtectedRoute element={<Chat />} />} />
+    <Route path="/Chat/:chat_uuid" element={<ProtectedRoute element={<Chat />} />} />
     <Route path="/Settings" element={<ProtectedRoute element={<Setting />} />} />
     <Route path="*" element={<ErrorPage />} />
   </>
