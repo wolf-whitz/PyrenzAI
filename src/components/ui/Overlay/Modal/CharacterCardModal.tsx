@@ -1,5 +1,5 @@
 import { AuthenticationModal, CreateNewChat, GetUserUUID } from '@components';
-import { PyrenzAlert } from '@components';
+import { usePyrenzAlert } from '~/provider'; 
 import React, { useState, useEffect, useCallback } from 'react';
 import { CharacterCardProps } from '@shared-types/CharacterProp';
 import { createPortal } from 'react-dom';
@@ -35,6 +35,7 @@ export function CharacterCardModal({
   const [isLoading, setIsLoading] = useState(false);
   const [userUUID, setUserUUID] = useState<string | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const showAlert = usePyrenzAlert();  
 
   useEffect(() => {
     const fetchUserUUID = async () => {
@@ -82,12 +83,12 @@ export function CharacterCardModal({
         navigate(`/chat/${response.chat_uuid}`);
       } else {
         console.error('Failed to generate chat_uuid');
-        PyrenzAlert('Failed to generate chat UUID.', 'Alert');
+        showAlert('Failed to generate chat UUID.', 'Alert');  
       }
     } catch (error) {
       console.error('Error generating chat_uuid:', error);
       Sentry.captureException(error);
-      PyrenzAlert('Error generating chat UUID.', 'Alert');
+      showAlert('Error generating chat UUID.', 'Alert');  
     } finally {
       setIsLoading(false);
     }

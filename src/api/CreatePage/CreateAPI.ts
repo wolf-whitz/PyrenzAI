@@ -4,7 +4,7 @@ import { useCharacterStore } from '~/store';
 import { supabase } from '~/Utility/supabaseClient';
 import * as Sentry from '@sentry/react';
 import { CharacterData, Draft } from '@shared-types/CharacterProp';
-import { PyrenzAlert } from '@components';
+import { usePyrenzAlert } from '~/provider';
 
 export const useCreateAPI = (navigate: (path: string) => void) => {
   const [loading, setLoading] = useState(false);
@@ -14,6 +14,7 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
 
   const characterData = useCharacterStore((state) => state);
   const setCharacterData = useCharacterStore((state) => state.setCharacterData);
+  const showAlert = usePyrenzAlert(); 
 
   useEffect(() => {
     const fetchUserUuid = async () => {
@@ -129,10 +130,15 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
   };
 
   const handleImportCharacter = (data: CharacterData | null) => {
-    setCharacterData({
-      ...character,
-    });
+    if (!data) {
+      console.error('No data provided to import character.');
+      return;
+    }
+    
+    setCharacterData({...data});
+    console.log('Character Uploaded', useCharacterStore.getState());
   };
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -150,7 +156,7 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
     const isValid = fieldsToCheck.every(field => field && field.length >= 5);
 
     if (!isValid) {
-      PyrenzAlert('Each field must be at least 25 characters long. (Excluding tags)', 'Alert');
+      showAlert('Each field must be at least 25 characters long. (Excluding tags)', 'Alert');
       setLoading(false);
       return;
     }

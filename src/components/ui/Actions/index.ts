@@ -8,7 +8,7 @@ export * from './Fields/CustomFields';
 
 export * from './Form';
 export * from './ImageUploader/ImageUploader';
-export * from './Import/ImportCharacterModal';
+export * from '../Overlay/Modal/ImportCharacterModal';
 
 export * from './SearchBar/SearchBar';
 export * from './Selectors/ModelSelection';

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import {
   GenderDropdown,
   VisibilityCheckboxes,
@@ -8,16 +8,9 @@ import {
 import { TextareaForm } from './Childrens/TextareaForm';
 import { useNavigate } from 'react-router-dom';
 import { useCreateAPI } from '@api';
-import { ChangeEvent } from 'react';
 import { useCharacterStore } from '~/store';
-import { CharacterData } from '@shared-types/CharacterProp';
 
-interface CharacterFormProps {
-  characterData: CharacterData | undefined;
-  isDataLoaded: boolean;
-}
-
-export function CharacterForm({ characterData, isDataLoaded }: CharacterFormProps) {
+export function CharacterForm() {
   const navigate = useNavigate();
   const {
     loading,
@@ -30,8 +23,11 @@ export function CharacterForm({ characterData, isDataLoaded }: CharacterFormProp
     handleSubmit,
   } = useCreateAPI(navigate);
 
+  const characterData = useCharacterStore((state) => state);
   const setCharacterData = useCharacterStore((state) => state.setCharacterData);
+
   const [showPopup, setShowPopup] = useState(showRequiredFieldsPopup);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const [formState, setFormState] = useState({
     persona: '',
@@ -49,48 +45,45 @@ export function CharacterForm({ characterData, isDataLoaded }: CharacterFormProp
     token_total: 0,
   });
 
-  const [isInitialized, setIsInitialized] = useState(false);
-
   useEffect(() => {
-    if (characterData && !isInitialized && isDataLoaded) {
-      const tagsString = Array.isArray(characterData.tags)
+    setFormState({
+      persona: characterData.persona,
+      name: characterData.name,
+      model_instructions: characterData.model_instructions,
+      scenario: characterData.scenario,
+      description: characterData.description,
+      first_message: characterData.first_message,
+      tags: Array.isArray(characterData.tags)
         ? characterData.tags.join(', ')
-        : characterData.tags;
-
-      setFormState({
-        ...characterData,
-        tags: tagsString,
-        persona: characterData.persona || '',
-        model_instructions: characterData.model_instructions || '',
-        scenario: characterData.scenario || '',
-        first_message: characterData.first_message || '',
-        profile_image: characterData.profile_image || '',
-        textarea_token: characterData.textarea_token || {},
-      });
-
-      setIsInitialized(true);
-    }
-  }, [characterData, isDataLoaded, isInitialized]);
+        : characterData.tags,
+      gender: characterData.gender,
+      is_public: characterData.is_public,
+      is_nsfw: characterData.is_nsfw,
+      profile_image: characterData.profile_image || '',
+      textarea_token: characterData.textarea_token,
+      token_total: characterData.token_total,
+    });
+  }, [characterData]);
 
   const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value, type } = e.target;
 
     if (type === 'checkbox' && e.target instanceof HTMLInputElement) {
-      setCharacterData({ [name]: e.target.checked });
+      setCharacterData({ [name]: e.target.checked } as any);
     } else {
-      setCharacterData({ [name]: value });
+      setCharacterData({ [name]: value } as any);
     }
   };
-  
-  const handleFormChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+
+  const handleFormChange = (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value, type } = event.target;
     const checked = type === 'checkbox' ? (event.target as HTMLInputElement).checked : undefined;
 
-    setFormState(prevState => ({
+    setFormState((prevState) => ({
       ...prevState,
       [name]: type === 'checkbox' ? checked : value,
     }));
@@ -100,13 +93,11 @@ export function CharacterForm({ characterData, isDataLoaded }: CharacterFormProp
 
   const handleDropdownChange = (value: string) => {
     setCharacterData({ gender: value });
-    setFormState(prevState => ({
+    setFormState((prevState) => ({
       ...prevState,
       gender: value,
     }));
   };
-
-  
 
   return (
     <div className="flex flex-col items-center justify-center bg-gray-900 p-6">
@@ -119,8 +110,8 @@ export function CharacterForm({ characterData, isDataLoaded }: CharacterFormProp
           value={formState.gender}
           onChange={handleDropdownChange}
         />
-        <VisibilityCheckboxes/>
-        <TokenSummary/>
+        <VisibilityCheckboxes />
+        <TokenSummary />
         <FormActions
           onClear={handleClear}
           onSave={handleSave}

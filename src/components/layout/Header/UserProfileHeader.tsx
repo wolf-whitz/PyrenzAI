@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Typography, Avatar, Skeleton, IconButton } from '@mui/material';
 import LinkIcon from '@mui/icons-material/Link';
-import { PyrenzAlert } from '@components';
+import { usePyrenzAlert } from '~/provider';
 
 interface UserProfileHeaderProps {
   loading: boolean;
@@ -16,17 +16,19 @@ export function UserProfileHeader({
   loading,
   userData,
 }: UserProfileHeaderProps) {
+  const showAlert = usePyrenzAlert();
+
   const handleCopyProfileUrl = () => {
     if (userData) {
       const profileUrl = `${window.location.origin}/Profile/${userData.user_uuid}`;
       navigator.clipboard
         .writeText(profileUrl)
         .then(() => {
-          PyrenzAlert('Profile URL copied to clipboard!', 'Success');
+          showAlert('Profile URL copied to clipboard!', 'Success');
         })
         .catch((err) => {
           console.error('Failed to copy URL: ', err);
-          PyrenzAlert('Failed to copy URL', 'Alert');
+          showAlert('Failed to copy URL', 'Alert');
         });
     }
   };

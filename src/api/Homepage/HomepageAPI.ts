@@ -15,7 +15,7 @@ import { supabase } from '~/Utility/supabaseClient'
 import { Utils } from '~/Utility/Utility'
 import { sendUserDataToUserDataTable } from '~/api'
 import type { Character, CharacterCardProps } from '@shared-types/CharacterProp'
-import { PyrenzAlert } from '@components'
+import { usePyrenzAlert } from '~/provider';
 
 interface PostResponse {
   success: boolean
@@ -42,6 +42,7 @@ export const useHomepageAPI = () => {
   const userUUID = useFetchUserUUID()
   const itemsPerPage = 10
   const totalPages = Math.max(1, Math.ceil(total / itemsPerPage))
+  const showAlert = usePyrenzAlert();
 
   useSyncSearchParams({ search, currentPage, setSearch, setCurrentPage })
 
@@ -93,9 +94,9 @@ export const useHomepageAPI = () => {
       setCharacters(transformedCharacters)
     } catch (error) {
       if (error instanceof Error) {
-        PyrenzAlert(t('errors.callingRPCFunction') + error.message, 'Alert')
+        showAlert(t('errors.callingRPCFunction') + error.message, 'Alert')
       } else {
-        PyrenzAlert(t('errors.unknown'), 'Alert')
+        showAlert(t('errors.unknown'), 'Alert')
       }
     } finally {
       setLoading(false)

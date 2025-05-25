@@ -1,4 +1,3 @@
-export * from './Alert/Alert';
 export * from './Banner/Banner';
 
 export * from './Indicator/TypingIndicator';

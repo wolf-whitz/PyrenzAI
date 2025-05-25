@@ -1,15 +1,22 @@
 import React, { useState, useEffect, Suspense } from 'react';
-import { CharacterForm, Sidebar, CommunityGuidelines, MobileNav, GetUserUUID, CreatePageLoader } from '@components';
-import { useMediaQuery, useTheme } from '@mui/material';
-import { Box } from '@mui/material';
+import {
+  CharacterForm,
+  Sidebar,
+  CommunityGuidelines,
+  MobileNav,
+  GetUserUUID,
+  CreatePageLoader,
+} from '@components';
+import { useMediaQuery, useTheme, Box } from '@mui/material';
 import { supabase } from '~/Utility/supabaseClient';
 import { useParams } from 'react-router-dom';
+import { useCharacterStore } from '~/store';
 import { CharacterData } from '@shared-types/CharacterProp';
 
 export function CreatePage() {
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const [characterData, setCharacterData] = useState<CharacterData | undefined>(undefined);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const setCharacterData = useCharacterStore((state) => state.setCharacterData);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { uuid } = useParams();
@@ -39,19 +46,18 @@ export function CreatePage() {
 
         if (error) {
           console.error('Error fetching character data:', error);
-          setIsDataLoaded(true);
         } else {
-          setCharacterData(data);
-          setIsDataLoaded(true);
+          setCharacterData(data as CharacterData); 
         }
       } catch (error) {
         console.error('Error fetching user UUID or character data:', error);
+      } finally {
         setIsDataLoaded(true);
       }
     };
 
     fetchCharacterData();
-  }, [uuid]);
+  }, [uuid, setCharacterData]);
 
   if (!isDataLoaded) {
     return <CreatePageLoader />;
@@ -65,7 +71,7 @@ export function CreatePage() {
         </Box>
 
         <Box flex={1}>
-          <CharacterForm characterData={characterData} isDataLoaded={isDataLoaded} />
+          <CharacterForm />
           <Box sx={{ display: { xs: 'block', sm: 'none' }, mt: 2 }}>
             <CommunityGuidelines />
           </Box>

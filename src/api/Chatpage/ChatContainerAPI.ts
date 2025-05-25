@@ -3,13 +3,15 @@ import { Utils } from '~/Utility/Utility';
 import { GenerateResponse, Message } from '@shared-types/chatTypes';
 import { GetUserUUID } from '@components';
 import { supabase } from '~/Utility/supabaseClient';
-import { PyrenzAlert } from '@components';
+import { usePyrenzAlert } from '~/provider';
 
 interface GenerateMessageResponse {
   remainingMessages: number;
 }
 
 export const useGenerateMessage = () => {
+  const showAlert = usePyrenzAlert();
+
   const generateMessage = useCallback(
     async (
       text: string,
@@ -121,13 +123,13 @@ export const useGenerateMessage = () => {
           return updatedMessages;
         });
 
-        PyrenzAlert('Failed to generate response.', 'Alert');
+        showAlert('Failed to generate response.', 'Alert');
         return { remainingMessages: 0 };
       } finally {
         setIsGenerating(false);
       }
     },
-    []
+    [showAlert]
   );
 
   return generateMessage;

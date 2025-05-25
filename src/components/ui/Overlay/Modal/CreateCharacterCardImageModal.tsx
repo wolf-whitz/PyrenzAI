@@ -4,7 +4,7 @@ import { useDropzone } from 'react-dropzone';
 import { Textarea } from '@components';
 import { Utils } from '~/Utility/Utility';
 import { createPortal } from 'react-dom';
-import { PyrenzAlert } from '@components';
+import { usePyrenzAlert } from '~/provider'; 
 
 interface CreateCharacterCardImageModalProps {
   isModalOpen: boolean;
@@ -19,6 +19,7 @@ export function CreateCharacterCardImageModal({
   const [description, setDescription] = useState('');
   const [image, setImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
+  const showAlert = usePyrenzAlert();  
 
   const onDrop = (acceptedFiles: File[]) => {
     setImage(acceptedFiles[0]);
@@ -28,15 +29,15 @@ export function CreateCharacterCardImageModal({
 
   const handleSubmit = async () => {
     if (!name) {
-      PyrenzAlert('Name is required', 'Alert');
+      showAlert('Name is required', 'Alert');
       return;
     }
     if (!description) {
-      PyrenzAlert('Description is required', 'Alert');
+      showAlert('Description is required', 'Alert');
       return;
     }
     if (!image) {
-      PyrenzAlert('Image is required', 'Alert');
+      showAlert('Image is required', 'Alert');
       return;
     }
 
@@ -67,13 +68,13 @@ export function CreateCharacterCardImageModal({
           setDescription('');
           setImage(null);
 
-          PyrenzAlert('Profile card uploaded successfully', 'Success');
+          showAlert('Profile card uploaded successfully', 'Success');
         } else {
-          PyrenzAlert(response.message || 'Failed to upload profile card', 'Alert');
+          showAlert(response.message || 'Failed to upload profile card', 'Alert');
         }
       } catch (error) {
         console.error('Error uploading profile card:', error);
-        PyrenzAlert('Error uploading profile card', 'Alert');
+        showAlert('Error uploading profile card', 'Alert');
       } finally {
         setLoading(false);
       }

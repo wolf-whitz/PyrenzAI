@@ -1,11 +1,13 @@
 import * as Sentry from '@sentry/react';
-import { PyrenzAlert } from '@components';
+import { usePyrenzAlert } from '~/provider';  
 
 export const speakMessage = async (
   message: string,
   gender: string,
   onAudioEnded?: () => void
 ) => {
+  const showAlert = usePyrenzAlert();  
+
   try {
     const url = 'https://text.pollinations.ai/';
 
@@ -53,7 +55,7 @@ export const speakMessage = async (
     const audio = new Audio(audioUrl);
     audio.play();
 
-    PyrenzAlert('Playing audio...', 'Success');
+    showAlert('Playing audio...', 'Success'); 
 
     audio.onended = () => {
       URL.revokeObjectURL(audioUrl);
@@ -63,7 +65,7 @@ export const speakMessage = async (
     };
   } catch (error) {
     console.error('Error fetching or playing the audio:', error);
-    PyrenzAlert('Failed to fetch or play the audio.', 'Alert');
+    showAlert('Failed to fetch or play the audio.', 'Alert'); 
     Sentry.captureException(error);
   }
 };

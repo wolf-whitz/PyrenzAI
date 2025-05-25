@@ -1,7 +1,6 @@
 import { Character } from '@shared-types/CharacterProp';
 import * as Sentry from '@sentry/react';
 import { fetchCharacters as fetchCharactersFunction, GetUserUUID } from '@components';
-import { PyrenzAlert } from '@components';
 
 export const fetchCharacters = async (
   currentPage: number,
@@ -56,10 +55,8 @@ export const fetchCharacters = async (
   } catch (error) {
     if (error instanceof Error) {
       Sentry.captureException(error);
-      PyrenzAlert('Error fetching characters: ' + error.message, 'Alert');
     } else {
       Sentry.captureMessage('An unknown error occurred.');
-      PyrenzAlert('An unknown error occurred.', 'Alert');
     }
     return {
       characters: [],

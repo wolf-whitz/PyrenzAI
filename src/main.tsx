@@ -18,6 +18,8 @@ import * as Sentry from '@sentry/react';
 import ErrorBoundary from './routes/ErrorBoundary';
 import { DeviceTest } from '~/Utility/DeviceTest';
 
+import { AlertProvider } from '~/provider';
+
 const theme = GetTheme();
 const currentTheme = theme.palette.mode;
 
@@ -87,9 +89,11 @@ createRoot(document.getElementById('root')!).render(
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <SentryProvider>
+          <AlertProvider>
           <ErrorBoundary>
             <Main />
           </ErrorBoundary>
+          </AlertProvider>
         </SentryProvider>
         <Analytics />
         <SpeedInsights />

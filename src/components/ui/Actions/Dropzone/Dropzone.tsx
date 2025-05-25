@@ -3,7 +3,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import { Box, Typography } from '@mui/material';
 import clsx from 'clsx';
 import { useState, useEffect } from 'react';
-import { PyrenzAlert } from '@components';
+import { usePyrenzAlert } from '~/provider';
 
 interface DropzoneProps {
   onDrop: (acceptedFiles: File[]) => void;
@@ -19,6 +19,7 @@ export function Dropzone({
   initialImage,
 }: DropzoneProps) {
   const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(initialImage || null);
+  const showAlert = usePyrenzAlert();
 
   useEffect(() => {
     if (initialImage) {
@@ -36,12 +37,12 @@ export function Dropzone({
         const file = acceptedFiles[0];
 
         if (!file.type.startsWith('image/')) {
-          PyrenzAlert('Please upload an image file.', 'Alert');
+          showAlert('Please upload an image file.', 'Alert');
           return;
         }
 
         if (file.size > 1024 * 1024) {
-          PyrenzAlert('File size exceeds 1 MB. Please choose a smaller file.', 'Alert');
+          showAlert('File size exceeds 1 MB. Please choose a smaller file.', 'Alert');
           return;
         }
 

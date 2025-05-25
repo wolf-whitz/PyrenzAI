@@ -14,7 +14,7 @@ import {
 import { supabase } from '~/Utility/supabaseClient';
 import * as Sentry from '@sentry/react';
 import { X } from 'lucide-react';
-import { PyrenzAlert } from '@components';
+import { usePyrenzAlert } from '~/provider';  
 
 interface CharacterCard {
   id: string;
@@ -42,6 +42,7 @@ export function CharacterCardImageModal({
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isFetching, setIsFetching] = useState(false);
+  const showAlert = usePyrenzAlert(); 
 
   const fetchCharacterCards = async (page: number) => {
     if (isFetching) return;
@@ -68,7 +69,7 @@ export function CharacterCardImageModal({
       ]);
     } catch (error) {
       console.error('Failed to fetch character cards', error);
-      PyrenzAlert('Failed to fetch character cards. Please try again.', 'Alert');
+      showAlert('Failed to fetch character cards. Please try again.', 'Alert'); 
       Sentry.captureException(error);
     } finally {
       setIsFetching(false);

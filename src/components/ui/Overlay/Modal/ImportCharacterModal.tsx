@@ -9,7 +9,7 @@ import {
 import { Textarea, AISelectDropdown } from '~/components';
 import { Utils } from '~/Utility/Utility';
 import * as Sentry from '@sentry/react';
-import { PyrenzAlert } from '@components';
+import { usePyrenzAlert } from '~/provider';
 
 interface ImportCharacterModalProps {
   onClose: () => void;
@@ -19,21 +19,12 @@ interface ImportCharacterModalProps {
 interface ImportCharacterResponse {
   success: boolean;
   data: {
-    data?: {
-      first_message?: string;
-      tags?: { name: string }[];
-      char_name?: string;
-      char_persona?: string;
-      title?: string;
-      char_greeting?: string;
-      world_scenario?: string;
-      example_dialogue?: string;
-      name?: string;
-      description?: string;
-      scenario?: string;
-      mes_example?: string;
-      personality?: string;
-    };
+    first_message?: string;
+    persona?: string;
+    scenario?: string;
+    name?: string;
+    description?: string;
+    tags?: string;
     error?: string;
   };
 }
@@ -105,6 +96,7 @@ export function ImportCharacterModal({
     'Link Example: https://character.ai/chat/smtV3Vyez6ODkwS8BErmBAdgGNj-1XWU73wIFVOY1hQ'
   );
   const [loading, setLoading] = useState(false);
+  const showAlert = usePyrenzAlert();
 
   const handleLinkChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setLink(event.target.value);
@@ -122,7 +114,7 @@ export function ImportCharacterModal({
 
   const handleImport = async () => {
     if (!link || !selectedAI) {
-      PyrenzAlert('Please complete all required fields.', 'Alert');
+      showAlert('Please complete all required fields.', 'Alert');
       return;
     }
 
@@ -134,36 +126,35 @@ export function ImportCharacterModal({
       );
 
       if (response.success && response.data.error) {
-        PyrenzAlert('Error importing character: ' + response.data.error, 'Alert');
+        showAlert('Error importing character: ' + response.data.error, 'Alert');
         Sentry.captureMessage('Error importing character', {
           extra: {
             error: response.data.error,
           },
         });
       } else {
-        const data = response.data.data;
+        const data = response.data;
         if (!data) {
           throw new Error('Invalid response data');
         }
 
         const extractedData = {
           first_message: data.first_message,
-          tags: data.tags,
-          persona: data.char_persona,
-          scenario: data.world_scenario,
-          example_dialogue: data.example_dialogue,
+          tags: data.tags ? [{ name: data.tags }] : [],
+          persona: data.persona,
+          scenario: data.scenario,
           name: data.name,
           description: data.description,
         };
 
         onImport(extractedData);
-        PyrenzAlert('Character imported successfully!', 'Success');
+        showAlert('Character imported successfully!', 'Success');
         onClose();
       }
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      PyrenzAlert('Error importing character: ' + errorMessage, 'Alert');
+      showAlert('Error importing character: ' + errorMessage, 'Alert');
       Sentry.captureException(error);
     } finally {
       setLoading(false);

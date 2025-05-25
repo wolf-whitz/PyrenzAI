@@ -13,7 +13,7 @@ import {
 import InfoIcon from '@mui/icons-material/Info';
 import BuildIcon from '@mui/icons-material/Build';
 import { PyrenzBlueButton } from '~/theme';
-import { PyrenzAlert } from '@components';
+import { usePyrenzAlert } from '~/provider';
 
 interface Provider {
   provider_name: string;
@@ -56,6 +56,7 @@ export function Customization() {
   const [modalOpen, setModalOpen] = useState(false);
   const [modelId, setModelId] = useState<string | null>(null);
   const [maxTokenLimit, setMaxTokenLimit] = useState(1000);
+  const showAlert = usePyrenzAlert();
 
   const stateSetters = {
     maxTokens: (value: number) => setMaxTokens(Math.min(value, maxTokenLimit)),
@@ -90,7 +91,7 @@ export function Customization() {
         }
       } catch (error) {
         Sentry.captureException(error);
-        PyrenzAlert('Error fetching model identifier. Please try again.', 'Alert');
+        showAlert('Error fetching model identifier. Please try again.', 'Alert');
       }
     };
 
@@ -107,7 +108,7 @@ export function Customization() {
         }
       } catch (error) {
         Sentry.captureException(error);
-        PyrenzAlert('Error fetching user data. Please try again.', 'Alert');
+        showAlert('Error fetching user data. Please try again.', 'Alert');
       }
     };
 
@@ -144,10 +145,10 @@ export function Customization() {
         throw error;
       }
 
-      PyrenzAlert('Customization data submitted successfully!', 'Success');
+      showAlert('Customization data submitted successfully!', 'Success'); 
     } catch (error) {
       Sentry.captureException(error);
-      PyrenzAlert('Error submitting data. Please try again.', 'Alert');
+      showAlert('Error submitting data. Please try again.', 'Alert');
     }
   };
 

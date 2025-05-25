@@ -1,7 +1,7 @@
 import posthog from 'posthog-js';
 import { supabase } from '~/Utility/supabaseClient';
 import * as Sentry from '@sentry/react';
-import { PyrenzAlert } from '@components';
+import { usePyrenzAlert } from '~/provider';
 
 interface AppUser {
   id: string;
@@ -90,6 +90,8 @@ export const handleSignUp = async (
   password: string,
   isAdult: boolean
 ) => {
+  const showAlert = usePyrenzAlert(); 
+
   try {
     if (!isAdult) {
       throw new Error('User must be an adult to sign up.');
@@ -107,7 +109,7 @@ export const handleSignUp = async (
 
     if (error) throw new Error(error.message);
 
-    PyrenzAlert(
+    showAlert(
       'Signed up successfully! Please check your email to confirm your account. ₍ᐢ. .ᐢ₎',
       'Success'
     );

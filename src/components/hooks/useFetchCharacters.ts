@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react';
 import { fetchCharacters } from '~/api';
-import { PyrenzAlert } from '@components';
+import { usePyrenzAlert } from '~/provider'; 
 
 interface UseFetchCharactersProps {
   currentPage: number;
@@ -21,6 +21,8 @@ export function useFetchCharacters({
   setLoading,
   t,
 }: UseFetchCharactersProps) {
+  const showAlert = usePyrenzAlert(); 
+
   const fetchCharactersData = useCallback(async () => {
     setLoading(true);
     try {
@@ -33,7 +35,7 @@ export function useFetchCharacters({
       setTotal(total);
       return { isOwner };
     } catch (error) {
-      PyrenzAlert(t('errors.fetchingCharacters'), 'Alert');
+      showAlert(t('errors.fetchingCharacters'), 'Alert'); 
       return { isOwner: false };
     } finally {
       setLoading(false);

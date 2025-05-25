@@ -3,7 +3,7 @@ import { Button, CircularProgress } from '@mui/material';
 import { motion } from 'framer-motion';
 import { fetchCharacters } from '@components';
 import * as Sentry from '@sentry/react';
-import { PyrenzAlert } from '@components';
+import { usePyrenzAlert } from '~/provider';
 
 interface PaginationProps {
   currentPage: number;
@@ -23,6 +23,7 @@ export function Pagination({
   searchQuery = '',
 }: PaginationProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const showAlert = usePyrenzAlert();
 
   const handleLoadMore = async () => {
     if (isLoading) return;
@@ -39,12 +40,12 @@ export function Pagination({
       if (characters.length > 0) {
         setCurrentPage(currentPage + 1);
       } else {
-        PyrenzAlert('No more characters to load.', 'Success');
+        showAlert('No more characters to load.', 'Success');
       }
     } catch (error) {
       console.error('Error fetching characters:', error);
       Sentry.captureException(error);
-      PyrenzAlert('Error fetching characters.', 'Alert');
+      showAlert('Error fetching characters.', 'Alert');
     } finally {
       setIsLoading(false);
     }
