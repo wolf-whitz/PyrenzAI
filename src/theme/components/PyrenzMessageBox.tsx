@@ -6,6 +6,7 @@ interface PyrenzMessageBoxProps {
   children: React.ReactNode;
   onClick?: (event: React.MouseEvent) => void;
   sx?: SxProps;
+  className?: string;
 }
 
 const StyledPyrenzMessageBox = styled(Box)({
@@ -35,12 +36,15 @@ const StyledPyrenzMessageBox = styled(Box)({
     borderColor: 'transparent',
     bottom: '-10px',
     left: '10px',
+    borderTopColor: '#374151',
   },
   '&.user': {
     '&::after': {
       left: 'auto',
       right: '10px',
       borderLeftColor: '#374151',
+      borderTopColor: 'transparent',
+      borderRightColor: 'transparent',
     },
   },
   '&.other': {
@@ -50,9 +54,15 @@ const StyledPyrenzMessageBox = styled(Box)({
   },
 });
 
-export const PyrenzMessageBox = ({ children, onClick, sx }: PyrenzMessageBoxProps) => {
+export const PyrenzMessageBox = ({ children, onClick, sx, className }: PyrenzMessageBoxProps) => {
+  const handleClick = (event: React.MouseEvent) => {
+    if (onClick) {
+      onClick(event);
+    }
+  };
+
   return (
-    <StyledPyrenzMessageBox onClick={onClick} sx={sx}>
+    <StyledPyrenzMessageBox onClick={handleClick} sx={sx} className={className}>
       {children}
     </StyledPyrenzMessageBox>
   );

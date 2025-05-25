@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { TypingIndicator, CustomContextMenu, CustomMarkdown } from '@components';
-import { Box, Avatar } from '@mui/material';
+import React from 'react';
+import { TypingIndicator, CustomMarkdown } from '@components';
+import { Box, Avatar, IconButton } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { ChatMessagesProps } from '@shared-types/ChatmainTypes';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
-import { speakMessage } from '@api';
+import { speakMessage } from '@api';  
 import { PyrenzMessageBox } from '~/theme';
 
 export function ChatMessages({
@@ -20,25 +20,6 @@ export function ChatMessages({
 }: ChatMessagesProps & {
   setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const [contextMenu, setContextMenu] = useState<{
-    mouseX: number;
-    mouseY: number;
-    messageId: string;
-  } | null>(null);
-
-  const handleClose = () => {
-    setContextMenu(null);
-  };
-
-  const handleMessageClick = (event: React.MouseEvent, messageId: string) => {
-    event.preventDefault();
-    setContextMenu({
-      mouseX: event.clientX,
-      mouseY: event.clientY,
-      messageId,
-    });
-  };
-
   const handleSpeak = async (text: string) => {
     setIsGenerating(true);
     try {
@@ -46,6 +27,7 @@ export function ChatMessages({
         setIsGenerating(false);
       });
     } catch (error) {
+      console.error("Error speaking message:", error);
       setIsGenerating(false);
     }
   };
@@ -58,33 +40,7 @@ export function ChatMessages({
           ? msg.username || user.username
           : msg.character_name || char.character_name;
         const icon = msg.icon || '';
-
-        const menuItems = [
-          {
-            label: 'Regenerate',
-            action: () => {
-              handleClose();
-              onRegenerate && msg.id && onRegenerate(msg.id);
-            },
-            icon: <RefreshIcon />,
-          },
-          {
-            label: 'Delete',
-            action: () => {
-              handleClose();
-              onRemove && msg.id && onRemove(msg.id);
-            },
-            icon: <DeleteIcon />,
-          },
-          {
-            label: 'Speak',
-            action: () => {
-              handleClose();
-              handleSpeak(msg.text);
-            },
-            icon: <VolumeUpIcon />,
-          },
-        ];
+        const isLastMessage = index === previous_message.length - 1;
 
         return (
           <Box
@@ -103,34 +59,46 @@ export function ChatMessages({
               />
             )}
 
-            <PyrenzMessageBox
-              sx={{ marginLeft: !isUser ? 2 : 0, marginRight: isUser ? 2 : 0 }}
-              onClick={(event) => handleMessageClick(event, msg.id || '')}
-            >
-              {isGenerating &&
-                !isUser &&
-                index === previous_message.length - 1 && <TypingIndicator />}
-              <CustomMarkdown text={msg.text} user={user} char={char} />
-            </PyrenzMessageBox>
-
-            {msg.error && (
-              <Box display="flex" alignItems="center" ml={1} mt={1}>
-                <ErrorOutlineIcon color="error" fontSize="small" />
-                <Box ml={1} color="error">
-                  Error
-                </Box>
+            {isUser && (
+              <Box display="flex" flexDirection="column" mr={1}>
+                <IconButton
+                  onClick={() => onRemove && msg.id && onRemove(msg.id)}
+                  size="small"
+                >
+                  <DeleteIcon />
+                </IconButton>
               </Box>
             )}
 
-            {contextMenu && contextMenu.messageId === msg.id && (
-              <CustomContextMenu
-                items={menuItems}
-                onClose={handleClose}
-                anchorPosition={{
-                  top: contextMenu.mouseY,
-                  left: contextMenu.mouseX,
-                }}
-              />
+            <PyrenzMessageBox
+              sx={{ marginLeft: !isUser ? 2 : 0, marginRight: isUser ? 2 : 0 }}
+              className={isUser ? 'user' : 'other'}
+            >
+              {isGenerating && !isUser && isLastMessage && <TypingIndicator />}
+              <CustomMarkdown text={msg.text} user={user} char={char} />
+            </PyrenzMessageBox>
+
+            {!isUser && !isGenerating && (
+              <Box display="flex" flexDirection="column" ml={1}>
+                <IconButton
+                  onClick={() => onRegenerate && msg.id && onRegenerate(msg.id)}
+                  size="small"
+                >
+                  <RefreshIcon />
+                </IconButton>
+                <IconButton
+                  onClick={() => onRemove && msg.id && onRemove(msg.id)}
+                  size="small"
+                >
+                  <DeleteIcon />
+                </IconButton>
+                <IconButton
+                  onClick={() => handleSpeak(msg.text)}
+                  size="small"
+                >
+                  <VolumeUpIcon />
+                </IconButton>
+              </Box>
             )}
 
             {isUser && (
@@ -140,6 +108,15 @@ export function ChatMessages({
                 sx={{ width: 32, height: 32 }}
                 className="rounded-full"
               />
+            )}
+
+            {msg.error && (
+              <Box display="flex" alignItems="center" ml={1} mt={1}>
+                <ErrorOutlineIcon color="error" fontSize="small" />
+                <Box ml={1} color="error">
+                  Error
+                </Box>
+              </Box>
             )}
           </Box>
         );
