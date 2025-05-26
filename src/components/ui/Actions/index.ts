@@ -4,7 +4,7 @@ export * from './ContextMenu/CustomContextMenu';
 
 export * from './Dropdown';
 export * from './Dropzone/Dropzone';
-export * from './Fields/CustomFields';
+export * from './Fields';
 
 export * from './Form';
 export * from './ImageUploader/ImageUploader';

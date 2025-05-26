@@ -13,8 +13,9 @@ const zoomIn = keyframes`
 export const PyrenzBlueButton = styled(Button)<{ dataState?: string, component?: React.ElementType }>({
   fontFamily: 'font-baloo, sans-serif',
   color: 'white',
+  backgroundColor: 'black',
   transition: 'all 0.3s ease',
-  borderRadius: '0',
+  borderRadius: '50px',
   justifyContent: 'center',
   '&:hover': {
     animation: `${zoomIn} 0.3s ease forwards`,
@@ -40,3 +41,23 @@ export const PyrenzBlueButton = styled(Button)<{ dataState?: string, component?:
     }),
   }),
 });
+
+export const PyrenzBlueButtonWithLoading = ({ dataState, ...props }: { dataState?: string, [key: string]: any }) => {
+  return (
+    <div style={{ position: 'relative', display: 'inline-block' }}>
+      <PyrenzBlueButton dataState={dataState} {...props} />
+      {dataState === 'loading' && (
+        <CircularProgress
+          size={24}
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            marginTop: -12,
+            marginLeft: -12,
+          }}
+        />
+      )}
+    </div>
+  );
+};

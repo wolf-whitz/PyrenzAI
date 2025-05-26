@@ -56,34 +56,33 @@ export const fetchChatData = async (
 
     const reversedMessages = (data || []).reverse();
 
-    const formattedMessages = reversedMessages.flatMap(
-      (msg: ChatMessageWithId) => {
-        const messages: Message[] = [];
-
-        if (msg.user_message) {
-          messages.push({
-            id: msg.id,
-            text: msg.user_message,
-            icon: avatar_url || '',
-            type: 'user',
-            chat_uuid,
-          });
-        }
-
-        if (msg.char_message) {
-          messages.push({
-            id: msg.id,
-            text: msg.char_message,
-            icon: character.profile_image || '',
-            type: 'assistant',
-            chat_uuid,
-            gender: character.gender,
-          });
-        }
-
-        return messages;
+    const formattedMessages = reversedMessages.flatMap((msg: ChatMessageWithId) => {
+      const messages: Message[] = [];
+    
+      if (msg.user_message) {
+        messages.push({
+          id: `${msg.id}-user`,
+          text: msg.user_message,
+          icon: avatar_url || '',
+          type: 'user',
+          chat_uuid,
+        });
       }
-    );
+    
+      if (msg.char_message) {
+        messages.push({
+          id: `${msg.id}-char`,
+          text: msg.char_message,
+          icon: character.profile_image || '',
+          type: 'assistant',
+          chat_uuid,
+          gender: character.gender,
+        });
+      }
+    
+      return messages;
+    });
+    
 
     return {
       character,

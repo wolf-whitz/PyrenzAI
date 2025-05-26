@@ -41,6 +41,8 @@ export function ChatMain({
     handleSend,
     handleGoHome,
     handleRemoveMessage,
+    handleRegenerateMessage,
+    handleEditMessage,
   } = useChatPageAPI(
     messagesEndRef,
     previous_message,
@@ -84,6 +86,8 @@ export function ChatMain({
             }}
             isGenerating={isGenerating}
             onRemove={handleRemoveMessage}
+            onRegenerate={handleRegenerateMessage}
+            onEditMessage={handleEditMessage} 
             setIsGenerating={setIsGenerating}
           />
           <div ref={messagesEndRef}></div>

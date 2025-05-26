@@ -58,7 +58,6 @@ export const useChatPageAPI = (
     if (!trimmedMessage) return;
 
     try {
-      console.log(trimmedMessage);
       const response = await generateMessage(
         trimmedMessage,
         user,
@@ -85,21 +84,68 @@ export const useChatPageAPI = (
     if (!messageId) return;
 
     try {
+      const baseId = messageId.split('-')[0];
       const { error } = await supabase
         .from('chat_messages')
         .delete()
-        .eq('id', messageId);
+        .eq('id', baseId);
 
       if (error) {
         console.error('Error deleting message:', error);
       } else {
-        console.log('Message deleted successfully');
         setMessages((prevMessages) =>
           prevMessages.filter((msg) => msg.id !== messageId)
         );
       }
     } catch (error) {
       console.error('Error deleting message:', error);
+    }
+  };
+  const handleRegenerateMessage = async (messageId: string) => {
+    if (!messageId) return;
+  
+    try {
+      const baseId = messageId.split('-')[0];
+  
+      const userMessage = previous_message.find(
+        (msg) => msg.id && msg.id.startsWith(baseId) && msg.type === 'user'
+      );
+  
+      if (!userMessage) return;
+  
+      await handleRemoveMessage(messageId);
+  
+      await handleSend(userMessage.text);
+    } catch (error) {
+      console.error('Error regenerating message:', error);
+    }
+  };
+  
+  const handleEditMessage = async (messageId: string, editedMessage: string, type: 'user' | 'char') => {
+    if (!messageId || !editedMessage) return;
+
+    try {
+      const baseId = messageId.split('-')[0];
+      const columnName = type === 'user' ? 'user_message' : 'char_message';
+      const { error } = await supabase
+        .from('chat_messages')
+        .update({ [columnName]: editedMessage })
+        .eq('id', baseId)
+        .eq('user_uuid', user.user_uuid)
+        .eq('chat_uuid', chat_uuid);
+
+      if (error) {
+        console.error('Error updating message:', error);
+      } else {
+        console.log('Message updated successfully');
+        setMessages((prevMessages) =>
+          prevMessages.map((msg) =>
+            msg.id === messageId ? { ...msg, text: editedMessage } : msg
+          )
+        );
+      }
+    } catch (error) {
+      console.error('Error updating message:', error);
     }
   };
 
@@ -112,5 +158,7 @@ export const useChatPageAPI = (
     handleSend,
     handleGoHome,
     handleRemoveMessage,
+    handleRegenerateMessage,
+    handleEditMessage,
   };
 };
