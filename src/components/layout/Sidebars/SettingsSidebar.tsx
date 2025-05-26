@@ -18,8 +18,6 @@ export function SettingsSidebar({
   settingsOpen,
   onClose,
 }: SettingsSidebarProps) {
-  const [personaData, setPersonaData] = useState<PersonaCard[]>([]);
-  const [loading, setLoading] = useState(false);
   const [userUuid, setUserUuid] = useState<string | null>(null);
 
   useEffect(() => {

@@ -2,12 +2,6 @@ import { supabase } from '~/Utility/supabaseClient';
 import { useUserStore } from '~/store';
 
 export const GetUserUUID = async (): Promise<string | null> => {
-  const { userUUID } = useUserStore.getState();
-
-  if (userUUID) {
-    return userUUID;
-  }
-
   try {
     const { data, error } = await supabase.auth.getSession();
     if (error) {

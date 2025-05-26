@@ -26,7 +26,6 @@ export async function CreateNewChat(
       {
         chat_uuid: chatUuid,
         char_uuid: characterUuid,
-        user_uuid: userUUID,
         preview_image: profileImage,
         preview_message: description,
       },

@@ -4,9 +4,10 @@ import { GetUserUUID } from '@components';
 
 interface PersonaCard {
   id: string;
-  name: string;
-  description: string;
-  selected?: boolean;
+  persona_name: string;
+  persona_description: string;
+  is_selected?: boolean;
+  persona_profile?: string;
 }
 
 export const usePersonaAPI = () => {
@@ -28,7 +29,7 @@ export const usePersonaAPI = () => {
     try {
       const { data, error } = await supabase
         .from('personas')
-        .select('persona_name, persona_description, persona_profile, selected')
+        .select('id, persona_name, persona_description, persona_profile, is_selected')
         .eq('user_uuid', userUuid);
 
       if (error) {
@@ -36,10 +37,11 @@ export const usePersonaAPI = () => {
       }
 
       const mappedData = data.map((item) => ({
-        id: item.persona_profile || Math.random().toString(36).substr(2, 9),
-        name: item.persona_name,
-        description: item.persona_description,
-        selected: item.selected,
+        id: item.id,
+        persona_name: item.persona_name,
+        persona_description: item.persona_description,
+        is_selected: item.is_selected,
+        persona_profile: item.persona_profile,
       }));
 
       setPersonaData(mappedData);
@@ -73,7 +75,6 @@ export const usePersonaAPI = () => {
   const uploadImageToStorage = useCallback(async (imageData: string) => {
     const fileName = `persona-image-${Date.now()}.png`;
 
-    // Convert base64 to Blob
     const blob = await fetch(imageData).then((res) => res.blob());
 
     const { data, error } = await supabase.storage
@@ -124,9 +125,10 @@ export const usePersonaAPI = () => {
 
       if (data && data.length > 0) {
         const newPersona: PersonaCard = {
-          id: data[0].persona_profile || Math.random().toString(36).substr(2, 9),
-          name: data[0].persona_name,
-          description: data[0].persona_description,
+          id: data[0].id,
+          persona_name: data[0].persona_name,
+          persona_description: data[0].persona_description,
+          persona_profile: data[0].persona_profile,
         };
 
         setPersonaData((prevData) => [...prevData, newPersona]);
@@ -142,6 +144,32 @@ export const usePersonaAPI = () => {
     }
   }, [userUuid, uploadImageToStorage]);
 
+  const handleSelectPersona = useCallback(async (id: string) => {
+    try {
+      await supabase
+        .from('personas')
+        .update({ is_selected: true })
+        .eq('id', id);
+
+      await fetchPersona();
+    } catch (error) {
+      console.error('Failed to update persona selection', error);
+    }
+  }, [fetchPersona]);
+
+  const handleDeletePersona = useCallback(async (id: string) => {
+    try {
+      await supabase
+        .from('personas')
+        .delete()
+        .eq('id', id);
+
+      await fetchPersona();
+    } catch (error) {
+      console.error('Failed to delete persona', error);
+    }
+  }, [fetchPersona]);
+
   return {
     personaData,
     loading,
@@ -152,5 +180,7 @@ export const usePersonaAPI = () => {
     fetchPersona,
     checkAdminStatus,
     handleCreatePersona,
+    handleSelectPersona,
+    handleDeletePersona,
   };
 };

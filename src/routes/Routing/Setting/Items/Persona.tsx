@@ -20,6 +20,8 @@ export function Persona() {
     fetchPersona,
     checkAdminStatus,
     handleCreatePersona,
+    handleSelectPersona,
+    handleDeletePersona
   } = usePersonaAPI();
 
   const [isModalOpen, setModalOpen] = useState(false);
@@ -62,13 +64,22 @@ export function Persona() {
     );
   }
 
+  const personaDataWithHandlers = personaData.map(persona => ({
+    ...persona,
+    onSelect: () => handleSelectPersona(persona.id),
+    onDelete: () => handleDeletePersona(persona.id) 
+  }));
+
   return (
     <div className="flex flex-col gap-4">
       <Typography variant="h6" className="text-white text-center">
         My Personas
       </Typography>
 
-      <PersonaList personaData={personaData} loading={loading} />
+      <PersonaList
+        personaData={personaDataWithHandlers}
+        loading={loading}
+      />
 
       <PyrenzBlueButton
         onClick={() => setModalOpen(true)}

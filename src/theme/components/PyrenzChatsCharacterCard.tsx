@@ -72,6 +72,7 @@ interface PyrenzChatsCharacterCardProps {
   onCardClick?: () => void;
   onContextMenu?: (event: React.MouseEvent) => void;
   onDeleteClick?: () => void;
+  style?: React.CSSProperties; 
 }
 
 export const PyrenzChatsCharacterCard: React.FC<PyrenzChatsCharacterCardProps> = ({
@@ -81,6 +82,7 @@ export const PyrenzChatsCharacterCard: React.FC<PyrenzChatsCharacterCardProps> =
   onCardClick,
   onContextMenu,
   onDeleteClick,
+  style, 
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -95,7 +97,7 @@ export const PyrenzChatsCharacterCard: React.FC<PyrenzChatsCharacterCardProps> =
   const open = Boolean(anchorEl);
 
   return (
-    <StyledCard onClick={onCardClick} onContextMenu={onContextMenu}>
+    <StyledCard onClick={onCardClick} onContextMenu={onContextMenu} style={style}>
       <StyledCardImage>
         <StyledImage src={imageSrc} alt="Preview" />
       </StyledCardImage>

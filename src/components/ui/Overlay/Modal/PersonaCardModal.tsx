@@ -1,11 +1,13 @@
-import ReactDOM from 'react-dom';
+import React, { useState } from 'react';
+import { Box, Typography, CircularProgress, Modal, IconButton, Menu, MenuItem } from '@mui/material';
 import { motion } from 'framer-motion';
-import { Box, Typography, Button, CircularProgress } from '@mui/material';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 interface PersonaCard {
   id: string;
-  name: string;
-  description: string;
+  persona_name: string;
+  persona_description: string;
+  persona_profile: string;
 }
 
 interface PersonaModalProps {
@@ -14,6 +16,7 @@ interface PersonaModalProps {
   personaData: PersonaCard[];
   loading: boolean;
   onSelect: (persona: PersonaCard) => void;
+  onDelete: (personaId: string) => void;
 }
 
 export function PersonaModal({
@@ -22,6 +25,7 @@ export function PersonaModal({
   personaData,
   loading,
   onSelect,
+  onDelete,
 }: PersonaModalProps) {
   const truncateDescription = (description: string, limit: number = 100) => {
     return description.length > limit
@@ -29,15 +33,40 @@ export function PersonaModal({
       : description;
   };
 
-  if (!isOpen) return null;
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedPersona, setSelectedPersona] = useState<PersonaCard | null>(null);
 
-  return ReactDOM.createPortal(
-    <motion.div
-      initial={{ scale: 0.8 }}
-      animate={{ scale: 1 }}
-      exit={{ scale: 0.8 }}
-      onClick={onClose}
-      className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50"
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, persona: PersonaCard) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedPersona(persona);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedPersona(null);
+  };
+
+  const handleSelect = () => {
+    if (selectedPersona) {
+      onSelect(selectedPersona);
+    }
+    handleMenuClose();
+  };
+
+  const handleDelete = () => {
+    if (selectedPersona) {
+      onDelete(selectedPersona.id);
+    }
+    handleMenuClose();
+  };
+
+  return (
+    <Modal
+      open={isOpen}
+      onClose={onClose}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+      className="flex justify-center items-center"
     >
       <motion.div
         onClick={(e) => e.stopPropagation()}
@@ -75,22 +104,31 @@ export function PersonaModal({
                   key={persona.id}
                   className="bg-gray-700 rounded-lg p-4"
                   display="flex"
-                  flexDirection="column"
+                  flexDirection="row"
                 >
-                  <Typography variant="h6" className="text-white">
-                    {persona.name}
-                  </Typography>
-                  <Typography variant="body2" className="text-gray-300">
-                    {truncateDescription(persona.description)}
-                  </Typography>
-                  <Button
-                    onClick={() => onSelect(persona)}
-                    variant="contained"
-                    color="primary"
-                    className="mt-3"
+                  <Box mr={2}>
+                    <img
+                      src={persona.persona_profile}
+                      alt={persona.persona_name}
+                      className="w-20 h-20 rounded-full"
+                    />
+                  </Box>
+                  <Box display="flex" flexDirection="column" flexGrow={1}>
+                    <Typography variant="h6" className="text-white">
+                      {persona.persona_name}
+                    </Typography>
+                    <Typography variant="body2" className="text-gray-300 mt-1">
+                      {truncateDescription(persona.persona_description)}
+                    </Typography>
+                  </Box>
+                  <IconButton
+                    aria-label="more"
+                    aria-controls="long-menu"
+                    aria-haspopup="true"
+                    onClick={(event) => handleMenuOpen(event, persona)}
                   >
-                    Select
-                  </Button>
+                    <MoreVertIcon className="text-white" />
+                  </IconButton>
                 </Box>
               ))
             ) : (
@@ -100,8 +138,23 @@ export function PersonaModal({
             )}
           </Box>
         )}
+        <Menu
+          id="long-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+          PaperProps={{
+            style: {
+              maxHeight: 48 * 4.5,
+              width: '20ch',
+            },
+          }}
+        >
+          <MenuItem onClick={handleSelect}>Select</MenuItem>
+          <MenuItem onClick={handleDelete}>Delete</MenuItem>
+        </Menu>
       </motion.div>
-    </motion.div>,
-    document.getElementById('modal-root')!
+    </Modal>
   );
 }

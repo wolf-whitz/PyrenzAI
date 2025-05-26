@@ -3,17 +3,20 @@ import { User } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Typography, Box } from '@mui/material';
 import { PersonaModal } from '@components';
-import { supabase } from '~/Utility/supabaseClient'; // Updated import path
+import { supabase } from '~/Utility/supabaseClient';
 
 interface PersonaCard {
   id: string;
-  name: string;
-  description: string;
+  persona_name: string;
+  persona_description: string;
+  persona_profile: string;
 }
 
 interface PersonaData {
+  id: string;
   persona_name: string;
   persona_description: string;
+  persona_profile: string;
 }
 
 export function Persona() {
@@ -27,19 +30,26 @@ export function Persona() {
     try {
       const { data, error } = await supabase
         .from('personas')
-        .select('persona_name, persona_description');
+        .select('id, persona_name, persona_description, persona_profile, is_selected');
 
       if (error) {
         throw error;
       }
 
-      const mappedData = data.map((item: PersonaData) => ({
-        id: item.persona_name, // Using persona_name as id for simplicity
-        name: item.persona_name,
-        description: item.persona_description,
+      const mappedData = data.map((item: any) => ({
+        id: item.id,
+        persona_name: item.persona_name,
+        persona_description: item.persona_description,
+        persona_profile: item.persona_profile,
+        is_selected: item.is_selected,
       }));
 
       setPersonaData(mappedData);
+
+      const selected = mappedData.find((persona) => persona.is_selected);
+      if (selected) {
+        setSelectedPersona(selected);
+      }
     } catch (error) {
       console.error('Failed to fetch persona data', error);
     } finally {
@@ -51,9 +61,41 @@ export function Persona() {
     fetchPersona();
   }, []);
 
-  const handleSelectPersona = (persona: PersonaCard) => {
-    setSelectedPersona(persona);
-    setModalOpen(false);
+  const handleSelectPersona = async (persona: PersonaCard) => {
+    try {
+      await supabase
+        .from('personas')
+        .update({ is_selected: true })
+        .eq('id', persona.id);
+
+      await fetchPersona();
+
+      setSelectedPersona(persona);
+      setModalOpen(false);
+    } catch (error) {
+      console.error('Failed to update persona selection', error);
+    }
+  };
+
+  const handleDeletePersona = async (personaId: string) => {
+    try {
+      const { error } = await supabase
+        .from('personas')
+        .delete()
+        .eq('id', personaId);
+
+      if (error) {
+        throw error;
+      }
+
+      fetchPersona();
+
+      if (selectedPersona?.id === personaId) {
+        setSelectedPersona(null);
+      }
+    } catch (error) {
+      console.error('Failed to delete persona', error);
+    }
   };
 
   return (
@@ -71,7 +113,7 @@ export function Persona() {
         className="w-full text-left text-white font-medium px-3 py-2 rounded-md transition hover:bg-gray-700"
       >
         <Typography variant="body1">
-          Name: {selectedPersona ? selectedPersona.name : 'Anon'}
+          Name: {selectedPersona ? selectedPersona.persona_name : 'Anon'}
         </Typography>
       </motion.button>
 
@@ -82,10 +124,10 @@ export function Persona() {
       >
         <Typography variant="body1">
           Description:{' '}
-          {selectedPersona?.description
-            ? selectedPersona.description.length > 100
-              ? `${selectedPersona.description.slice(0, 100)}...`
-              : selectedPersona.description
+          {selectedPersona?.persona_description
+            ? selectedPersona.persona_description.length > 100
+              ? `${selectedPersona.persona_description.slice(0, 100)}...`
+              : selectedPersona.persona_description
             : ''}
         </Typography>
       </motion.button>
@@ -95,6 +137,7 @@ export function Persona() {
         onClose={() => setModalOpen(false)}
         loading={loading}
         onSelect={handleSelectPersona}
+        onDelete={handleDeletePersona}
         personaData={personaData}
       />
     </Box>

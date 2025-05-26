@@ -24,12 +24,29 @@ export function Profile() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUserUUID = async () => {
+    const fetchUserData = async () => {
       const uuid = await GetUserUUID();
       setUserUUID(uuid);
+
+      if (uuid) {
+        const { data, error } = await supabase
+          .from('user_data')
+          .select('username, avatar_url')
+          .eq('user_uuid', uuid)
+          .single();
+
+        if (error) {
+          console.error('Error fetching user data:', error);
+        } else {
+          setUsername(data.username || '');
+          if (data.avatar_url) {
+            setImagePreview(data.avatar_url);
+          }
+        }
+      }
     };
 
-    fetchUserUUID();
+    fetchUserData();
   }, []);
 
   const handleDrop = (event: DragEvent<HTMLDivElement>) => {
@@ -88,28 +105,38 @@ export function Profile() {
     setIsLoading(true);
 
     try {
-      const { data, error } = await supabase
-        .from('user_data')
-        .update({ username })
-        .eq('user_uuid', userUUID);
-
-      if (error) {
-        showAlert(`Error updating username: ${error.message}`, 'alert');
-      } else {
-        showAlert('Username updated successfully', 'success');
-      }
+      const updateData: any = { username };
 
       if (profileImage) {
-        const filePath = `user-profile/${userUUID}/${profileImage.name}`;
+        const filePath = `user-profile/${userUUID}`;
+
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from('user-profile')
           .upload(filePath, profileImage);
 
         if (uploadError) {
           showAlert(`Error uploading profile image: ${uploadError.message}`, 'alert');
-        } else {
-          showAlert('Profile image uploaded successfully', 'success');
+          setIsLoading(false);
+          return;
         }
+
+        const { data: urlData } = supabase.storage
+          .from('user-profile')
+          .getPublicUrl(filePath);
+
+        updateData.avatar_url = urlData.publicUrl;
+      }
+
+      const { data, error } = await supabase
+        .from('user_data')
+        .update(updateData)
+        .eq('user_uuid', userUUID);
+
+      if (error) {
+        showAlert(`Error updating profile: ${error.message}`, 'alert');
+      } else {
+        showAlert('Profile updated successfully', 'success');
+        navigate('/Profile');
       }
     } catch (error) {
       showAlert(`Error during submission: ${error instanceof Error ? error.message : String(error)}`, 'alert');

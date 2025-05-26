@@ -4,9 +4,12 @@ import { PersonaCard } from '@components';
 
 interface PersonaCardProps {
   id: string;
-  name: string;
-  description: string;
-  selected?: boolean;
+  persona_name: string;
+  persona_description: string;
+  is_selected?: boolean;
+  persona_profile?: string;
+  onSelect: (id: string) => void;
+  onDelete: (id: string) => void;
 }
 
 interface PersonaListProps {
@@ -26,9 +29,12 @@ export function PersonaList({ personaData, loading }: PersonaListProps) {
           <PersonaCard
             key={persona.id}
             id={persona.id}
-            name={persona.name}
-            description={persona.description}
-            selected={persona.selected}
+            persona_name={persona.persona_name}
+            persona_description={persona.persona_description}
+            is_selected={persona.is_selected}
+            persona_profile={persona.persona_profile}
+            onSelect={persona.onSelect}
+            onDelete={persona.onDelete}
           />
         ))
       ) : (

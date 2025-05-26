@@ -1,12 +1,8 @@
 import React from 'react';
 import { CircularProgress, Modal, IconButton, Typography } from '@mui/material';
 import { useArchiveChatModalAPI } from '@api';
-import { Chat } from '@shared-types/chatTypes';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { CustomContextMenu } from '@components';
-import DeleteIcon from '@mui/icons-material/Delete';
-import ChatIcon from '@mui/icons-material/Chat';
 import { PyrenzChatsCharacterCard } from '~/theme'; 
 
 interface ArchiveModalProps {
