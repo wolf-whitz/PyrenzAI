@@ -6,7 +6,7 @@ import { ChatMessagesProps } from '@shared-types/ChatmainTypes';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
-import { speakMessage } from '@api';  
+import { speakMessage } from '@api';
 import { PyrenzMessageBox } from '~/theme';
 
 export function ChatMessages({
@@ -74,7 +74,7 @@ export function ChatMessages({
               sx={{ marginLeft: !isUser ? 2 : 0, marginRight: isUser ? 2 : 0 }}
               className={isUser ? 'user' : 'other'}
             >
-              {isGenerating && !isUser && isLastMessage && <TypingIndicator />}
+              {isGenerating && !isUser && isLastMessage && !msg.text && <TypingIndicator />}
               <CustomMarkdown text={msg.text} user={user} char={char} />
             </PyrenzMessageBox>
 
