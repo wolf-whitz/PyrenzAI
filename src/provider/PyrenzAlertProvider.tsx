@@ -1,39 +1,38 @@
-import React, { useState, useEffect, createContext, useContext, ReactNode } from 'react'
-import { Alert, AlertTitle, IconButton } from '@mui/material'
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
-import { motion, AnimatePresence } from 'framer-motion'
+import React, { useState, useEffect, createContext, useContext, ReactNode } from 'react';
+import { Alert, AlertTitle, IconButton } from '@mui/material';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import { motion, AnimatePresence } from 'framer-motion';
 
-type AlertMode = 'Success' | 'Alert'
+type AlertMode = 'Success' | 'success' | 'Alert' | 'alert';
 
 type AlertState = {
-  mode: AlertMode
-  message: string
-} | null
+  mode: AlertMode;
+  message: string;
+} | null;
 
 type AlertContextType = {
-  showAlert: (message: string, mode: AlertMode) => void
-}
+  showAlert: (message: string, mode: AlertMode) => void;
+};
 
-const AlertContext = createContext<AlertContextType | undefined>(undefined)
+const AlertContext = createContext<AlertContextType | undefined>(undefined);
 
 export const usePyrenzAlert = () => {
-  const context = useContext(AlertContext)
-  if (!context) throw new Error('PyrenzAlert must be used within an AlertProvider')
-  return context.showAlert 
-}
-
+  const context = useContext(AlertContext);
+  if (!context) throw new Error('PyrenzAlert must be used within an AlertProvider');
+  return context.showAlert;
+};
 
 export const AlertProvider = ({ children }: { children: ReactNode }) => {
-  const [alertState, setAlertState] = useState<AlertState>(null)
+  const [alertState, setAlertState] = useState<AlertState>(null);
 
   const showAlert = (message: string, mode: AlertMode) => {
-    setAlertState({ message, mode })
-  }
+    setAlertState({ message, mode });
+  };
 
   const handleClose = () => {
-    setAlertState(null)
-  }
+    setAlertState(null);
+  };
 
   return (
     <AlertContext.Provider value={{ showAlert }}>
@@ -48,7 +47,7 @@ export const AlertProvider = ({ children }: { children: ReactNode }) => {
             drag="y"
             dragConstraints={{ top: 0, bottom: 0 }}
             onDragEnd={(event, info) => {
-              if (info.offset.y > 100) handleClose()
+              if (info.offset.y > 100) handleClose();
             }}
             style={{
               position: 'fixed',
@@ -61,11 +60,13 @@ export const AlertProvider = ({ children }: { children: ReactNode }) => {
             aria-live="assertive"
           >
             <Alert
-              severity={alertState.mode === 'Success' ? 'success' : 'error'}
+              severity={alertState.mode.toLowerCase() === 'success' ? 'success' : 'error'}
               icon={
-                alertState.mode === 'Success'
-                  ? <CheckCircleOutlineIcon style={{ color: 'green' }} />
-                  : <ErrorOutlineIcon style={{ color: 'red' }} />
+                alertState.mode.toLowerCase() === 'success' ? (
+                  <CheckCircleOutlineIcon style={{ color: 'green' }} />
+                ) : (
+                  <ErrorOutlineIcon style={{ color: 'red' }} />
+                )
               }
               action={
                 <IconButton
@@ -88,5 +89,5 @@ export const AlertProvider = ({ children }: { children: ReactNode }) => {
         )}
       </AnimatePresence>
     </AlertContext.Provider>
-  )
-}
+  );
+};

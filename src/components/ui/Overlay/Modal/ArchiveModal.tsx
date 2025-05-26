@@ -20,7 +20,6 @@ export function ArchiveModal({ open, onClose }: ArchiveModalProps) {
     characters,
     isLoading,
     handleCardClick,
-    handleContextMenu,
     currentPage,
     totalPages,
     goToNextPage,
@@ -48,7 +47,6 @@ export function ArchiveModal({ open, onClose }: ArchiveModalProps) {
               {chats.slice(currentPage * 5, currentPage * 5 + 5).map((chat) => (
                 <div key={chat.chat_uuid}>
                   <div
-                    onContextMenu={(e) => handleContextMenu(e, chat)}
                     className="cursor-pointer mb-4"
                   >
                     <PyrenzChatsCharacterCard

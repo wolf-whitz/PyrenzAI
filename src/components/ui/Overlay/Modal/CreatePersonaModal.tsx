@@ -1,15 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import {
   Box,
   Typography,
-  Button,
   CircularProgress,
   Modal,
 } from '@mui/material';
 import { PlusCircle } from 'lucide-react';
 import { Textarea } from '@components';
 import { useDropzone } from 'react-dropzone';
+import { PyrenzBlueButton } from '~/theme';
+import { usePyrenzAlert } from '~/provider';
 
 interface CreatePersonaModalProps {
   isModalOpen: boolean;
@@ -22,6 +23,7 @@ interface CreatePersonaModalProps {
   creating: boolean;
   setCharacterCardImageModalOpen: (open: boolean) => void;
   selectedImage: string;
+  setSelectedImage: (image: string) => void;
 }
 
 export function CreatePersonaModal({
@@ -35,14 +37,42 @@ export function CreatePersonaModal({
   creating,
   setCharacterCardImageModalOpen,
   selectedImage,
+  setSelectedImage,
 }: CreatePersonaModalProps) {
-  if (!isModalOpen) return null;
+  const showAlert = usePyrenzAlert(); 
 
+ 
   const onDrop = (acceptedFiles: File[]) => {
-    setCharacterCardImageModalOpen(true);
+    if (acceptedFiles.length > 0) {
+      const file = acceptedFiles[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        const imageUrl = reader.result as string;
+        setSelectedImage(imageUrl);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      'image/*': ['.jpeg', '.jpg', '.png', '.gif']
+    },
+    maxSize: 1024 * 1024,
+    onDropRejected: (fileRejections) => {
+      fileRejections.forEach(({ file, errors }) => {
+        errors.forEach((error) => {
+          if (error.code === 'file-too-large') {
+            showAlert('File is too large. Maximum size is 1MB.', 'alert');
+          }
+          if (error.code === 'file-invalid-type') {
+            showAlert('Invalid file type. Only images are allowed.', 'alert');
+          }
+        });
+      });
+    }
+  });
 
   return ReactDOM.createPortal(
     <Modal
@@ -81,15 +111,14 @@ export function CreatePersonaModal({
           )}
         </div>
 
-        <Button
-          variant="contained"
-          color="primary"
+        <PyrenzBlueButton
           onClick={() => setCharacterCardImageModalOpen(true)}
-          className="mb-4 w-full bg-blue-600 hover:bg-blue-500 transition-colors"
+          className="mb-4 w-full"
         >
           Choose Premade Images
-        </Button>
+        </PyrenzBlueButton>
 
+    
         <Textarea
           label="Name"
           value={newPersonaName}
@@ -107,12 +136,10 @@ export function CreatePersonaModal({
         />
 
         <Box className="flex justify-center mt-8">
-          <Button
+          <PyrenzBlueButton
             onClick={handleCreatePersona}
-            variant="contained"
-            color="primary"
             disabled={creating}
-            className="min-w-[120px] flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 transition-colors"
+            className="min-w-[120px] flex items-center justify-center gap-2"
           >
             {creating ? (
               <CircularProgress size={20} className="text-white" />
@@ -122,7 +149,7 @@ export function CreatePersonaModal({
                 <span>Create</span>
               </>
             )}
-          </Button>
+          </PyrenzBlueButton>
         </Box>
       </Box>
     </Modal>,

@@ -37,8 +37,8 @@ export const PyrenzOutlinedInput = styled(MuiOutlinedInput)({
 });
 
 export const PyrenzInputLabel = styled(InputLabel)({
-  color: 'white',
+  color: '#add8e6',
   '&.Mui-focused': {
-    color: 'white',
+    color: '#add8e6',
   },
 });

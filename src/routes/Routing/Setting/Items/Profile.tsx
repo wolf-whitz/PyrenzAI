@@ -1,9 +1,13 @@
 import React, { useState, DragEvent, useEffect } from 'react';
-import { TextField, Typography, Button, Box } from '@mui/material';
+import { TextField, Typography, Box, Avatar } from '@mui/material';
 import { supabase } from '~/Utility/supabaseClient';
-import { Utils } from '~/Utility/Utility';
 import { GetUserUUID } from '@components';
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import { PyrenzBlueButton, PyrenzFormControl } from '~/theme';
+import { usePyrenzAlert } from '~/provider';
+import { useNavigate } from 'react-router-dom';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+
+type AlertMode = 'Success' | 'success' | 'Alert' | 'alert';
 
 interface ApiResponse {
   success: boolean;
@@ -13,7 +17,11 @@ interface ApiResponse {
 export function Profile() {
   const [username, setUsername] = useState('');
   const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [userUUID, setUserUUID] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const showAlert = usePyrenzAlert();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserUUID = async () => {
@@ -28,21 +36,56 @@ export function Profile() {
     event.preventDefault();
     const files = event.dataTransfer.files;
     if (files.length > 0) {
-      setProfileImage(files[0]);
+      const file = files[0];
+
+      if (!file.type.match('image.*')) {
+        showAlert('Only image files are accepted', 'alert');
+        return;
+      }
+
+      if (file.size > 1024 * 1024) {
+        showAlert('Profile image size should be within or below 1MB', 'alert');
+        return;
+      }
+
+      const img = new Image();
+      const objectURL = URL.createObjectURL(file);
+      img.src = objectURL;
+
+      img.onload = () => {
+        if (img.width !== 400 || img.height !== 400) {
+          showAlert('Profile image dimensions should be 400x400 pixels', 'alert');
+          URL.revokeObjectURL(objectURL);
+          return;
+        }
+
+        setProfileImage(file);
+        setImagePreview(objectURL);
+      };
     }
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
-      setProfileImage(event.target.files[0]);
+      const file = event.target.files[0];
+
+      if (!file.type.match('image.*')) {
+        showAlert('Only image files are accepted', 'alert');
+        return;
+      }
+
+      setProfileImage(file);
+      setImagePreview(URL.createObjectURL(file));
     }
   };
 
   const handleSubmit = async () => {
     if (!userUUID) {
-      console.error('User UUID is not available');
+      showAlert('User UUID is not available', 'alert');
       return;
     }
+
+    setIsLoading(true);
 
     try {
       const { data, error } = await supabase
@@ -51,27 +94,27 @@ export function Profile() {
         .eq('user_uuid', userUUID);
 
       if (error) {
-        console.error('Error updating username:', error);
+        showAlert(`Error updating username: ${error.message}`, 'alert');
       } else {
-        console.log('Username updated successfully:', data);
+        showAlert('Username updated successfully', 'success');
       }
 
       if (profileImage) {
-        const formData = new FormData();
-        formData.append('image', profileImage);
+        const filePath = `user-profile/${userUUID}/${profileImage.name}`;
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('user-profile')
+          .upload(filePath, profileImage);
 
-        const response: ApiResponse = await Utils.post(
-          '/api/ConvertAvif',
-          formData
-        );
-        if (response.success) {
-          console.log('Profile image uploaded successfully');
+        if (uploadError) {
+          showAlert(`Error uploading profile image: ${uploadError.message}`, 'alert');
         } else {
-          console.error('Error uploading profile image:', response.error);
+          showAlert('Profile image uploaded successfully', 'success');
         }
       }
     } catch (error) {
-      console.error('Error during submission:', error);
+      showAlert(`Error during submission: ${error instanceof Error ? error.message : String(error)}`, 'alert');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -84,24 +127,36 @@ export function Profile() {
         >
           Profile Image
         </Typography>
-        <DropdownMenu.Root>
-          <DropdownMenu.Trigger asChild>
-            <Button variant="outlined">Upload Image</Button>
-          </DropdownMenu.Trigger>
-          <DropdownMenu.Content>
-            <DropdownMenu.Item asChild>
-              <label htmlFor="file-upload">
-                <input
-                  id="file-upload"
-                  type="file"
-                  onChange={handleFileChange}
-                  style={{ display: 'none' }}
-                />
-                Choose File
-              </label>
-            </DropdownMenu.Item>
-          </DropdownMenu.Content>
-        </DropdownMenu.Root>
+        <PyrenzFormControl>
+          <input
+            type="file"
+            onChange={handleFileChange}
+            style={{ display: 'none' }}
+            id="file-upload"
+            accept="image/*"
+          />
+          <label htmlFor="file-upload">
+            <PyrenzBlueButton
+              component="span"
+              sx={{
+                backgroundColor: '#add8e6',
+                borderRadius: '20px',
+                color: 'black'
+              }}
+            >
+              Upload Image
+            </PyrenzBlueButton>
+          </label>
+        </PyrenzFormControl>
+        {imagePreview && (
+          <Box sx={{ marginTop: '10px' }}>
+            <Avatar
+              src={imagePreview}
+              alt="Profile Preview"
+              sx={{ width: 100, height: 100 }}
+            />
+          </Box>
+        )}
       </Box>
 
       <Box sx={{ marginBottom: '20px' }}>
@@ -119,14 +174,28 @@ export function Profile() {
           onChange={(e) => setUsername(e.target.value)}
         />
       </Box>
-      <Button
-        variant="contained"
-        color="primary"
+      <PyrenzBlueButton
+        sx={{
+          backgroundColor: '#add8e6',
+          borderRadius: '20px',
+          color: 'black',
+          marginRight: '10px'
+        }}
         onClick={handleSubmit}
-        sx={{ marginTop: '20px' }}
+        dataState={isLoading ? 'loading' : undefined}
       >
         Submit
-      </Button>
+      </PyrenzBlueButton>
+      <PyrenzBlueButton
+        sx={{
+          backgroundColor: '#add8e6',
+          borderRadius: '20px',
+          color: 'black'
+        }}
+        onClick={() => navigate('/Profile')}
+      >
+        View Profile <ArrowForwardIcon />
+      </PyrenzBlueButton>
     </Box>
   );
 }

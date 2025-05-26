@@ -72,44 +72,6 @@ export function LanguageModal({
             </Button>
           ))}
         </div>
-        <div className="flex justify-center gap-4">
-          <Button
-            variant="contained"
-            style={{
-              backgroundColor: '#10B981',
-              color: '#FFFFFF',
-              padding: '0.5rem 1.5rem',
-              borderRadius: '0.5rem',
-              transition: 'background-color 0.2s',
-            }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.backgroundColor = '#059669')
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.backgroundColor = '#10B981')
-            }
-          >
-            {t('LanguageModal.requestLanguage')}
-          </Button>
-          <Button
-            variant="contained"
-            style={{
-              backgroundColor: '#F59E0B',
-              color: '#FFFFFF',
-              padding: '0.5rem 1.5rem',
-              borderRadius: '0.5rem',
-              transition: 'background-color 0.2s',
-            }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.backgroundColor = '#D97706')
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.backgroundColor = '#F59E0B')
-            }
-          >
-            {t('LanguageModal.foundGrammarIssue')}
-          </Button>
-        </div>
       </motion.div>
     </Modal>
   );

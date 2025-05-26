@@ -1,10 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 
-interface CosmeticProps {
-  onBackgroundChange: (imageUrl: string | null) => void;
-}
-
-export function Cosmetic({ onBackgroundChange }: CosmeticProps) {
+export function Cosmetic() {
   const [charColor, setCharColor] = useState<string>('green');
   const [tempColor, setTempColor] = useState<string>('green');
   const [bgImage, setBgImage] = useState<string | null>(null);
@@ -23,9 +19,8 @@ export function Cosmetic({ onBackgroundChange }: CosmeticProps) {
     if (savedBgImage) {
       setBgImage(savedBgImage);
       setTempBgImage(savedBgImage);
-      onBackgroundChange(savedBgImage);
     }
-  }, [onBackgroundChange]);
+  }, []);
 
   const handleSave = () => {
     setCharColor(tempColor);
@@ -34,10 +29,8 @@ export function Cosmetic({ onBackgroundChange }: CosmeticProps) {
 
     if (tempBgImage) {
       localStorage.setItem('bgImage', tempBgImage);
-      onBackgroundChange(tempBgImage);
     } else {
       localStorage.removeItem('bgImage');
-      onBackgroundChange(null);
     }
   };
 
@@ -71,7 +64,6 @@ export function Cosmetic({ onBackgroundChange }: CosmeticProps) {
     setTempBgImage(null);
     setBgImage(null);
     localStorage.removeItem('bgImage');
-    onBackgroundChange(null);
   };
 
   return (

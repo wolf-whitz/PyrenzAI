@@ -18,9 +18,9 @@ import {
   ListItemIcon,
   useMediaQuery,
   useTheme,
+  IconButton,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { PyrenzBlueButton } from '~/theme';
 
 export function Sidebar({ className }: { className?: string }) {
   const [hovered, setHovered] = useState<string | null>(null);
@@ -157,17 +157,17 @@ function SidebarItem({
 
   return (
     <Tooltip title={item.name} placement="right" arrow>
-      <PyrenzBlueButton
+      <IconButton
         className={clsx(
-          'relative flex items-center justify-center w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 rounded-lg hover:bg-gray-800 cursor-pointer',
-          hovered === item.name && 'bg-gray-800'
+          'relative flex items-center justify-center w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 rounded-lg cursor-pointer',
+          hovered === item.name && 'bg-transparent'
         )}
         onClick={handleClick}
         onMouseEnter={() => setHovered(item.name)}
         onMouseLeave={() => setHovered(null)}
       >
         <ListItemIcon>{item.icon}</ListItemIcon>
-      </PyrenzBlueButton>
+      </IconButton>
     </Tooltip>
   );
 }

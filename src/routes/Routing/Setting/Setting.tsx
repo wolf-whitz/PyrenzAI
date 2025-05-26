@@ -1,188 +1,100 @@
-import React, { useState, useEffect, Suspense, lazy } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { Sidebar, MobileNav } from '@components';
 import { supabase } from '~/Utility/supabaseClient';
 import { User } from '@supabase/supabase-js';
 import {
+  Box,
   Tabs,
   Tab,
   Typography,
   CircularProgress,
-  IconButton,
-  useMediaQuery,
   useTheme,
+  useMediaQuery,
 } from '@mui/material';
-import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import { PyrenzBlueButton } from '~/theme';
 
-function lazyNamed<T>(
-  factory: () => Promise<{ [key: string]: T }>,
-  exportName: string
-) {
-  return lazy(() =>
-    factory().then((mod) => ({ default: (mod as any)[exportName] }))
-  );
-}
+const lazyNamed = <T,>(factory: () => Promise<{ [key: string]: T }>, name: string) =>
+  lazy(() => factory().then((mod) => ({ default: (mod as any)[name] })));
 
-const Account = lazyNamed(() => import('./Items/Account'), 'Account');
-const Profile = lazyNamed(() => import('./Items/Profile'), 'Profile');
-const Preference = lazyNamed(() => import('./Items/Preference'), 'Preference');
-const Persona = lazyNamed(() => import('./Items/Persona'), 'Persona');
+const tabs = ['account', 'profile', 'persona'] as const;
+const tabComponents = {
+  account: lazyNamed(() => import('./Items/Account'), 'Account'),
+  profile: lazyNamed(() => import('./Items/Profile'), 'Profile'),
+  persona: lazyNamed(() => import('./Items/Persona'), 'Persona'),
+};
 
 export function Setting() {
-  const [activeTab, setActiveTab] = useState<
-    'account' | 'profile' | 'preference' | 'persona'
-  >('account');
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [activeTab, setActiveTab] = useState<(typeof tabs)[number]>('account');
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [visibleTabs, setVisibleTabs] = useState([
-    'account',
-    'profile',
-    'preference',
-    'persona',
-  ]);
-  const [startIndex, setStartIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMedium = useMediaQuery(theme.breakpoints.between('sm', 'md'));
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const init = async () => {
       const { data, error } = await supabase.auth.getSession();
-      if (error || !data.session) {
-        console.error('Error fetching session:', error);
-        setIsAuthenticated(false);
-      } else {
-        const userData = await supabase.auth.getUser();
-        if (userData.error) {
-          console.error('Error fetching user:', userData.error);
-          setIsAuthenticated(false);
-        } else {
-          setUser(userData.data.user);
-          setIsAuthenticated(true);
-        }
-      }
-      setIsLoading(false);
+      if (error || !data.session) return setLoading(false);
+
+      const { data: userData, error: userErr } = await supabase.auth.getUser();
+      if (!userErr && userData?.user) setUser(userData.user);
+
+      setLoading(false);
     };
 
-    fetchUser();
+    init();
   }, []);
 
-  const handleTabChange = (
-    event: React.SyntheticEvent,
-    newValue: 'account' | 'profile' | 'preference' | 'persona'
-  ) => {
-    setActiveTab(newValue);
+  const renderTabs = () => {
+    const getTabs = (arr: readonly string[]) =>
+      arr.map((tab) => (
+        <Tab
+          key={tab}
+          value={tab}
+          label={<PyrenzBlueButton>{tab[0].toUpperCase() + tab.slice(1)}</PyrenzBlueButton>}
+        />
+      ));
+
+      const mutableTabs = [...tabs]
+
+      const chunkedTabs =
+        isMobile ? [mutableTabs.slice(0, 2), mutableTabs.slice(2)] :
+        isMedium ? [mutableTabs.slice(0, 3), mutableTabs.slice(3)] :
+        [mutableTabs]
+      
+
+    return (
+      <Box display="flex" flexDirection="column" alignItems="center" width="100%">
+        {chunkedTabs.map((chunk, i) => (
+          <Tabs
+            key={i}
+            value={activeTab}
+            onChange={(_, val) => setActiveTab(val)}
+            variant="scrollable"
+            scrollButtons="auto"
+            sx={{ width: 'fit-content' }}
+          >
+            {getTabs(chunk)}
+          </Tabs>
+        ))}
+      </Box>
+    );
   };
 
-  const handleNext = () => {
-    if (startIndex < visibleTabs.length - 3) {
-      setStartIndex(startIndex + 1);
-    }
-  };
-
-  const handlePrevious = () => {
-    if (startIndex > 0) {
-      setStartIndex(startIndex - 1);
-    }
-  };
-
-  const renderContent = () => {
-    if (isLoading) {
-      return (
-        <div className="flex justify-center items-center h-full min-h-[300px]">
-          <CircularProgress />
-        </div>
-      );
-    }
-
-    if (!isAuthenticated && activeTab === 'account') {
-      return (
-        <div className="flex justify-center items-center h-full min-h-[300px]">
-          <Typography variant="h6" color="textSecondary">
-            Please log in to access your account settings.
-          </Typography>
-        </div>
-      );
-    }
-
-    switch (activeTab) {
-      case 'account':
-        return <Account />;
-      case 'profile':
-        return <Profile />;
-      case 'preference':
-        return <Preference />;
-      case 'persona':
-        return <Persona />;
-      default:
-        return <Account />;
-    }
-  };
+  const Content = tabComponents[activeTab];
 
   return (
-    <div className="flex">
+    <Box display="flex">
       <Sidebar />
-      <div className="flex-grow p-3 flex flex-col items-center">
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: '100%',
-            position: 'relative',
-          }}
-        >
-          {isMobile && (
-            <IconButton
-              onClick={handlePrevious}
-              disabled={startIndex === 0}
-              style={{ position: 'absolute', left: 0 }}
-            >
-              <NavigateBeforeIcon />
-            </IconButton>
-          )}
-          <motion.div
-            initial={{ x: isMobile ? -100 : 0 }}
-            animate={{ x: 0 }}
-            exit={{ x: isMobile ? 100 : 0 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            style={{ display: 'flex', overflow: 'hidden' }}
-          >
-            <Tabs
-              value={activeTab}
-              onChange={handleTabChange}
-              variant="scrollable"
-              scrollButtons="auto"
-            >
-              {(isMobile
-                ? visibleTabs.slice(startIndex, startIndex + 3)
-                : visibleTabs
-              ).map((tab) => (
-                <Tab
-                  key={tab}
-                  label={tab.charAt(0).toUpperCase() + tab.slice(1)}
-                  value={tab}
-                />
-              ))}
-            </Tabs>
-          </motion.div>
-          {isMobile && (
-            <IconButton
-              onClick={handleNext}
-              disabled={startIndex >= visibleTabs.length - 3}
-              style={{ position: 'absolute', right: 0 }}
-            >
-              <NavigateNextIcon />
-            </IconButton>
-          )}
-        </div>
+      <Box flexGrow={1} p={3} display="flex" flexDirection="column" alignItems="center">
+        {renderTabs()}
         <Suspense
           fallback={
-            <div className="flex justify-center items-center h-full">
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight="300px">
               <CircularProgress />
-            </div>
+            </Box>
           }
         >
           <motion.div
@@ -191,13 +103,27 @@ export function Setting() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.4, ease: 'easeOut' }}
-            className="w-full flex justify-center items-center"
+            style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
           >
-            <div className="max-w-md w-full">{renderContent()}</div>
+            <Box maxWidth="md" width="100%">
+              {loading ? (
+                <Box display="flex" justifyContent="center" alignItems="center" minHeight="300px">
+                  <CircularProgress />
+                </Box>
+              ) : !user && activeTab === 'account' ? (
+                <Box display="flex" justifyContent="center" alignItems="center" minHeight="300px">
+                  <Typography variant="h6" color="textSecondary">
+                    Please log in to access your account settings.
+                  </Typography>
+                </Box>
+              ) : (
+                <Content />
+              )}
+            </Box>
           </motion.div>
         </Suspense>
-      </div>
+      </Box>
       {isMobile && <MobileNav setShowLoginModal={() => {}} />}
-    </div>
+    </Box>
   );
 }

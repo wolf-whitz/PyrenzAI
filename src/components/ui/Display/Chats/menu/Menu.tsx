@@ -26,20 +26,9 @@ export function Menu({ onClose }: MenuProps) {
     const savedBg = localStorage.getItem('bgImage');
     if (savedBg) {
       setBgImage(savedBg);
-      applyBackground(savedBg);
     }
   }, []);
 
-  const applyBackground = (imageUrl: string | null) => {
-    if (imageUrl) {
-      document.body.style.backgroundImage = `url(${imageUrl})`;
-      document.body.style.backgroundSize = 'cover';
-      document.body.style.backgroundPosition = 'center';
-      document.body.style.backgroundRepeat = 'no-repeat';
-    } else {
-      document.body.style.backgroundImage = 'none';
-    }
-  };
 
   return (
     <Fade in={true} onClick={onClose}>
@@ -114,7 +103,7 @@ export function Menu({ onClose }: MenuProps) {
             </Box>
 
             {selectedOption === 'Cosmetic' && (
-              <Cosmetic onBackgroundChange={applyBackground} />
+              <Cosmetic />
             )}
             {selectedOption === 'AI Customization' && <Customization />}
           </Box>

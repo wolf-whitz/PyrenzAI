@@ -90,7 +90,7 @@ export function ChatMain({
         </Box>
 
         <Slide direction="up" in={true} timeout={500}>
-          <Box className="w-full bg-charcoal relative sm:relative">
+          <Box className="w-full  relative sm:relative">
             <ChatInput
               user={{
                 username: user?.username || 'Anon',

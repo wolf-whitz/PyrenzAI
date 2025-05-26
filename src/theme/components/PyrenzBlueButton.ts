@@ -10,7 +10,7 @@ const zoomIn = keyframes`
   }
 `;
 
-export const PyrenzBlueButton = styled(Button)<{ dataState?: string }>({
+export const PyrenzBlueButton = styled(Button)<{ dataState?: string, component?: React.ElementType }>({
   fontFamily: 'font-baloo, sans-serif',
   color: 'white',
   transition: 'all 0.3s ease',
@@ -19,6 +19,8 @@ export const PyrenzBlueButton = styled(Button)<{ dataState?: string }>({
   '&:hover': {
     animation: `${zoomIn} 0.3s ease forwards`,
     boxShadow: 'none',
+    backgroundColor: '#add8e6',
+    color: 'black'
   },
   '&[data-state="loading"]': {
     opacity: 0.6,
@@ -38,4 +40,3 @@ export const PyrenzBlueButton = styled(Button)<{ dataState?: string }>({
     }),
   }),
 });
-

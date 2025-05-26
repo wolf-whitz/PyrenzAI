@@ -27,9 +27,11 @@ export const componentOverrides = {
       root: {
         borderRadius: '4px',
         color: '#add8e6',
+        transition: 'transform 0.3s ease, color 0.3s ease',
         '&:hover': {
           backgroundColor: 'transparent',
           color: 'grey',
+          transform: 'scale(1.2)',
         },
       },
     },
@@ -63,7 +65,6 @@ export const componentOverrides = {
       },
     },
   },
-
   MuiAppBar: {
     styleOverrides: {
       root: {

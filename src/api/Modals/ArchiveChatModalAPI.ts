@@ -18,10 +18,6 @@ export const useArchiveChatModalAPI = (open: boolean, onClose: () => void) => {
   const [chats, setChats] = useState<Chat[]>([]);
   const [characters, setCharacters] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(true);
-  const [contextMenuAnchor, setContextMenuAnchor] = useState<{
-    top: number;
-    left: number;
-  } | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
   const navigate = useNavigate();
 
@@ -97,7 +93,6 @@ export const useArchiveChatModalAPI = (open: boolean, onClose: () => void) => {
       console.error('Error deleting chat:', error);
     } else {
       setChats(chats.filter(chat => chat.chat_uuid !== chatUuid));
-      setContextMenuAnchor(null);
     }
   };
 
@@ -117,7 +112,6 @@ export const useArchiveChatModalAPI = (open: boolean, onClose: () => void) => {
     chats,
     characters,
     isLoading,
-    contextMenuAnchor,
     handleCardClick,
     handleDeleteChat,
     currentPage,
