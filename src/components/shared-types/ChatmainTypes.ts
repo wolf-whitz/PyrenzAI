@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from 'zod';
 
 export const MessageSchema = z.object({
   id: z.string().optional(),
@@ -6,14 +6,14 @@ export const MessageSchema = z.object({
   username: z.string().optional(),
   text: z.string(),
   icon: z.string(),
-  type: z.enum(["user", "assistant"]),
+  type: z.enum(['user', 'assistant']),
   token: z.number().nullable().optional(),
   role: z.string().nullable().optional(),
   error: z.boolean().optional(),
   gender: z.string().optional(),
-})
+});
 
-export type Message = z.infer<typeof MessageSchema>
+export type Message = z.infer<typeof MessageSchema>;
 
 export const ChatMessagesPropsSchema = z.object({
   previous_message: z.array(MessageSchema),
@@ -30,6 +30,6 @@ export const ChatMessagesPropsSchema = z.object({
   }),
   onRegenerate: z.function().args(z.string()).returns(z.void()).optional(),
   onRemove: z.function().args(z.string()).returns(z.void()).optional(),
-})
+});
 
-export type ChatMessagesProps = z.infer<typeof ChatMessagesPropsSchema>
+export type ChatMessagesProps = z.infer<typeof ChatMessagesPropsSchema>;

@@ -1,5 +1,14 @@
 import React from 'react';
-import { Avatar, Typography, IconButton, useTheme, useMediaQuery, Box, Fade, Container } from '@mui/material';
+import {
+  Avatar,
+  Typography,
+  IconButton,
+  useTheme,
+  useMediaQuery,
+  Box,
+  Fade,
+  Container,
+} from '@mui/material';
 import { ArrowLeft, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -12,7 +21,11 @@ interface ChatHeaderProps {
   toggleSettings: () => void;
 }
 
-export function ChatHeader({ char, handleGoHome, toggleSettings }: ChatHeaderProps) {
+export function ChatHeader({
+  char,
+  handleGoHome,
+  toggleSettings,
+}: ChatHeaderProps) {
   const theme = useTheme();
   const isMdScreen = useMediaQuery(theme.breakpoints.up('lg'));
   const navigate = useNavigate();

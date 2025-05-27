@@ -19,7 +19,7 @@ export default defineConfig({
     tsconfigPaths({
       projects: ['tsconfig.app.json'],
     }),
-    
+
     createHtmlPlugin({
       minify: {
         collapseWhitespace: true,
@@ -44,7 +44,7 @@ export default defineConfig({
     __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
     __BUILD_DATE__: JSON.stringify(new Date().toISOString()),
   },
-  
+
   css: {
     postcss: {
       plugins: [tailwindcss()],

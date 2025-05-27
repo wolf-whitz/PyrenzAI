@@ -67,7 +67,13 @@ export function CreatePage() {
 
   return (
     <Suspense fallback={<CreatePageLoader />}>
-      <Box display="flex" flexDirection="column" width="100%" minHeight="100vh" sx={{ flexDirection: { sm: 'row' } }}>
+      <Box
+        display="flex"
+        flexDirection="column"
+        width="100%"
+        minHeight="100vh"
+        sx={{ flexDirection: { sm: 'row' } }}
+      >
         <Box width="100%" sx={{ width: { sm: '256px' } }}>
           <Sidebar />
         </Box>
@@ -79,7 +85,9 @@ export function CreatePage() {
           </Box>
         </Box>
 
-        <Box sx={{ display: { xs: 'none', sm: 'block' }, width: { sm: '256px' } }}>
+        <Box
+          sx={{ display: { xs: 'none', sm: 'block' }, width: { sm: '256px' } }}
+        >
           <CommunityGuidelines />
         </Box>
 

@@ -141,10 +141,7 @@ function SidebarItem({
 
   const handleClick = () => {
     if (
-      [
-        t('navigation.settings'),
-        t('navigation.create'),
-      ].includes(item.name) &&
+      [t('navigation.settings'), t('navigation.create')].includes(item.name) &&
       !user
     ) {
       setShowLoginModal(true);

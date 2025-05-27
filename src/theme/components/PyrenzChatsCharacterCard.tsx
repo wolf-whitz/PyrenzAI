@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { Card, CardContent, Typography, IconButton, Popover } from '@mui/material';
+import {
+  Card,
+  CardContent,
+  Typography,
+  IconButton,
+  Popover,
+} from '@mui/material';
 import { styled } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -72,17 +78,19 @@ interface PyrenzChatsCharacterCardProps {
   onCardClick?: () => void;
   onContextMenu?: (event: React.MouseEvent) => void;
   onDeleteClick?: () => void;
-  style?: React.CSSProperties; 
+  style?: React.CSSProperties;
 }
 
-export const PyrenzChatsCharacterCard: React.FC<PyrenzChatsCharacterCardProps> = ({
+export const PyrenzChatsCharacterCard: React.FC<
+  PyrenzChatsCharacterCardProps
+> = ({
   imageSrc,
   characterName,
   children,
   onCardClick,
   onContextMenu,
   onDeleteClick,
-  style, 
+  style,
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -97,7 +105,11 @@ export const PyrenzChatsCharacterCard: React.FC<PyrenzChatsCharacterCardProps> =
   const open = Boolean(anchorEl);
 
   return (
-    <StyledCard onClick={onCardClick} onContextMenu={onContextMenu} style={style}>
+    <StyledCard
+      onClick={onCardClick}
+      onContextMenu={onContextMenu}
+      style={style}
+    >
       <StyledCardImage>
         <StyledImage src={imageSrc} alt="Preview" />
       </StyledCardImage>

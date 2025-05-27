@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { Box, Typography, CircularProgress, Modal, IconButton, Menu, MenuItem } from '@mui/material';
+import {
+  Box,
+  Typography,
+  CircularProgress,
+  Modal,
+  IconButton,
+  Menu,
+  MenuItem,
+} from '@mui/material';
 import { motion } from 'framer-motion';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
@@ -34,9 +42,14 @@ export function PersonaModal({
   };
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedPersona, setSelectedPersona] = useState<PersonaCard | null>(null);
+  const [selectedPersona, setSelectedPersona] = useState<PersonaCard | null>(
+    null
+  );
 
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, persona: PersonaCard) => {
+  const handleMenuOpen = (
+    event: React.MouseEvent<HTMLElement>,
+    persona: PersonaCard
+  ) => {
     setAnchorEl(event.currentTarget);
     setSelectedPersona(persona);
   };

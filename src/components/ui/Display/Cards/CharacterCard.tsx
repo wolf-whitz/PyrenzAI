@@ -1,13 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { CharacterCardModal } from '@components';
 import { Character } from '@shared-types/CharacterProp';
-import {
-  Box,
-  Typography,
-  IconButton,
-  Tooltip,
-  Fade,
-} from '@mui/material';
+import { Box, Typography, IconButton, Tooltip, Fade } from '@mui/material';
 import MessageIcon from '@mui/icons-material/Message';
 import ShareIcon from '@mui/icons-material/Share';
 import PublicIcon from '@mui/icons-material/Public';
@@ -63,7 +57,11 @@ export function CharacterCard({ character, isOwner }: CharacterCardProps) {
             <img src={character.profile_image} alt={character.name} />
           </PyrenzCharacterCardImage>
           <PyrenzCharacterCardContent>
-            <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
               <PyrenzCharacterCardTitle>
                 {character.name}
               </PyrenzCharacterCardTitle>
@@ -84,7 +82,10 @@ export function CharacterCard({ character, isOwner }: CharacterCardProps) {
                       alert('Saved');
                     }}
                     aria-label={`Share ${character.name}`}
-                    sx={{ transition: 'color 0.2s', '&:hover': { color: 'blue' } }}
+                    sx={{
+                      transition: 'color 0.2s',
+                      '&:hover': { color: 'blue' },
+                    }}
                   >
                     <ShareIcon fontSize="small" />
                   </IconButton>
@@ -94,7 +95,10 @@ export function CharacterCard({ character, isOwner }: CharacterCardProps) {
 
             <PyrenzAltTag
               onClick={handleCreatorClick}
-              sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+              sx={{
+                cursor: 'pointer',
+                '&:hover': { textDecoration: 'underline' },
+              }}
             >
               @{character.creator}
             </PyrenzAltTag>
@@ -117,11 +121,13 @@ export function CharacterCard({ character, isOwner }: CharacterCardProps) {
                   Private
                 </PyrenzCharacterCardTag>
               )}
-              {character.tags?.slice(0, 10).map((tag, index) => (
-                <PyrenzCharacterCardTag key={index}>
-                  {tag}
-                </PyrenzCharacterCardTag>
-              ))}
+              {character.tags
+                ?.slice(0, 10)
+                .map((tag, index) => (
+                  <PyrenzCharacterCardTag key={index}>
+                    {tag}
+                  </PyrenzCharacterCardTag>
+                ))}
             </PyrenzCharacterCardTags>
           </PyrenzCharacterCardContent>
         </PyrenzCharacterCard>

@@ -2,7 +2,7 @@ import { Typography, Box } from '@mui/material';
 import { useCharacterStore } from '~/store';
 
 export function TokenSummary() {
-  const tokenTotal = useCharacterStore(state => state.token_total);
+  const tokenTotal = useCharacterStore((state) => state.token_total);
 
   return (
     <Box className="mt-4">

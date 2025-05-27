@@ -1,6 +1,9 @@
 import { Character } from '@shared-types/CharacterProp';
 import * as Sentry from '@sentry/react';
-import { fetchCharacters as fetchCharactersFunction, GetUserUUID } from '@components';
+import {
+  fetchCharacters as fetchCharactersFunction,
+  GetUserUUID,
+} from '@components';
 
 export const fetchCharacters = async (
   currentPage: number,
@@ -50,7 +53,7 @@ export const fetchCharacters = async (
     return {
       characters: formattedCharacters,
       total: data.total || 0,
-      isOwner: formattedCharacters.some(char => char.isOwner),
+      isOwner: formattedCharacters.some((char) => char.isOwner),
     };
   } catch (error) {
     if (error instanceof Error) {

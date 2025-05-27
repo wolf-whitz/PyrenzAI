@@ -33,7 +33,11 @@ interface User {
   icon?: string;
 }
 
-export function PreviewHeader({ setShowLogin, setShowRegister, user }: HeaderProps) {
+export function PreviewHeader({
+  setShowLogin,
+  setShowRegister,
+  user,
+}: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { t } = useTranslation();
@@ -134,7 +138,10 @@ export function PreviewHeader({ setShowLogin, setShowRegister, user }: HeaderPro
             <MuiStyledDrawer
               isOpen={menuOpen}
               onClose={() => setMenuOpen(false)}
-              profileData={{ name: user.username, avatarUrl: user.icon || '/path-to-avatar.jpg' }}
+              profileData={{
+                name: user.username,
+                avatarUrl: user.icon || '/path-to-avatar.jpg',
+              }}
             >
               <Box
                 sx={{ width: 250, backgroundColor: 'gray.900' }}

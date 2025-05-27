@@ -15,9 +15,16 @@ export function ChatMessages({
   setIsGenerating,
 }: ChatMessagesProps & {
   setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>;
-  onEditMessage?: (messageId: string, editedMessage: string, type: 'user' | 'char') => void;
+  onEditMessage?: (
+    messageId: string,
+    editedMessage: string,
+    type: 'user' | 'char'
+  ) => void;
 }) {
   const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
+  const [editingMessageType, setEditingMessageType] = useState<
+    'user' | 'char' | null
+  >(null);
   const [editedMessage, setEditedMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -27,14 +34,18 @@ export function ChatMessages({
       await speakMessage(text, char.gender as string, () => {
         setIsGenerating(false);
       });
-    } catch (error) {
-      console.error("Error speaking message:", error);
+    } catch {
       setIsGenerating(false);
     }
   };
 
-  const handleEditClick = (messageId: string, currentMessage: string) => {
+  const handleEditClick = (
+    messageId: string,
+    currentMessage: string,
+    type: 'user' | 'char'
+  ) => {
     setEditingMessageId(messageId);
+    setEditingMessageType(type);
     setEditedMessage(currentMessage);
   };
 
@@ -45,20 +56,27 @@ export function ChatMessages({
       setIsLoading(false);
     }
     setEditingMessageId(null);
+    setEditingMessageType(null);
   };
 
   const handleCancelEdit = () => {
     setEditingMessageId(null);
+    setEditingMessageType(null);
   };
 
   const defaultOnRegenerate = (messageId: string) => {};
   const defaultOnRemove = (messageId: string) => {};
-  const defaultOnEditMessage = (messageId: string, editedMessage: string, type: 'user' | 'char') => {};
+  const defaultOnEditMessage = (
+    messageId: string,
+    editedMessage: string,
+    type: 'user' | 'char'
+  ) => {};
 
   return (
     <Box className="space-y-4 p-4 max-w-2xl mx-auto">
       {previous_message.map((msg, index) => {
         const isUser = msg.type === 'user';
+
         const displayName = isUser
           ? msg.username || user.username
           : msg.character_name || char.character_name;
@@ -67,10 +85,9 @@ export function ChatMessages({
 
         return (
           <MessageBox
-            key={msg.id ? `${msg.id}-${index}` : `temp-${index}`}
+            key={`${msg.type}-${msg.id ?? `temp-${index}`}`}
             msg={msg}
             index={index}
-            isUser={isUser}
             displayName={displayName}
             icon={icon}
             isGenerating={isGenerating}
@@ -83,6 +100,7 @@ export function ChatMessages({
             handleSpeak={handleSpeak}
             setIsGenerating={setIsGenerating}
             editingMessageId={editingMessageId}
+            editingMessageType={editingMessageType}
             editedMessage={editedMessage}
             isLoading={isLoading}
             onEditClick={handleEditClick}

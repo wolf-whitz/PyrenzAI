@@ -1,9 +1,9 @@
-import { supabase } from '~/Utility/supabaseClient'
-import { Character } from '@shared-types/CharacterProp'
+import { supabase } from '~/Utility/supabaseClient';
+import { Character } from '@shared-types/CharacterProp';
 
 interface FetchCharactersResponse {
-  characters: Character[]
-  total: number
+  characters: Character[];
+  total: number;
 }
 
 export async function fetchCharacters(
@@ -13,28 +13,28 @@ export async function fetchCharacters(
   itemsPerPage: number = 10
 ): Promise<FetchCharactersResponse> {
   if (requestType !== 'character') {
-    throw new Error(`Invalid request_type: ${requestType}`)
+    throw new Error(`Invalid request_type: ${requestType}`);
   }
 
-  const { data, error } = await supabase.rpc('weighted_character_sample')
+  const { data, error } = await supabase.rpc('weighted_character_sample');
 
   if (error) {
-    throw new Error(`RPC error: ${error.message}`)
+    throw new Error(`RPC error: ${error.message}`);
   }
 
-  const uniqueMap = new Map<string, Character>()
+  const uniqueMap = new Map<string, Character>();
   data.forEach((char: Character) => {
     if (!uniqueMap.has(char.id)) {
-      uniqueMap.set(char.id, char)
+      uniqueMap.set(char.id, char);
     }
-  })
+  });
 
   const characters = Array.from(uniqueMap.values())
     .sort((a, b) => b.chat_messages_count - a.chat_messages_count)
-    .slice(0, itemsPerPage)
+    .slice(0, itemsPerPage);
 
   return {
     characters,
     total: characters.length,
-  }
+  };
 }

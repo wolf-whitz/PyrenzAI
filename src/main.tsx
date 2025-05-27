@@ -90,9 +90,9 @@ createRoot(document.getElementById('root')!).render(
         <CssBaseline />
         <SentryProvider>
           <AlertProvider>
-          <ErrorBoundary>
-            <Main />
-          </ErrorBoundary>
+            <ErrorBoundary>
+              <Main />
+            </ErrorBoundary>
           </AlertProvider>
         </SentryProvider>
         <Analytics />

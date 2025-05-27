@@ -1,9 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Modal,
-  Box,
-  Typography,
-} from '@mui/material';
+import { Modal, Box, Typography } from '@mui/material';
 import { Textarea } from '@components';
 import { supabase } from '~/Utility/supabaseClient';
 import { GetUserUUID } from '~/components/functions';
@@ -15,28 +11,29 @@ interface CreateProviderModalProps {
   onClose: () => void;
 }
 
-export function CreateProviderModal({ open, onClose }: CreateProviderModalProps) {
+export function CreateProviderModal({
+  open,
+  onClose,
+}: CreateProviderModalProps) {
   const [providerName, setProviderName] = useState('');
   const [providerApiLink, setProviderApiLink] = useState('');
   const [providerWebsite, setProviderWebsite] = useState('');
   const [providerDescription, setProviderDescription] = useState('');
-  const showAlert  = usePyrenzAlert();
+  const showAlert = usePyrenzAlert();
 
   const handleSubmit = async () => {
     const userUUID = await GetUserUUID();
 
     try {
-      const { data, error } = await supabase
-        .from('providers')
-        .insert([
-          {
-            provider_name: providerName,
-            provider_api_link: providerApiLink,
-            provider_website: providerWebsite,
-            provider_description: providerDescription,
-            user_uuid: userUUID,
-          },
-        ]);
+      const { data, error } = await supabase.from('providers').insert([
+        {
+          provider_name: providerName,
+          provider_api_link: providerApiLink,
+          provider_website: providerWebsite,
+          provider_description: providerDescription,
+          user_uuid: userUUID,
+        },
+      ]);
 
       if (error) {
         throw error;
@@ -58,19 +55,25 @@ export function CreateProviderModal({ open, onClose }: CreateProviderModalProps)
       aria-labelledby="create-provider-modal-title"
       aria-describedby="create-provider-modal-description"
     >
-      <Box sx={{
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: 400,
-        maxHeight: '80vh',
-        bgcolor: 'background.paper',
-        boxShadow: 24,
-        p: 4,
-        overflowY: 'auto',
-      }}>
-        <Typography id="create-provider-modal-title" variant="h6" component="h2">
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 400,
+          maxHeight: '80vh',
+          bgcolor: 'background.paper',
+          boxShadow: 24,
+          p: 4,
+          overflowY: 'auto',
+        }}
+      >
+        <Typography
+          id="create-provider-modal-title"
+          variant="h6"
+          component="h2"
+        >
           Create New Provider
         </Typography>
         <Box sx={{ mt: 2 }}>
@@ -99,7 +102,11 @@ export function CreateProviderModal({ open, onClose }: CreateProviderModalProps)
           <PyrenzBlueButton onClick={onClose} sx={{ mr: 1 }}>
             Cancel
           </PyrenzBlueButton>
-          <PyrenzBlueButton variant="contained" color="primary" onClick={handleSubmit}>
+          <PyrenzBlueButton
+            variant="contained"
+            color="primary"
+            onClick={handleSubmit}
+          >
             Submit
           </PyrenzBlueButton>
         </Box>

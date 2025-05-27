@@ -1,5 +1,10 @@
 import { Box } from '@mui/material';
-import { PyrenzFormControl, PyrenzOutlinedInput, PyrenzInputLabel, PyrenzBlueButton } from '~/theme';
+import {
+  PyrenzFormControl,
+  PyrenzOutlinedInput,
+  PyrenzInputLabel,
+  PyrenzBlueButton,
+} from '~/theme';
 
 interface Provider {
   provider_name: string;

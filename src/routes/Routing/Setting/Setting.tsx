@@ -14,8 +14,10 @@ import {
 } from '@mui/material';
 import { PyrenzBlueButton } from '~/theme';
 
-const lazyNamed = <T,>(factory: () => Promise<{ [key: string]: T }>, name: string) =>
-  lazy(() => factory().then((mod) => ({ default: (mod as any)[name] })));
+const lazyNamed = <T,>(
+  factory: () => Promise<{ [key: string]: T }>,
+  name: string
+) => lazy(() => factory().then((mod) => ({ default: (mod as any)[name] })));
 
 const tabs = ['account', 'profile', 'persona'] as const;
 const tabComponents = {
@@ -53,20 +55,29 @@ export function Setting() {
         <Tab
           key={tab}
           value={tab}
-          label={<PyrenzBlueButton>{tab[0].toUpperCase() + tab.slice(1)}</PyrenzBlueButton>}
+          label={
+            <PyrenzBlueButton>
+              {tab[0].toUpperCase() + tab.slice(1)}
+            </PyrenzBlueButton>
+          }
         />
       ));
 
-      const mutableTabs = [...tabs]
+    const mutableTabs = [...tabs];
 
-      const chunkedTabs =
-        isMobile ? [mutableTabs.slice(0, 2), mutableTabs.slice(2)] :
-        isMedium ? [mutableTabs.slice(0, 3), mutableTabs.slice(3)] :
-        [mutableTabs]
-      
+    const chunkedTabs = isMobile
+      ? [mutableTabs.slice(0, 2), mutableTabs.slice(2)]
+      : isMedium
+        ? [mutableTabs.slice(0, 3), mutableTabs.slice(3)]
+        : [mutableTabs];
 
     return (
-      <Box display="flex" flexDirection="column" alignItems="center" width="100%">
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        width="100%"
+      >
         {chunkedTabs.map((chunk, i) => (
           <Tabs
             key={i}
@@ -88,11 +99,22 @@ export function Setting() {
   return (
     <Box display="flex">
       <Sidebar />
-      <Box flexGrow={1} p={3} display="flex" flexDirection="column" alignItems="center">
+      <Box
+        flexGrow={1}
+        p={3}
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+      >
         {renderTabs()}
         <Suspense
           fallback={
-            <Box display="flex" justifyContent="center" alignItems="center" minHeight="300px">
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              minHeight="300px"
+            >
               <CircularProgress />
             </Box>
           }
@@ -107,11 +129,21 @@ export function Setting() {
           >
             <Box maxWidth="md" width="100%">
               {loading ? (
-                <Box display="flex" justifyContent="center" alignItems="center" minHeight="300px">
+                <Box
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                  minHeight="300px"
+                >
                   <CircularProgress />
                 </Box>
               ) : !user && activeTab === 'account' ? (
-                <Box display="flex" justifyContent="center" alignItems="center" minHeight="300px">
+                <Box
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                  minHeight="300px"
+                >
                   <Typography variant="h6" color="textSecondary">
                     Please log in to access your account settings.
                   </Typography>

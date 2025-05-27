@@ -1,6 +1,12 @@
 import React, { useRef, useState } from 'react';
 import { ChatContainerProps, Message } from '@shared-types/chatTypes';
-import { SettingsSidebar, AdModal, ChatMessages, ChatInput, ChatHeader } from '@components';
+import {
+  SettingsSidebar,
+  AdModal,
+  ChatMessages,
+  ChatInput,
+  ChatHeader,
+} from '@components';
 import { useChatPageAPI } from '@api';
 import { Fade, Slide, Box } from '@mui/material';
 
@@ -87,7 +93,7 @@ export function ChatMain({
             isGenerating={isGenerating}
             onRemove={handleRemoveMessage}
             onRegenerate={handleRegenerateMessage}
-            onEditMessage={handleEditMessage} 
+            onEditMessage={handleEditMessage}
             setIsGenerating={setIsGenerating}
           />
           <div ref={messagesEndRef}></div>
@@ -107,9 +113,15 @@ export function ChatMain({
           </Box>
         </Slide>
 
-        <SettingsSidebar settingsOpen={isSettingsOpen} onClose={toggleSettings} />
+        <SettingsSidebar
+          settingsOpen={isSettingsOpen}
+          onClose={toggleSettings}
+        />
 
-        <AdModal isOpen={isAdModalOpen} onClose={() => setIsAdModalOpen(false)} />
+        <AdModal
+          isOpen={isAdModalOpen}
+          onClose={() => setIsAdModalOpen(false)}
+        />
       </Box>
     </Fade>
   );

@@ -1,7 +1,6 @@
 import { supabase } from '~/Utility/supabaseClient';
 import { Character } from '@shared-types/CharacterProp';
 
-
 export async function GetLatestCharacters(
   type: string,
   maxCharacter: number,

@@ -104,7 +104,9 @@ export function CharacterCardModal({
 
   const handleEditCharacter = () => {
     if (character) {
-      navigate(`/create/${character.char_uuid}`, { state: { character, isOwner } });
+      navigate(`/create/${character.char_uuid}`, {
+        state: { character, isOwner },
+      });
     }
   };
 
@@ -187,15 +189,9 @@ export function CharacterCardModal({
                   className="flex-1"
                   onClick={handleChatNow}
                   disabled={isLoading}
-                  startIcon={
-                    isLoading ? <CircularProgress size={24} /> : null
-                  }
+                  startIcon={isLoading ? <CircularProgress size={24} /> : null}
                 >
-                  {isLoading ? (
-                    <ShimmerText line={1} gap={10} />
-                  ) : (
-                    'Chat Now'
-                  )}
+                  {isLoading ? <ShimmerText line={1} gap={10} /> : 'Chat Now'}
                 </Button>
                 <Box className="flex items-center gap-1 ml-4">
                   <MessageIcon fontSize="small" className="text-white" />

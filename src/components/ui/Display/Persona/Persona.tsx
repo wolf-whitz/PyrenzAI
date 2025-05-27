@@ -21,7 +21,9 @@ interface PersonaData {
 
 export function Persona() {
   const [isModalOpen, setModalOpen] = useState(false);
-  const [selectedPersona, setSelectedPersona] = useState<PersonaCard | null>(null);
+  const [selectedPersona, setSelectedPersona] = useState<PersonaCard | null>(
+    null
+  );
   const [personaData, setPersonaData] = useState<PersonaCard[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -30,7 +32,9 @@ export function Persona() {
     try {
       const { data, error } = await supabase
         .from('personas')
-        .select('id, persona_name, persona_description, persona_profile, is_selected');
+        .select(
+          'id, persona_name, persona_description, persona_profile, is_selected'
+        );
 
       if (error) {
         throw error;

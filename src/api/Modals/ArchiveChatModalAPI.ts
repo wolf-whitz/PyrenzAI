@@ -92,7 +92,7 @@ export const useArchiveChatModalAPI = (open: boolean, onClose: () => void) => {
     if (error) {
       console.error('Error deleting chat:', error);
     } else {
-      setChats(chats.filter(chat => chat.chat_uuid !== chatUuid));
+      setChats(chats.filter((chat) => chat.chat_uuid !== chatUuid));
     }
   };
 

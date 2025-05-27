@@ -96,7 +96,10 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
         maxLength={50}
       />
 
-      <ImageUploader onImageSelect={handleImageSelect} initialImage={imageBlobUrl} />
+      <ImageUploader
+        onImageSelect={handleImageSelect}
+        initialImage={imageBlobUrl}
+      />
 
       <Textarea
         name="description"

@@ -103,25 +103,28 @@ export const useChatPageAPI = (
   };
   const handleRegenerateMessage = async (messageId: string) => {
     if (!messageId) return;
-  
     try {
       const baseId = messageId.split('-')[0];
-  
+
       const userMessage = previous_message.find(
         (msg) => msg.id && msg.id.startsWith(baseId) && msg.type === 'user'
       );
-  
+
       if (!userMessage) return;
-  
+
       await handleRemoveMessage(messageId);
-  
+
       await handleSend(userMessage.text);
     } catch (error) {
       console.error('Error regenerating message:', error);
     }
   };
-  
-  const handleEditMessage = async (messageId: string, editedMessage: string, type: 'user' | 'char') => {
+
+  const handleEditMessage = async (
+    messageId: string,
+    editedMessage: string,
+    type: 'user' | 'char'
+  ) => {
     if (!messageId || !editedMessage) return;
 
     try {

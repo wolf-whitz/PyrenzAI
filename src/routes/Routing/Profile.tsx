@@ -6,7 +6,7 @@ import {
   CharacterCard,
   UserProfileHeader,
   GetUserCreatedCharacters,
-  MobileNav
+  MobileNav,
 } from '@components';
 import { Box, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { Character } from '@shared-types/CharacterProp';
@@ -60,7 +60,7 @@ export function ProfilePage() {
               md: 'repeat(3, 1fr)',
               lg: 'repeat(4, 1fr)',
               xl: 'repeat(5, 1fr)',
-              xxl: 'repeat(6, 1fr)'
+              xxl: 'repeat(6, 1fr)',
             }}
             gap={6}
             pb={4}

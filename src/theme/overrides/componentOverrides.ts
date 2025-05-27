@@ -1,4 +1,5 @@
-const getIsDarkMode = () => document.documentElement.classList.contains('theme-dark');
+const getIsDarkMode = () =>
+  document.documentElement.classList.contains('theme-dark');
 
 export const componentOverrides = {
   values: {

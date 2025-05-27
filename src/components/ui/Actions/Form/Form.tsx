@@ -105,7 +105,11 @@ export function FormActions({
       >
         Import Character
       </PyrenzBlueButton>
-      <CreateButton loading={loading} className="w-full sm:w-auto" character_update={character_update} />
+      <CreateButton
+        loading={loading}
+        className="w-full sm:w-auto"
+        character_update={character_update}
+      />
       {isDraftModalOpen && (
         <DraftsModal onClose={handleCloseDraftModal} onSelect={onSelectDraft} />
       )}
@@ -124,7 +128,14 @@ export function FormActions({
           component="button"
           variant="body1"
           onClick={handleGuideClick}
-          style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'inherit', textDecoration: 'underline' }}
+          style={{
+            background: 'none',
+            border: 'none',
+            padding: 0,
+            cursor: 'pointer',
+            color: 'inherit',
+            textDecoration: 'underline',
+          }}
         >
           Not sure where to start? Check out our starter guide! ദ്ദി(ᵔᗜᵔ)
         </Link>

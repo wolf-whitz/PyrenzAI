@@ -3,7 +3,13 @@ import { motion } from 'framer-motion';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useChatStore } from '~/store';
 import { fetchChatData } from '@api';
-import { Sidebar, ChatContainer, PreviousChat, GetUserUUID, GetUserData} from '@components';
+import {
+  Sidebar,
+  ChatContainer,
+  PreviousChat,
+  GetUserUUID,
+  GetUserData,
+} from '@components';
 import { Box, CircularProgress, Typography } from '@mui/material';
 
 interface PersonaResponse {

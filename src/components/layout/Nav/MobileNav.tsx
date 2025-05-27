@@ -9,9 +9,13 @@ import MessageSquareIcon from '@mui/icons-material/Message';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useNavigate } from 'react-router-dom';
 import { ArchiveModal } from '@components';
- type SetShowLoginModal = (show: boolean) => void;
+type SetShowLoginModal = (show: boolean) => void;
 
-export function MobileNav({ setShowLoginModal }: { setShowLoginModal: SetShowLoginModal }) {
+export function MobileNav({
+  setShowLoginModal,
+}: {
+  setShowLoginModal: SetShowLoginModal;
+}) {
   const { t } = useTranslation();
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [showArchiveModal, setShowArchiveModal] = useState(false);
@@ -51,7 +55,10 @@ export function MobileNav({ setShowLoginModal }: { setShowLoginModal: SetShowLog
 
   return (
     <>
-      <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50 }} elevation={3}>
+      <Paper
+        sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50 }}
+        elevation={3}
+      >
         <BottomNavigation showLabels>
           {menuItems.map((item) => (
             <BottomNavigationAction
@@ -60,10 +67,9 @@ export function MobileNav({ setShowLoginModal }: { setShowLoginModal: SetShowLog
               icon={item.icon}
               onClick={() => {
                 if (
-                  [
-                    t('navigation.settings'),
-                    t('navigation.create'),
-                  ].includes(item.name) &&
+                  [t('navigation.settings'), t('navigation.create')].includes(
+                    item.name
+                  ) &&
                   !user
                 ) {
                   setShowLoginModal(true);

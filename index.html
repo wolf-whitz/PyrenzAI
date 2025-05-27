@@ -196,16 +196,17 @@
     <link rel="preconnect" href="https://us-assets.i.posthog.com" />
     <link rel="preconnect" href="https://cqtbishpefnfvaxheyqu.supabase.co" />
   </head>
-  <body onload="
+  <body
+    onload="
         const t = Date.now() - window.__PAGE_START_TIME__;
         console.log('I am alive! Page load time (s):', (t / 1000).toFixed(1));
-">
-
+"
+  >
     <!-- Entry Point -->
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     <!-- Entry Point End -->
-     
+
     <!-- JSONLD -->
     <script type="application/ld+json">
       {

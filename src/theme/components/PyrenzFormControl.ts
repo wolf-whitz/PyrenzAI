@@ -1,4 +1,9 @@
-import { FormControl, InputLabel, OutlinedInput as MuiOutlinedInput, styled } from '@mui/material';
+import {
+  FormControl,
+  InputLabel,
+  OutlinedInput as MuiOutlinedInput,
+  styled,
+} from '@mui/material';
 
 export const PyrenzFormControl = styled(FormControl)({
   '& .MuiOutlinedInput-root': {

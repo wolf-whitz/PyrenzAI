@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TypingIndicator, CustomMarkdown } from '@components';
 import { Box, Avatar, IconButton, TextField } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
@@ -8,25 +8,35 @@ import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import EditIcon from '@mui/icons-material/Edit';
 import { PyrenzMessageBox, PyrenzBlueButton } from '~/theme';
 
+import type { Message } from '@shared-types/ChatmainTypes';
+
 interface MessageBoxProps {
-  msg: any;
+  msg: Message;
   index: number;
-  isUser: boolean;
   displayName: string;
   icon: string;
   isGenerating: boolean;
   isLastMessage: boolean;
-  user: any;
-  char: any;
+  user: { username: string };
+  char: { character_name: string; gender?: string };
   onRegenerate: (messageId: string) => void;
   onRemove: (messageId: string) => void;
-  onEditMessage: (messageId: string, editedMessage: string, type: 'user' | 'char') => void;
+  onEditMessage: (
+    messageId: string,
+    editedMessage: string,
+    type: 'user' | 'char'
+  ) => void;
   handleSpeak: (text: string) => void;
   setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>;
   editingMessageId: string | null;
+  editingMessageType: 'user' | 'char' | null;
   editedMessage: string;
   isLoading: boolean;
-  onEditClick: (messageId: string, currentMessage: string) => void;
+  onEditClick: (
+    messageId: string,
+    currentMessage: string,
+    type: 'user' | 'char'
+  ) => void;
   onSaveEdit: (messageId: string, type: 'user' | 'char') => void;
   onCancelEdit: () => void;
   setEditedMessage: (message: string) => void;
@@ -35,7 +45,6 @@ interface MessageBoxProps {
 export const MessageBox: React.FC<MessageBoxProps> = ({
   msg,
   index,
-  isUser,
   displayName,
   icon,
   isGenerating,
@@ -44,8 +53,11 @@ export const MessageBox: React.FC<MessageBoxProps> = ({
   char,
   onRegenerate,
   onRemove,
+  onEditMessage,
   handleSpeak,
+  setIsGenerating,
   editingMessageId,
+  editingMessageType,
   editedMessage,
   isLoading,
   onEditClick,
@@ -53,7 +65,13 @@ export const MessageBox: React.FC<MessageBoxProps> = ({
   onCancelEdit,
   setEditedMessage,
 }) => {
-  const isFirstMessage = index === 0; 
+  const isUser = msg.type === 'user';
+  const isAssistant = msg.type === 'assistant';
+  const isFirstMessage = index === 0;
+
+  const isEditingThisMessage =
+    editingMessageId === msg.id &&
+    editingMessageType === (isUser ? 'user' : 'char');
 
   return (
     <Box
@@ -63,7 +81,7 @@ export const MessageBox: React.FC<MessageBoxProps> = ({
       justifyContent={isUser ? 'flex-end' : 'flex-start'}
       className={`flex items-start ${isUser ? 'justify-end' : 'justify-start'}`}
     >
-      {!isUser && (
+      {isAssistant && (
         <Avatar
           alt={displayName}
           src={icon}
@@ -73,15 +91,14 @@ export const MessageBox: React.FC<MessageBoxProps> = ({
       )}
 
       {isUser && !isFirstMessage && (
-        <Box display="flex" flexDirection="column" mr={isUser ? 1 : 0} ml={!isUser ? 1 : 0}>
-          <IconButton
-            onClick={() => onRemove && msg.id && onRemove(msg.id)}
-            size="small"
-          >
+        <Box display="flex" flexDirection="column" mr={1}>
+          <IconButton onClick={() => msg.id && onRemove(msg.id)} size="small">
             <DeleteIcon />
           </IconButton>
           <IconButton
-            onClick={() => msg.id && onEditClick(msg.id, msg.text || '')}
+            onClick={() =>
+              msg.id && onEditClick(msg.id, msg.text || '', 'user')
+            }
             size="small"
           >
             <EditIcon />
@@ -90,11 +107,13 @@ export const MessageBox: React.FC<MessageBoxProps> = ({
       )}
 
       <PyrenzMessageBox
-        sx={{ marginLeft: !isUser ? 2 : 0, marginRight: isUser ? 2 : 0 }}
+        sx={{ marginLeft: isAssistant ? 2 : 0, marginRight: isUser ? 2 : 0 }}
         className={isUser ? 'user' : 'other'}
       >
-        {isGenerating && !isUser && isLastMessage && !msg.text && <TypingIndicator />}
-        {editingMessageId === msg.id ? (
+        {isGenerating && isAssistant && isLastMessage && !msg.text && (
+          <TypingIndicator />
+        )}
+        {isEditingThisMessage ? (
           <Box display="flex" flexDirection="column">
             <TextField
               value={editedMessage}
@@ -103,25 +122,24 @@ export const MessageBox: React.FC<MessageBoxProps> = ({
             />
             <Box display="flex" justifyContent="space-between" mt={1}>
               <PyrenzBlueButton
-                onClick={() => msg.id && onSaveEdit(msg.id, isUser ? 'user' : 'char')}
+                onClick={() =>
+                  msg.id && onSaveEdit(msg.id, isUser ? 'user' : 'char')
+                }
                 disabled={isLoading}
               >
                 {isLoading ? 'Saving...' : 'Submit'}
               </PyrenzBlueButton>
-              <PyrenzBlueButton
-                onClick={onCancelEdit}
-                disabled={isLoading}
-              >
+              <PyrenzBlueButton onClick={onCancelEdit} disabled={isLoading}>
                 Cancel
               </PyrenzBlueButton>
             </Box>
           </Box>
         ) : (
-          <CustomMarkdown text={msg.text} user={user} char={char} />
+          <CustomMarkdown text={msg.text || ''} user={user} char={char} />
         )}
       </PyrenzMessageBox>
 
-      {!isUser && !isGenerating && !isFirstMessage && ( 
+      {isAssistant && !isGenerating && !isFirstMessage && (
         <Box display="flex" flexDirection="column" ml={1}>
           <IconButton
             onClick={() => msg.id && onRegenerate(msg.id)}
@@ -129,22 +147,20 @@ export const MessageBox: React.FC<MessageBoxProps> = ({
           >
             <RefreshIcon />
           </IconButton>
-          <IconButton
-            onClick={() => onRemove && msg.id && onRemove(msg.id)}
-            size="small"
-          >
+          <IconButton onClick={() => msg.id && onRemove(msg.id)} size="small">
             <DeleteIcon />
           </IconButton>
-          <IconButton
-            onClick={() => handleSpeak(msg.text || '')}
-            size="small"
-          >
+          <IconButton onClick={() => handleSpeak(msg.text || '')} size="small">
             <VolumeUpIcon />
           </IconButton>
           <IconButton
-            onClick={() => msg.id && onEditClick(msg.id, msg.text || '')}
+            onClick={() =>
+              msg.id && onEditClick(msg.id, msg.text || '', 'char')
+            }
             size="small"
           >
+            {' '}
+            {/* pass 'char' */}
             <EditIcon />
           </IconButton>
         </Box>

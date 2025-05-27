@@ -1,4 +1,10 @@
-import { GetUserUUID, CreateNewChat, createCharacter, updateCharacter, handleSaveDraft } from '@components';
+import {
+  GetUserUUID,
+  CreateNewChat,
+  createCharacter,
+  updateCharacter,
+  handleSaveDraft,
+} from '@components';
 import { useState, useEffect } from 'react';
 import { useCharacterStore } from '~/store';
 import { supabase } from '~/Utility/supabaseClient';
@@ -6,7 +12,10 @@ import * as Sentry from '@sentry/react';
 import { CharacterData, Draft } from '@shared-types/CharacterProp';
 import { usePyrenzAlert } from '~/provider';
 
-export const useCreateAPI = (navigate: (path: string) => void, character_update: boolean) => {
+export const useCreateAPI = (
+  navigate: (path: string) => void,
+  character_update: boolean
+) => {
   const [loading, setLoading] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
   const [showRequiredFieldsPopup, setShowRequiredFieldsPopup] = useState(false);
@@ -36,7 +45,9 @@ export const useCreateAPI = (navigate: (path: string) => void, character_update:
 
   const tags = Array.isArray(characterData.tags)
     ? characterData.tags
-    : (characterData.tags as string).split(',').map((tag: string) => tag.trim());
+    : (characterData.tags as string)
+        .split(',')
+        .map((tag: string) => tag.trim());
 
   const fetchUserName = async (userUuid: string): Promise<string> => {
     const { data, error } = await supabase
@@ -126,7 +137,7 @@ export const useCreateAPI = (navigate: (path: string) => void, character_update:
 
   const handleSelectDraft = (draft: Draft) => {
     setCharacterData({
-      ...character
+      ...character,
     });
   };
 
@@ -136,11 +147,14 @@ export const useCreateAPI = (navigate: (path: string) => void, character_update:
       return;
     }
 
-    setCharacterData({...data});
+    setCharacterData({ ...data });
     console.log('Character Uploaded', useCharacterStore.getState());
   };
 
-  const handleSubmit = async (e: React.FormEvent, character_update: boolean) => {
+  const handleSubmit = async (
+    e: React.FormEvent,
+    character_update: boolean
+  ) => {
     e.preventDefault();
     setLoading(true);
 
@@ -150,13 +164,16 @@ export const useCreateAPI = (navigate: (path: string) => void, character_update:
       characterData.scenario,
       characterData.description,
       characterData.first_message,
-      characterData.gender
+      characterData.gender,
     ];
 
-    const isValid = fieldsToCheck.every(field => field && field.length >= 5);
+    const isValid = fieldsToCheck.every((field) => field && field.length >= 5);
 
     if (!isValid) {
-      showAlert('Each field must be at least 25 characters long. (Excluding tags)', 'Alert');
+      showAlert(
+        'Each field must be at least 25 characters long. (Excluding tags)',
+        'Alert'
+      );
       setLoading(false);
       return;
     }
@@ -202,9 +219,13 @@ export const useCreateAPI = (navigate: (path: string) => void, character_update:
             }
           }
         } else {
-          console.error('Character created/updated but no character UUID returned.');
+          console.error(
+            'Character created/updated but no character UUID returned.'
+          );
           Sentry.captureException(
-            new Error('Character created/updated but no character UUID returned.')
+            new Error(
+              'Character created/updated but no character UUID returned.'
+            )
           );
         }
       }
@@ -217,7 +238,7 @@ export const useCreateAPI = (navigate: (path: string) => void, character_update:
   };
 
   const formState = {
-    ...character
+    ...character,
   };
 
   return {

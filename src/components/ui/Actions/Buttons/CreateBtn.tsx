@@ -10,7 +10,11 @@ interface CreateButtonProps {
   character_update: boolean;
 }
 
-export function CreateButton({ loading, className, character_update }: CreateButtonProps) {
+export function CreateButton({
+  loading,
+  className,
+  character_update,
+}: CreateButtonProps) {
   return (
     <PyrenzBlueButton
       type="submit"

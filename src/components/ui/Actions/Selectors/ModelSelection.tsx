@@ -1,5 +1,9 @@
 import { MenuItem, Select, Box } from '@mui/material';
-import { PyrenzFormControl, PyrenzOutlinedInput, PyrenzInputLabel } from '~/theme';
+import {
+  PyrenzFormControl,
+  PyrenzOutlinedInput,
+  PyrenzInputLabel,
+} from '~/theme';
 
 interface ModelSelectionProps {
   preferredModel: string;

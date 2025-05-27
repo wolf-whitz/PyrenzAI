@@ -76,9 +76,7 @@ export function Auth() {
             <Box className="text-white animate-pulse flex items-center mb-6">
               <CircularProgress size={24} className="mr-2" />
               <Typography>{t('messages.loadingCaptcha')}</Typography>
-              <span className="sr-only">
-                Loading CAPTCHA, please wait.
-              </span>
+              <span className="sr-only">Loading CAPTCHA, please wait.</span>
             </Box>
           )}
           <Typography

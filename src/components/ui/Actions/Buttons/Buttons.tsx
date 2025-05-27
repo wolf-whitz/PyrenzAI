@@ -54,7 +54,7 @@ export function CustomButton({ onButtonClick }: CustomButtonProps) {
                 btn.type,
                 btn.max_character,
                 btn.page,
-                btn.tag as string 
+                btn.tag as string
               )
             }
             data-state={loading ? 'loading' : undefined}

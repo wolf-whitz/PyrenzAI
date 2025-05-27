@@ -3,7 +3,7 @@ import { CircularProgress, Modal, IconButton, Typography } from '@mui/material';
 import { useArchiveChatModalAPI } from '@api';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { PyrenzChatsCharacterCard } from '~/theme'; 
+import { PyrenzChatsCharacterCard } from '~/theme';
 
 interface ArchiveModalProps {
   open: boolean;
@@ -23,10 +23,12 @@ export function ArchiveModal({ open, onClose }: ArchiveModalProps) {
     handleDeleteChat,
   } = useArchiveChatModalAPI(open, onClose);
 
- 
   return (
     <Modal open={open} onClose={onClose}>
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black p-4 rounded-lg shadow-lg max-h-screen overflow-y-auto" style={{ width: 'auto', maxWidth: '400px' }}>
+      <div
+        className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black p-4 rounded-lg shadow-lg max-h-screen overflow-y-auto"
+        style={{ width: 'auto', maxWidth: '400px' }}
+      >
         <div>
           {isLoading ? (
             <div className="flex justify-center items-center">
@@ -42,9 +44,7 @@ export function ArchiveModal({ open, onClose }: ArchiveModalProps) {
             <>
               {chats.slice(currentPage * 5, currentPage * 5 + 5).map((chat) => (
                 <div key={chat.chat_uuid}>
-                  <div
-                    className="cursor-pointer mb-4"
-                  >
+                  <div className="cursor-pointer mb-4">
                     <PyrenzChatsCharacterCard
                       imageSrc={chat.preview_image}
                       characterName={characters[chat.char_uuid]}
@@ -59,13 +59,19 @@ export function ArchiveModal({ open, onClose }: ArchiveModalProps) {
                 </div>
               ))}
               <div className="flex justify-between mt-4">
-                <IconButton onClick={goToPreviousPage} disabled={currentPage === 0}>
+                <IconButton
+                  onClick={goToPreviousPage}
+                  disabled={currentPage === 0}
+                >
                   <ChevronLeftIcon />
                 </IconButton>
                 <span>
                   Page {currentPage + 1} of {totalPages}
                 </span>
-                <IconButton onClick={goToNextPage} disabled={currentPage === totalPages - 1}>
+                <IconButton
+                  onClick={goToNextPage}
+                  disabled={currentPage === totalPages - 1}
+                >
                   <ChevronRightIcon />
                 </IconButton>
               </div>

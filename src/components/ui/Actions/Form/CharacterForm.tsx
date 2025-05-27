@@ -72,7 +72,9 @@ export function CharacterForm({ character_update }: CharacterFormProps) {
   }, [characterData]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value, type } = e.target;
 
@@ -84,10 +86,15 @@ export function CharacterForm({ character_update }: CharacterFormProps) {
   };
 
   const handleFormChange = (
-    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    event: ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value, type } = event.target;
-    const checked = type === 'checkbox' ? (event.target as HTMLInputElement).checked : undefined;
+    const checked =
+      type === 'checkbox'
+        ? (event.target as HTMLInputElement).checked
+        : undefined;
 
     setFormState((prevState) => ({
       ...prevState,

@@ -50,7 +50,7 @@ export function PersonaCard({
   };
 
   const handleEdit = () => {
-    onEdit(id); 
+    onEdit(id);
     handleMenuClose();
   };
 
@@ -104,7 +104,7 @@ export function PersonaCard({
         }}
       >
         <MenuItem onClick={handleSelect}>Select</MenuItem>
-        <MenuItem onClick={handleEdit}>Edit</MenuItem> 
+        <MenuItem onClick={handleEdit}>Edit</MenuItem>
         <MenuItem onClick={handleDelete}>Delete</MenuItem>
       </Menu>
     </div>

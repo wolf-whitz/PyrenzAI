@@ -29,11 +29,13 @@ export const sendUserDataToUserDataTable = async (user: AppUser) => {
 
     if (userError) throw userError;
 
-    const { data: emailData, error: emailError } = await supabase
-      .rpc('insert_email', {
+    const { data: emailData, error: emailError } = await supabase.rpc(
+      'insert_email',
+      {
         p_user_uuid: user.id,
         p_email: user.email,
-      });
+      }
+    );
 
     if (emailError) throw emailError;
 
@@ -90,7 +92,7 @@ export const handleSignUp = async (
   password: string,
   isAdult: boolean
 ) => {
-  const showAlert = usePyrenzAlert(); 
+  const showAlert = usePyrenzAlert();
 
   try {
     if (!isAdult) {

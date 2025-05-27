@@ -59,7 +59,7 @@ export function CreatePersonaModal({
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      'image/*': ['.jpeg', '.jpg', '.png', '.gif']
+      'image/*': ['.jpeg', '.jpg', '.png', '.gif'],
     },
     maxSize: 1024 * 1024,
     onDropRejected: (fileRejections) => {
@@ -73,7 +73,7 @@ export function CreatePersonaModal({
           }
         });
       });
-    }
+    },
   });
 
   return (

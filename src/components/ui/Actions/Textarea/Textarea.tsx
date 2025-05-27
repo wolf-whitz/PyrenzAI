@@ -93,11 +93,7 @@ export function Textarea({
       transition={{ duration: 0.5 }}
     >
       <div className="flex justify-between items-center mb-1">
-        <Typography
-          variant="body1"
-          component="label"
-          className="text-white"
-        >
+        <Typography variant="body1" component="label" className="text-white">
           {label}
         </Typography>
         {showTokenizer && (

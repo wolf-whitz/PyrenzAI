@@ -8,7 +8,7 @@ import {
   SliderComponent,
   ProviderModals,
   GetUserUUID,
-  GetUserData
+  GetUserData,
 } from '@components';
 import InfoIcon from '@mui/icons-material/Info';
 import BuildIcon from '@mui/icons-material/Build';
@@ -91,7 +91,10 @@ export function Customization() {
         }
       } catch (error) {
         Sentry.captureException(error);
-        showAlert('Error fetching model identifier. Please try again.', 'Alert');
+        showAlert(
+          'Error fetching model identifier. Please try again.',
+          'Alert'
+        );
       }
     };
 
@@ -145,7 +148,7 @@ export function Customization() {
         throw error;
       }
 
-      showAlert('Customization data submitted successfully!', 'Success'); 
+      showAlert('Customization data submitted successfully!', 'Success');
     } catch (error) {
       Sentry.captureException(error);
       showAlert('Error submitting data. Please try again.', 'Alert');
@@ -179,7 +182,13 @@ export function Customization() {
         </Box>
       )}
 
-      <Box border={1} borderColor="grey.300" borderRadius={2} p={2} boxShadow={1}>
+      <Box
+        border={1}
+        borderColor="grey.300"
+        borderRadius={2}
+        p={2}
+        boxShadow={1}
+      >
         <Box display="flex" alignItems="center" mb={2}>
           <BuildIcon color="action" />
           <Typography variant="subtitle1" component="h2" ml={1}>

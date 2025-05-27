@@ -172,7 +172,11 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
             animate={{ scale: 1 }}
             exit={{ scale: 0.9 }}
           >
-            <Typography variant="h5" component="h2" className="text-center mb-4">
+            <Typography
+              variant="h5"
+              component="h2"
+              className="text-center mb-4"
+            >
               Select a Draft
             </Typography>
             {loading ? (
@@ -214,14 +218,18 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
                       >
                         {draft.name || 'Untitled Draft'}
                       </Typography>
-                      <Typography variant="body2" className="text-gray-400 mb-2">
+                      <Typography
+                        variant="body2"
+                        className="text-gray-400 mb-2"
+                      >
                         {draft.description || 'No description available.'}
                       </Typography>
                       <Typography
                         variant="caption"
                         className="text-gray-500 text-sm"
                       >
-                        Created at: {new Date(draft.created_at).toLocaleString()}
+                        Created at:{' '}
+                        {new Date(draft.created_at).toLocaleString()}
                       </Typography>
                     </CardContent>
                   </Card>

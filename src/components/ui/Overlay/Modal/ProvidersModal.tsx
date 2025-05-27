@@ -82,29 +82,49 @@ export function ProviderModals({
         aria-labelledby="modal-title"
         aria-describedby="modal-description"
       >
-        <Box sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: '80%',
-          maxWidth: 'md',
-          bgcolor: 'background.paper',
-          boxShadow: 24,
-          p: 4,
-          display: 'flex',
-          flexDirection: 'column',
-         }}>
-          <Typography id="modal-title" variant="h6" component="h2" className="text-2xl font-bold">
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '80%',
+            maxWidth: 'md',
+            bgcolor: 'background.paper',
+            boxShadow: 24,
+            p: 4,
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <Typography
+            id="modal-title"
+            variant="h6"
+            component="h2"
+            className="text-2xl font-bold"
+          >
             Premade Providers
           </Typography>
-          <Box id="modal-description" sx={{ mt: 2, flexGrow: 1, overflow: 'auto' }}>
+          <Box
+            id="modal-description"
+            sx={{ mt: 2, flexGrow: 1, overflow: 'auto' }}
+          >
             {loading ? (
               <Typography className="text-gray-600">
                 Loading providers...
               </Typography>
             ) : (
-              <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: '1fr 1fr 1fr' }, gap: 2 }}>
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: {
+                    xs: '1fr',
+                    sm: '1fr 1fr',
+                    md: '1fr 1fr 1fr',
+                  },
+                  gap: 2,
+                }}
+              >
                 {providers.map((provider) => (
                   <Card
                     key={provider.provider_name}
@@ -135,7 +155,10 @@ export function ProviderModals({
                           href={provider.provider_website}
                           target="_blank"
                           rel="noopener noreferrer"
-                          style={{ color: '#3b82f6', textDecoration: 'underline' }}
+                          style={{
+                            color: '#3b82f6',
+                            textDecoration: 'underline',
+                          }}
                         >
                           {provider.provider_website}
                         </a>
@@ -150,7 +173,10 @@ export function ProviderModals({
                           href={provider.provider_api_link}
                           target="_blank"
                           rel="noopener noreferrer"
-                          style={{ color: '#3b82f6', textDecoration: 'underline' }}
+                          style={{
+                            color: '#3b82f6',
+                            textDecoration: 'underline',
+                          }}
                         >
                           {provider.provider_api_link}
                         </a>
@@ -160,7 +186,16 @@ export function ProviderModals({
                         color="primary"
                         onClick={() => handleSelect(provider)}
                         fullWidth
-                        sx={{ mt: 1, bgcolor: '#3b82f6', '&:hover': { bgcolor: '#2563eb' }, color: 'white', fontWeight: 'bold', py: 1, px: 2, borderRadius: 1 }}
+                        sx={{
+                          mt: 1,
+                          bgcolor: '#3b82f6',
+                          '&:hover': { bgcolor: '#2563eb' },
+                          color: 'white',
+                          fontWeight: 'bold',
+                          py: 1,
+                          px: 2,
+                          borderRadius: 1,
+                        }}
                       >
                         Select
                       </Button>

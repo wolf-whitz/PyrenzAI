@@ -12,7 +12,7 @@ import {
   Pagination,
   Banner,
   GetUserData,
-  AuthenticationModal
+  AuthenticationModal,
 } from '@components';
 import { useHomepageAPI } from '@api';
 
@@ -32,7 +32,7 @@ export function Home() {
     handleButtonClick,
     transformCharacter,
     fetchUserData,
-    isOwner,  
+    isOwner,
   } = useHomepageAPI();
 
   const [showLogin, setShowLogin] = useState(false);
@@ -42,7 +42,7 @@ export function Home() {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const fetchData = useCallback(() => {
-    fetchUserData().catch(error => {
+    fetchUserData().catch((error) => {
       console.error('Error fetching user data:', error);
     });
   }, [fetchUserData]);
@@ -169,7 +169,7 @@ export function Home() {
                 loading={loading}
                 itemsPerPage={itemsPerPage}
                 t={t}
-                isOwner={isOwner}   
+                isOwner={isOwner}
               />
             </section>
 

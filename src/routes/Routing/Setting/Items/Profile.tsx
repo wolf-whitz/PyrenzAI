@@ -71,7 +71,10 @@ export function Profile() {
 
       img.onload = () => {
         if (img.width !== 400 || img.height !== 400) {
-          showAlert('Profile image dimensions should be 400x400 pixels', 'alert');
+          showAlert(
+            'Profile image dimensions should be 400x400 pixels',
+            'alert'
+          );
           URL.revokeObjectURL(objectURL);
           return;
         }
@@ -115,7 +118,10 @@ export function Profile() {
           .upload(filePath, profileImage);
 
         if (uploadError) {
-          showAlert(`Error uploading profile image: ${uploadError.message}`, 'alert');
+          showAlert(
+            `Error uploading profile image: ${uploadError.message}`,
+            'alert'
+          );
           setIsLoading(false);
           return;
         }
@@ -139,7 +145,10 @@ export function Profile() {
         navigate('/Profile');
       }
     } catch (error) {
-      showAlert(`Error during submission: ${error instanceof Error ? error.message : String(error)}`, 'alert');
+      showAlert(
+        `Error during submission: ${error instanceof Error ? error.message : String(error)}`,
+        'alert'
+      );
     } finally {
       setIsLoading(false);
     }
@@ -168,7 +177,7 @@ export function Profile() {
               sx={{
                 backgroundColor: '#add8e6',
                 borderRadius: '20px',
-                color: 'black'
+                color: 'black',
               }}
             >
               Upload Image
@@ -206,7 +215,7 @@ export function Profile() {
           backgroundColor: '#add8e6',
           borderRadius: '20px',
           color: 'black',
-          marginRight: '10px'
+          marginRight: '10px',
         }}
         onClick={handleSubmit}
         dataState={isLoading ? 'loading' : undefined}
@@ -217,7 +226,7 @@ export function Profile() {
         sx={{
           backgroundColor: '#add8e6',
           borderRadius: '20px',
-          color: 'black'
+          color: 'black',
         }}
         onClick={() => navigate('/Profile')}
       >

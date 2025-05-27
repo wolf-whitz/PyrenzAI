@@ -29,14 +29,18 @@ export function Persona() {
     handleCreatePersona,
     handleSelectPersona,
     handleDeletePersona,
-    handleEditPersona
+    handleEditPersona,
   } = usePersonaAPI();
 
   const [isModalOpen, setModalOpen] = useState(false);
   const [newPersonaName, setNewPersonaName] = useState('');
   const [newPersonaDescription, setNewPersonaDescription] = useState('');
-  const [isCreateCharacterCardImageModalOpen, setCreateCharacterCardImageModalOpen] = useState(false);
-  const [isCharacterCardImageModalOpen, setCharacterCardImageModalOpen] = useState(false);
+  const [
+    isCreateCharacterCardImageModalOpen,
+    setCreateCharacterCardImageModalOpen,
+  ] = useState(false);
+  const [isCharacterCardImageModalOpen, setCharacterCardImageModalOpen] =
+    useState(false);
   const [selectedImage, setSelectedImage] = useState('');
   const [editingPersona, setEditingPersona] = useState<Persona | null>(null);
 
@@ -61,7 +65,12 @@ export function Persona() {
       setSelectedImage,
       setModalOpen
     );
-  }, [newPersonaName, newPersonaDescription, selectedImage, handleCreatePersona]);
+  }, [
+    newPersonaName,
+    newPersonaDescription,
+    selectedImage,
+    handleCreatePersona,
+  ]);
 
   const editPersona = useCallback(async () => {
     if (!editingPersona) return;
@@ -76,7 +85,13 @@ export function Persona() {
       setModalOpen,
       setEditingPersona
     );
-  }, [editingPersona, newPersonaName, newPersonaDescription, selectedImage, handleEditPersona]);
+  }, [
+    editingPersona,
+    newPersonaName,
+    newPersonaDescription,
+    selectedImage,
+    handleEditPersona,
+  ]);
 
   if (!userUuid) {
     return (
@@ -89,7 +104,7 @@ export function Persona() {
   }
 
   const handleEdit = (id: string) => {
-    const personaToEdit = personaData.find(persona => persona.id === id);
+    const personaToEdit = personaData.find((persona) => persona.id === id);
     if (personaToEdit) {
       setEditingPersona(personaToEdit);
       setNewPersonaName(personaToEdit.persona_name);
@@ -99,11 +114,11 @@ export function Persona() {
     }
   };
 
-  const personaDataWithHandlers = personaData.map(persona => ({
+  const personaDataWithHandlers = personaData.map((persona) => ({
     ...persona,
     onSelect: () => handleSelectPersona(persona.id),
     onDelete: () => handleDeletePersona(persona.id),
-    onEdit: () => handleEdit(persona.id)
+    onEdit: () => handleEdit(persona.id),
   }));
 
   return (
@@ -112,10 +127,7 @@ export function Persona() {
         My Personas
       </Typography>
 
-      <PersonaList
-        personaData={personaDataWithHandlers}
-        loading={loading}
-      />
+      <PersonaList personaData={personaDataWithHandlers} loading={loading} />
 
       <PyrenzBlueButton
         onClick={() => {
@@ -160,7 +172,7 @@ export function Persona() {
         setCharacterCardImageModalOpen={setCharacterCardImageModalOpen}
         selectedImage={selectedImage}
         setSelectedImage={setSelectedImage}
-        isEditing={!!editingPersona} 
+        isEditing={!!editingPersona}
       />
 
       {isCreateCharacterCardImageModalOpen && (

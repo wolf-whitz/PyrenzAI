@@ -4,7 +4,7 @@ import { useDropzone } from 'react-dropzone';
 import { Textarea } from '@components';
 import { Utils } from '~/Utility/Utility';
 import { createPortal } from 'react-dom';
-import { usePyrenzAlert } from '~/provider'; 
+import { usePyrenzAlert } from '~/provider';
 
 interface CreateCharacterCardImageModalProps {
   isModalOpen: boolean;
@@ -19,7 +19,7 @@ export function CreateCharacterCardImageModal({
   const [description, setDescription] = useState('');
   const [image, setImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
-  const showAlert = usePyrenzAlert();  
+  const showAlert = usePyrenzAlert();
 
   const onDrop = (acceptedFiles: File[]) => {
     setImage(acceptedFiles[0]);
@@ -70,7 +70,10 @@ export function CreateCharacterCardImageModal({
 
           showAlert('Profile card uploaded successfully', 'Success');
         } else {
-          showAlert(response.message || 'Failed to upload profile card', 'Alert');
+          showAlert(
+            response.message || 'Failed to upload profile card',
+            'Alert'
+          );
         }
       } catch (error) {
         console.error('Error uploading profile card:', error);

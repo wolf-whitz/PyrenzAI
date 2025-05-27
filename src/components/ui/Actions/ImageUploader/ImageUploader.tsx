@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { Dropzone, Textarea } from '@components'
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { Dropzone, Textarea } from '@components';
 import {
   Modal,
   Box,
@@ -10,87 +10,92 @@ import {
   CardMedia,
   CircularProgress,
   Typography,
-} from '@mui/material'
-import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
-import { usePyrenzAlert } from '~/provider'
-import { PyrenzBlueButton } from '~/theme'
+} from '@mui/material';
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
+import { usePyrenzAlert } from '~/provider';
+import { PyrenzBlueButton } from '~/theme';
 
 interface ImageUploaderProps {
-  onImageSelect: (file: File | null) => void
-  initialImage?: string | null
+  onImageSelect: (file: File | null) => void;
+  initialImage?: string | null;
 }
 
-export function ImageUploader({ onImageSelect, initialImage }: ImageUploaderProps) {
-  const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(initialImage || null)
-  const [open, setOpen] = useState(false)
-  const [textareaValue, setTextareaValue] = useState('')
-  const [imageUrl, setImageUrl] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const [isSubmitted, setIsSubmitted] = useState(false)
-  const showAlert = usePyrenzAlert()
+export function ImageUploader({
+  onImageSelect,
+  initialImage,
+}: ImageUploaderProps) {
+  const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(
+    initialImage || null
+  );
+  const [open, setOpen] = useState(false);
+  const [textareaValue, setTextareaValue] = useState('');
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const showAlert = usePyrenzAlert();
 
   useEffect(() => {
-    if (initialImage) setBannerImagePreview(initialImage)
-  }, [initialImage])
+    if (initialImage) setBannerImagePreview(initialImage);
+  }, [initialImage]);
 
-  const handleOpen = () => setOpen(true)
-  const handleClose = () => setOpen(false)
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const handleClear = () => {
-    setTextareaValue('')
-    setImageUrl(null)
-    setIsSubmitted(false)
+    setTextareaValue('');
+    setImageUrl(null);
+    setIsSubmitted(false);
     if (bannerImagePreview) {
-      URL.revokeObjectURL(bannerImagePreview)
-      setBannerImagePreview(null)
+      URL.revokeObjectURL(bannerImagePreview);
+      setBannerImagePreview(null);
     }
-  }
+  };
 
   const handleDrop = (acceptedFiles: File[]) => {
-    const file = acceptedFiles[0] || null
+    const file = acceptedFiles[0] || null;
     if (file) {
-      const blobUrl = URL.createObjectURL(file)
-      setBannerImagePreview(blobUrl)
+      const blobUrl = URL.createObjectURL(file);
+      setBannerImagePreview(blobUrl);
     }
-    onImageSelect(file)
-  }
+    onImageSelect(file);
+  };
 
   const handleSubmit = async () => {
     if (!textareaValue.trim()) {
-      showAlert('Prompt cannot be empty', 'Alert')
-      return
+      showAlert('Prompt cannot be empty', 'Alert');
+      return;
     }
 
-    setIsLoading(true)
-    setIsSubmitted(true)
+    setIsLoading(true);
+    setIsSubmitted(true);
 
-    const prompt = `${textareaValue}`
-    const model = 'turbo'
-    const nologo = 'true'
-    const enhance = 'true'
+    const prompt = `${textareaValue}`;
+    const model = 'turbo';
+    const nologo = 'true';
+    const enhance = 'true';
 
     try {
-      const queryParams = `${prompt}&model=${model}&nologo=${nologo}&enhance=${enhance}`
-      const url = `https://image.pollinations.ai/prompt/${queryParams}`
+      const queryParams = `${prompt}&model=${model}&nologo=${nologo}&enhance=${enhance}`;
+      const url = `https://image.pollinations.ai/prompt/${queryParams}`;
 
-      const response = await fetch(url, { method: 'GET' })
+      const response = await fetch(url, { method: 'GET' });
 
-      if (!response.ok) throw new Error('Network response was not ok')
+      if (!response.ok) throw new Error('Network response was not ok');
 
-      const blob = await response.blob()
-      const blobUrl = URL.createObjectURL(blob)
-      setImageUrl(blobUrl)
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      setImageUrl(blobUrl);
 
-      const file = new File([blob], '', { type: 'image/png' })
-      onImageSelect(file)
-      setBannerImagePreview(blobUrl)
+      const file = new File([blob], '', { type: 'image/png' });
+      onImageSelect(file);
+      setBannerImagePreview(blobUrl);
     } catch (error) {
-      console.error('Error creating image:', error)
-      showAlert('Error creating image', 'Alert')
+      console.error('Error creating image:', error);
+      showAlert('Error creating image', 'Alert');
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <motion.div
@@ -160,7 +165,11 @@ export function ImageUploader({ onImageSelect, initialImage }: ImageUploaderProp
             </Card>
           )}
           <div className="flex justify-end mt-4">
-            <PyrenzBlueButton variant="outlined" onClick={handleClear} sx={{ mr: 2 }}>
+            <PyrenzBlueButton
+              variant="outlined"
+              onClick={handleClear}
+              sx={{ mr: 2 }}
+            >
               Clear
             </PyrenzBlueButton>
             <PyrenzBlueButton variant="contained" onClick={handleSubmit}>
@@ -177,5 +186,5 @@ export function ImageUploader({ onImageSelect, initialImage }: ImageUploaderProp
         </Box>
       </Modal>
     </motion.div>
-  )
+  );
 }

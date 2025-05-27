@@ -53,7 +53,11 @@ export function SliderComponent({
             handlePopoverOpen(e);
             setShowPopover(sliderKey);
           }}
-          sx={{ color: 'text.secondary', '&:hover': { color: 'text.primary' }, focus: { outline: 'none' } }}
+          sx={{
+            color: 'text.secondary',
+            '&:hover': { color: 'text.primary' },
+            focus: { outline: 'none' },
+          }}
         >
           <HelpCircle />
         </Box>

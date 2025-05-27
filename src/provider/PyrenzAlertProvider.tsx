@@ -1,4 +1,10 @@
-import React, { useState, useEffect, createContext, useContext, ReactNode } from 'react';
+import React, {
+  useState,
+  useEffect,
+  createContext,
+  useContext,
+  ReactNode,
+} from 'react';
 import { Alert, AlertTitle, IconButton } from '@mui/material';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
@@ -19,7 +25,8 @@ const AlertContext = createContext<AlertContextType | undefined>(undefined);
 
 export const usePyrenzAlert = () => {
   const context = useContext(AlertContext);
-  if (!context) throw new Error('PyrenzAlert must be used within an AlertProvider');
+  if (!context)
+    throw new Error('PyrenzAlert must be used within an AlertProvider');
   return context.showAlert;
 };
 
@@ -60,7 +67,11 @@ export const AlertProvider = ({ children }: { children: ReactNode }) => {
             aria-live="assertive"
           >
             <Alert
-              severity={alertState.mode.toLowerCase() === 'success' ? 'success' : 'error'}
+              severity={
+                alertState.mode.toLowerCase() === 'success'
+                  ? 'success'
+                  : 'error'
+              }
               icon={
                 alertState.mode.toLowerCase() === 'success' ? (
                   <CheckCircleOutlineIcon style={{ color: 'green' }} />

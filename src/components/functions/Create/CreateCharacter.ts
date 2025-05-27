@@ -9,7 +9,7 @@ interface CreateCharacterResponse {
 }
 
 export const createCharacter = async (
-  characterData: CharacterData,
+  characterData: CharacterData
 ): Promise<CreateCharacterResponse> => {
   try {
     const characterUuid = uuidv4();
@@ -30,7 +30,6 @@ export const createCharacter = async (
     }
 
     return { char_uuid: characterUuid };
-
   } catch (error) {
     console.error('Unexpected error:', error);
     Sentry.captureException(error);
@@ -39,20 +38,20 @@ export const createCharacter = async (
 };
 
 export const updateCharacter = async (
-  characterData: CharacterData,
+  characterData: CharacterData
 ): Promise<CreateCharacterResponse> => {
   try {
-    const { char_uuid, textarea_token, ...filteredCharacterData } = characterData;
+    const { char_uuid, textarea_token, ...filteredCharacterData } =
+      characterData;
 
     if (!char_uuid) {
       return { error: 'Character UUID is required for updating.' };
     }
 
-    const { data, error } = await supabase
-      .rpc('update_character', {
-        char_uuid_param: char_uuid,
-        character_data: filteredCharacterData,
-      });
+    const { data, error } = await supabase.rpc('update_character', {
+      char_uuid_param: char_uuid,
+      character_data: filteredCharacterData,
+    });
 
     if (error) {
       console.error('Error updating character:', error);
@@ -61,7 +60,6 @@ export const updateCharacter = async (
     }
 
     return { char_uuid: char_uuid };
-
   } catch (error) {
     console.error('Unexpected error:', error);
     Sentry.captureException(error);

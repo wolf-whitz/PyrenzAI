@@ -29,11 +29,7 @@ const ProtectedRoute = ({ element }: { element: JSX.Element }) => {
 
   if (!isAuthenticated) return <Navigate to="/Auth" replace />;
 
-  return (
-    <React.Fragment key={location.pathname}>
-      {element}
-    </React.Fragment>
-  );
+  return <React.Fragment key={location.pathname}>{element}</React.Fragment>;
 };
 
 export const AppRoutes = (
@@ -42,11 +38,23 @@ export const AppRoutes = (
     <Route path="/" element={<ProtectedRoute element={<Home />} />} />
     <Route path="/Home" element={<ProtectedRoute element={<Home />} />} />
     <Route path="/Create" element={<ProtectedRoute element={<Create />} />} />
-    <Route path="/Create/:uuid" element={<ProtectedRoute element={<Create />} />} />
-    <Route path="/Profile/:uuid" element={<ProtectedRoute element={<Profile />} />} />
+    <Route
+      path="/Create/:uuid"
+      element={<ProtectedRoute element={<Create />} />}
+    />
+    <Route
+      path="/Profile/:uuid"
+      element={<ProtectedRoute element={<Profile />} />}
+    />
     <Route path="/Profile" element={<ProtectedRoute element={<Profile />} />} />
-    <Route path="/Chat/:chat_uuid" element={<ProtectedRoute element={<Chat />} />} />
-    <Route path="/Settings" element={<ProtectedRoute element={<Setting />} />} />
+    <Route
+      path="/Chat/:chat_uuid"
+      element={<ProtectedRoute element={<Chat />} />}
+    />
+    <Route
+      path="/Settings"
+      element={<ProtectedRoute element={<Setting />} />}
+    />
     <Route path="*" element={<ErrorPage />} />
   </>
 );

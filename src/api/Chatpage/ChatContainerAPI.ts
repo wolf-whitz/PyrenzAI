@@ -109,12 +109,23 @@ export const useGenerateMessage = () => {
         const remainingMessages = response.remainingMessages || 0;
         return { remainingMessages };
       } catch (error) {
+        let errorMessage = 'Failed to generate response.';
+        if (error instanceof Error) {
+          errorMessage = error.message;
+        } else if (
+          typeof error === 'object' &&
+          error !== null &&
+          'error' in error
+        ) {
+          errorMessage = error.error as string;
+        }
+
         setMessages((prevMessages) => {
           const updatedMessages = prevMessages.map((msg) =>
             msg.type === 'assistant' && msg.isGenerate
               ? {
                   ...msg,
-                  text: 'Failed to generate response.',
+                  text: errorMessage,
                   isGenerate: false,
                   error: true,
                 }
@@ -123,7 +134,7 @@ export const useGenerateMessage = () => {
           return updatedMessages;
         });
 
-        showAlert('Failed to generate response.', 'Alert');
+        showAlert(errorMessage, 'Alert');
         return { remainingMessages: 0 };
       } finally {
         setIsGenerating(false);

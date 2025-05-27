@@ -1,7 +1,7 @@
-import { useEffect, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useHomeStore } from '~/store'
-import { useTranslation } from 'react-i18next'
+import { useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useHomeStore } from '~/store';
+import { useTranslation } from 'react-i18next';
 import {
   GetHotCharacters,
   GetLatestCharacters,
@@ -10,19 +10,22 @@ import {
   useFetchUserUUID,
   useSyncSearchParams,
   useFetchCharacters,
-} from '@components'
-import { supabase } from '~/Utility/supabaseClient'
-import { Utils } from '~/Utility/Utility'
-import { sendUserDataToUserDataTable } from '~/api'
-import type { Character, CharacterCardProps } from '@shared-types/CharacterProp'
+} from '@components';
+import { supabase } from '~/Utility/supabaseClient';
+import { Utils } from '~/Utility/Utility';
+import { sendUserDataToUserDataTable } from '~/api';
+import type {
+  Character,
+  CharacterCardProps,
+} from '@shared-types/CharacterProp';
 import { usePyrenzAlert } from '~/provider';
 
 interface PostResponse {
-  success: boolean
+  success: boolean;
 }
 
 export const useHomepageAPI = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const {
     search,
@@ -36,15 +39,15 @@ export const useHomepageAPI = () => {
     setCharacters,
     setTotal,
     setLoading,
-  } = useHomeStore()
+  } = useHomeStore();
 
-  const { t } = useTranslation()
-  const userUUID = useFetchUserUUID()
-  const itemsPerPage = 10
-  const totalPages = Math.max(1, Math.ceil(total / itemsPerPage))
+  const { t } = useTranslation();
+  const userUUID = useFetchUserUUID();
+  const itemsPerPage = 10;
+  const totalPages = Math.max(1, Math.ceil(total / itemsPerPage));
   const showAlert = usePyrenzAlert();
 
-  useSyncSearchParams({ search, currentPage, setSearch, setCurrentPage })
+  useSyncSearchParams({ search, currentPage, setSearch, setCurrentPage });
 
   const { isOwner } = useFetchCharacters({
     currentPage,
@@ -54,7 +57,7 @@ export const useHomepageAPI = () => {
     setTotal,
     setLoading,
     t,
-  })
+  });
 
   const handleButtonClick = async (
     functionName: string,
@@ -62,46 +65,46 @@ export const useHomepageAPI = () => {
     maxCharacter: number,
     page: number
   ) => {
-    setLoading(true)
-    setCharacters([])
+    setLoading(true);
+    setCharacters([]);
 
     try {
-      let rawCharacters: any[] = []
+      let rawCharacters: any[] = [];
 
       switch (functionName) {
         case 'GetHotCharacters':
-          rawCharacters = await GetHotCharacters(type, maxCharacter, page)
-          break
+          rawCharacters = await GetHotCharacters(type, maxCharacter, page);
+          break;
         case 'GetLatestCharacters':
-          rawCharacters = await GetLatestCharacters(type, maxCharacter, page)
-          break
+          rawCharacters = await GetLatestCharacters(type, maxCharacter, page);
+          break;
         case 'GetRandomCharacters':
-          rawCharacters = await GetRandomCharacters(type, maxCharacter, page)
-          break
+          rawCharacters = await GetRandomCharacters(type, maxCharacter, page);
+          break;
         case 'GetCharactersWithTags':
           rawCharacters = await GetCharactersWithTags(
             maxCharacter,
             page,
             type,
             search
-          )
-          break
+          );
+          break;
         default:
-          throw new Error('Invalid function name')
+          throw new Error('Invalid function name');
       }
 
-      const transformedCharacters = rawCharacters.map(transformCharacter)
-      setCharacters(transformedCharacters)
+      const transformedCharacters = rawCharacters.map(transformCharacter);
+      setCharacters(transformedCharacters);
     } catch (error) {
       if (error instanceof Error) {
-        showAlert(t('errors.callingRPCFunction') + error.message, 'Alert')
+        showAlert(t('errors.callingRPCFunction') + error.message, 'Alert');
       } else {
-        showAlert(t('errors.unknown'), 'Alert')
+        showAlert(t('errors.unknown'), 'Alert');
       }
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const transformCharacter = (char: Character): CharacterCardProps => ({
     id: char.id,
@@ -117,32 +120,32 @@ export const useHomepageAPI = () => {
     is_nsfw: char.is_nsfw ?? false,
     token_total: char.token_total ?? 0,
     isLoading: false,
-  })
+  });
 
   const fetchUserData = useCallback(async () => {
     const {
       data: { user },
-    } = await supabase.auth.getUser()
+    } = await supabase.auth.getUser();
 
     if (user) {
       const userData = {
         userUUID: user.id,
-      }
+      };
 
       const response = (await Utils.post(
         '/api/createUserData',
         userData
-      )) as PostResponse
+      )) as PostResponse;
 
       if (response.success) {
-        await sendUserDataToUserDataTable(user)
-        return { success: true, user }
+        await sendUserDataToUserDataTable(user);
+        return { success: true, user };
       } else {
-        console.error('Failed to create user data')
-        return { success: false, error: 'Failed to create user data' }
+        console.error('Failed to create user data');
+        return { success: false, error: 'Failed to create user data' };
       }
     }
-  }, [])
+  }, []);
 
   return {
     navigate,
@@ -165,5 +168,5 @@ export const useHomepageAPI = () => {
     transformCharacter,
     fetchUserData,
     isOwner,
-  }
-}
+  };
+};

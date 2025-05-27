@@ -22,7 +22,8 @@ const StyledPyrenzMessageBox = styled(Box)({
   wordWrap: 'break-word',
   position: 'relative',
   cursor: 'pointer',
-  transition: 'transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease',
+  transition:
+    'transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease',
   '&:hover': {
     backgroundColor: 'rgba(55, 65, 81, 0.8)',
     transform: 'translateY(-2px)',
@@ -46,10 +47,15 @@ const StyledPyrenzMessageBox = styled(Box)({
       borderTopColor: 'transparent',
       borderRightColor: 'transparent',
     },
-  }
+  },
 });
 
-export const PyrenzMessageBox = ({ children, onClick, sx, className }: PyrenzMessageBoxProps) => {
+export const PyrenzMessageBox = ({
+  children,
+  onClick,
+  sx,
+  className,
+}: PyrenzMessageBoxProps) => {
   const handleClick = (event: React.MouseEvent) => {
     if (onClick) {
       onClick(event);

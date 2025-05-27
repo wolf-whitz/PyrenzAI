@@ -10,7 +10,10 @@ const zoomIn = keyframes`
   }
 `;
 
-export const PyrenzBlueButton = styled(Button)<{ dataState?: string, component?: React.ElementType }>({
+export const PyrenzBlueButton = styled(Button)<{
+  dataState?: string;
+  component?: React.ElementType;
+}>({
   fontFamily: 'font-baloo, sans-serif',
   color: 'white',
   backgroundColor: 'black',
@@ -21,7 +24,7 @@ export const PyrenzBlueButton = styled(Button)<{ dataState?: string, component?:
     animation: `${zoomIn} 0.3s ease forwards`,
     boxShadow: 'none',
     backgroundColor: '#add8e6',
-    color: 'black'
+    color: 'black',
   },
   '&[data-state="loading"]': {
     opacity: 0.6,
@@ -42,7 +45,13 @@ export const PyrenzBlueButton = styled(Button)<{ dataState?: string, component?:
   }),
 });
 
-export const PyrenzBlueButtonWithLoading = ({ dataState, ...props }: { dataState?: string, [key: string]: any }) => {
+export const PyrenzBlueButtonWithLoading = ({
+  dataState,
+  ...props
+}: {
+  dataState?: string;
+  [key: string]: any;
+}) => {
   return (
     <div style={{ position: 'relative', display: 'inline-block' }}>
       <PyrenzBlueButton dataState={dataState} {...props} />

@@ -73,8 +73,8 @@ export interface GenerateResponse {
 }
 
 export type Chat = {
-  chat_uuid: string;      
-  char_uuid: string;      
-  preview_message: string; 
-  preview_image: string;  
+  chat_uuid: string;
+  char_uuid: string;
+  preview_message: string;
+  preview_image: string;
 };

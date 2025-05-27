@@ -29,7 +29,6 @@ export function Menu({ onClose }: MenuProps) {
     }
   }, []);
 
-
   return (
     <Fade in={true} onClick={onClose}>
       <Box
@@ -102,9 +101,7 @@ export function Menu({ onClose }: MenuProps) {
               </Collapse>
             </Box>
 
-            {selectedOption === 'Cosmetic' && (
-              <Cosmetic />
-            )}
+            {selectedOption === 'Cosmetic' && <Cosmetic />}
             {selectedOption === 'AI Customization' && <Customization />}
           </Box>
         </Grow>

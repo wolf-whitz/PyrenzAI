@@ -24,17 +24,17 @@ export function SkeletonCard() {
           <Box
             className={`h-6 bg-gray-500 w-3/4 mb-2 rounded
               ${isLoaded ? 'w-3/4' : 'w-0'} transition-all delay-400 duration-500`}
-            ></Box>
+          ></Box>
 
           <Box
             className={`h-4 bg-gray-500 w-full mb-2 rounded
               ${isLoaded ? 'w-full' : 'w-0'} transition-all delay-600 duration-500`}
-            ></Box>
+          ></Box>
 
           <Box
             className={`h-4 bg-gray-500 w-2/3 mb-2 rounded
               ${isLoaded ? 'w-2/3' : 'w-0'} transition-all delay-800 duration-500`}
-            ></Box>
+          ></Box>
 
           <Box sx={{ mt: 3, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
             {[...Array(3)].map((_, index) => (
