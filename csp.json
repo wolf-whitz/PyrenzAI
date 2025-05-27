@@ -39,7 +39,7 @@
     "https://*.pollinations.ai",
     "https://*.cloudflareinsights.com",
     "https://cloudflareinsights.com",
-    "http://server.pyrenzai.com"
+    "https://server.pyrenzai.com"
   ],
   "media-src": ["'self'", "blob:"],
   "font-src": ["'self'", "*"],
