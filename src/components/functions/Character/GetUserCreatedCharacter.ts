@@ -1,21 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '~/Utility/supabaseClient';
-
-type Character = {
-  id: string;
-  char_uuid: string;
-  name: string;
-  description: string;
-  creator: string;
-  creator_uuid: string;
-  chat_messages_count: number;
-  profile_image: string;
-  tags: string[];
-  is_public: boolean;
-  is_nsfw: boolean;
-  token_total: number;
-  isLoading: boolean;
-};
+import { Character } from '@shared-types/CharacterProp';
 
 type UserData = {
   username: string;

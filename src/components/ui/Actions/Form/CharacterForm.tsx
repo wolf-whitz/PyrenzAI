@@ -10,7 +10,11 @@ import { useNavigate } from 'react-router-dom';
 import { useCreateAPI } from '@api';
 import { useCharacterStore } from '~/store';
 
-export function CharacterForm() {
+interface CharacterFormProps {
+  character_update: boolean;
+}
+
+export function CharacterForm({ character_update }: CharacterFormProps) {
   const navigate = useNavigate();
   const {
     loading,
@@ -21,7 +25,7 @@ export function CharacterForm() {
     handleSelectDraft,
     handleImportCharacter,
     handleSubmit,
-  } = useCreateAPI(navigate);
+  } = useCreateAPI(navigate, character_update);
 
   const characterData = useCharacterStore((state) => state);
   const setCharacterData = useCharacterStore((state) => state.setCharacterData);
@@ -30,6 +34,7 @@ export function CharacterForm() {
   const [isInitialized, setIsInitialized] = useState(false);
 
   const [formState, setFormState] = useState({
+    char_uuid: '',
     persona: '',
     name: '',
     model_instructions: '',
@@ -47,6 +52,7 @@ export function CharacterForm() {
 
   useEffect(() => {
     setFormState({
+      char_uuid: characterData.char_uuid,
       persona: characterData.persona,
       name: characterData.name,
       model_instructions: characterData.model_instructions,
@@ -119,6 +125,7 @@ export function CharacterForm() {
           saveLoading={saveLoading}
           onSelectDraft={handleSelectDraft}
           onImportCharacter={handleImportCharacter}
+          character_update={character_update}
         />
       </form>
     </div>

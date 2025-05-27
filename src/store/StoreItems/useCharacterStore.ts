@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 
 interface CharacterState {
+  char_uuid: string; 
   persona: string;
   name: string;
   model_instructions: string;
@@ -22,6 +23,7 @@ interface CharacterActions {
 }
 
 export const useCharacterStore = create<CharacterState & CharacterActions>((set) => ({
+  char_uuid: '',
   persona: '',
   is_public: false,
   is_nsfw: false,
@@ -33,7 +35,7 @@ export const useCharacterStore = create<CharacterState & CharacterActions>((set)
   tags: '',
   gender: '',
   creator: null,
-  textarea_token: {}, 
+  textarea_token: {},
   token_total: 0,
   profile_image: undefined,
 

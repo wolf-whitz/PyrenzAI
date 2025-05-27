@@ -16,8 +16,6 @@ export const CharacterSchema = z.object({
   isLoading: z.boolean(),
 });
 
-export type Character = z.infer<typeof CharacterSchema>;
-
 export const CharacterCardPropsSchema = z.object({
   id: z.string(),
   char_uuid: z.string(),
@@ -34,9 +32,8 @@ export const CharacterCardPropsSchema = z.object({
   isLoading: z.boolean(),
 });
 
-export type CharacterCardProps = z.infer<typeof CharacterCardPropsSchema>;
-
 export const CharacterDataSchema = z.object({
+  char_uuid: z.string().optional(),
   persona: z.string(),
   name: z.string(),
   model_instructions: z.string(),
@@ -51,9 +48,8 @@ export const CharacterDataSchema = z.object({
   token_total: z.number(),
   profile_image: z.string(),
   textarea_token: z.record(z.number()).optional(),
+  chat_message_count: z.number().optional(),
 });
-
-export type CharacterData = z.infer<typeof CharacterDataSchema>;
 
 export const DraftSchema = z.object({
   id: z.number(),
@@ -75,8 +71,6 @@ export const DraftSchema = z.object({
   updated_at: z.string(),
 });
 
-export type Draft = z.infer<typeof DraftSchema>;
-
 export const ApiResponseSchema = z.object({
   error: z.any().optional(),
   message: z.string().optional(),
@@ -89,3 +83,7 @@ export const ApiResponseSchema = z.object({
 });
 
 export type ApiResponse = z.infer<typeof ApiResponseSchema>;
+export type CharacterData = z.infer<typeof CharacterDataSchema>;
+export type Draft = z.infer<typeof DraftSchema>;
+export type CharacterCardProps = z.infer<typeof CharacterCardPropsSchema>;
+export type Character = z.infer<typeof CharacterSchema>;

@@ -7,9 +7,10 @@ import { PyrenzBlueButton } from '~/theme';
 interface CreateButtonProps {
   loading: boolean;
   className?: string;
+  character_update: boolean;
 }
 
-export function CreateButton({ loading, className }: CreateButtonProps) {
+export function CreateButton({ loading, className, character_update }: CreateButtonProps) {
   return (
     <PyrenzBlueButton
       type="submit"
@@ -24,7 +25,7 @@ export function CreateButton({ loading, className }: CreateButtonProps) {
         )
       }
     >
-      {loading ? 'Submitting...' : 'Create'}
+      {loading ? 'Submitting...' : character_update ? 'Update' : 'Create'}
     </PyrenzBlueButton>
   );
 }

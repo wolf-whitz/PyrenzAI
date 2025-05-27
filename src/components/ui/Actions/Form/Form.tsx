@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { CircularProgress, Typography } from '@mui/material';
+import { CircularProgress, Typography, Link } from '@mui/material';
 import { CreateButton, DraftsModal, ImportCharacterModal } from '@components';
 import SaveIcon from '@mui/icons-material/Save';
 import DescriptionIcon from '@mui/icons-material/Description';
@@ -15,6 +15,7 @@ interface FormActionsProps {
   saveLoading: boolean;
   onSelectDraft: (draft: Draft) => void;
   onImportCharacter: (data: CharacterData | null) => void;
+  character_update: boolean;
 }
 
 export function FormActions({
@@ -24,6 +25,7 @@ export function FormActions({
   saveLoading,
   onSelectDraft,
   onImportCharacter,
+  character_update,
 }: FormActionsProps) {
   const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
   const [isImportCharacterModalOpen, setIsImportCharacterModalOpen] =
@@ -43,6 +45,10 @@ export function FormActions({
 
   const handleCloseImportCharacterModal = () => {
     setIsImportCharacterModalOpen(false);
+  };
+
+  const handleGuideClick = () => {
+    window.open('https://pyrenz-ai.gitbook.io/pyrenz-ai', '_blank');
   };
 
   return (
@@ -99,7 +105,7 @@ export function FormActions({
       >
         Import Character
       </PyrenzBlueButton>
-      <CreateButton loading={loading} className="w-full sm:w-auto" />
+      <CreateButton loading={loading} className="w-full sm:w-auto" character_update={character_update} />
       {isDraftModalOpen && (
         <DraftsModal onClose={handleCloseDraftModal} onSelect={onSelectDraft} />
       )}
@@ -114,7 +120,14 @@ export function FormActions({
         align="center"
         sx={{ width: '100%', marginTop: '16px', color: 'grey.600' }}
       >
-        Not sure where to start? Check out our starter guide! ദ്ദി(ᵔᗜᵔ){' '}
+        <Link
+          component="button"
+          variant="body1"
+          onClick={handleGuideClick}
+          style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'inherit', textDecoration: 'underline' }}
+        >
+          Not sure where to start? Check out our starter guide! ദ്ദി(ᵔᗜᵔ)
+        </Link>
       </Typography>
     </motion.div>
   );

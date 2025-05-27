@@ -16,6 +16,7 @@ import { CharacterData } from '@shared-types/CharacterProp';
 export function CreatePage() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const [characterUpdate, setCharacterUpdate] = useState(false);
   const setCharacterData = useCharacterStore((state) => state.setCharacterData);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -47,7 +48,8 @@ export function CreatePage() {
         if (error) {
           console.error('Error fetching character data:', error);
         } else {
-          setCharacterData(data as CharacterData); 
+          setCharacterData(data as CharacterData);
+          setCharacterUpdate(true);
         }
       } catch (error) {
         console.error('Error fetching user UUID or character data:', error);
@@ -71,7 +73,7 @@ export function CreatePage() {
         </Box>
 
         <Box flex={1}>
-          <CharacterForm />
+          <CharacterForm character_update={characterUpdate} />
           <Box sx={{ display: { xs: 'block', sm: 'none' }, mt: 2 }}>
             <CommunityGuidelines />
           </Box>

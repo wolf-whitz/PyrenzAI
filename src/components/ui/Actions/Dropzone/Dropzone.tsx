@@ -19,6 +19,7 @@ export function Dropzone({
   initialImage,
 }: DropzoneProps) {
   const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(initialImage || null);
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const showAlert = usePyrenzAlert();
 
   useEffect(() => {
@@ -35,6 +36,13 @@ export function Dropzone({
     onDrop: (acceptedFiles) => {
       if (acceptedFiles.length > 0) {
         const file = acceptedFiles[0];
+
+        const isDuplicate = uploadedFiles.some((uploadedFile) => uploadedFile.name === file.name && uploadedFile.size === file.size);
+
+        if (isDuplicate) {
+          showAlert('This file has already been uploaded.', 'Alert');
+          return;
+        }
 
         if (!file.type.startsWith('image/')) {
           showAlert('Please upload an image file.', 'Alert');
@@ -54,6 +62,8 @@ export function Dropzone({
         };
 
         reader.readAsDataURL(file);
+
+        setUploadedFiles((prevFiles) => [...prevFiles, file]);
       }
       onDrop(acceptedFiles);
     },

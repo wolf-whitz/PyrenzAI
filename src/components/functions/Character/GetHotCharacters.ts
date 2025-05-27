@@ -1,17 +1,5 @@
 import { supabase } from '~/Utility/supabaseClient';
-
-interface Character {
-  id: number;
-  input_char_uuid: string;
-  name: string;
-  description: string;
-  first_message: string;
-  profile_image: string;
-  tags: string[];
-  creator: string;
-  chat_messages_count: number;
-  is_public: boolean;
-}
+import { Character } from '@shared-types/CharacterProp';
 
 export async function GetHotCharacters(
   type: string,

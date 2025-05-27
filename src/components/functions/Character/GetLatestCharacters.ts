@@ -1,17 +1,6 @@
 import { supabase } from '~/Utility/supabaseClient';
+import { Character } from '@shared-types/CharacterProp';
 
-interface Character {
-  id: number;
-  input_char_uuid: string;
-  name: string;
-  description: string;
-  first_message: string;
-  profile_image: string;
-  tags: string[];
-  creator: string;
-  chat_messages_count: number;
-  is_public: boolean;
-}
 
 export async function GetLatestCharacters(
   type: string,

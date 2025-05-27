@@ -1,4 +1,4 @@
-import { GetUserUUID, CreateNewChat, createCharacter, handleSaveDraft } from '@components';
+import { GetUserUUID, CreateNewChat, createCharacter, updateCharacter, handleSaveDraft } from '@components';
 import { useState, useEffect } from 'react';
 import { useCharacterStore } from '~/store';
 import { supabase } from '~/Utility/supabaseClient';
@@ -6,7 +6,7 @@ import * as Sentry from '@sentry/react';
 import { CharacterData, Draft } from '@shared-types/CharacterProp';
 import { usePyrenzAlert } from '~/provider';
 
-export const useCreateAPI = (navigate: (path: string) => void) => {
+export const useCreateAPI = (navigate: (path: string) => void, character_update: boolean) => {
   const [loading, setLoading] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
   const [showRequiredFieldsPopup, setShowRequiredFieldsPopup] = useState(false);
@@ -14,7 +14,7 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
 
   const characterData = useCharacterStore((state) => state);
   const setCharacterData = useCharacterStore((state) => state.setCharacterData);
-  const showAlert = usePyrenzAlert(); 
+  const showAlert = usePyrenzAlert();
 
   useEffect(() => {
     const fetchUserUuid = async () => {
@@ -76,7 +76,8 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
     profile_image: characterData.profile_image || '',
     textarea_token: {},
     token_total: 0,
-    creator_uuid: userUuid
+    creator_uuid: userUuid,
+    char_uuid: characterData.char_uuid || undefined,
   };
 
   const handleClear = () => {
@@ -134,13 +135,12 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
       console.error('No data provided to import character.');
       return;
     }
-    
+
     setCharacterData({...data});
     console.log('Character Uploaded', useCharacterStore.getState());
   };
-  
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent, character_update: boolean) => {
     e.preventDefault();
     setLoading(true);
 
@@ -168,12 +168,15 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
         return;
       }
 
-      const response = await createCharacter(
-          character,
-      );
+      let response;
+      if (character_update) {
+        response = await updateCharacter(character);
+      } else {
+        response = await createCharacter(character);
+      }
 
       if (response.error) {
-        console.error('Error creating character:', response.error);
+        console.error('Error creating/updating character:', response.error);
         Sentry.captureException(new Error(response.error));
       } else {
         const characterUuid = response.char_uuid;
@@ -199,9 +202,9 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
             }
           }
         } else {
-          console.error('Character created but no character UUID returned.');
+          console.error('Character created/updated but no character UUID returned.');
           Sentry.captureException(
-            new Error('Character created but no character UUID returned.')
+            new Error('Character created/updated but no character UUID returned.')
           );
         }
       }
@@ -215,7 +218,7 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
 
   const formState = {
     ...character
-    };
+  };
 
   return {
     loading,
@@ -229,7 +232,7 @@ export const useCreateAPI = (navigate: (path: string) => void) => {
     handleSave,
     handleSelectDraft,
     handleImportCharacter,
-    handleSubmit,
+    handleSubmit: (e: React.FormEvent) => handleSubmit(e, character_update),
     formState,
     handleImageSelect,
   };

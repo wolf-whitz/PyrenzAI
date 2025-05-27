@@ -46,12 +46,7 @@ const StyledPyrenzMessageBox = styled(Box)({
       borderTopColor: 'transparent',
       borderRightColor: 'transparent',
     },
-  },
-  '&.other': {
-    '&::after': {
-      borderRightColor: '#374151',
-    },
-  },
+  }
 });
 
 export const PyrenzMessageBox = ({ children, onClick, sx, className }: PyrenzMessageBoxProps) => {

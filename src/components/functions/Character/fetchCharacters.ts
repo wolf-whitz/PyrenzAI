@@ -1,50 +1,40 @@
-import { supabase } from '~/Utility/supabaseClient';
-
-interface Character {
-  id: number;
-  input_char_uuid: string;
-  name: string;
-  description: string;
-  first_message: string;
-  profile_image: string;
-  tags: string[];
-  creator: string;
-  chat_messages_count: number;
-  is_public: boolean;
-  token_total: number;
-}
+import { supabase } from '~/Utility/supabaseClient'
+import { Character } from '@shared-types/CharacterProp'
 
 interface FetchCharactersResponse {
-  characters: Character[];
-  total: number;
+  characters: Character[]
+  total: number
 }
 
 export async function fetchCharacters(
   requestType: string,
-  searchTerm: string | null = null,
-  page: number = 1,
+  _searchTerm: string | null = null,
+  _page: number = 1,
   itemsPerPage: number = 10
 ): Promise<FetchCharactersResponse> {
   if (requestType !== 'character') {
-    throw new Error(`Invalid request_type: ${requestType}`);
+    throw new Error(`Invalid request_type: ${requestType}`)
   }
 
-  const query = supabase
-    .from('characters')
-    .select('*', { count: 'exact' })
-    .eq('is_nsfw', false)
-    .ilike('name', `%${searchTerm ? searchTerm.toLowerCase() : ''}%`)
-    .range((page - 1) * itemsPerPage, page * itemsPerPage - 1);
-
-  const { data, error, count } = await query;
+  const { data, error } = await supabase.rpc('weighted_character_sample')
 
   if (error) {
-    throw new Error(`Error fetching characters: ${error.message}`);
+    throw new Error(`RPC error: ${error.message}`)
   }
 
-  const characters = data ? data : [];
+  const uniqueMap = new Map<string, Character>()
+  data.forEach((char: Character) => {
+    if (!uniqueMap.has(char.id)) {
+      uniqueMap.set(char.id, char)
+    }
+  })
+
+  const characters = Array.from(uniqueMap.values())
+    .sort((a, b) => b.chat_messages_count - a.chat_messages_count)
+    .slice(0, itemsPerPage)
+
   return {
     characters,
-    total: count ?? 0,
-  };
+    total: characters.length,
+  }
 }
