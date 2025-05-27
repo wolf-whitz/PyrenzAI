@@ -1,7 +1,7 @@
 import React from 'react';
 import { Avatar, Typography, IconButton, useTheme, useMediaQuery, Box, Fade, Container } from '@mui/material';
 import { ArrowLeft, Settings } from 'lucide-react';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 
 interface ChatHeaderProps {
   char: {
@@ -14,11 +14,11 @@ interface ChatHeaderProps {
 
 export function ChatHeader({ char, handleGoHome, toggleSettings }: ChatHeaderProps) {
   const theme = useTheme();
-  const isMdScreen = useMediaQuery(theme.breakpoints.up('md'));
+  const isMdScreen = useMediaQuery(theme.breakpoints.up('lg'));
   const navigate = useNavigate();
 
   const handleArrowLeftClick = () => {
-    navigate('/#'); 
+    navigate('/#');
   };
 
   return (
@@ -38,13 +38,15 @@ export function ChatHeader({ char, handleGoHome, toggleSettings }: ChatHeaderPro
               gap: 1,
             }}
           >
-            <IconButton
-              onClick={handleArrowLeftClick}
-              sx={{ color: 'grey', '&:hover': { color: 'white' } }}
-              aria-label="Go to home"
-            >
-              <ArrowLeft size={24} />
-            </IconButton>
+            {!isMdScreen && (
+              <IconButton
+                onClick={handleArrowLeftClick}
+                sx={{ color: 'grey', '&:hover': { color: 'white' } }}
+                aria-label="Go to home"
+              >
+                <ArrowLeft size={24} />
+              </IconButton>
+            )}
             <IconButton
               onClick={handleGoHome}
               sx={{ color: 'grey', '&:hover': { color: 'white' } }}

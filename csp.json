@@ -34,12 +34,12 @@
     "https://*.supabase.co",
     "https://*.pyrenzai.com",
     "https://pagead2.googlesyndication.com",
-    "http://localhost:3000 ",
     "https://*.clerk.accounts.dev",
     "https://*.jsdelivr.net",
     "https://*.pollinations.ai",
     "https://*.cloudflareinsights.com",
-    "https://cloudflareinsights.com"
+    "https://cloudflareinsights.com",
+    "http://server.pyrenzai.com"
   ],
   "media-src": ["'self'", "blob:"],
   "font-src": ["'self'", "*"],

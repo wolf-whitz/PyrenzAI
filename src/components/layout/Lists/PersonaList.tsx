@@ -10,6 +10,7 @@ interface PersonaCardProps {
   persona_profile?: string;
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
+  onEdit: (id: string) => void;
 }
 
 interface PersonaListProps {
@@ -35,6 +36,7 @@ export function PersonaList({ personaData, loading }: PersonaListProps) {
             persona_profile={persona.persona_profile}
             onSelect={persona.onSelect}
             onDelete={persona.onDelete}
+            onEdit={persona.onEdit}
           />
         ))
       ) : (

@@ -10,6 +10,7 @@ interface PersonaCardProps {
   persona_profile?: string;
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
+  onEdit: (id: string) => void; // Add onEdit prop
 }
 
 export function PersonaCard({
@@ -20,6 +21,7 @@ export function PersonaCard({
   persona_profile,
   onSelect,
   onDelete,
+  onEdit, // Add onEdit to the destructured props
 }: PersonaCardProps) {
   const truncateDescription = (description: string, limit: number = 100) => {
     return description.length > limit
@@ -44,6 +46,11 @@ export function PersonaCard({
 
   const handleDelete = () => {
     onDelete(id);
+    handleMenuClose();
+  };
+
+  const handleEdit = () => {
+    onEdit(id); 
     handleMenuClose();
   };
 
@@ -97,6 +104,7 @@ export function PersonaCard({
         }}
       >
         <MenuItem onClick={handleSelect}>Select</MenuItem>
+        <MenuItem onClick={handleEdit}>Edit</MenuItem> 
         <MenuItem onClick={handleDelete}>Delete</MenuItem>
       </Menu>
     </div>

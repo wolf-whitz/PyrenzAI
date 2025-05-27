@@ -158,7 +158,15 @@ export function Account() {
           <Button
             onClick={toggleModal}
             style={{ color: '#fff', minWidth: 0 }}
-            startIcon={<ChevronLeft />}
+            startIcon={<ChevronLeft className="chevron-icon" />}
+            sx={{
+              '&:hover .chevron-icon': {
+                color: 'blue',
+              },
+              '& .chevron-icon[style*="transform: scaleX(-1)"]': {
+                color: 'blue',
+              },
+            }}
           />
         </motion.div>
       </Box>
@@ -178,7 +186,15 @@ export function Account() {
           <Button
             onClick={handleLogOut}
             style={{ color: '#fff', minWidth: 0 }}
-            startIcon={<ChevronLeft />}
+            startIcon={<ChevronLeft className="chevron-icon" />}
+            sx={{
+              '&:hover .chevron-icon': {
+                color: 'blue',
+              },
+              '& .chevron-icon[style*="transform: scaleX(-1)"]': {
+                color: 'blue',
+              },
+            }}
           />
         </motion.div>
       </Box>
@@ -198,7 +214,15 @@ export function Account() {
           <Button
             onClick={handleDeleteAccount}
             style={{ color: '#fff', minWidth: 0 }}
-            startIcon={<ChevronLeft />}
+            startIcon={<ChevronLeft className="chevron-icon" />}
+            sx={{
+              '&:hover .chevron-icon': {
+                color: 'blue',
+              },
+              '& .chevron-icon[style*="transform: scaleX(-1)"]': {
+                color: 'blue',
+              },
+            }}
           />
         </motion.div>
       </Box>

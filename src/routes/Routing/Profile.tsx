@@ -39,6 +39,14 @@ export function ProfilePage() {
 
   const { characters, userData, loading } = GetUserCreatedCharacters(safeUuid);
 
+  const cardHoverStyle = {
+    transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
+    '&:hover': {
+      transform: 'translateY(-5px)',
+      boxShadow: '0 10px 20px rgba(0, 0, 0, 0.2)',
+    },
+  };
+
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
       <Box display="flex" flex={1}>
@@ -77,7 +85,7 @@ export function ProfilePage() {
                 const isOwner = character.creator_uuid === safeUuid;
                 console.log('isOwner', isOwner);
                 return (
-                  <Box key={character.id}>
+                  <Box key={character.id} sx={cardHoverStyle}>
                     <CharacterCard character={character} isOwner={isOwner} />
                   </Box>
                 );

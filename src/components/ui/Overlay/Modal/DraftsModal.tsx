@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react';
-import ReactDOM from 'react-dom';
 import { motion } from 'framer-motion';
 import { supabase } from '~/Utility/supabaseClient';
 import { GetUserUUID } from '@components';
@@ -11,6 +10,10 @@ import {
   Card,
   CardContent,
   CardActions,
+  Box,
+  Modal,
+  Backdrop,
+  Fade,
 } from '@mui/material';
 import { Draft } from '@shared-types/CharacterProp';
 
@@ -135,93 +138,113 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
     }
   };
 
-  return ReactDOM.createPortal(
-    <motion.div
-      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70"
-      onClick={onClose}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+  return (
+    <Modal
+      open={true}
+      onClose={onClose}
+      aria-labelledby="drafts-modal-title"
+      aria-describedby="drafts-modal-description"
+      closeAfterTransition
+      BackdropComponent={Backdrop}
+      BackdropProps={{
+        timeout: 500,
+      }}
     >
-      <motion.div
-        className="bg-gray-900 text-white p-6 rounded-lg shadow-lg w-full max-w-md max-h-screen overflow-y-auto"
-        onClick={(e) => e.stopPropagation()}
-        initial={{ scale: 0.9 }}
-        animate={{ scale: 1 }}
-        exit={{ scale: 0.9 }}
-      >
-        <Typography variant="h5" component="h2" className="text-center mb-4">
-          Select a Draft
-        </Typography>
-        {loading ? (
-          <>
-            <SkeletonLoader />
-            <SkeletonLoader />
-            <SkeletonLoader />
-          </>
-        ) : displayedDrafts.length === 0 ? (
-          <Typography variant="body1" className="text-center text-gray-400">
-            No drafts available.
-          </Typography>
-        ) : (
-          <>
-            {displayedDrafts.map((draft) => (
-              <Card
-                key={draft.id}
-                className="bg-gray-800 p-4 rounded-lg mb-4 relative border border-gray-700 hover:border-gray-500 transition-colors"
-              >
-                <CardActions className="absolute top-2 right-2">
-                  <IconButton
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleRemoveDraft(draft.id);
-                    }}
-                    className="text-red-500 hover:text-red-600"
+      <Fade in={true}>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '90vw',
+            maxWidth: 'md',
+            maxHeight: '90vh',
+            overflowY: 'auto',
+            bgcolor: 'background.paper',
+            boxShadow: 24,
+            p: 4,
+            borderRadius: '8px',
+          }}
+        >
+          <motion.div
+            initial={{ scale: 0.9 }}
+            animate={{ scale: 1 }}
+            exit={{ scale: 0.9 }}
+          >
+            <Typography variant="h5" component="h2" className="text-center mb-4">
+              Select a Draft
+            </Typography>
+            {loading ? (
+              <>
+                <SkeletonLoader />
+                <SkeletonLoader />
+                <SkeletonLoader />
+              </>
+            ) : displayedDrafts.length === 0 ? (
+              <Typography variant="body1" className="text-center text-gray-400">
+                No drafts available.
+              </Typography>
+            ) : (
+              <>
+                {displayedDrafts.map((draft) => (
+                  <Card
+                    key={draft.id}
+                    className="bg-gray-800 p-4 rounded-lg mb-4 relative border border-gray-700 hover:border-gray-500 transition-colors"
                   >
-                    <Trash />
-                  </IconButton>
-                </CardActions>
-                <CardContent
-                  onClick={() => onSelect(draft)}
-                  className="cursor-pointer"
-                >
-                  <Typography
-                    variant="h6"
-                    component="h3"
-                    className="text-xl font-semibold mb-2"
-                  >
-                    {draft.name || 'Untitled Draft'}
-                  </Typography>
-                  <Typography variant="body2" className="text-gray-400 mb-2">
-                    {draft.description || 'No description available.'}
-                  </Typography>
-                  <Typography
-                    variant="caption"
-                    className="text-gray-500 text-sm"
-                  >
-                    Created at: {new Date(draft.created_at).toLocaleString()}
-                  </Typography>
-                </CardContent>
-              </Card>
-            ))}
-            <div className="flex justify-between mt-4">
-              <Button
-                onClick={handlePrevPage}
-                disabled={currentPage === 0}
-                className="text-white p-2 rounded-lg bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50"
-                startIcon={<ChevronLeft />}
-              />
-              <Button
-                onClick={handleNextPage}
-                disabled={(currentPage + 1) * 3 >= drafts.length}
-                className="text-white p-2 rounded-lg bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50"
-                endIcon={<ChevronRight />}
-              />
-            </div>
-          </>
-        )}
-      </motion.div>
-    </motion.div>,
-    document.getElementById('modal-root')!
+                    <CardActions className="absolute top-2 right-2">
+                      <IconButton
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRemoveDraft(draft.id);
+                        }}
+                        className="text-red-500 hover:text-red-600"
+                      >
+                        <Trash />
+                      </IconButton>
+                    </CardActions>
+                    <CardContent
+                      onClick={() => onSelect(draft)}
+                      className="cursor-pointer"
+                    >
+                      <Typography
+                        variant="h6"
+                        component="h3"
+                        className="text-xl font-semibold mb-2"
+                      >
+                        {draft.name || 'Untitled Draft'}
+                      </Typography>
+                      <Typography variant="body2" className="text-gray-400 mb-2">
+                        {draft.description || 'No description available.'}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        className="text-gray-500 text-sm"
+                      >
+                        Created at: {new Date(draft.created_at).toLocaleString()}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                ))}
+                <div className="flex justify-between mt-4">
+                  <Button
+                    onClick={handlePrevPage}
+                    disabled={currentPage === 0}
+                    className="text-white p-2 rounded-lg bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50"
+                    startIcon={<ChevronLeft />}
+                  />
+                  <Button
+                    onClick={handleNextPage}
+                    disabled={(currentPage + 1) * 3 >= drafts.length}
+                    className="text-white p-2 rounded-lg bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50"
+                    endIcon={<ChevronRight />}
+                  />
+                </div>
+              </>
+            )}
+          </motion.div>
+        </Box>
+      </Fade>
+    </Modal>
   );
 }

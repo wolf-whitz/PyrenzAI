@@ -5,6 +5,10 @@ import {
   Typography,
   SelectChangeEvent,
   CircularProgress,
+  Box,
+  Modal,
+  Backdrop,
+  Fade,
 } from '@mui/material';
 import { Textarea, AISelectDropdown } from '~/components';
 import { Utils } from '~/Utility/Utility';
@@ -162,59 +166,78 @@ export function ImportCharacterModal({
   };
 
   return (
-    <>
-      <motion.div
-        className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-      >
-        <motion.div
-          className="bg-black p-6 rounded-lg shadow-lg w-full max-w-md"
-          initial={{ scale: 0.8 }}
-          animate={{ scale: 1 }}
-          exit={{ scale: 0.8 }}
+    <Modal
+      open={true}
+      onClose={onClose}
+      aria-labelledby="import-character-modal-title"
+      aria-describedby="import-character-modal-description"
+      closeAfterTransition
+      BackdropComponent={Backdrop}
+      BackdropProps={{
+        timeout: 500,
+      }}
+    >
+      <Fade in={true}>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '90vw',
+            maxWidth: 'md',
+            bgcolor: 'background.paper',
+            boxShadow: 24,
+            p: 4,
+            borderRadius: '8px',
+          }}
         >
-          <div className="mt-4">
-            <AISelectDropdown
-              options={aiOptions}
-              selectedAI={selectedAI}
-              placeholder={placeholder}
-              onAISelectionChange={handleAISelectionChange}
-            />
-            <Textarea
-              label="Import a character using link"
-              value={link}
-              onChange={handleLinkChange}
-              className="mt-2 w-full"
-              placeholder={placeholder || 'Enter link here'}
-              maxLength={100}
-              require_link={true}
-            />
-          </div>
-          <div className="flex justify-end mt-4 space-x-2">
-            <Button
-              variant="outlined"
-              onClick={onClose}
-              sx={{ color: 'white', borderColor: 'white' }}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleImport}
-              disabled={loading || !link || !selectedAI}
-            >
-              {loading ? (
-                <CircularProgress size={24} sx={{ color: 'white' }} />
-              ) : (
-                'Import'
-              )}
-            </Button>
-          </div>
-        </motion.div>
-      </motion.div>
-    </>
+          <motion.div
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1 }}
+            exit={{ scale: 0.8 }}
+          >
+            <div className="mt-4">
+              <AISelectDropdown
+                options={aiOptions}
+                selectedAI={selectedAI}
+                placeholder={placeholder}
+                onAISelectionChange={handleAISelectionChange}
+              />
+              <Textarea
+                label="Import a character using link"
+                value={link}
+                onChange={handleLinkChange}
+                className="mt-2 w-full"
+                placeholder={placeholder || 'Enter link here'}
+                maxLength={100}
+                require_link={true}
+              />
+            </div>
+            <div className="flex justify-end mt-4 space-x-2">
+              <Button
+                variant="outlined"
+                onClick={onClose}
+                sx={{ color: 'white', borderColor: 'white' }}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleImport}
+                disabled={loading || !link || !selectedAI}
+              >
+                {loading ? (
+                  <CircularProgress size={24} sx={{ color: 'white' }} />
+                ) : (
+                  'Import'
+                )}
+              </Button>
+            </div>
+          </motion.div>
+        </Box>
+      </Fade>
+    </Modal>
   );
 }

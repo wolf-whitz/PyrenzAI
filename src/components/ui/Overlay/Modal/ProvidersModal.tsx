@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
+  Modal,
+  Box,
   Button,
   Card,
   CardContent,
   Typography,
 } from '@mui/material';
-import ReactDOM from 'react-dom';
 import { supabase } from '~/Utility/supabaseClient';
+import { PyrenzBlueButton } from '~/theme';
+import { CreateProviderModal } from '@components';
 
 interface Provider {
   provider_name: string;
@@ -32,6 +31,7 @@ export function ProviderModals({
 }: ProviderModalsProps) {
   const [providers, setProviders] = useState<Provider[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [createModalOpen, setCreateModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchProviders = async () => {
@@ -64,107 +64,123 @@ export function ProviderModals({
     onClose();
   };
 
+  const handleOpenCreateModal = () => {
+    setCreateModalOpen(true);
+  };
+
+  const handleCloseCreateModal = () => {
+    setCreateModalOpen(false);
+  };
+
   if (!open) return null;
 
-  const modalRoot = document.getElementById('modal-root');
-  if (!modalRoot) {
-    console.error('Modal root element not found');
-    return null;
-  }
-
-  return ReactDOM.createPortal(
-    <Dialog
-      open={open}
-      onClose={onClose}
-      fullWidth
-      maxWidth="md"
-      className="p-4"
-    >
-      <DialogTitle className="text-2xl font-bold">
-        Premade Providers
-      </DialogTitle>
-      <DialogContent>
-        {loading ? (
-          <Typography className="text-gray-600">
-            Loading providers...
+  return (
+    <>
+      <Modal
+        open={open}
+        onClose={onClose}
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
+      >
+        <Box sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '80%',
+          maxWidth: 'md',
+          bgcolor: 'background.paper',
+          boxShadow: 24,
+          p: 4,
+          display: 'flex',
+          flexDirection: 'column',
+         }}>
+          <Typography id="modal-title" variant="h6" component="h2" className="text-2xl font-bold">
+            Premade Providers
           </Typography>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {providers.map((provider) => (
-              <Card
-                key={provider.provider_name}
-                className="shadow-md rounded-lg"
-              >
-                <CardContent className="p-4">
-                  <Typography
-                    variant="h5"
-                    component="div"
-                    className="text-xl font-semibold"
+          <Box id="modal-description" sx={{ mt: 2, flexGrow: 1, overflow: 'auto' }}>
+            {loading ? (
+              <Typography className="text-gray-600">
+                Loading providers...
+              </Typography>
+            ) : (
+              <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: '1fr 1fr 1fr' }, gap: 2 }}>
+                {providers.map((provider) => (
+                  <Card
+                    key={provider.provider_name}
+                    sx={{ boxShadow: 3, borderRadius: 2 }}
                   >
-                    {provider.provider_name}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    className="text-gray-600"
-                  >
-                    {provider.provider_description}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    className="text-gray-600"
-                  >
-                    Website:{' '}
-                    <a
-                      href={provider.provider_website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-500 underline"
-                    >
-                      {provider.provider_website}
-                    </a>
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    className="text-gray-600"
-                  >
-                    API Link:{' '}
-                    <a
-                      href={provider.provider_api_link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-500 underline"
-                    >
-                      {provider.provider_api_link}
-                    </a>
-                  </Typography>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => handleSelect(provider)}
-                    fullWidth
-                    className="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                  >
-                    Select
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
-      </DialogContent>
-      <DialogActions>
-        <Button
-          onClick={onClose}
-          color="primary"
-          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-        >
-          Cancel
-        </Button>
-      </DialogActions>
-    </Dialog>,
-    modalRoot
+                    <CardContent sx={{ p: 2 }}>
+                      <Typography
+                        variant="h5"
+                        component="div"
+                        sx={{ fontSize: '1.25rem', fontWeight: 'bold' }}
+                      >
+                        {provider.provider_name}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ color: 'text.secondary' }}
+                      >
+                        {provider.provider_description}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ color: 'text.secondary' }}
+                      >
+                        Website:{' '}
+                        <a
+                          href={provider.provider_website}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ color: '#3b82f6', textDecoration: 'underline' }}
+                        >
+                          {provider.provider_website}
+                        </a>
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ color: 'text.secondary' }}
+                      >
+                        API Link:{' '}
+                        <a
+                          href={provider.provider_api_link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ color: '#3b82f6', textDecoration: 'underline' }}
+                        >
+                          {provider.provider_api_link}
+                        </a>
+                      </Typography>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => handleSelect(provider)}
+                        fullWidth
+                        sx={{ mt: 1, bgcolor: '#3b82f6', '&:hover': { bgcolor: '#2563eb' }, color: 'white', fontWeight: 'bold', py: 1, px: 2, borderRadius: 1 }}
+                      >
+                        Select
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </Box>
+            )}
+          </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+            <PyrenzBlueButton onClick={handleOpenCreateModal}>
+              Create
+            </PyrenzBlueButton>
+          </Box>
+        </Box>
+      </Modal>
+      <CreateProviderModal
+        open={createModalOpen}
+        onClose={handleCloseCreateModal}
+      />
+    </>
   );
 }

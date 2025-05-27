@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import ReactDOM from 'react-dom';
 import {
   Box,
   Typography,
@@ -10,11 +9,13 @@ import {
   CardContent,
   Skeleton,
   Button,
+  Backdrop,
+  Fade,
 } from '@mui/material';
 import { supabase } from '~/Utility/supabaseClient';
 import * as Sentry from '@sentry/react';
 import { X } from 'lucide-react';
-import { usePyrenzAlert } from '~/provider';  
+import { usePyrenzAlert } from '~/provider';
 
 interface CharacterCard {
   id: string;
@@ -42,7 +43,7 @@ export function CharacterCardImageModal({
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isFetching, setIsFetching] = useState(false);
-  const showAlert = usePyrenzAlert(); 
+  const showAlert = usePyrenzAlert();
 
   const fetchCharacterCards = async (page: number) => {
     if (isFetching) return;
@@ -69,7 +70,7 @@ export function CharacterCardImageModal({
       ]);
     } catch (error) {
       console.error('Failed to fetch character cards', error);
-      showAlert('Failed to fetch character cards. Please try again.', 'Alert'); 
+      showAlert('Failed to fetch character cards. Please try again.', 'Alert');
       Sentry.captureException(error);
     } finally {
       setIsFetching(false);
@@ -106,16 +107,18 @@ export function CharacterCardImageModal({
 
   if (!isModalOpen) return null;
 
-  return ReactDOM.createPortal(
-    <>
-      <Modal
-        open={isModalOpen}
-        onClose={() => setModalOpen(false)}
-        aria-labelledby="character-card-image-modal"
-        aria-describedby="character-card-image-modal-description"
-        className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
-      >
-        <Box className="w-full max-w-4xl h-full bg-gray-900 text-white shadow-xl rounded-xl p-6 overflow-y-auto relative">
+  return (
+    <Modal
+      open={isModalOpen}
+      onClose={() => setModalOpen(false)}
+      closeAfterTransition
+      BackdropComponent={Backdrop}
+      BackdropProps={{
+        timeout: 500,
+      }}
+    >
+      <Fade in={isModalOpen}>
+        <Box className="top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl h-full bg-gray-900 text-white shadow-xl rounded-xl p-6 overflow-y-auto relative">
           <button
             onClick={() => setModalOpen(false)}
             className="absolute top-4 right-4 p-2 bg-gray-800 rounded-full"
@@ -184,8 +187,7 @@ export function CharacterCardImageModal({
             </div>
           )}
         </Box>
-      </Modal>
-    </>,
-    document.getElementById('modal-root')!
+      </Fade>
+    </Modal>
   );
 }

@@ -145,17 +145,24 @@ export const usePersonaAPI = () => {
   }, [userUuid, uploadImageToStorage]);
 
   const handleSelectPersona = useCallback(async (id: string) => {
+    if (!userUuid) return;
+
     try {
       await supabase
-        .from('personas')
+        .from("personas")
+        .update({ is_selected: false })
+        .eq("user_uuid", userUuid);
+
+      await supabase
+        .from("personas")
         .update({ is_selected: true })
-        .eq('id', id);
+        .eq("id", id);
 
       await fetchPersona();
     } catch (error) {
-      console.error('Failed to update persona selection', error);
+      console.error("Failed to update persona selection", error);
     }
-  }, [fetchPersona]);
+  }, [userUuid, fetchPersona]);
 
   const handleDeletePersona = useCallback(async (id: string) => {
     try {
@@ -170,6 +177,52 @@ export const usePersonaAPI = () => {
     }
   }, [fetchPersona]);
 
+  const handleEditPersona = useCallback(async (
+    id: string,
+    newPersonaName: string,
+    newPersonaDescription: string,
+    selectedImage: string,
+    setNewPersonaName: React.Dispatch<React.SetStateAction<string>>,
+    setNewPersonaDescription: React.Dispatch<React.SetStateAction<string>>,
+    setSelectedImage: React.Dispatch<React.SetStateAction<string>>,
+    setModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
+    setEditingPersona: React.Dispatch<React.SetStateAction<PersonaCard | null>>
+  ) => {
+    if (!newPersonaName || !newPersonaDescription || !userUuid) return;
+
+    setCreating(true);
+    try {
+      let imageUrl = selectedImage;
+      if (selectedImage && !selectedImage.startsWith('http')) {
+        imageUrl = await uploadImageToStorage(selectedImage);
+      }
+
+      const { error } = await supabase
+        .from('personas')
+        .update({
+          persona_name: newPersonaName,
+          persona_description: newPersonaDescription,
+          persona_profile: imageUrl,
+        })
+        .eq('id', id);
+
+      if (error) {
+        throw error;
+      }
+
+      await fetchPersona();
+      setNewPersonaName('');
+      setNewPersonaDescription('');
+      setSelectedImage('');
+      setModalOpen(false);
+      setEditingPersona(null);
+    } catch (error) {
+      console.error('Failed to edit persona', error);
+    } finally {
+      setCreating(false);
+    }
+  }, [userUuid, uploadImageToStorage, fetchPersona]);
+
   return {
     personaData,
     loading,
@@ -182,5 +235,6 @@ export const usePersonaAPI = () => {
     handleCreatePersona,
     handleSelectPersona,
     handleDeletePersona,
+    handleEditPersona,
   };
 };

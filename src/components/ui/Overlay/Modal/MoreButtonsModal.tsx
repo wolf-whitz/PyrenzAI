@@ -1,8 +1,15 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
-import { Button, TextField, CircularProgress, Modal } from '@mui/material';
+import {
+  Button,
+  TextField,
+  CircularProgress,
+  Box,
+  Modal,
+  Backdrop,
+  Fade,
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { GetCharactersWithTags } from '@components';
 import {
@@ -114,76 +121,93 @@ export function MoreButtonsModal({
     onClose();
   };
 
-  if (!isOpen) return null;
-
-  return createPortal(
+  return (
     <Modal
       open={isOpen}
       onClose={onClose}
       aria-labelledby="more-buttons-modal"
       aria-describedby="more-buttons-modal-description"
-      className="flex items-center justify-center"
-      style={{ backdropFilter: 'blur(4px)' }}
+      closeAfterTransition
+      BackdropComponent={Backdrop}
+      BackdropProps={{
+        timeout: 500,
+      }}
     >
-      <motion.div
-        ref={modalRef}
-        initial={{ scale: 0.5 }}
-        animate={{ scale: 1 }}
-        exit={{ scale: 0.5 }}
-        className="bg-black p-6 rounded-lg border border-[#add8e6] w-full max-w-xs"
-      >
-        <TextField
-          label={t('search.placeholder')}
-          variant="outlined"
-          value={searchQuery}
-          onChange={handleSearch}
-          fullWidth
-          InputProps={{
-            className: 'text-white border-white',
+      <Fade in={isOpen}>
+        <Box
+          ref={modalRef}
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '90%',
+            maxWidth: 'xs',
+            bgcolor: 'background.paper',
+            boxShadow: 24,
+            p: 4,
+            borderRadius: '8px',
+            border: '1px solid #add8e6',
           }}
-          InputLabelProps={{
-            className: 'text-white',
-          }}
-          className="mb-4"
-        />
-        <div className="flex flex-col gap-2">
-          {loading ? (
-            <LoadingSpinner />
-          ) : (
-            filteredModalButtons.map((btn, index) => (
-              <motion.div
-                key={index}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Button
-                  variant="outlined"
-                  startIcon={
-                    'icon' in btn && btn.icon ? (
-                      React.createElement(btn.icon, { size: 24 })
-                    ) : (
-                      <Tag size={24} />
-                    )
-                  }
-                  onClick={() => handleButtonClick(btn)}
-                  fullWidth
-                  className="justify-start normal-case text-base"
-                  sx={{
-                    borderColor: '#add8e6',
-                    color: '#fff',
-                    '&:hover': {
-                      borderColor: '#add8e6',
-                    },
-                  }}
-                >
-                  {'icon' in btn ? t(btn.label) : btn.name}
-                </Button>
-              </motion.div>
-            ))
-          )}
-        </div>
-      </motion.div>
-    </Modal>,
-    document.getElementById('modal-root')!
+        >
+          <motion.div
+            initial={{ scale: 0.5 }}
+            animate={{ scale: 1 }}
+            exit={{ scale: 0.5 }}
+          >
+            <TextField
+              label={t('search.placeholder')}
+              variant="outlined"
+              value={searchQuery}
+              onChange={handleSearch}
+              fullWidth
+              InputProps={{
+                className: 'text-white border-white',
+              }}
+              InputLabelProps={{
+                className: 'text-white',
+              }}
+              className="mb-4"
+            />
+            <div className="flex flex-col gap-2">
+              {loading ? (
+                <LoadingSpinner />
+              ) : (
+                filteredModalButtons.map((btn, index) => (
+                  <motion.div
+                    key={index}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Button
+                      variant="outlined"
+                      startIcon={
+                        'icon' in btn && btn.icon ? (
+                          React.createElement(btn.icon, { size: 24 })
+                        ) : (
+                          <Tag size={24} />
+                        )
+                      }
+                      onClick={() => handleButtonClick(btn)}
+                      fullWidth
+                      className="justify-start normal-case text-base"
+                      sx={{
+                        borderColor: '#add8e6',
+                        color: '#fff',
+                        '&:hover': {
+                          borderColor: '#add8e6',
+                        },
+                      }}
+                    >
+                      {'icon' in btn ? t(btn.label) : btn.name}
+                    </Button>
+                  </motion.div>
+                ))
+              )}
+            </div>
+          </motion.div>
+        </Box>
+      </Fade>
+    </Modal>
   );
 }

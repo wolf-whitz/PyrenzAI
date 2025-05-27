@@ -17,3 +17,4 @@ export * from './ProvidersModal';
 export * from './ArchiveModal';
 
 export * from './ImportCharacterModal';
+export * from './CreateProviderModal';

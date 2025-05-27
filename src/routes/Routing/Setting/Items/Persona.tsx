@@ -9,6 +9,13 @@ import {
 } from '@components';
 import { usePersonaAPI } from '@api';
 
+interface Persona {
+  id: string;
+  persona_name: string;
+  persona_description: string;
+  persona_profile?: string;
+}
+
 export function Persona() {
   const {
     personaData,
@@ -21,7 +28,8 @@ export function Persona() {
     checkAdminStatus,
     handleCreatePersona,
     handleSelectPersona,
-    handleDeletePersona
+    handleDeletePersona,
+    handleEditPersona
   } = usePersonaAPI();
 
   const [isModalOpen, setModalOpen] = useState(false);
@@ -30,6 +38,7 @@ export function Persona() {
   const [isCreateCharacterCardImageModalOpen, setCreateCharacterCardImageModalOpen] = useState(false);
   const [isCharacterCardImageModalOpen, setCharacterCardImageModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
+  const [editingPersona, setEditingPersona] = useState<Persona | null>(null);
 
   useEffect(() => {
     fetchUserUuid();
@@ -54,6 +63,21 @@ export function Persona() {
     );
   }, [newPersonaName, newPersonaDescription, selectedImage, handleCreatePersona]);
 
+  const editPersona = useCallback(async () => {
+    if (!editingPersona) return;
+    await handleEditPersona(
+      editingPersona.id,
+      newPersonaName,
+      newPersonaDescription,
+      selectedImage,
+      setNewPersonaName,
+      setNewPersonaDescription,
+      setSelectedImage,
+      setModalOpen,
+      setEditingPersona
+    );
+  }, [editingPersona, newPersonaName, newPersonaDescription, selectedImage, handleEditPersona]);
+
   if (!userUuid) {
     return (
       <div className="flex flex-col gap-4">
@@ -64,10 +88,22 @@ export function Persona() {
     );
   }
 
+  const handleEdit = (id: string) => {
+    const personaToEdit = personaData.find(persona => persona.id === id);
+    if (personaToEdit) {
+      setEditingPersona(personaToEdit);
+      setNewPersonaName(personaToEdit.persona_name);
+      setNewPersonaDescription(personaToEdit.persona_description);
+      setSelectedImage(personaToEdit.persona_profile || '');
+      setModalOpen(true);
+    }
+  };
+
   const personaDataWithHandlers = personaData.map(persona => ({
     ...persona,
     onSelect: () => handleSelectPersona(persona.id),
-    onDelete: () => handleDeletePersona(persona.id) 
+    onDelete: () => handleDeletePersona(persona.id),
+    onEdit: () => handleEdit(persona.id)
   }));
 
   return (
@@ -82,7 +118,10 @@ export function Persona() {
       />
 
       <PyrenzBlueButton
-        onClick={() => setModalOpen(true)}
+        onClick={() => {
+          setEditingPersona(null);
+          setModalOpen(true);
+        }}
         className="mx-auto mt-4 px-3 py-1 text-sm normal-case"
         size="small"
       >
@@ -116,11 +155,12 @@ export function Persona() {
         setNewPersonaName={setNewPersonaName}
         newPersonaDescription={newPersonaDescription}
         setNewPersonaDescription={setNewPersonaDescription}
-        handleCreatePersona={createPersona}
+        handleCreatePersona={editingPersona ? editPersona : createPersona}
         creating={creating}
         setCharacterCardImageModalOpen={setCharacterCardImageModalOpen}
         selectedImage={selectedImage}
         setSelectedImage={setSelectedImage}
+        isEditing={!!editingPersona} 
       />
 
       {isCreateCharacterCardImageModalOpen && (
