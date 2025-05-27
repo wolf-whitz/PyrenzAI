@@ -12,8 +12,7 @@
     "https://*.hcaptcha.com",
     "https://*.google.com",
     "https://*.clerk.accounts.dev",
-    "https://*.cloudflareinsights.com",
-    "http://*.cloudflareinsights.com"
+    "https://*.cloudflareinsights.com"
   ],
   "style-src": [
     "'self'",
