@@ -1,7 +1,8 @@
 /*
-Helper to automatically sync csp.json to vercel.json by updating
-the Content-Security-Policy header's value inside the nested headers array
-where source is "/(.*)". This respects the Vercel schema validation.
+Csp parser for vercel.json
+This script reads a CSP configuration from a JSON file (csp.json),
+and updates the Vercel configuration file (vercel.json) to include the CSP header.
+It ensures that the CSP header is added to the route that matches all paths ('/(.*)').
 */
 
 const fs = require('fs');
