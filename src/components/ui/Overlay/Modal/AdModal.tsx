@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Typography, CircularProgress } from '@mui/material';
+import React, { useEffect, useState, useRef } from 'react';
+import { Typography, CircularProgress } from '@mui/material';
 import CoffeeIcon from '@mui/icons-material/Coffee';
 import Confetti from 'react-confetti';
 import { Utils } from '~/Utility/Utility';
 import { GetUserUUID } from '@components';
+import { PyrenzBlueButton } from '~/theme';
+import { SubscriptionModal } from '~/components';
 
 interface AdModalProps {
   isOpen: boolean;
@@ -19,6 +21,9 @@ export function AdModal({ isOpen, onClose }: AdModalProps) {
   const [countdown, setCountdown] = useState(15);
   const [showExplosion, setShowExplosion] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+  const coffeeButtonRef = useRef<HTMLButtonElement>(null);
+  const [isHoldingCoffee, setIsHoldingCoffee] = useState(false);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -38,11 +43,24 @@ export function AdModal({ isOpen, onClose }: AdModalProps) {
   }, [isOpen]);
 
   const handleCoffeeClick = () => {
+    if (isHoldingCoffee) return;
     setShowExplosion(true);
     setTimeout(() => {
       setShowExplosion(false);
       window.location.href = 'https://ko-fi.com/whitzscott';
     }, 5000);
+  };
+
+  const handleCoffeeMouseDown = () => {
+    setIsHoldingCoffee(true);
+    setShowExplosion(true);
+    setTimeout(() => {
+      setShowExplosion(false);
+    }, 1000);
+  };
+
+  const handleCoffeeMouseUp = () => {
+    setIsHoldingCoffee(false);
   };
 
   const handleClose = async () => {
@@ -74,6 +92,10 @@ export function AdModal({ isOpen, onClose }: AdModalProps) {
     }
   };
 
+  const handleBuyPyrenzPlus = () => {
+    setShowSubscriptionModal(true);
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -85,11 +107,17 @@ export function AdModal({ isOpen, onClose }: AdModalProps) {
       )}
       <div className="bg-black bg-opacity-80 p-6 rounded-lg text-center w-full max-w-md relative">
         <div className="relative">
-          <CoffeeIcon
+          <button
+            ref={coffeeButtonRef}
             className={`mx-auto mb-4 text-white animate-bounce cursor-pointer ${showExplosion ? 'hidden' : ''}`}
-            style={{ fontSize: 48 }}
+            style={{ background: 'none', border: 'none', padding: 0 }}
             onClick={handleCoffeeClick}
-          />
+            onMouseDown={handleCoffeeMouseDown}
+            onMouseUp={handleCoffeeMouseUp}
+            onMouseLeave={handleCoffeeMouseUp}
+          >
+            <CoffeeIcon style={{ fontSize: 48 }} />
+          </button>
         </div>
         <Typography
           id="modal-modal-title"
@@ -106,7 +134,7 @@ export function AdModal({ isOpen, onClose }: AdModalProps) {
         <Typography variant="caption" className="text-gray-400 mb-4 block">
           PS: If you wanna donate press the coffee icon ;3
         </Typography>
-        <Button
+        <PyrenzBlueButton
           onClick={handleClose}
           disabled={countdown > 0 || isLoading}
           sx={{
@@ -126,8 +154,24 @@ export function AdModal({ isOpen, onClose }: AdModalProps) {
           ) : (
             'Close'
           )}
-        </Button>
+        </PyrenzBlueButton>
+        <PyrenzBlueButton
+          onClick={handleBuyPyrenzPlus}
+          sx={{
+            mt: 2,
+            ml: 2, 
+            backgroundColor: 'primary.main',
+            color: 'white',
+          }}
+          className="mt-4"
+        >
+          Buy Pyrenz+
+        </PyrenzBlueButton>
       </div>
+      <SubscriptionModal
+        isOpen={showSubscriptionModal}
+        onClose={() => setShowSubscriptionModal(false)}
+      />
     </div>
   );
 }

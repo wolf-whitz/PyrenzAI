@@ -27,8 +27,8 @@ export function ChatPage() {
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState<PersonaResponse | null>(null);
   const [userUuid, setUserUuid] = useState<string | null>(null);
-  const [chatDataFetched, setChatDataFetched] = useState(false);
   const [fetchError, setFetchError] = useState(false);
+  const [userDataError, setUserDataError] = useState(false);
 
   const { setFirstMessage, clearData } = useChatStore();
 
@@ -42,11 +42,39 @@ export function ChatPage() {
   }, []);
 
   useEffect(() => {
+    const fetchUserData = async () => {
+      if (!userUuid) return;
+
+      try {
+        const response = await GetUserData();
+        if ('error' in response) {
+          console.error('Error fetching user data:', response.error);
+          setUserDataError(true);
+          return;
+        }
+
+        const updatedUserData: PersonaResponse = {
+          user_uuid: userUuid,
+          name: response.username,
+          username: response.username,
+          icon: response.icon || '',
+        };
+
+        setUserData(updatedUserData);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        setUserDataError(true);
+      }
+    };
+
+    fetchUserData();
+  }, [userUuid]);
+
+  useEffect(() => {
     const getChatData = async () => {
-      if (chat_uuid && userUuid && userData && !chatDataFetched) {
+      if (chat_uuid && userUuid && userData) {
         try {
           clearData();
-          setChatDataFetched(true);
           const result = await fetchChatData(
             chat_uuid,
             userData.username,
@@ -76,43 +104,9 @@ export function ChatPage() {
     };
 
     getChatData();
-  }, [
-    chat_uuid,
-    userUuid,
-    userData,
-    setFirstMessage,
-    chatDataFetched,
-    clearData,
-  ]);
+  }, [chat_uuid, userUuid, userData, setFirstMessage, clearData]);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      if (!userUuid) return;
-
-      try {
-        const response = await GetUserData();
-        if ('error' in response) {
-          console.error('Error fetching user data:', response.error);
-          return;
-        }
-
-        const updatedUserData: PersonaResponse = {
-          user_uuid: userUuid,
-          name: response.username,
-          username: response.username,
-          icon: response.icon || '',
-        };
-
-        setUserData(updatedUserData);
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    };
-
-    fetchUserData();
-  }, [userUuid]);
-
-  if (loading) {
+  if (loading || (chatData && chatData.messages && chatData.messages.some((msg: any) => msg.id == null))) {
     return (
       <Box
         display="flex"
@@ -126,7 +120,7 @@ export function ChatPage() {
     );
   }
 
-  if (fetchError || !chatData || !chat_uuid) {
+  if (fetchError || !chatData || !chat_uuid || userDataError) {
     return (
       <motion.div
         initial={{ opacity: 0, y: 20 }}

@@ -84,11 +84,10 @@ export const useChatPageAPI = (
     if (!messageId) return;
 
     try {
-      const baseId = messageId.split('-')[0];
       const { error } = await supabase
         .from('chat_messages')
         .delete()
-        .eq('id', baseId);
+        .eq('id', messageId);
 
       if (error) {
         console.error('Error deleting message:', error);
@@ -101,13 +100,12 @@ export const useChatPageAPI = (
       console.error('Error deleting message:', error);
     }
   };
+
   const handleRegenerateMessage = async (messageId: string) => {
     if (!messageId) return;
     try {
-      const baseId = messageId.split('-')[0];
-
       const userMessage = previous_message.find(
-        (msg) => msg.id && msg.id.startsWith(baseId) && msg.type === 'user'
+        (msg) => msg.id === messageId && msg.type === 'user'
       );
 
       if (!userMessage) return;
@@ -126,24 +124,25 @@ export const useChatPageAPI = (
     type: 'user' | 'char'
   ) => {
     if (!messageId || !editedMessage) return;
-
+  
     try {
-      const baseId = messageId.split('-')[0];
       const columnName = type === 'user' ? 'user_message' : 'char_message';
       const { error } = await supabase
         .from('chat_messages')
         .update({ [columnName]: editedMessage })
-        .eq('id', baseId)
+        .eq('id', messageId)
         .eq('user_uuid', user.user_uuid)
         .eq('chat_uuid', chat_uuid);
-
+  
       if (error) {
         console.error('Error updating message:', error);
       } else {
         console.log('Message updated successfully');
         setMessages((prevMessages) =>
           prevMessages.map((msg) =>
-            msg.id === messageId ? { ...msg, text: editedMessage } : msg
+            msg.id === messageId && msg.type === type
+              ? { ...msg, text: editedMessage }
+              : msg
           )
         );
       }
@@ -151,6 +150,7 @@ export const useChatPageAPI = (
       console.error('Error updating message:', error);
     }
   };
+  
 
   return {
     bgImage,

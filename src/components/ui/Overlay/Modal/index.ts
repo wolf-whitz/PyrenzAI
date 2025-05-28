@@ -18,3 +18,5 @@ export * from './ArchiveModal';
 
 export * from './ImportCharacterModal';
 export * from './CreateProviderModal';
+
+export * from './SubscriptionModal';

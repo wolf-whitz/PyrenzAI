@@ -29,5 +29,5 @@
       "@shared-types/*": ["src/components/shared-types/*"]
     }
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "electron"]
 }

@@ -73,7 +73,7 @@ export const MessageBox: React.FC<MessageBoxProps> = ({
     editingMessageId === msg.id &&
     editingMessageType === (isUser ? 'user' : 'char');
 
-  return (
+   return (
     <Box
       key={msg.id ? `${msg.id}-${index}` : `temp-${index}`}
       display="flex"
@@ -159,8 +159,6 @@ export const MessageBox: React.FC<MessageBoxProps> = ({
             }
             size="small"
           >
-            {' '}
-            {/* pass 'char' */}
             <EditIcon />
           </IconButton>
         </Box>
