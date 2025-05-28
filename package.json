@@ -158,5 +158,21 @@
   },
   "engines": {
     "node": ">=20.0.0"
+  },
+  "build": {
+    "appId": "com.pyrenzai.pyrenzai",
+    "productName": "PyrenzAI",
+    "win": {
+      "target": "nsis", 
+      "icon": "build/favicon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "files": [
+      "**/*",
+      "!node_modules/@sentry/cli-darwin/**"
+    ]
   }
 }
