@@ -1,8 +1,29 @@
 {
   "name": "pyrenz-ai",
+  "version": "1.0.0",
+  "description": "Pyrenz AI - A modern AI-powered application.",
+  "author": "Whitzscott",
+  "license": "GPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Whitzzscott/PyrenzAI/pyrenz-ai.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Whitzzscott/PyrenzAI/issues"
+  },
+  "homepage": "https://github.com/Whitzzscott/PyrenzAI#readme",
   "private": true,
   "sideEffects": false,
   "type": "module",
+  "keywords": [
+    "AI",
+    "chatbot",
+    "pyrenz",
+    "typescript",
+    "openai",
+    "gpt",
+    "machine-learning"
+  ],
   "scripts": {
     "build": "concurrently \"tsc -p tsconfig.build.json \" \"vite build \" && npm run sync",
     "format": "prettier --write .",
