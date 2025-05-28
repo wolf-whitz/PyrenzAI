@@ -39,15 +39,6 @@ const StyledPyrenzMessageBox = styled(Box)({
     left: '10px',
     borderTopColor: '#374151',
   },
-  '&.user': {
-    '&::after': {
-      left: 'auto',
-      right: '10px',
-      borderLeftColor: '#374151',
-      borderTopColor: 'transparent',
-      borderRightColor: 'transparent',
-    },
-  },
 });
 
 export const PyrenzMessageBox = ({

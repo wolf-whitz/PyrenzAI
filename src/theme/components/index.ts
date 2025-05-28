@@ -8,3 +8,4 @@ export * from './PyrenzMessageBox';
 export * from './PyrenzCharacteCard';
 
 export * from './PyrenzChatsCharacterCard';
+export * from './PyrenzRibbon';

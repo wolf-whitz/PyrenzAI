@@ -10,12 +10,14 @@ import { useTranslation } from 'react-i18next';
 
 interface AuthenticationModalProps {
   mode: 'login' | 'register';
+  isOpen: boolean;
   onClose: () => void;
   toggleMode: () => void;
 }
 
 export function AuthenticationModal({
   mode,
+  isOpen,
   onClose,
   toggleMode,
 }: AuthenticationModalProps) {
@@ -66,9 +68,9 @@ export function AuthenticationModal({
   };
 
   return ReactDOM.createPortal(
-    <Dialog.Root open onOpenChange={onClose}>
+    <Dialog.Root open={isOpen} onOpenChange={onClose}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-50 bg-black bg-opacity-50" />
+        <Dialog.Overlay className="fixed inset-0 z-[999px] bg-black bg-opacity-50" />
         <AnimatePresence>
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
