@@ -13,8 +13,7 @@ export const createCharacter = async (
 ): Promise<CreateCharacterResponse> => {
   try {
     const characterUuid = uuidv4();
-    console.log('Generated UUID:', characterUuid);
-
+    
     if (!characterUuid) {
       throw new Error('Failed to generate UUID.');
     }
@@ -25,8 +24,6 @@ export const createCharacter = async (
       char_uuid: characterUuid,
       ...filteredCharacterData,
     };
-
-    console.log('Data to be inserted:', insertData);
 
     const { data, error } = await supabase
       .from('characters')

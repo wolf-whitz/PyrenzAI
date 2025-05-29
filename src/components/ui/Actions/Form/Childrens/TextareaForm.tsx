@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Menu, MenuItem, Typography, TextField } from '@mui/material';
 import { supabase } from '~/Utility/supabaseClient';
 import { Tag, TextareaFormProps } from '@shared-types/TagTypes';
@@ -11,11 +11,12 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
   const [filteredTags, setFilteredTags] = useState<Tag[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [imageBlobUrl, setImageBlobUrl] = useState<string | null>(null);
+  const isUploading = useRef(false);
 
   useEffect(() => {
-    if (formState.profile_image) {
+    if (!isUploading.current && formState.profile_image) {
       setImageBlobUrl(formState.profile_image);
-      console.log('Image URL:', formState.profile_image);
+      console.log('Image URL (effect):', formState.profile_image);
     }
   }, [formState.profile_image]);
 
@@ -61,6 +62,7 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
     if (file) {
       const blobUrl = URL.createObjectURL(file);
       setImageBlobUrl(blobUrl);
+      isUploading.current = true;
 
       const fileName = `character-image/${uuidv4()}-${file.name}`;
       const { data, error } = await supabase.storage
@@ -69,6 +71,7 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
 
       if (error) {
         console.error('Error uploading image:', error);
+        isUploading.current = false;
         return;
       }
 
@@ -82,6 +85,8 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
           value: publicUrlData.publicUrl,
         },
       } as React.ChangeEvent<HTMLTextAreaElement>);
+
+      isUploading.current = false;
     }
   };
 
