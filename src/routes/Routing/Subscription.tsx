@@ -16,7 +16,7 @@ interface Plan {
 
 const subscriptionPlans: Plan[] = [
   {
-    title: "Melon",
+    title: "Azura (Blueberry)",
     price_count_monthly: "Free",
     price_count_yearly: "Free",
     plan_identifier: "melon",
@@ -26,10 +26,10 @@ const subscriptionPlans: Plan[] = [
       "### Multiple Personas\nCreate up to 3 unique personas.\n#4CAF50"
     ],
     color: "#4CAF50",
-    backgroundImage: "https://example.com/path-to-melon-background.jpg"
+    backgroundImage: "https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/cdn/Pyrenzia.png"
   },
   {
-    title: "Pineapple",
+    title: "Solara (Strawberry)",
     price_count_monthly: "$15/Month",
     price_count_yearly: "$150/Year",
     plan_identifier: "pineapple",
@@ -39,20 +39,20 @@ const subscriptionPlans: Plan[] = [
       "### Expanded Lore Support\nEnhance your stories with expanded lore support for deeper worldbuilding.\n#2196F3"
     ],
     color: "#2196F3",
-    backgroundImage: "https://example.com/path-to-plan2-background.jpg"
+    backgroundImage: "https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/cdn//Azalea.png"
   },
   {
-    title: "Durian",
+    title: "Nyra (Pineapple)",
     price_count_monthly: "$20/Month",
     price_count_yearly: "$200/Year",
     plan_identifier: "durian",
     descriptions: [
-      "### Richer, More Immersive Chats\nDive into Banana Munch for richer, more immersive chats with a beefy 20K–30K context window!\n#FF5722",
+      "### Richer, More Immersive Chats\nTry out Nyra for richer, more immersive chats with a beefy 20K–30K context window!\n#FF5722",
       "### Expansive, Detailed Responses\nReceive expansive, detailed responses tailored for immersive roleplay.\n#FF5722",
       "### Unlimited Personalities\nUnlock unlimited personalities to keep your conversations fresh.\n#FF5722"
     ],
     color: "#FF5722",
-    backgroundImage: "https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/DurianPyrenzia.avif"
+    backgroundImage: "https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/cdn/PyrenzImage.png"
   }
 ];
 
