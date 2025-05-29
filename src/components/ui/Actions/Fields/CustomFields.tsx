@@ -3,24 +3,15 @@ import {
   PyrenzFormControl,
   PyrenzOutlinedInput,
   PyrenzInputLabel,
-  PyrenzBlueButton,
 } from '~/theme';
-
-interface Provider {
-  provider_name: string;
-  provider_website: string;
-  provider_api_link: string;
-  provider_description: string;
-}
 
 interface CustomModelFieldsProps {
   apiKey: string;
   setApiKey: (value: string) => void;
   customModelName: string;
   setCustomModelName: (value: string) => void;
-  provider: Provider | null;
-  setProvider: (value: Provider | null) => void;
-  setModalOpen: (value: boolean) => void;
+  providerUrl: string;
+  setProviderUrl: (value: string) => void;
 }
 
 export function CustomModelFields({
@@ -28,9 +19,8 @@ export function CustomModelFields({
   setApiKey,
   customModelName,
   setCustomModelName,
-  provider,
-  setProvider,
-  setModalOpen,
+  providerUrl,
+  setProviderUrl,
 }: CustomModelFieldsProps) {
   return (
     <Box>
@@ -60,29 +50,15 @@ export function CustomModelFields({
 
       <Box mb={2}>
         <PyrenzFormControl fullWidth variant="outlined">
-          <PyrenzInputLabel htmlFor="provider">Provider</PyrenzInputLabel>
+          <PyrenzInputLabel htmlFor="provider-url">Provider URL</PyrenzInputLabel>
           <PyrenzOutlinedInput
-            id="provider"
-            value={provider?.provider_name || ''}
-            onChange={(e) =>
-              setProvider({
-                ...provider,
-                provider_name: e.target.value,
-              } as Provider)
-            }
-            label="Provider"
+            id="provider-url"
+            value={providerUrl}
+            onChange={(e) => setProviderUrl(e.target.value)}
+            label="Provider URL"
           />
         </PyrenzFormControl>
       </Box>
-
-      <PyrenzBlueButton
-        variant="outlined"
-        color="primary"
-        onClick={() => setModalOpen(true)}
-        sx={{ mb: 2 }}
-      >
-        Premade Providers
-      </PyrenzBlueButton>
     </Box>
   );
 }

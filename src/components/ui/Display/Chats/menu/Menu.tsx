@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import { ExpandMore, ExpandLess } from '@mui/icons-material';
 import { Customization, Cosmetic } from './MenuItem';
+import { GetUserData } from '~/components/functions';
 
 interface MenuProps {
   onClose: () => void;
@@ -21,12 +22,31 @@ export function Menu({ onClose }: MenuProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState('Cosmetic');
   const [bgImage, setBgImage] = useState<string | null>(null);
+  const [aiCustomization, setAiCustomization] = useState<any>(null);
+  const [subscriptionPlan, setSubscriptionPlan] = useState<string | null>(null);
 
   useEffect(() => {
     const savedBg = localStorage.getItem('bgImage');
     if (savedBg) {
       setBgImage(savedBg);
     }
+
+    const fetchUserData = async () => {
+      const userData = await GetUserData();
+      if (userData && 'ai_customization' in userData) {
+        setAiCustomization(userData.ai_customization);
+        const plan = userData.subscription_data.tier;
+        console.log(userData)
+
+        if (['MELON', 'PINEAPPLE', 'DURIAN'].includes(plan)) {
+          setSubscriptionPlan(plan);
+        } else {
+          setSubscriptionPlan(null);
+        }
+      }
+    };
+
+    fetchUserData();
   }, []);
 
   return (
@@ -102,7 +122,9 @@ export function Menu({ onClose }: MenuProps) {
             </Box>
 
             {selectedOption === 'Cosmetic' && <Cosmetic />}
-            {selectedOption === 'AI Customization' && <Customization />}
+            {selectedOption === 'AI Customization' && (
+              <Customization customization={aiCustomization} subscriptionPlan={subscriptionPlan} />
+            )}
           </Box>
         </Grow>
       </Box>

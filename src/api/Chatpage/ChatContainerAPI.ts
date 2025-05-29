@@ -135,7 +135,7 @@ export const useGenerateMessage = () => {
         });
 
         showAlert(errorMessage, 'Alert');
-        return { remainingMessages: 0 };
+        return { remainingMessages: 1 };
       } finally {
         setIsGenerating(false);
       }

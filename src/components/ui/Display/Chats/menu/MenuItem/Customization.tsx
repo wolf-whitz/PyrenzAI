@@ -1,171 +1,103 @@
-import React, { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import { supabase } from '~/Utility/supabaseClient';
-import * as Sentry from '@sentry/react';
-import { Typography, Box } from '@mui/material';
-import {
-  CustomModelFields,
-  ModelSelection,
-  SliderComponent,
-  ProviderModals,
-  GetUserUUID,
-  GetUserData,
-} from '@components';
+import React, { useState, useEffect } from 'react';
+import { Box, Typography, CircularProgress } from '@mui/material';
+import { CustomModelFields, ModelSelection, SliderComponent } from '@components';
 import InfoIcon from '@mui/icons-material/Info';
 import BuildIcon from '@mui/icons-material/Build';
 import { PyrenzBlueButton } from '~/theme';
-import { usePyrenzAlert } from '~/provider';
+import { useCustomizeAPI } from '@api';
 
-interface Provider {
-  provider_name: string;
-  provider_website: string;
-  provider_api_link: string;
-  provider_description: string;
+interface ModelOption {
+  label: string;
+  name: string;
+}
+
+interface CustomizationProps {
+  customization: {
+    model: string;
+    maxTokens: number;
+    temperature: number;
+    topP: number;
+    presencePenalty: number;
+    frequencyPenalty: number;
+  } | null;
+  subscriptionPlan: string | null;
 }
 
 const sliderDescriptions = {
   maxTokens: 'Controls the maximum number of tokens in the response.',
-  temperature:
-    'Controls the randomness of the output. Higher values make the output more random.',
+  temperature: 'Controls the randomness of the output. Higher values make the output more random.',
   topP: 'Controls the diversity of the output. Higher values make the output more diverse.',
-  presencePenalty:
-    'Penalizes new tokens based on their presence in the input. Higher values make the output more different from the input.',
-  frequencyPenalty:
-    'Penalizes new tokens based on their frequency in the input. Higher values make the output less repetitive.',
+  presencePenalty: 'Penalizes new tokens based on their presence in the input. Higher values make the output more different from the input.',
+  frequencyPenalty: 'Penalizes new tokens based on their frequency in the input. Higher values make the output less repetitive.',
 };
 
-const modelOptions = [
-  { value: 'Mango Ube', label: 'Mango Ube' },
-  { value: 'Ube Deluxe', label: 'Ube Deluxe' },
-  { value: 'Banana Munch', label: 'Banana Munch' },
-  { value: 'Custom', label: 'Custom' },
-];
+export function Customization({ customization, subscriptionPlan }: CustomizationProps) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [modelOptions, setModelOptions] = useState<ModelOption[]>([]);
 
-export function Customization() {
-  const [maxTokens, setMaxTokens] = useState(100);
-  const [temperature, setTemperature] = useState(1);
-  const [topP, setTopP] = useState(1);
-  const [presencePenalty, setPresencePenalty] = useState(0);
-  const [frequencyPenalty, setFrequencyPenalty] = useState(0);
-  const [preferredModel, setPreferredModel] = useState(modelOptions[0].value);
-  const [apiKey, setApiKey] = useState('');
-  const [customModelName, setCustomModelName] = useState('');
-  const [provider, setProvider] = useState<Provider | null>(null);
-  const [showPopover, setShowPopover] = useState<
-    keyof typeof sliderDescriptions | null
-  >(null);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modelId, setModelId] = useState<string | null>(null);
-  const [maxTokenLimit, setMaxTokenLimit] = useState(1000);
-  const showAlert = usePyrenzAlert();
-
-  const stateSetters = {
-    maxTokens: (value: number) => setMaxTokens(Math.min(value, maxTokenLimit)),
-    temperature: (value: number) =>
-      setTemperature(Math.min(Math.max(value, 0), 2)),
-    topP: (value: number) => setTopP(Math.min(Math.max(value, 0), 1)),
-    presencePenalty: (value: number) =>
-      setPresencePenalty(Math.min(Math.max(value, -2), 2)),
-    frequencyPenalty: (value: number) =>
-      setFrequencyPenalty(Math.min(Math.max(value, -2), 2)),
-  };
-
-  useEffect(() => {
-    const fetchModelId = async () => {
-      if (preferredModel === 'Custom') {
-        return;
-      }
-
-      try {
-        const { data, error } = await supabase
-          .from('model_identifiers')
-          .select('identifier')
-          .eq('subscription_plan', preferredModel)
-          .single();
-
-        if (error) {
-          throw error;
-        }
-
-        if (data) {
-          setModelId(data.identifier);
-        }
-      } catch (error) {
-        Sentry.captureException(error);
-        showAlert(
-          'Error fetching model identifier. Please try again.',
-          'Alert'
-        );
-      }
-    };
-
-    fetchModelId();
-  }, [preferredModel]);
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const userData = await GetUserData();
-        if (userData && 'subscription_data' in userData) {
-          setMaxTokens(userData.subscription_data.max_token);
-          setMaxTokenLimit(userData.subscription_data.max_token);
-        }
-      } catch (error) {
-        Sentry.captureException(error);
-        showAlert('Error fetching user data. Please try again.', 'Alert');
-      }
-    };
-
-    fetchUserData();
-  }, []);
-
-  const handleSubmit = async () => {
-    const inferenceSettings = {
-      model: modelId || preferredModel,
-      maxTokens,
-      temperature,
-      topP,
-      presencePenalty,
-      frequencyPenalty,
-      ...(preferredModel === 'Custom' && {
-        api_key: apiKey,
-        custom_model_name: customModelName,
-        provider,
-      }),
-    };
-
-    const data = {
-      inference_settings: inferenceSettings,
-    };
-
+  const fetchModelIdentifiers = async () => {
     try {
-      const userUUID = await GetUserUUID();
-      const { error } = await supabase
-        .from('user_data')
-        .update(data)
-        .eq('user_uuid', userUUID);
+      const { data, error } = await supabase
+        .from('model_identifiers')
+        .select('name');
 
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
 
-      showAlert('Customization data submitted successfully!', 'Success');
+      return data.map(item => ({ label: item.name, name: item.name }));
     } catch (error) {
-      Sentry.captureException(error);
-      showAlert('Error submitting data. Please try again.', 'Alert');
+      console.error(error);
+      return [];
     }
   };
 
-  const handleProviderSelect = (selectedProvider: Provider) => {
-    setProvider(selectedProvider);
-    setModalOpen(false);
-  };
+  useEffect(() => {
+    const loadModelOptions = async () => {
+      const options = await fetchModelIdentifiers();
+      options.push({ label: 'Custom', name: 'Custom' });
+      setModelOptions(options);
+      setIsLoading(false);
+    };
+
+    loadModelOptions();
+  }, []);
+
+  const {
+    maxTokens,
+    temperature,
+    topP,
+    presencePenalty,
+    frequencyPenalty,
+    preferredModel,
+    setPreferredModel,
+    apiKey,
+    setApiKey,
+    customModelName,
+    setCustomModelName,
+    providerUrl,
+    setProviderUrl,
+    maxTokenLimit,
+    stateSetters,
+    handleSubmit,
+  } = useCustomizeAPI({ customization, subscriptionPlan, modelOptions });
+
+  const [showPopover, setShowPopover] = useState<keyof typeof sliderDescriptions | null>(null);
+
+  if (isLoading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+        <CircularProgress />
+      </Box>
+    );
+  }
+  
 
   return (
     <Box>
       <ModelSelection
         preferredModel={preferredModel}
         setPreferredModel={setPreferredModel}
-        modelOptions={modelOptions}
+        modelOptions={modelOptions.map(option => ({ value: option.name, label: option.label }))}
       />
 
       {preferredModel === 'Custom' && (
@@ -175,27 +107,20 @@ export function Customization() {
             setApiKey={setApiKey}
             customModelName={customModelName}
             setCustomModelName={setCustomModelName}
-            provider={provider}
-            setProvider={setProvider}
-            setModalOpen={setModalOpen}
+            providerUrl={providerUrl}
+            setProviderUrl={setProviderUrl}
           />
         </Box>
       )}
 
-      <Box
-        border={1}
-        borderColor="grey.300"
-        borderRadius={2}
-        p={2}
-        boxShadow={1}
-      >
+      <Box border={1} borderColor="grey.300" borderRadius={2} p={2} boxShadow={1}>
         <Box display="flex" alignItems="center" mb={2}>
           <BuildIcon color="action" />
           <Typography variant="subtitle1" component="h2" ml={1}>
             Manual Parameters
           </Typography>
         </Box>
-        {Object.keys(sliderDescriptions).map((key) => {
+        {Object.entries(sliderDescriptions).map(([key]) => {
           const sliderKey = key as keyof typeof sliderDescriptions;
           const stateValue = {
             maxTokens,
@@ -203,7 +128,7 @@ export function Customization() {
             topP,
             presencePenalty,
             frequencyPenalty,
-          }[sliderKey] as number;
+          }[sliderKey];
           const stateSetter = stateSetters[sliderKey];
 
           let maxValue;
@@ -234,9 +159,7 @@ export function Customization() {
               stateValue={stateValue}
               stateSetter={stateSetter}
               sliderDescriptions={sliderDescriptions}
-              setShowPopover={
-                setShowPopover as Dispatch<SetStateAction<string | null>>
-              }
+              setShowPopover={setShowPopover as React.Dispatch<React.SetStateAction<string | null>>}
               maxValue={maxValue}
             />
           );
@@ -252,12 +175,6 @@ export function Customization() {
       >
         Submit
       </PyrenzBlueButton>
-
-      <ProviderModals
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onSelect={handleProviderSelect}
-      />
     </Box>
   );
 }

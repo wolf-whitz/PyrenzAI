@@ -1,9 +1,10 @@
 import { supabase } from '~/Utility/supabaseClient';
-import { useUserStore } from '~/store'; 
+import { useUserStore } from '~/store';
 
 interface UserDataResponse {
   username: string;
   icon: string;
+  ai_customization: any;
   subscription_data: {
     tier: string;
     max_token: number;
@@ -23,7 +24,7 @@ export async function GetUserData(): Promise<UserDataResponse | { error: string 
 
   const { data: userData, error: userError } = await supabase
     .from('user_data')
-    .select('username, avatar_url')
+    .select('username, avatar_url, inference_settings')
     .eq('user_uuid', user.id)
     .single();
 
@@ -41,18 +42,38 @@ export async function GetUserData(): Promise<UserDataResponse | { error: string 
     return { error: 'Subscription plan not found' };
   }
 
+  const { data: modelIdentifiers, error: modelError } = await supabase
+    .from('model_identifiers')
+    .select('name, subscription_plan');
+
+  if (modelError || !modelIdentifiers) {
+    return { error: 'Model identifiers not found' };
+  }
+
   const personaName = userData.username || 'Anon';
   const avatarUrl = userData.avatar_url || '';
+  const aiCustomization = userData.inference_settings || {};
 
-  useUserStore.getState().setSubscriptionPlan(subscriptionPlanData.subscription_plan);
+  useUserStore.getState().setSubscriptionPlan(subscriptionPlanData.subscription_plan.trim());
+
+  const modelsByPlan = modelIdentifiers.reduce((acc, model) => {
+    const plan = model.subscription_plan.trim().toUpperCase();
+    if (!acc[plan]) {
+      acc[plan] = [];
+    }
+    acc[plan].push(model.name);
+    return acc;
+  }, {} as Record<string, string[]>);
+
+  const plan = subscriptionPlanData.subscription_plan.trim().toUpperCase();
 
   let subscriptionData;
-  switch (subscriptionPlanData.subscription_plan) {
+  switch (plan) {
     case 'MELON':
       subscriptionData = {
         tier: 'MELON',
         max_token: 200,
-        model: ['Mango Ube', 'Ube Deluxe', 'Banana Munch'],
+        model: modelsByPlan['MELON'] || [],
         max_persona: 3,
       };
       break;
@@ -60,7 +81,7 @@ export async function GetUserData(): Promise<UserDataResponse | { error: string 
       subscriptionData = {
         tier: 'PINEAPPLE',
         max_token: 500,
-        model: ['Mango Ube', 'Ube Deluxe', 'Banana Munch'],
+        model: modelsByPlan['PINEAPPLE'] || [],
         max_persona: 20,
       };
       break;
@@ -68,15 +89,15 @@ export async function GetUserData(): Promise<UserDataResponse | { error: string 
       subscriptionData = {
         tier: 'DURIAN',
         max_token: 1000,
-        model: ['Mango Ube', 'Ube Deluxe', 'Banana Munch'],
+        model: modelsByPlan['DURIAN'] || [],
         max_persona: 'unlimited',
       };
       break;
     default:
       subscriptionData = {
-        tier: 'FREE',
+        tier: 'MELON',
         max_token: 200,
-        model: ['Mango Ube', 'Ube Deluxe', 'Banana Munch'],
+        model: modelsByPlan['MELON'] || [],
         max_persona: 3,
       };
       break;
@@ -85,6 +106,7 @@ export async function GetUserData(): Promise<UserDataResponse | { error: string 
   return {
     username: personaName,
     icon: avatarUrl,
+    ai_customization: aiCustomization,
     subscription_data: subscriptionData,
   };
 }
