@@ -87,4 +87,11 @@ export const componentOverrides = {
       },
     },
   },
+  MuiListItem: {
+    styleOverrides: {
+      root: {
+        backgroundColor: 'transparent',
+      },
+    },
+  },
 };

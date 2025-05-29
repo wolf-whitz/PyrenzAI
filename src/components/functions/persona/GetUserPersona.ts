@@ -1,4 +1,5 @@
 import { supabase } from '~/Utility/supabaseClient';
+import { useUserStore } from '~/store'; 
 
 interface UserDataResponse {
   username: string;
@@ -11,9 +12,7 @@ interface UserDataResponse {
   };
 }
 
-export async function GetUserData(): Promise<
-  UserDataResponse | { error: string }
-> {
+export async function GetUserData(): Promise<UserDataResponse | { error: string }> {
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -32,12 +31,11 @@ export async function GetUserData(): Promise<
     return { error: 'User not found' };
   }
 
-  const { data: subscriptionPlanData, error: subscriptionError } =
-    await supabase
-      .from('subscription_plan')
-      .select('subscription_plan')
-      .eq('user_uuid', user.id)
-      .single();
+  const { data: subscriptionPlanData, error: subscriptionError } = await supabase
+    .from('subscription_plan')
+    .select('subscription_plan')
+    .eq('user_uuid', user.id)
+    .single();
 
   if (subscriptionError || !subscriptionPlanData) {
     return { error: 'Subscription plan not found' };
@@ -45,6 +43,8 @@ export async function GetUserData(): Promise<
 
   const personaName = userData.username || 'Anon';
   const avatarUrl = userData.avatar_url || '';
+
+  useUserStore.getState().setSubscriptionPlan(subscriptionPlanData.subscription_plan);
 
   let subscriptionData;
   switch (subscriptionPlanData.subscription_plan) {

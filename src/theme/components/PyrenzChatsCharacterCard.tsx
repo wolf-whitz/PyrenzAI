@@ -5,22 +5,11 @@ import {
   Typography,
   IconButton,
   Popover,
+  SxProps,
+  Theme
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
-
-const StyledCard = styled(Card)({
-  display: 'flex',
-  width: '100%',
-  maxWidth: 400,
-  borderRadius: '16px',
-  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-  overflow: 'hidden',
-  backgroundColor: '#111827',
-  color: '#f8f9fa',
-  cursor: 'pointer',
-  position: 'relative',
-});
 
 const StyledCardImage = styled('div')({
   width: '120px',
@@ -51,16 +40,9 @@ const StyledCardContent = styled(CardContent)({
 });
 
 const StyledImage = styled('img')({
-  position: 'absolute',
-  top: 0,
-  left: 0,
   width: '100%',
   height: '100%',
   objectFit: 'cover',
-  transition: 'transform 0.5s ease',
-  '&:hover': {
-    transform: 'scale(1.05)',
-  },
 });
 
 const ActionIconsContainer = styled('div')({
@@ -79,11 +61,10 @@ interface PyrenzChatsCharacterCardProps {
   onContextMenu?: (event: React.MouseEvent) => void;
   onDeleteClick?: () => void;
   style?: React.CSSProperties;
+  sx?: SxProps<Theme>;
 }
 
-export const PyrenzChatsCharacterCard: React.FC<
-  PyrenzChatsCharacterCardProps
-> = ({
+export const PyrenzChatsCharacterCard = ({
   imageSrc,
   characterName,
   children,
@@ -91,7 +72,8 @@ export const PyrenzChatsCharacterCard: React.FC<
   onContextMenu,
   onDeleteClick,
   style,
-}) => {
+  sx
+}: PyrenzChatsCharacterCardProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const handlePopoverOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -105,10 +87,28 @@ export const PyrenzChatsCharacterCard: React.FC<
   const open = Boolean(anchorEl);
 
   return (
-    <StyledCard
+    <Card
       onClick={onCardClick}
       onContextMenu={onContextMenu}
       style={style}
+      sx={{
+        display: 'flex',
+        width: '100%',
+        maxWidth: 400,
+        borderRadius: '16px',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+        overflow: 'hidden',
+        backgroundColor: '#111827',
+        color: '#f8f9fa',
+        cursor: 'pointer',
+        position: 'relative',
+        transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
+        '&:hover': {
+          transform: 'scale(1.05)',
+          boxShadow: '0 6px 25px rgba(0, 0, 0, 0.15)',
+        },
+        ...sx, 
+      }}
     >
       <StyledCardImage>
         <StyledImage src={imageSrc} alt="Preview" />
@@ -150,6 +150,6 @@ export const PyrenzChatsCharacterCard: React.FC<
           <Typography sx={{ p: 1 }}>Delete this item</Typography>
         </Popover>
       </ActionIconsContainer>
-    </StyledCard>
+    </Card>
   );
 };

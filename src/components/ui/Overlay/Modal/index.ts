@@ -14,10 +14,8 @@ export * from './MoreButtonsModal';
 export * from './PersonaCardModal';
 
 export * from './ProvidersModal';
-export * from './ArchiveModal';
 
 export * from './ImportCharacterModal';
 export * from './CreateProviderModal';
 
-export * from './SubscriptionModal';
 export * from './PaymentModal';

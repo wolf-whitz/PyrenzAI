@@ -16,6 +16,7 @@ import {
   Explore as ExploreIcon,
   Chat as ChatIcon,
   Menu as MenuIcon,
+  AutoAwesome as PyrenzPlusIcon,
 } from '@mui/icons-material';
 import { FaDiscord } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
@@ -71,6 +72,11 @@ export function PreviewHeader({
       link: 'https://discord.com',
       external: true,
     },
+    {
+      name: 'Pyrenz+',
+      icon: <PyrenzPlusIcon />,
+      link: '/Subscription',
+    },
   ];
 
   return (
@@ -100,6 +106,7 @@ export function PreviewHeader({
               <PyrenzBlueButton
                 key={name}
                 startIcon={icon}
+                sx={{ backgroundColor: 'transparent' }}
                 className="font-baloo hover:text-blue-600"
                 onClick={() =>
                   external
@@ -113,6 +120,7 @@ export function PreviewHeader({
             {!isLoggedIn && (
               <>
                 <PyrenzBlueButton
+                  sx={{ backgroundColor: 'transparent' }}
                   className="font-baloo hover:text-blue-600"
                   onClick={() => setShowLogin(true)}
                 >
@@ -120,6 +128,7 @@ export function PreviewHeader({
                 </PyrenzBlueButton>
                 <PyrenzBlueButton
                   variant="contained"
+                  sx={{ backgroundColor: 'transparent' }}
                   className="bg-[#E03201] font-baloo hover:bg-blue-600"
                   onClick={() => setShowRegister(true)}
                 >
@@ -160,6 +169,7 @@ export function PreviewHeader({
                           : (window.location.href = link)
                       }
                       sx={{
+                        backgroundColor: 'transparent',
                         '&:hover': {
                           backgroundColor: 'rgba(0, 0, 0, 0.3)',
                           borderRadius: '50px',
@@ -179,10 +189,10 @@ export function PreviewHeader({
                         component="button"
                         onClick={() => setShowLogin(true)}
                         sx={{
-                          backgroundColor: 'red',
+                          backgroundColor: 'transparent',
                           borderRadius: '50px',
                           '&:hover': {
-                            backgroundColor: 'darkred',
+                            backgroundColor: 'rgba(0, 0, 0, 0.3)',
                             transform: 'scale(1.05)',
                             transition:
                               'transform 0.3s ease, background-color 0.3s ease',
@@ -195,6 +205,7 @@ export function PreviewHeader({
                         component="button"
                         onClick={() => setShowRegister(true)}
                         sx={{
+                          backgroundColor: 'transparent',
                           borderRadius: '50px',
                           '&:hover': {
                             backgroundColor: 'rgba(0, 0, 0, 0.3)',

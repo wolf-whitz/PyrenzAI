@@ -2,10 +2,10 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Typography, CircularProgress } from '@mui/material';
 import CoffeeIcon from '@mui/icons-material/Coffee';
 import Confetti from 'react-confetti';
+import { useNavigate } from 'react-router-dom';
 import { Utils } from '~/Utility/Utility';
 import { GetUserUUID } from '@components';
 import { PyrenzBlueButton } from '~/theme';
-import { SubscriptionModal } from '~/components';
 
 interface AdModalProps {
   isOpen: boolean;
@@ -18,6 +18,7 @@ interface ApiResponse {
 }
 
 export function AdModal({ isOpen, onClose }: AdModalProps) {
+  const navigate = useNavigate();
   const [countdown, setCountdown] = useState(15);
   const [showExplosion, setShowExplosion] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -93,7 +94,7 @@ export function AdModal({ isOpen, onClose }: AdModalProps) {
   };
 
   const handleBuyPyrenzPlus = () => {
-    setShowSubscriptionModal(true);
+    navigate('/Subscription');
   };
 
   if (!isOpen) return null;
@@ -159,7 +160,7 @@ export function AdModal({ isOpen, onClose }: AdModalProps) {
           onClick={handleBuyPyrenzPlus}
           sx={{
             mt: 2,
-            ml: 2, 
+            ml: 2,
             backgroundColor: 'primary.main',
             color: 'white',
           }}
@@ -168,10 +169,6 @@ export function AdModal({ isOpen, onClose }: AdModalProps) {
           Buy Pyrenz+
         </PyrenzBlueButton>
       </div>
-      <SubscriptionModal
-        isOpen={showSubscriptionModal}
-        onClose={() => setShowSubscriptionModal(false)}
-      />
     </div>
   );
 }

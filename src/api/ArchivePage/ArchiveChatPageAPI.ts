@@ -14,7 +14,7 @@ type Character = {
   name: string;
 };
 
-export const useArchiveChatModalAPI = (open: boolean, onClose: () => void) => {
+export const useArchiveChatPageAPI = (open: boolean, onClose: () => void) => {
   const [chats, setChats] = useState<Chat[]>([]);
   const [characters, setCharacters] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(true);

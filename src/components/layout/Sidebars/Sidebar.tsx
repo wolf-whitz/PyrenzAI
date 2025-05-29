@@ -1,4 +1,3 @@
-import { ArchiveModal } from '@components';
 import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import {
@@ -27,7 +26,6 @@ export function Sidebar({ className }: { className?: string }) {
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [modalMode, setModalMode] = useState<'login' | 'register'>('login');
-  const [showArchiveModal, setShowArchiveModal] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
   const theme = useTheme();
@@ -56,6 +54,7 @@ export function Sidebar({ className }: { className?: string }) {
     {
       name: t('navigation.chats'),
       icon: <MessageSquareIcon fontSize="small" />,
+      path: '/Archive',
     },
     {
       name: t('navigation.settings'),
@@ -103,7 +102,6 @@ export function Sidebar({ className }: { className?: string }) {
                 navigate={navigate}
                 setShowLoginModal={setShowLoginModal}
                 user={user}
-                setShowArchiveModal={setShowArchiveModal}
               />
             ))}
           </List>
@@ -117,13 +115,6 @@ export function Sidebar({ className }: { className?: string }) {
           toggleMode={toggleModalMode}
         />
       )}
-
-      {showArchiveModal && (
-        <ArchiveModal
-          open={showArchiveModal}
-          onClose={() => setShowArchiveModal(false)}
-        />
-      )}
     </>
   );
 }
@@ -135,7 +126,6 @@ function SidebarItem({
   navigate,
   setShowLoginModal,
   user,
-  setShowArchiveModal,
 }: any) {
   const { t } = useTranslation();
 
@@ -145,8 +135,6 @@ function SidebarItem({
       !user
     ) {
       setShowLoginModal(true);
-    } else if (item.name === t('navigation.chats')) {
-      setShowArchiveModal(true);
     } else {
       navigate(item.path);
     }

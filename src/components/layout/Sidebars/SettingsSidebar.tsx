@@ -1,42 +1,43 @@
 import React, { useEffect, useState } from 'react';
-import { Drawer, Box } from '@mui/material';
-import { Persona, GetUserUUID } from '@components';
-import { supabase } from '~/Utility/supabaseClient';
+import { Box } from '@mui/material';
+import { Persona, GetUserUUID, GetUserData } from '@components';
+import { MuiStyledDrawer } from '~/theme';
 
 interface SettingsSidebarProps {
   settingsOpen: boolean;
   onClose: () => void;
 }
 
-interface PersonaCard {
-  id: string;
-  name: string;
-  description: string;
-}
-
-export function SettingsSidebar({
-  settingsOpen,
-  onClose,
-}: SettingsSidebarProps) {
-  const [userUuid, setUserUuid] = useState<string | null>(null);
+export function SettingsSidebar({ settingsOpen, onClose }: SettingsSidebarProps) {
+  const [user, setUser] = useState({ username: '', icon: '' });
 
   useEffect(() => {
-    const fetchUserUuid = async () => {
-      const uuid = await GetUserUUID();
-      setUserUuid(uuid);
+    const fetchUser = async () => {
+      try {
+        const userData = await GetUserData();
+        if ('error' in userData) {
+          console.error('Error fetching user:', userData.error);
+        } else {
+          setUser({
+            username: userData.username,
+            icon: userData.icon,
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching user:', error);
+      }
     };
 
-    fetchUserUuid();
+    fetchUser();
   }, []);
 
   return (
-    <Drawer
-      anchor="right"
-      open={settingsOpen}
+    <MuiStyledDrawer
+      isOpen={settingsOpen}
       onClose={onClose}
-      PaperProps={{
-        className:
-          'w-full sm:w-72 bg-gray-900 text-white p-6 shadow-lg rounded-l-xl',
+      profileData={{
+        name: user.username,
+        avatarUrl: user.icon,
       }}
     >
       <Box className="flex justify-center">
@@ -50,6 +51,6 @@ export function SettingsSidebar({
       <Box className="flex justify-center mt-4">
         <Persona />
       </Box>
-    </Drawer>
+    </MuiStyledDrawer>
   );
 }
