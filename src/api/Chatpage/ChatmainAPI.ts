@@ -16,18 +16,10 @@ export const useChatPageAPI = (
   }>,
   setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
-  const [bgImage, setBgImage] = useState<string | null>(null);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isAdModalOpen, setIsAdModalOpen] = useState(false);
   const generateMessage = useGenerateMessage();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const storedBgImage = localStorage.getItem('bgImage');
-    if (storedBgImage) {
-      setBgImage(storedBgImage);
-    }
-  }, []);
 
   useEffect(() => {
     const scrollWithDelay = () => {
@@ -41,13 +33,7 @@ export const useChatPageAPI = (
     scrollWithDelay();
   }, [previous_message, messagesEndRef]);
 
-  useEffect(() => {
-    if (bgImage) {
-      localStorage.setItem('bgImage', bgImage);
-    } else {
-      localStorage.removeItem('bgImage');
-    }
-  }, [bgImage]);
+
 
   const toggleSettings = () => {
     setIsSettingsOpen((prev) => !prev);
@@ -153,7 +139,6 @@ export const useChatPageAPI = (
   
 
   return {
-    bgImage,
     isSettingsOpen,
     isAdModalOpen,
     setIsAdModalOpen,

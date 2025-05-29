@@ -39,7 +39,6 @@ export function ChatMain({
   } | null>(null);
 
   const {
-    bgImage,
     isSettingsOpen,
     isAdModalOpen,
     setIsAdModalOpen,
@@ -63,10 +62,7 @@ export function ChatMain({
   return (
     <Fade in={true} timeout={500}>
       <Box
-        className={`flex flex-col h-screen w-full text-white relative ${
-          bgImage ? 'bg-cover bg-center' : ''
-        }`}
-        style={{ backgroundImage: bgImage ? `url(${bgImage})` : 'none' }}
+        className="flex flex-col h-screen w-full text-white relative"
       >
         <Box className="w-full max-w-6xl mx-auto pt-4">
           <ChatHeader

@@ -49,7 +49,6 @@ export function ChatInput({
             whileTap={{ scale: 0.9 }}
             onClick={() => setIsMenuOpen(true)}
             aria-label="More options"
-            disabled={isGenerating}
           >
             <MoreVertical size={20} />
           </motion.button>

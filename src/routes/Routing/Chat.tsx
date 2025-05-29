@@ -183,12 +183,13 @@ export function ChatPage() {
         width="100vw"
         bgcolor="gray.900"
         color="white"
+        position="relative"
       >
-        <Box display={{ xs: 'none', lg: 'flex' }} width="256px">
+        <Box display={{ xs: 'none', lg: 'flex' }}>
           <Sidebar />
         </Box>
 
-        <Box flex={1} overflow="auto">
+        <Box flex={1} overflow="auto" component="main">
           <ChatContainer
             user={userData}
             char={character}
@@ -198,7 +199,9 @@ export function ChatPage() {
           />
         </Box>
 
-        <PreviousChat />
+        <Box position="absolute" top="0" right="0">
+          <PreviousChat />
+        </Box>
       </Box>
     </motion.div>
   );

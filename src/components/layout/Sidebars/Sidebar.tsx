@@ -72,6 +72,7 @@ export function Sidebar({ className }: { className?: string }) {
       {!isMobile && (
         <Drawer
           variant="permanent"
+          component="aside" 
           classes={{
             paper: clsx(
               'w-16 md:w-16 lg:w-20 bg-gray-900 text-white flex-col justify-between p-4 rounded-r-3xl shadow-lg z-50 hidden md:flex',
