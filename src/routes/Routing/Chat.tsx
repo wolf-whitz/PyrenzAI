@@ -97,14 +97,18 @@ export function ChatPage() {
           setFetchError(false);
         } catch (error) {
           setFetchError(true);
-        } finally {
-          setLoading(false);
         }
       }
     };
 
     getChatData();
   }, [chat_uuid, userUuid, userData, setFirstMessage, clearData]);
+
+  useEffect(() => {
+    if (chatData && chatData.messages && chatData.messages.every((msg: any) => msg.id != null)) {
+      setLoading(false);
+    }
+  }, [chatData]);
 
   if (loading || (chatData && chatData.messages && chatData.messages.some((msg: any) => msg.id == null))) {
     return (

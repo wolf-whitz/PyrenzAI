@@ -1,6 +1,5 @@
-import { supabase } from '~/Utility/supabaseClient';
-import React, { useState, useEffect } from 'react';
-import { Box, Typography, CircularProgress } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Typography } from '@mui/material';
 import { CustomModelFields, ModelSelection, SliderComponent } from '@components';
 import InfoIcon from '@mui/icons-material/Info';
 import BuildIcon from '@mui/icons-material/Build';
@@ -22,6 +21,7 @@ interface CustomizationProps {
     frequencyPenalty: number;
   } | null;
   subscriptionPlan: string | null;
+  modelOptions: ModelOption[];
 }
 
 const sliderDescriptions = {
@@ -32,35 +32,8 @@ const sliderDescriptions = {
   frequencyPenalty: 'Penalizes new tokens based on their frequency in the input. Higher values make the output less repetitive.',
 };
 
-export function Customization({ customization, subscriptionPlan }: CustomizationProps) {
-  const [isLoading, setIsLoading] = useState(true);
-  const [modelOptions, setModelOptions] = useState<ModelOption[]>([]);
-
-  const fetchModelIdentifiers = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('model_identifiers')
-        .select('name');
-
-      if (error) throw error;
-
-      return data.map(item => ({ label: item.name, name: item.name }));
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-  };
-
-  useEffect(() => {
-    const loadModelOptions = async () => {
-      const options = await fetchModelIdentifiers();
-      options.push({ label: 'Custom', name: 'Custom' });
-      setModelOptions(options);
-      setIsLoading(false);
-    };
-
-    loadModelOptions();
-  }, []);
+export function Customization({ customization, subscriptionPlan, modelOptions }: CustomizationProps) {
+  const [showPopover, setShowPopover] = useState<keyof typeof sliderDescriptions | null>(null);
 
   const {
     maxTokens,
@@ -80,17 +53,6 @@ export function Customization({ customization, subscriptionPlan }: Customization
     stateSetters,
     handleSubmit,
   } = useCustomizeAPI({ customization, subscriptionPlan, modelOptions });
-
-  const [showPopover, setShowPopover] = useState<keyof typeof sliderDescriptions | null>(null);
-
-  if (isLoading) {
-    return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-        <CircularProgress />
-      </Box>
-    );
-  }
-  
 
   return (
     <Box>

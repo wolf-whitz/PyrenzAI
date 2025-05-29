@@ -9,13 +9,20 @@ import {
   Fade,
   Grow,
   Collapse,
+  CircularProgress,
 } from '@mui/material';
 import { ExpandMore, ExpandLess } from '@mui/icons-material';
 import { Customization, Cosmetic } from './MenuItem';
 import { GetUserData } from '~/components/functions';
+import { supabase } from '~/Utility/supabaseClient';
 
 interface MenuProps {
   onClose: () => void;
+}
+
+interface ModelOption {
+  label: string;
+  name: string;
 }
 
 export function Menu({ onClose }: MenuProps) {
@@ -24,6 +31,23 @@ export function Menu({ onClose }: MenuProps) {
   const [bgImage, setBgImage] = useState<string | null>(null);
   const [aiCustomization, setAiCustomization] = useState<any>(null);
   const [subscriptionPlan, setSubscriptionPlan] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [modelOptions, setModelOptions] = useState<ModelOption[]>([]);
+
+  const fetchModelIdentifiers = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('model_identifiers')
+        .select('name');
+
+      if (error) throw error;
+
+      return data.map(item => ({ label: item.name, name: item.name }));
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  };
 
   useEffect(() => {
     const savedBg = localStorage.getItem('bgImage');
@@ -31,22 +55,29 @@ export function Menu({ onClose }: MenuProps) {
       setBgImage(savedBg);
     }
 
-    const fetchUserData = async () => {
-      const userData = await GetUserData();
-      if (userData && 'ai_customization' in userData) {
-        setAiCustomization(userData.ai_customization);
-        const plan = userData.subscription_data.tier;
-        console.log(userData)
+    const fetchData = async () => {
+      try {
+        const userData = await GetUserData();
+        if (userData && 'ai_customization' in userData) {
+          setAiCustomization(userData.ai_customization);
+          const plan = userData.subscription_data.tier;
 
-        if (['MELON', 'PINEAPPLE', 'DURIAN'].includes(plan)) {
-          setSubscriptionPlan(plan);
-        } else {
-          setSubscriptionPlan(null);
+          if (['MELON', 'PINEAPPLE', 'DURIAN'].includes(plan)) {
+            setSubscriptionPlan(plan);
+          } else {
+            setSubscriptionPlan(null);
+          }
         }
+
+        const options = await fetchModelIdentifiers();
+        options.push({ label: 'Custom', name: 'Custom' });
+        setModelOptions(options);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchUserData();
+    fetchData();
   }, []);
 
   return (
@@ -76,54 +107,66 @@ export function Menu({ onClose }: MenuProps) {
               overflowY: 'auto',
             }}
           >
-            <Box display="flex" flexDirection="column">
-              <Button
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                variant="contained"
-                color="primary"
-                fullWidth
-                endIcon={isDropdownOpen ? <ExpandLess /> : <ExpandMore />}
-                sx={{
-                  backgroundColor: '#4a5568',
-                  '&:hover': { backgroundColor: '#718096' },
-                  justifyContent: 'space-between',
-                }}
-              >
-                <Typography>{selectedOption}</Typography>
-              </Button>
+            {loading ? (
+              <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+                <CircularProgress />
+              </Box>
+            ) : (
+              <>
+                <Box display="flex" flexDirection="column">
+                  <Button
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    endIcon={isDropdownOpen ? <ExpandLess /> : <ExpandMore />}
+                    sx={{
+                      backgroundColor: '#4a5568',
+                      '&:hover': { backgroundColor: '#718096' },
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <Typography>{selectedOption}</Typography>
+                  </Button>
 
-              <Collapse in={isDropdownOpen}>
-                <Paper
-                  elevation={3}
-                  sx={{ mt: 2, borderRadius: '8px', overflow: 'hidden' }}
-                >
-                  <MenuList>
-                    <MenuItem
-                      onClick={() => {
-                        setSelectedOption('Cosmetic');
-                        setIsDropdownOpen(false);
-                      }}
-                      sx={{ '&:hover': { backgroundColor: '#718096' } }}
+                  <Collapse in={isDropdownOpen}>
+                    <Paper
+                      elevation={3}
+                      sx={{ mt: 2, borderRadius: '8px', overflow: 'hidden' }}
                     >
-                      Cosmetic
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => {
-                        setSelectedOption('AI Customization');
-                        setIsDropdownOpen(false);
-                      }}
-                      sx={{ '&:hover': { backgroundColor: '#718096' } }}
-                    >
-                      AI Customization
-                    </MenuItem>
-                  </MenuList>
-                </Paper>
-              </Collapse>
-            </Box>
+                      <MenuList>
+                        <MenuItem
+                          onClick={() => {
+                            setSelectedOption('Cosmetic');
+                            setIsDropdownOpen(false);
+                          }}
+                          sx={{ '&:hover': { backgroundColor: '#718096' } }}
+                        >
+                          Cosmetic
+                        </MenuItem>
+                        <MenuItem
+                          onClick={() => {
+                            setSelectedOption('AI Customization');
+                            setIsDropdownOpen(false);
+                          }}
+                          sx={{ '&:hover': { backgroundColor: '#718096' } }}
+                        >
+                          AI Customization
+                        </MenuItem>
+                      </MenuList>
+                    </Paper>
+                  </Collapse>
+                </Box>
 
-            {selectedOption === 'Cosmetic' && <Cosmetic />}
-            {selectedOption === 'AI Customization' && (
-              <Customization customization={aiCustomization} subscriptionPlan={subscriptionPlan} />
+                {selectedOption === 'Cosmetic' && <Cosmetic />}
+                {selectedOption === 'AI Customization' && (
+                  <Customization
+                    customization={aiCustomization}
+                    subscriptionPlan={subscriptionPlan}
+                    modelOptions={modelOptions}
+                  />
+                )}
+              </>
             )}
           </Box>
         </Grow>
