@@ -26,6 +26,7 @@ export function CustomButton({ onButtonClick }: CustomButtonProps) {
   ) => {
     setLoading(true);
     await onButtonClick(func, type, maxCharacter, page, tag);
+    console.log(func, type, maxCharacter, page, tag);
     setLoading(false);
   };
 

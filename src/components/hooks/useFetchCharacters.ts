@@ -1,14 +1,13 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { fetchCharacters } from '~/api';
 import { usePyrenzAlert } from '~/provider';
+import type { Character } from '@shared-types/CharacterProp';
+import { useHomeStore } from '~/store';
 
 interface UseFetchCharactersProps {
   currentPage: number;
   search: string;
   itemsPerPage: number;
-  setCharacters: (characters: any[]) => void;
-  setTotal: (total: number) => void;
-  setLoading: (loading: boolean) => void;
   t: (key: string) => string;
 }
 
@@ -16,43 +15,58 @@ export function useFetchCharacters({
   currentPage,
   search,
   itemsPerPage,
-  setCharacters,
-  setTotal,
-  setLoading,
   t,
 }: UseFetchCharactersProps) {
   const showAlert = usePyrenzAlert();
+  const { loading, setLoading } = useHomeStore();
+
+  const [characters, setCharacters] = useState<Character[]>([]);
+  const [total, setTotal] = useState(0);
+  const [isOwner, setIsOwner] = useState(false);
+  const [maxPage, setMaxPage] = useState(0);
 
   const fetchCharactersData = useCallback(async () => {
     setLoading(true);
     try {
-      const { characters, total, isOwner } = await fetchCharacters(
+      const { characters, total, isOwner, maxPage } = await fetchCharacters(
         currentPage,
         itemsPerPage,
         search
       );
-      setCharacters(characters);
+
+      const safeCharacters = characters.map((char) => ({
+        ...char,
+        is_public: char.is_public ?? false,
+        is_nsfw: char.is_nsfw ?? false,
+        token_total: char.token_total ?? 0,
+        isLoading: false,
+      }));
+
+      setCharacters(safeCharacters);
       setTotal(total);
-      return { isOwner };
+      setIsOwner(isOwner);
+      setMaxPage(maxPage);
     } catch (error) {
       showAlert(t('errors.fetchingCharacters'), 'Alert');
-      return { isOwner: false };
+      setCharacters([]);
+      setTotal(0);
+      setIsOwner(false);
+      setMaxPage(0);
     } finally {
       setLoading(false);
     }
-  }, [
-    currentPage,
-    search,
-    itemsPerPage,
-    setCharacters,
-    setTotal,
-    setLoading,
-    t,
-  ]);
+  }, [currentPage, search, itemsPerPage, t, setLoading]);
 
   useEffect(() => {
     fetchCharactersData();
   }, [fetchCharactersData]);
 
-  return { isOwner: false };
+  return {
+    characters,
+    total,
+    setTotal,
+    loading,
+    isOwner,
+    maxPage,
+  };
 }

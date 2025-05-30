@@ -1,9 +1,9 @@
 import { SkeletonCard, CharacterCard } from '~/components';
 import { Typography, Box } from '@mui/material';
-import { CharacterCardProps } from '@shared-types/CharacterProp';
+import { Character } from '@shared-types/CharacterProp';
 
 interface CharacterListProps {
-  characters: CharacterCardProps[];
+  characters: Character[];
   loading: boolean;
   itemsPerPage: number;
   t: (key: string, options?: Record<string, any>) => string;

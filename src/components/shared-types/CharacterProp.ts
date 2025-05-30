@@ -16,22 +16,6 @@ export const CharacterSchema = z.object({
   isLoading: z.boolean(),
 });
 
-export const CharacterCardPropsSchema = z.object({
-  id: z.string(),
-  char_uuid: z.string(),
-  name: z.string(),
-  description: z.string(),
-  creator: z.string().nullable(),
-  creator_uuid: z.string(),
-  chat_messages_count: z.number(),
-  tags: z.array(z.string()),
-  profile_image: z.string(),
-  is_public: z.boolean(),
-  is_nsfw: z.boolean(),
-  token_total: z.number(),
-  isLoading: z.boolean(),
-});
-
 export const CharacterDataSchema = z.object({
   char_uuid: z.string().optional(),
   persona: z.string(),
@@ -85,5 +69,4 @@ export const ApiResponseSchema = z.object({
 export type ApiResponse = z.infer<typeof ApiResponseSchema>;
 export type CharacterData = z.infer<typeof CharacterDataSchema>;
 export type Draft = z.infer<typeof DraftSchema>;
-export type CharacterCardProps = z.infer<typeof CharacterCardPropsSchema>;
 export type Character = z.infer<typeof CharacterSchema>;

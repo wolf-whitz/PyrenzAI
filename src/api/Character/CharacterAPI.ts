@@ -9,14 +9,10 @@ export const fetchCharacters = async (
   currentPage: number,
   itemsPerPage: number,
   search: string
-): Promise<{ characters: Character[]; total: number; isOwner: boolean }> => {
+): Promise<{ characters: Character[]; total: number; isOwner: boolean; maxPage: number }> => {
   try {
-    const data = await fetchCharactersFunction(
-      'character',
-      search || null,
-      currentPage,
-      itemsPerPage
-    );
+    const data = await fetchCharactersFunction('character', currentPage, itemsPerPage)
+
 
     if (!data || !data.characters || data.characters.length === 0) {
       console.log('No characters found in the API response.');
@@ -24,12 +20,13 @@ export const fetchCharacters = async (
         characters: [],
         total: 0,
         isOwner: false,
+        maxPage: 0,
       };
     }
 
     const userUUID = await GetUserUUID();
 
-    const formattedCharacters = data.characters.map((char: any) => {
+    const formattedCharacters = data.characters.map((char) => {
       const isOwner = char.creator_uuid === userUUID;
 
       return {
@@ -50,10 +47,14 @@ export const fetchCharacters = async (
       };
     });
 
+    const { totalPages } = data;
+    const maxPage = totalPages
+    
     return {
       characters: formattedCharacters,
       total: data.total || 0,
       isOwner: formattedCharacters.some((char) => char.isOwner),
+      maxPage,
     };
   } catch (error) {
     if (error instanceof Error) {
@@ -65,6 +66,7 @@ export const fetchCharacters = async (
       characters: [],
       total: 0,
       isOwner: false,
+      maxPage: 0,
     };
   }
 };

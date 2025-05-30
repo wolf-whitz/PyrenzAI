@@ -1,40 +1,66 @@
-import { supabase } from '~/Utility/supabaseClient';
-import { Character } from '@shared-types/CharacterProp';
+import { supabase } from '~/Utility/supabaseClient'
+import { Character } from '@shared-types/CharacterProp'
 
 interface FetchCharactersResponse {
-  characters: Character[];
-  total: number;
+  character: Character | null
+  characters: Character[]
+  total: number
+  totalPages: number
 }
 
 export async function fetchCharacters(
   requestType: string,
-  _searchTerm: string | null = null,
-  _page: number = 1,
+  page: number = 1,
   itemsPerPage: number = 10
 ): Promise<FetchCharactersResponse> {
   if (requestType !== 'character') {
-    throw new Error(`Invalid request_type: ${requestType}`);
+    throw new Error(`Invalid request_type: ${requestType}`)
   }
 
-  const { data, error } = await supabase.rpc('weighted_character_sample');
+  const fromIndex = (page - 1) * itemsPerPage
+  const toIndex = page * itemsPerPage - 1
+
+  const { data, error, count } = await supabase
+    .from('characters')
+    .select('*', { count: 'exact' })
+    .order('chat_messages_count', { ascending: false })
+    .range(fromIndex, toIndex)
 
   if (error) {
-    throw new Error(`RPC error: ${error.message}`);
+    throw new Error(`error: ${error.message}`)
   }
 
-  const uniqueMap = new Map<string, Character>();
+  const uniqueMap = new Map<string, Character>()
   data.forEach((char: Character) => {
     if (!uniqueMap.has(char.id)) {
-      uniqueMap.set(char.id, char);
+      uniqueMap.set(char.id, char)
     }
-  });
+  })
 
   const characters = Array.from(uniqueMap.values())
-    .sort((a, b) => b.chat_messages_count - a.chat_messages_count)
-    .slice(0, itemsPerPage);
+  const total = count || 0
+  const totalPages = Math.ceil(total / itemsPerPage)
+
+  // PICKING LOGIC INLINE
+
+  let selectedCharacter: Character | null = null
+  if (characters.length > 0) {
+    const highestCount = Math.max(...characters.map((c) => c.chat_messages_count))
+    const highestCharacters = characters.filter((c) => c.chat_messages_count === highestCount)
+
+    if (highestCharacters.length === 1) {
+      selectedCharacter = highestCharacters[0]
+    } else {
+      // Tie breaker: pick lex lowest id among tied
+      highestCharacters.sort((a, b) => a.id.localeCompare(b.id))
+      selectedCharacter = highestCharacters[0]
+    }
+  }
 
   return {
+    character: selectedCharacter,
     characters,
-    total: characters.length,
-  };
+    total,
+    totalPages,
+  }
 }
