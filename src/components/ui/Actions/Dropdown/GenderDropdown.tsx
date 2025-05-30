@@ -1,11 +1,10 @@
 import { DropdownField } from '~/components';
+import { useCharacterStore } from '~/store';
 
-interface GenderDropdownProps {
-  value: string;
-  onChange: (value: string) => void;
-}
+export function GenderDropdown() {
+  const gender = useCharacterStore((state) => state.gender);
+  const setGender = useCharacterStore((state) => state.setGender);
 
-export function GenderDropdown({ value, onChange }: GenderDropdownProps) {
   const genderOptions = [
     { value: 'male', label: 'Male' },
     { value: 'female', label: 'Female' },
@@ -14,8 +13,8 @@ export function GenderDropdown({ value, onChange }: GenderDropdownProps) {
   return (
     <DropdownField
       name="gender"
-      value={value}
-      onChange={onChange}
+      value={gender}
+      onChange={(val) => setGender(val)}
       label="Gender"
       options={genderOptions}
       ariaLabel="Gender"

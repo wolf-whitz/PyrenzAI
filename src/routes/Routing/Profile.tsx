@@ -83,7 +83,6 @@ export function ProfilePage() {
             ) : characters.length > 0 ? (
               characters.map((character: Character) => {
                 const isOwner = character.creator_uuid === safeUuid;
-                console.log('isOwner', isOwner);
                 return (
                   <Box key={character.id} sx={cardHoverStyle}>
                     <CharacterCard character={character} isOwner={isOwner} />

@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 import { fetchCharacters } from '@components';
 import * as Sentry from '@sentry/react';
 import { usePyrenzAlert } from '~/provider';
-import { useNavigate, useLocation } from 'react-router-dom';
 
 interface PaginationProps {
   currentPage: number;
@@ -22,21 +21,11 @@ export function Pagination({
 }: PaginationProps) {
   const [isLoading, setIsLoading] = useState(false);
   const showAlert = usePyrenzAlert();
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const updateURLWithPage = (page: number) => {
-    const searchParams = new URLSearchParams(location.search);
-    searchParams.set('page', page.toString());
-    navigate({ search: searchParams.toString() }, { replace: true });
-  };
 
   const handlePageChange = async (newPage: number) => {
     if (isLoading || newPage < 1 || newPage > maxPage) return;
 
-    console.log('Changing to page:', newPage);
     setIsLoading(true);
-
     try {
       const { characters } = await fetchCharacters(
         'character',
@@ -46,7 +35,6 @@ export function Pagination({
 
       if (characters.length > 0) {
         setCurrentPage(newPage);
-        updateURLWithPage(newPage);
       } else {
         showAlert('No more characters to load.', 'Success');
       }
@@ -65,7 +53,11 @@ export function Pagination({
         Pagination Controls
       </h2>
       <Box display="flex" alignItems="center" justifyContent="center" gap={2}>
-        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.3 }}>
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          transition={{ duration: 0.3 }}
+        >
           <Button
             variant="outlined"
             onClick={() => handlePageChange(currentPage - 1)}
@@ -89,7 +81,11 @@ export function Pagination({
         <Typography color="#fff">
           Page {currentPage} of {maxPage}
         </Typography>
-        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.3 }}>
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          transition={{ duration: 0.3 }}
+        >
           <Button
             variant="outlined"
             onClick={() => handlePageChange(currentPage + 1)}

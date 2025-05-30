@@ -61,10 +61,10 @@ export const GetUserCreatedCharacters = (uuid?: string) => {
             error: authError,
           } = await supabase.auth.getUser();
 
-          if (authError || !user)
-            throw authError ?? new Error('No user session');
+          if (authError || !user) throw authError ?? new Error('No user session');
           userUuidToUse = user.id;
         }
+
         const { data: userData, error } = await supabase
           .from('user_data')
           .select('username, avatar_url, user_uuid')
@@ -85,16 +85,42 @@ export const GetUserCreatedCharacters = (uuid?: string) => {
       }
     };
 
+    const updateMetaAndTitle = (username: string, avatarUrl: string) => {
+      if (username) {
+        document.title = username;
+      }
+
+      if (avatarUrl) {
+        const ogImages = document.querySelectorAll('meta[property="og:image"]');
+        ogImages.forEach((meta) => {
+          meta.setAttribute('content', avatarUrl);
+        });
+      }
+    };
+
     const loadData = async () => {
       const creatorUuid = await fetchUserData();
       if (creatorUuid) {
         await fetchCharacters(creatorUuid);
       }
+      if (userData) {
+        updateMetaAndTitle(userData.username, userData.avatar_url);
+      }
       setLoading(false);
     };
 
     loadData();
-  }, [uuid]);
+  }, [uuid, userData]);
+
+  useEffect(() => {
+    if (userData) {
+      document.title = userData.username;
+      const ogImages = document.querySelectorAll('meta[property="og:image"]');
+      ogImages.forEach((meta) => {
+        meta.setAttribute('content', userData.avatar_url);
+      });
+    }
+  }, [userData]);
 
   return { characters, userData, loading };
 };

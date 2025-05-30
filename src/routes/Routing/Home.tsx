@@ -175,7 +175,7 @@ export function Home() {
 
             <Pagination
               currentPage={currentPage}
-              maxPage={totalPages}
+              maxPage={2}
               userUUID={userUUID}
               setCurrentPage={setCurrentPage}
             />

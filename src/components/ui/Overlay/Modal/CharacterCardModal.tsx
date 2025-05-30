@@ -1,7 +1,7 @@
 import { AuthenticationModal, CreateNewChat, GetUserUUID } from '@components';
 import { usePyrenzAlert } from '~/provider';
 import React, { useState, useEffect, useCallback } from 'react';
-import { CharacterCardProps } from '@shared-types/CharacterProp';
+import { Character } from '@shared-types/CharacterProp';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
@@ -24,7 +24,7 @@ import { ShimmerText } from 'react-shimmer-effects';
 interface CharacterCardModalProps {
   isOpen: boolean;
   onClose: () => void;
-  character: CharacterCardProps | null;
+  character: Character | null;
   isOwner: boolean;
 }
 

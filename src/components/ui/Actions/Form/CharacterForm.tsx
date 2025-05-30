@@ -104,14 +104,6 @@ export function CharacterForm({ character_update }: CharacterFormProps) {
     handleChange(event);
   };
 
-  const handleDropdownChange = (value: string) => {
-    setCharacterData({ gender: value });
-    setFormState((prevState) => ({
-      ...prevState,
-      gender: value,
-    }));
-  };
-
   return (
     <div className="flex flex-col items-center justify-center bg-gray-900 p-6">
       <form
@@ -119,10 +111,7 @@ export function CharacterForm({ character_update }: CharacterFormProps) {
         className="bg-black p-8 rounded-lg shadow-lg w-full flex flex-col space-y-6"
       >
         <TextareaForm formState={formState} handleChange={handleFormChange} />
-        <GenderDropdown
-          value={formState.gender}
-          onChange={handleDropdownChange}
-        />
+        <GenderDropdown />
         <VisibilityCheckboxes />
         <TokenSummary />
         <FormActions
