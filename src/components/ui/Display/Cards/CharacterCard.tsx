@@ -1,9 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { CharacterCardModal } from '@components';
 import { Character } from '@shared-types/CharacterProp';
-import { Box, Typography, IconButton, Tooltip, Fade } from '@mui/material';
+import { Box, Typography, Fade } from '@mui/material';
 import MessageIcon from '@mui/icons-material/Message';
-import ShareIcon from '@mui/icons-material/Share';
 import PublicIcon from '@mui/icons-material/Public';
 import LockIcon from '@mui/icons-material/Lock';
 import { useNavigate } from 'react-router-dom';
@@ -15,6 +14,7 @@ import {
   PyrenzCharacterCardDescription,
   PyrenzCharacterCardTags,
   PyrenzCharacterCardTag,
+  PyrenzCharacterCardImageImg,
   PyrenzAltTag,
 } from '~/theme';
 
@@ -54,54 +54,47 @@ export function CharacterCard({ character, isOwner }: CharacterCardProps) {
       <Fade in={isLoaded} timeout={1500}>
         <PyrenzCharacterCard onClick={handleCardClick}>
           <PyrenzCharacterCardImage>
-            <img src={character.profile_image} alt={character.name} />
+            <PyrenzCharacterCardImageImg src={character.profile_image} alt={character.name} />
           </PyrenzCharacterCardImage>
           <PyrenzCharacterCardContent>
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <PyrenzCharacterCardTitle>
-                {character.name}
-              </PyrenzCharacterCardTitle>
-              <Box display="flex" alignItems="center" gap={1}>
-                <Box display="flex" alignItems="center" gap={0.5}>
-                  <MessageIcon fontSize="small" sx={{ color: 'white' }} />
-                  <Typography variant="caption" className="font-medium">
-                    {character.chat_messages_count}
-                  </Typography>
-                </Box>
-                <Tooltip title="Copy link">
-                  <IconButton
-                    onClick={(e: React.MouseEvent<HTMLElement>) => {
-                      e.stopPropagation();
-                      navigator.clipboard.writeText(
-                        `${window.location.origin}/characters/${character.char_uuid}`
-                      );
-                      alert('Saved');
-                    }}
-                    aria-label={`Share ${character.name}`}
-                    sx={{
-                      transition: 'color 0.2s',
-                      '&:hover': { color: 'blue' },
-                    }}
-                  >
-                    <ShareIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
+            <Box display="flex" justifyContent="space-between" alignItems="center">
+              <PyrenzCharacterCardTitle>{character.name}</PyrenzCharacterCardTitle>
+              <Box
+                display={{ xs: 'none', sm: 'none', md: 'flex' }}
+                alignItems="center"
+                gap={0.5}
+              >
+                <MessageIcon fontSize="small" sx={{ color: 'white' }} />
+                <Typography variant="caption" className="font-medium">
+                  {character.chat_messages_count}
+                </Typography>
               </Box>
             </Box>
 
-            <PyrenzAltTag
-              onClick={handleCreatorClick}
+            <Box
+              display="flex"
+              alignItems="center"
+              gap={1}
               sx={{
                 cursor: 'pointer',
                 '&:hover': { textDecoration: 'underline' },
+                mt: 1,
               }}
+              onClick={handleCreatorClick}
             >
-              @{character.creator}
-            </PyrenzAltTag>
+              <PyrenzAltTag>@{character.creator}</PyrenzAltTag>
+
+              <Box
+                display={{ xs: 'flex', sm: 'flex', md: 'none' }}
+                alignItems="center"
+                gap={0.5}
+              >
+                <MessageIcon fontSize="small" sx={{ color: 'white' }} />
+                <Typography variant="caption" className="font-medium">
+                  {character.chat_messages_count}
+                </Typography>
+              </Box>
+            </Box>
 
             <PyrenzCharacterCardDescription>
               {character.description?.length > 120
@@ -121,13 +114,9 @@ export function CharacterCard({ character, isOwner }: CharacterCardProps) {
                   Private
                 </PyrenzCharacterCardTag>
               )}
-              {character.tags
-                ?.slice(0, 10)
-                .map((tag, index) => (
-                  <PyrenzCharacterCardTag key={index}>
-                    {tag}
-                  </PyrenzCharacterCardTag>
-                ))}
+              {character.tags?.slice(0, 5).map((tag, index) => (
+                <PyrenzCharacterCardTag key={index}>{tag}</PyrenzCharacterCardTag>
+              ))}
             </PyrenzCharacterCardTags>
           </PyrenzCharacterCardContent>
         </PyrenzCharacterCard>

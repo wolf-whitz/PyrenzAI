@@ -62,7 +62,7 @@ export function ProfilePage() {
               xl: 'repeat(5, 1fr)',
               xxl: 'repeat(6, 1fr)',
             }}
-            gap={6}
+            gap={2}
             pb={4}
             minHeight="50vh"
             pl={{ md: 15 }}

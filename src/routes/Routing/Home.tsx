@@ -175,11 +175,9 @@ export function Home() {
 
             <Pagination
               currentPage={currentPage}
-              totalPages={totalPages}
-              itemsPerPage={itemsPerPage}
+              maxPage={totalPages}
               userUUID={userUUID}
               setCurrentPage={setCurrentPage}
-              t={t}
             />
           </Box>
         </Container>

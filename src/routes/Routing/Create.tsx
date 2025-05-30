@@ -47,7 +47,7 @@ export function CreatePage() {
 
         if (error) {
           console.error('Error fetching character data:', error);
-        } else {
+        } else if (data) {
           setCharacterData(data as CharacterData);
           setCharacterUpdate(true);
         }
@@ -69,12 +69,11 @@ export function CreatePage() {
     <Suspense fallback={<CreatePageLoader />}>
       <Box
         display="flex"
-        flexDirection="column"
+        flexDirection={{ xs: 'column', sm: 'row' }}
         width="100%"
         minHeight="100vh"
-        sx={{ flexDirection: { sm: 'row' } }}
       >
-        <Box width="100%" sx={{ width: { sm: '256px' } }}>
+        <Box width={{ xs: '100%', sm: '256px' }}>
           <Sidebar />
         </Box>
 
@@ -85,9 +84,7 @@ export function CreatePage() {
           </Box>
         </Box>
 
-        <Box
-          sx={{ display: { xs: 'none', sm: 'block' }, width: { sm: '256px' } }}
-        >
+        <Box sx={{ display: { xs: 'none', sm: 'block' }, width: { sm: '256px' } }}>
           <CommunityGuidelines />
         </Box>
 

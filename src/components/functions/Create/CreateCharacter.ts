@@ -8,35 +8,31 @@ interface CreateCharacterResponse {
   error?: string;
 }
 
+function cleanTags(tags?: string[]): string[] | undefined {
+  if (!tags) return undefined;
+  return tags.filter(tag => tag.trim() !== '');
+}
+
 export const createCharacter = async (
   characterData: CharacterData
 ): Promise<CreateCharacterResponse> => {
   try {
+    if (!characterData.creator || characterData.creator.trim() === '') return { error: 'Creator is required.' };
+
     const characterUuid = uuidv4();
-    
-    if (!characterUuid) {
-      throw new Error('Failed to generate UUID.');
-    }
+    if (!characterUuid) throw new Error('Failed to generate UUID.');
 
-    const { textarea_token, char_uuid, ...filteredCharacterData } = characterData;
+    const { textarea_token, char_uuid, tags, ...rest } = characterData;
+    const cleanedTags = cleanTags(tags);
 
-    const insertData = {
-      char_uuid: characterUuid,
-      ...filteredCharacterData,
-    };
-
-    const { data, error } = await supabase
-      .from('characters')
-      .insert([insertData]);
+    const insertData = { char_uuid: characterUuid, ...rest, tags: cleanedTags };
+    const { data, error } = await supabase.from('characters').insert([insertData]);
 
     if (error) {
       console.error('Error creating character:', error);
       Sentry.captureException(error);
       return { error: error.message };
     }
-
-    console.log('Insert successful, returned data:', data);
-
     return { char_uuid: characterUuid };
   } catch (error) {
     console.error('Unexpected error:', error);
@@ -49,26 +45,28 @@ export const updateCharacter = async (
   characterData: CharacterData
 ): Promise<CreateCharacterResponse> => {
   try {
-    const { char_uuid, textarea_token, ...filteredCharacterData } = characterData;
+    if (!characterData.creator || characterData.creator.trim() === '') return { error: 'Creator is required.' };
+    const { char_uuid, textarea_token, tags, ...rest } = characterData;
+    if (!char_uuid) return { error: 'Character UUID is required for updating.' };
 
-    if (!char_uuid) {
-      return { error: 'Character UUID is required for updating.' };
-    }
+    const cleanedTags = cleanTags(tags);
 
-    const { data, error } = await supabase
-      .from('characters')
-      .update(filteredCharacterData)
-      .eq('char_uuid', char_uuid);
+    const updateData = {
+      ...rest,
+      tags: cleanedTags ?? null,
+    };
+
+    const { data, error } = await supabase.rpc('update_character', {
+      char_uuid_param: char_uuid,
+      character_data: updateData,
+    });
 
     if (error) {
       console.error('Error updating character:', error);
       Sentry.captureException(error);
       return { error: error.message };
     }
-
-    console.log('Update successful, returned data:', data);
-
-    return { char_uuid: char_uuid };
+    return { char_uuid };
   } catch (error) {
     console.error('Unexpected error:', error);
     Sentry.captureException(error);

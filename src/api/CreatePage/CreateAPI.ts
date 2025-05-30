@@ -164,13 +164,14 @@ export const useCreateAPI = (
       characterData.scenario,
       characterData.description,
       characterData.first_message,
+      characterData.creator,
     ];
 
-    const isValid = fieldsToCheck.every((field) => field && field.length >= 5);
+    const isValid = fieldsToCheck.every((field) => field && field.length >= 2);
 
     if (!isValid) {
       showAlert(
-        'Each field must be at least 5 characters long. (Excluding tags)',
+        'Each field must be at least 2 characters long. (Excluding tags)',
         'Alert'
       );
       setLoading(false);

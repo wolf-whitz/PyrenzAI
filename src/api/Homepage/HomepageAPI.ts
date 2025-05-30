@@ -44,10 +44,11 @@ export const useHomepageAPI = () => {
   const { t } = useTranslation();
   const userUUID = useFetchUserUUID();
   const itemsPerPage = 10;
-  const totalPages = Math.max(1, Math.ceil(total / itemsPerPage));
   const showAlert = usePyrenzAlert();
 
   useSyncSearchParams({ search, currentPage, setSearch, setCurrentPage });
+
+  const totalPages = Math.max(1, Math.ceil(total / itemsPerPage));
 
   const { isOwner } = useFetchCharacters({
     currentPage,
