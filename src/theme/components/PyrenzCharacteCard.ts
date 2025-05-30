@@ -18,12 +18,16 @@ export const PyrenzCharacterCard = styled(Card)(({ theme }) => ({
     boxShadow: '0 6px 25px rgba(0, 0, 0, 0.15)',
     backgroundColor: '#0f172a',
   },
+  '&:focus-visible': {
+    boxShadow: `0 0 0 3px ${theme.palette.primary.main}`,
+  },
+  cursor: 'pointer',
   [theme.breakpoints.down('sm')]: {
-    maxWidth: '280px', 
-    height: 'auto',   
+    maxWidth: '280px',
+    height: 'auto',
   },
   [theme.breakpoints.down('xs')]: {
-    maxWidth: '100%',  
+    maxWidth: '100%',
     height: 'auto',
   },
 }));
@@ -63,6 +67,9 @@ export const PyrenzCharacterCardImageImg = styled('img')({
   height: '100%',
   objectFit: 'cover',
   display: 'block',
+  userSelect: 'none',
+  pointerEvents: 'auto',
+  draggable: false as any,
 });
 
 export const PyrenzCharacterCardTitle = styled(Typography)({
@@ -91,7 +98,7 @@ export const PyrenzCharacterCardTags = styled(Box)(({ theme }) => ({
     pointerEvents: 'none',
   },
   [theme.breakpoints.down('sm')]: {
-    display: 'none', 
+    display: 'none',
   },
 }));
 

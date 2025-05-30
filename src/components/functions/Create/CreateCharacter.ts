@@ -8,9 +8,26 @@ interface CreateCharacterResponse {
   error?: string;
 }
 
-function cleanTags(tags?: string[]): string[] | undefined {
+function cleanTags(tags?: string | string[]): string | undefined {
   if (!tags) return undefined;
-  return tags.filter(tag => tag.trim() !== '');
+
+  let tagsArray: string[] = [];
+
+  if (typeof tags === 'string') {
+    tagsArray = tags.split(',');
+  } else if (Array.isArray(tags)) {
+    if (tags.length === 1 && tags[0].includes(',')) {
+      tagsArray = tags[0].split(',');
+    } else {
+      tagsArray = tags;
+    }
+  }
+
+  const cleanedTags = tagsArray
+    .map((tag: string) => tag.trim().toLowerCase())
+    .filter((tag: string) => tag.length > 0);
+
+  return cleanedTags.length > 0 ? JSON.stringify(cleanedTags) : undefined;
 }
 
 export const createCharacter = async (

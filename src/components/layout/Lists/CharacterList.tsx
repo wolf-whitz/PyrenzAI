@@ -17,6 +17,7 @@ export function CharacterList({
   t,
   isOwner,
 }: CharacterListProps) {
+  console.log(characters)
   return (
     <Box
       sx={{
@@ -52,9 +53,6 @@ export function CharacterList({
             key={char.id}
             sx={{
               transition: 'transform 0.3s ease-in-out',
-              '&:hover': {
-                transform: 'scale(1.05)',
-              },
               p: 1,
             }}
             aria-labelledby={`character-${char.name}`}

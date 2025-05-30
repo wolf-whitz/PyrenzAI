@@ -19,7 +19,6 @@ export function CharacterForm({ character_update }: CharacterFormProps) {
   const {
     loading,
     saveLoading,
-    showRequiredFieldsPopup,
     handleClear,
     handleSave,
     handleSelectDraft,
@@ -30,9 +29,7 @@ export function CharacterForm({ character_update }: CharacterFormProps) {
   const characterData = useCharacterStore((state) => state);
   const setCharacterData = useCharacterStore((state) => state.setCharacterData);
 
-  const [showPopup, setShowPopup] = useState(showRequiredFieldsPopup);
-  const [isInitialized, setIsInitialized] = useState(false);
-
+  
   const [formState, setFormState] = useState({
     char_uuid: '',
     persona: '',

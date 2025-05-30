@@ -13,7 +13,7 @@ interface CharacterState {
   tags: string[];
   gender: string;
   creator: string | null;
-  textarea_token: { [key: string]: number };
+  textarea_token: Record<string, number>;
   token_total: number;
   profile_image?: string;
 }
@@ -40,21 +40,35 @@ export const useCharacterStore = create<CharacterState & CharacterActions>((set)
   token_total: 0,
   profile_image: undefined,
 
-  setCharacterData: (data) =>
+  setCharacterData: (data: Partial<CharacterState>) =>
     set((state) => {
-      const newTextareaToken = {
+      const newTextareaToken: Record<string, number> = {
         ...state.textarea_token,
         ...data.textarea_token,
       };
-      const newTokenTotal = Object.values(newTextareaToken).reduce((a, b) => a + b, 0);
 
-      let processedTags = state.tags;
+      const newTokenTotal: number = Object.values(newTextareaToken).reduce(
+        (acc, val) => acc + val,
+        0
+      );
+
       const tags = data.tags as string | string[] | undefined;
 
+      let processedTags: string[] = state.tags;
+
       if (Array.isArray(tags)) {
-        processedTags = tags;
-      } else if (typeof tags === 'string') {
-        processedTags = tags.trim() === '' ? [] : [tags];
+        processedTags = tags
+          .map((tag: string) => tag.trim().toLowerCase())
+          .filter((tag: string) => tag.length > 0);
+      } else if (typeof tags === 'string' && tags !== '') {
+        processedTags = tags
+          .split(',')
+          .map((tag: string) => tag.trim().toLowerCase())
+          .filter((tag: string) => tag.length > 0);
+      } else if (typeof tags === 'string' && tags === '') {
+        processedTags = [];
+      } else if (tags === undefined) {
+        processedTags = state.tags;
       }
 
       return {

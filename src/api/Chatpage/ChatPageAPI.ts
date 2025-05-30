@@ -13,7 +13,6 @@ interface ChatMessageWithId {
 
 export const fetchChatData = async (
   chat_uuid: string,
-  username: string,
   avatar_url: string
 ): Promise<{
   character: Character;

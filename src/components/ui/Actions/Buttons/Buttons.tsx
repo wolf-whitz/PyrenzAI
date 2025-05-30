@@ -22,11 +22,11 @@ export function CustomButton({ onButtonClick }: CustomButtonProps) {
     type: string,
     maxCharacter: number,
     page: number,
-    tag: string
+    tag?: string,
+    gender?: 'male' | 'female'
   ) => {
     setLoading(true);
-    await onButtonClick(func, type, maxCharacter, page, tag);
-    console.log(func, type, maxCharacter, page, tag);
+    onButtonClick(func, type, maxCharacter, page, tag, gender);
     setLoading(false);
   };
 
@@ -55,7 +55,8 @@ export function CustomButton({ onButtonClick }: CustomButtonProps) {
                 btn.type,
                 btn.max_character,
                 btn.page,
-                btn.tag as string
+                btn.tag,
+               (btn.gender === 'male' || btn.gender === 'female') ? btn.gender : undefined
               )
             }
             data-state={loading ? 'loading' : undefined}

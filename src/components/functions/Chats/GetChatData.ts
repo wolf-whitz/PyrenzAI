@@ -1,17 +1,16 @@
 import { supabase } from '~/Utility/supabaseClient';
 
 interface ChatDataResponse {
-  error?: string;
-  name?: string;
-  persona?: string;
-  scenario?: string;
-  gender?: string;
-  description?: string;
-  first_message?: string;
-  tags?: string[];
-  profile_image?: string;
-  banner_image?: string;
-  token_total?: number;
+  error: string;
+  name: string;
+  persona: string;
+  scenario: string;
+  gender: string;
+  description: string;
+  first_message: string;
+  tags: string[];
+  profile_image: string;
+  token_total: number;
 }
 
 export async function getChatData(chatId: string): Promise<ChatDataResponse> {
@@ -22,7 +21,7 @@ export async function getChatData(chatId: string): Promise<ChatDataResponse> {
     .single();
 
   if (chatError || !chatData) {
-    return { error: 'Chat not found' };
+    return { error: 'Chat not found', name: '', persona: '', scenario: '', gender: '', description: '', first_message: '', tags: [], profile_image: '', token_total: 0 };
   }
 
   const inputCharUuid = chatData.char_uuid;
@@ -39,7 +38,6 @@ export async function getChatData(chatId: string): Promise<ChatDataResponse> {
       first_message,
       tags,
       profile_image,
-      banner_image,
       token_total
     `
     )
@@ -47,10 +45,11 @@ export async function getChatData(chatId: string): Promise<ChatDataResponse> {
     .single();
 
   if (characterError || !characterData) {
-    return { error: 'Character not found' };
+    return { error: 'Character not found', name: '', persona: '', scenario: '', gender: '', description: '', first_message: '', tags: [], profile_image: '', token_total: 0 };
   }
 
   return {
+    error: '',
     name: characterData.name,
     persona: characterData.persona,
     scenario: characterData.scenario,

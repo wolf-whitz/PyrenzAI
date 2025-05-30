@@ -155,7 +155,7 @@ export function Home() {
             </Box>
 
             <Pagination
-            maxPage={maxPage}
+              maxPage={maxPage}
               currentPage={currentPage}
               userUUID={userUUID}
               setCurrentPage={setCurrentPage}

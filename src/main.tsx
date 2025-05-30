@@ -49,11 +49,8 @@ const Main = () => {
   return (
     <Fade in={show} timeout={600}>
       <Box
-        component="main"
         data-mui-theme={`theme-${currentTheme}`}
-        role="main"
         aria-label="PyrenzAI"
-        tabIndex={-1}
         sx={{
           scrollBehavior: 'smooth',
           scrollbarWidth: 'thin',

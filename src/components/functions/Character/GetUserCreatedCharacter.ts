@@ -14,113 +14,99 @@ export const GetUserCreatedCharacters = (uuid?: string) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchCharacters = async (creatorUuid: string) => {
+    const fetchData = async () => {
       try {
-        const { data: chars, error } = await supabase
-          .from('characters')
-          .select('*')
-          .eq('creator_uuid', creatorUuid);
+        const userUuidToUse = uuid || (await getUserUuid());
+        if (!userUuidToUse) {
+          setLoading(false);
+          return;
+        }
 
-        if (error) throw error;
+        const [userData, characters] = await Promise.all([
+          fetchUserData(userUuidToUse),
+          fetchCharacters(userUuidToUse),
+        ]);
 
-        const formattedChars = chars.map((char) => {
-          const cleanedTags = Array.isArray(char.tags)
-            ? char.tags
-            : char.tags?.split(',').map((tag: string) => tag.trim()) || [];
+        if (userData) {
+          setUserData(userData);
+          updateMetaAndTitle(userData.username, userData.avatar_url);
+        }
 
-          return {
-            id: char.id.toString(),
-            char_uuid: char.char_uuid,
-            name: char.name,
-            description: char.description,
-            creator: char.creator,
-            creator_uuid: char.creator_uuid,
-            chat_messages_count: char.chat_messages_count ?? 0,
-            profile_image: char.profile_image,
-            tags: cleanedTags,
-            is_public: char.is_public,
-            is_nsfw: char.is_nsfw ?? false,
-            token_total: char.token_total ?? 0,
-            isLoading: false,
-          };
-        });
-
-        setCharacters(formattedChars);
+        if (characters) {
+          setCharacters(characters);
+        }
       } catch (error) {
-        console.error('Error fetching characters:', error);
+        console.error('Error:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    const fetchUserData = async (): Promise<string | null> => {
-      try {
-        let userUuidToUse = uuid;
+    const getUserUuid = async (): Promise<string | null> => {
+      const {
+        data: { user },
+        error,
+      } = await supabase.auth.getUser();
 
-        if (!userUuidToUse) {
-          const {
-            data: { user },
-            error: authError,
-          } = await supabase.auth.getUser();
-
-          if (authError || !user) throw authError ?? new Error('No user session');
-          userUuidToUse = user.id;
-        }
-
-        const { data: userData, error } = await supabase
-          .from('user_data')
-          .select('username, avatar_url, user_uuid')
-          .eq('user_uuid', userUuidToUse)
-          .maybeSingle();
-
-        if (error || !userData) {
-          setUserData(null);
-          return null;
-        }
-
-        setUserData(userData as UserData);
-        return userData.user_uuid;
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-        setUserData(null);
+      if (error || !user) {
+        console.error('Error fetching user:', error);
         return null;
       }
+      return user.id;
+    };
+
+    const fetchUserData = async (userUuid: string): Promise<UserData | null> => {
+      const { data, error } = await supabase
+        .from('user_data')
+        .select('username, avatar_url, user_uuid')
+        .eq('user_uuid', userUuid)
+        .maybeSingle();
+
+      if (error || !data) {
+        console.error('Error fetching user data:', error);
+        return null;
+      }
+      return data as UserData;
+    };
+
+    const fetchCharacters = async (creatorUuid: string): Promise<Character[] | null> => {
+      const { data, error } = await supabase
+        .from('characters')
+        .select('*')
+        .eq('creator_uuid', creatorUuid);
+
+      if (error) {
+        console.error('Error fetching characters:', error);
+        return null;
+      }
+
+      return data.map((char) => ({
+        id: char.id.toString(),
+        char_uuid: char.char_uuid,
+        name: char.name,
+        description: char.description,
+        creator: char.creator,
+        creator_uuid: char.creator_uuid,
+        chat_messages_count: char.chat_messages_count ?? 0,
+        profile_image: char.profile_image,
+        tags: Array.isArray(char.tags)
+          ? char.tags
+          : char.tags?.split(',').map((tag: string) => tag.trim()) || [],
+        is_public: char.is_public,
+        is_nsfw: char.is_nsfw ?? false,
+        token_total: char.token_total ?? 0,
+        isLoading: false,
+      }));
     };
 
     const updateMetaAndTitle = (username: string, avatarUrl: string) => {
-      if (username) {
-        document.title = username;
-      }
-
-      if (avatarUrl) {
-        const ogImages = document.querySelectorAll('meta[property="og:image"]');
-        ogImages.forEach((meta) => {
-          meta.setAttribute('content', avatarUrl);
-        });
-      }
-    };
-
-    const loadData = async () => {
-      const creatorUuid = await fetchUserData();
-      if (creatorUuid) {
-        await fetchCharacters(creatorUuid);
-      }
-      if (userData) {
-        updateMetaAndTitle(userData.username, userData.avatar_url);
-      }
-      setLoading(false);
-    };
-
-    loadData();
-  }, [uuid, userData]);
-
-  useEffect(() => {
-    if (userData) {
-      document.title = userData.username;
+      document.title = username;
       const ogImages = document.querySelectorAll('meta[property="og:image"]');
-      ogImages.forEach((meta) => {
-        meta.setAttribute('content', userData.avatar_url);
-      });
-    }
-  }, [userData]);
+      ogImages.forEach((meta) => meta.setAttribute('content', avatarUrl));
+    };
+
+    fetchData();
+  }, [uuid]);
 
   return { characters, userData, loading };
 };

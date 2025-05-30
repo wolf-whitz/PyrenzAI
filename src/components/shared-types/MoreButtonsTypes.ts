@@ -13,6 +13,18 @@ export type ButtonType = {
   max_character: number;
   page: number;
   tag?: string;
+  gender?: 'male' | 'female' 
+};
+
+export type CustomButtonProps = {
+  onButtonClick: (
+    Function: string,
+    type: string,
+    max_character: number,
+    page: number,
+    tag?: string,
+    gender?: 'male' | 'female'
+  ) => void;
 };
 
 export type ModalResultType = {
@@ -60,6 +72,7 @@ export const buttons: ButtonType[] = [
   {
     icon: Tag,
     label: 'HomePageMoreButtons.btn.male',
+    gender: 'male',
     Function: 'GetCharactersWithTags',
     type: 'GetTaggedCharacters',
     max_character: 10,
@@ -67,13 +80,3 @@ export const buttons: ButtonType[] = [
     tag: 'male',
   },
 ];
-
-export type CustomButtonProps = {
-  onButtonClick: (
-    Function: string,
-    type: string,
-    max_character: number,
-    page: number,
-    tag?: string
-  ) => void;
-};
