@@ -17,7 +17,6 @@ export function CharacterList({
   t,
   isOwner,
 }: CharacterListProps) {
-  console.log(characters);
   return (
     <Box
       sx={{

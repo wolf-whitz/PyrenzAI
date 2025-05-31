@@ -22,6 +22,7 @@ export const fetchCharacters = async (
       itemsPerPage
     );
 
+    console.log(data.character)
     if (!data || !data.characters || data.characters.length === 0) {
       console.log('No characters found in the API response.');
       return {

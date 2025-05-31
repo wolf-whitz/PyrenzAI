@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 import { Persona, GetUserUUID, GetUserData } from '@components';
-import { MuiStyledDrawer } from '~/theme';
+import { PyrenzStyledDrawer } from '~/theme';
 
 interface SettingsSidebarProps {
   settingsOpen: boolean;
@@ -35,7 +35,7 @@ export function SettingsSidebar({
   }, []);
 
   return (
-    <MuiStyledDrawer
+    <PyrenzStyledDrawer
       isOpen={settingsOpen}
       onClose={onClose}
       profileData={{
@@ -54,6 +54,6 @@ export function SettingsSidebar({
       <Box className="flex justify-center mt-4">
         <Persona />
       </Box>
-    </MuiStyledDrawer>
+    </PyrenzStyledDrawer>
   );
 }

@@ -32,6 +32,7 @@ export async function fetchCharacters(
 
   const uniqueMap = new Map<string, Character>();
   data.forEach((char: Character) => {
+    char.id = String(char.id);
     if (!uniqueMap.has(char.id)) {
       uniqueMap.set(char.id, char);
     }
@@ -40,8 +41,6 @@ export async function fetchCharacters(
   const characters = Array.from(uniqueMap.values());
   const total = count || 0;
   const totalPages = Math.ceil(total / itemsPerPage);
-
-  // PICKING LOGIC INLINE
 
   let selectedCharacter: Character | null = null;
   if (characters.length > 0) {
@@ -55,11 +54,12 @@ export async function fetchCharacters(
     if (highestCharacters.length === 1) {
       selectedCharacter = highestCharacters[0];
     } else {
-      // Tie breaker: pick lex lowest id among tied
-      highestCharacters.sort((a, b) => a.id.localeCompare(b.id));
+      highestCharacters.sort((a, b) => String(a.id).localeCompare(String(b.id)));
       selectedCharacter = highestCharacters[0];
     }
   }
+
+  console.log(characters);
 
   return {
     character: selectedCharacter,

@@ -21,7 +21,7 @@ import {
 import { FaDiscord } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '~/Utility/supabaseClient';
-import { MuiStyledDrawer, PyrenzBlueButton } from '~/theme';
+import { PyrenzStyledDrawer, PyrenzBlueButton } from '~/theme';
 
 interface HeaderProps {
   setShowLogin: (value: boolean) => void;
@@ -144,7 +144,7 @@ export function PreviewHeader({
             <IconButton onClick={() => setMenuOpen(true)}>
               <MenuIcon />
             </IconButton>
-            <MuiStyledDrawer
+            <PyrenzStyledDrawer
               isOpen={menuOpen}
               onClose={() => setMenuOpen(false)}
               profileData={{
@@ -153,7 +153,7 @@ export function PreviewHeader({
               }}
             >
               <Box
-                sx={{ width: 250, backgroundColor: 'gray.900' }}
+                sx={{ width: 250 }}
                 role="presentation"
                 onClick={() => setMenuOpen(false)}
                 onKeyDown={() => setMenuOpen(false)}
@@ -221,7 +221,7 @@ export function PreviewHeader({
                   )}
                 </List>
               </Box>
-            </MuiStyledDrawer>
+            </PyrenzStyledDrawer>
           </div>
         )}
       </Toolbar>
