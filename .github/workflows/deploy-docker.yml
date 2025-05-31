@@ -34,7 +34,7 @@ env:
   IMAGE_TAG_LATEST: latest
 
 jobs:
-  build-and-push:
+ PyrenzAI-Pipeline:
     runs-on: ubuntu-latest
 
     steps:
