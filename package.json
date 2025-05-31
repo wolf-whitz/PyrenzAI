@@ -29,7 +29,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "dev": "concurrently \"vite\" \"tsc --watch\"",
-    "prod": "vite preview",
+    "prod": "vite preview --port 8080",
     "sync": "node csp-sync.cjs",
     "barrels": "barrelsby"
   },
