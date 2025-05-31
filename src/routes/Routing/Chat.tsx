@@ -75,11 +75,7 @@ export function ChatPage() {
       if (chat_uuid && userUuid && userData) {
         try {
           clearData();
-          const result = await fetchChatData(
-            chat_uuid,
-            userData.username,
-            userData.icon
-          );
+          const result = await fetchChatData(chat_uuid, userData.icon);
 
           const updatedCharacter = {
             ...result.character,
@@ -88,14 +84,15 @@ export function ChatPage() {
 
           setChatData({ ...result, character: updatedCharacter });
 
-          if (result?.character?.first_message) {
-            setFirstMessage(result.character.first_message);
+          if (result.firstMessage) {
+            setFirstMessage(result.firstMessage);
           } else {
             setFirstMessage('');
           }
 
           setFetchError(false);
         } catch (error) {
+          console.error('Error fetching chat data:', error);
           setFetchError(true);
         }
       }

@@ -37,27 +37,24 @@ jobs:
       - name: Get semantic version tag
         id: get_version
         run: |
-          # Try to get latest git tag, fallback to 0.0.1
           VERSION_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.1")
           echo "version_tag=$VERSION_TAG" >> $GITHUB_OUTPUT
 
-      - name: Build and push Docker image with latest and version tags
+      - name: Build and push Docker image
         run: |
           docker buildx build \
             --cache-from=type=local,src=/tmp/.buildx-cache \
             --cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=max \
-            -t $IMAGE_NAME:${{ env.IMAGE_TAG_LATEST }} \
+            -t $IMAGE_NAME:$IMAGE_TAG_LATEST \
             -t $IMAGE_NAME:${{ steps.get_version.outputs.version_tag }} \
             --push \
             .
-
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
       - name: Print Docker Image Links
         run: |
-          echo "🚀 Image deployed at latest tag: https://hub.docker.com/r/$IMAGE_NAME:$IMAGE_TAG_LATEST"
-          echo "🚀 Image deployed at version tag: https://hub.docker.com/r/$IMAGE_NAME:${{ steps.get_version.outputs.version_tag }}"
+          echo "🚀 Image deployed at: https://hub.docker.com/r/$IMAGE_NAME:${{ steps.get_version.outputs.version_tag }}"
 
       - name: Create or update GitHub Release
         uses: softprops/action-gh-release@v1
@@ -73,17 +70,56 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Send Discord notification on failure
-        if: failure()
+      - name: Send Discord notification on success
+        if: success()
         run: |
-          echo "Sending Discord error embed notification..."
+          echo "Sending Discord success embed..."
 
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           DOCKER_USER="${{ secrets.DOCKERHUB_USERNAME }}"
+          VERSION_TAG="${{ steps.get_version.outputs.version_tag }}"
+          REPO="$IMAGE_NAME"
+          URL="https://hub.docker.com/r/$IMAGE_NAME:$VERSION_TAG"
+
+          PAYLOAD=$(jq -n \
+            --arg ts "$TIMESTAMP" \
+            --arg user "$DOCKER_USER" \
+            --arg repo "$REPO" \
+            --arg tag "$VERSION_TAG" \
+            --arg url "$URL" \
+            '{
+              embeds: [
+                {
+                  title: "✅ PyrenzAI Docker Deploy Successful",
+                  color: 5763719,
+                  fields: [
+                    { name: "Time", value: $ts, inline: false },
+                    { name: "Publisher", value: $user, inline: true },
+                    { name: "Version", value: $tag, inline: true },
+                    { name: "Docker Image", value: $url, inline: false }
+                  ],
+                  footer: { text: "PyrenzAI CI" },
+                  timestamp: $ts
+                }
+              ]
+            }')
+
+          curl -H "Content-Type: application/json" \
+            -X POST \
+            -d "$PAYLOAD" \
+            ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+      - name: Send Discord notification on failure
+        if: failure()
+        run: |
+          echo "Sending Discord error embed..."
+
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          DOCKER_USER="${{ secrets.DOCKERHUB_USERNAME }}"
+          VERSION_TAG="${{ steps.get_version.outputs.version_tag }}"
           REPO="$IMAGE_NAME"
           BUILD_STEP="${{ github.job }}"
           ERROR_MSG="Deployment failed on job $BUILD_STEP."
-          VERSION_TAG="${{ steps.get_version.outputs.version_tag }}"
 
           PAYLOAD=$(jq -n \
             --arg ts "$TIMESTAMP" \
@@ -98,14 +134,14 @@ jobs:
                   title: "🚨 ERROR ON DEPLOYMENT",
                   color: 15158332,
                   fields: [
-                    { name: "Time when error occurred", value: $ts, inline: false },
+                    { name: "Time", value: $ts, inline: false },
                     { name: "Publisher", value: $user, inline: true },
                     { name: "Repo", value: $repo, inline: true },
-                    { name: "Build step", value: $step, inline: false },
-                    { name: "Version Tag", value: $ver, inline: true },
+                    { name: "Build Step", value: $step, inline: false },
+                    { name: "Version", value: $ver, inline: true },
                     { name: "Error Message", value: $err, inline: false }
                   ],
-                  footer: { text: "PyrenzAI Deployment Pipeline" },
+                  footer: { text: "PyrenzAI CI" },
                   timestamp: $ts
                 }
               ]
