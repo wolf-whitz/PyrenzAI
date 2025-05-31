@@ -10,14 +10,12 @@ interface PaginationProps {
   maxPage: number;
   userUUID: string | null;
   setCurrentPage: (page: number) => void;
-  searchQuery?: string | null;
 }
 
 export function Pagination({
   currentPage,
   maxPage,
   setCurrentPage,
-  searchQuery = '',
 }: PaginationProps) {
   const [isLoading, setIsLoading] = useState(false);
   const showAlert = usePyrenzAlert();
@@ -29,7 +27,6 @@ export function Pagination({
     try {
       const { characters } = await fetchCharacters(
         'character',
-        searchQuery || null,
         newPage
       );
 
