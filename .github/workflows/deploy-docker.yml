@@ -1,6 +1,28 @@
-# Builder and publisher file 
+# ==============================================
+# PyrenzAI Pipeline
+# ==============================================
+# This pipeline automatically handles:
+# 
+# Building of the Application:
+#     - Uses Docker Buildx to build the latest image
+#     - Supports semantic versioning via Git tags
+#     - Caches Docker layers for faster builds
+#
+#  Publishing Docker Images:
+#     - Pushes both `latest` and tagged versions to Docker Hub
+#
+#  Discord Notifications:
+#     - Notifies on successful deploy with full metadata
+#     - Alerts on failure with error step, time, and message
+#     - Uses rich Discord embeds for clean UI/UX
+#
+# Trigger:
+#     - Runs automatically on push to the `main` branch
+#
+# ==============================================
 
-name: Deploy to Docker Hub
+
+name: PyrenzAI Pipeline
 
 on:
   push:
@@ -55,20 +77,6 @@ jobs:
       - name: Print Docker Image Links
         run: |
           echo "🚀 Image deployed at: https://hub.docker.com/r/$IMAGE_NAME:${{ steps.get_version.outputs.version_tag }}"
-
-      - name: Create or update GitHub Release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ steps.get_version.outputs.version_tag }}
-          name: Release ${{ steps.get_version.outputs.version_tag }}
-          body: |
-            Docker Image for pyrenzai!
-
-            Docker name: ${{ env.IMAGE_NAME }}
-
-            Version: ${{ steps.get_version.outputs.version_tag }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Send Discord notification on success
         if: success()
