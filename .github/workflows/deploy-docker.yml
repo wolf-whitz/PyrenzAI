@@ -68,13 +68,7 @@ jobs:
             --arg logs "Check GitHub Actions logs for details." \
             --arg error_message "Deployment failed on job ${{ github.job }}." \
             '{
-              "content": "**ERROR ON DEPLOYMENT:**\n\n" +
-                         "Time when error occurred: \($time)\n" +
-                         "Publisher: \($publisher)\n" +
-                         "Repo: \($repo)\n" +
-                         "Build step: \($build_step)\n" +
-                         "Logs:\n```\n\($logs)\n```\n" +
-                         "Error Message:\n```\n\($error_message)\n```"
+              content: "**ERROR ON DEPLOYMENT:**\n\nTime when error occurred: \($time)\nPublisher: \($publisher)\nRepo: \($repo)\nBuild step: \($build_step)\nLogs:\n```\n\($logs)\n```\nError Message:\n```\n\($error_message)\n```"
             }')
 
           curl -H "Content-Type: application/json" \

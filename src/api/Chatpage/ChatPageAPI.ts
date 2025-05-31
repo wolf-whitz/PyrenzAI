@@ -4,7 +4,7 @@ import { supabase } from '~/Utility/supabaseClient';
 import { getChatData } from '@components';
 
 interface ChatMessageWithId {
-  id: string;
+  id: number;
   user_message: string | null;
   char_message: string | null;
   chat_uuid: string;
