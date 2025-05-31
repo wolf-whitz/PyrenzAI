@@ -9,7 +9,7 @@ on:
 
 env:
   IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/pyrenzai
-  IMAGE_TAG: latest
+  IMAGE_TAG_LATEST: latest
 
 jobs:
   build-and-push:
@@ -17,11 +17,9 @@ jobs:
 
     steps:
       - name: Checkout Repo
-        id: checkout
         uses: actions/checkout@v4
 
       - name: Cache Docker layers
-        id: cache
         uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
@@ -30,45 +28,87 @@ jobs:
             ${{ runner.os }}-docker-
 
       - name: Set up Docker Buildx
-        id: buildx
         uses: docker/setup-buildx-action@v2
 
       - name: Log in to Docker Hub
-        id: login
         run: |
           echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-      - name: Build and push Docker image
-        id: build
+      - name: Get semantic version tag
+        id: get_version
+        run: |
+          # Try to get latest git tag, fallback to 0.0.1
+          VERSION_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.1")
+          echo "version_tag=$VERSION_TAG" >> $GITHUB_OUTPUT
+
+      - name: Build and push Docker image with latest and version tags
         run: |
           docker buildx build \
             --cache-from=type=local,src=/tmp/.buildx-cache \
             --cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=max \
-            -t $IMAGE_NAME:$IMAGE_TAG \
+            -t $IMAGE_NAME:${{ env.IMAGE_TAG_LATEST }} \
+            -t $IMAGE_NAME:${{ steps.get_version.outputs.version_tag }} \
             --push \
             .
+
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-      - name: Print Docker Image Link
-        id: print
+      - name: Print Docker Image Links
         run: |
-          echo "🚀 Image deployed at: https://hub.docker.com/r/$IMAGE_NAME"
+          echo "🚀 Image deployed at latest tag: https://hub.docker.com/r/$IMAGE_NAME:$IMAGE_TAG_LATEST"
+          echo "🚀 Image deployed at version tag: https://hub.docker.com/r/$IMAGE_NAME:${{ steps.get_version.outputs.version_tag }}"
+
+      - name: Create or update GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.get_version.outputs.version_tag }}
+          name: Release ${{ steps.get_version.outputs.version_tag }}
+          body: |
+            Docker Image for pyrenzai!
+
+            Docker name: ${{ env.IMAGE_NAME }}
+
+            Version: ${{ steps.get_version.outputs.version_tag }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Send Discord notification on failure
         if: failure()
         run: |
-          echo "Sending Discord notification..."
+          echo "Sending Discord error embed notification..."
+
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          DOCKER_USER="${{ secrets.DOCKERHUB_USERNAME }}"
+          REPO="$IMAGE_NAME"
+          BUILD_STEP="${{ github.job }}"
+          ERROR_MSG="Deployment failed on job $BUILD_STEP."
+          VERSION_TAG="${{ steps.get_version.outputs.version_tag }}"
 
           PAYLOAD=$(jq -n \
-            --arg time "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
-            --arg publisher "${{ secrets.DOCKERHUB_USERNAME }}" \
-            --arg repo "$IMAGE_NAME" \
-            --arg build_step "${{ github.job }}" \
-            --arg logs "Check GitHub Actions logs for details." \
-            --arg error_message "Deployment failed on job ${{ github.job }}." \
+            --arg ts "$TIMESTAMP" \
+            --arg user "$DOCKER_USER" \
+            --arg repo "$REPO" \
+            --arg step "$BUILD_STEP" \
+            --arg err "$ERROR_MSG" \
+            --arg ver "$VERSION_TAG" \
             '{
-              content: "**ERROR ON DEPLOYMENT:**\n\nTime when error occurred: \($time)\nPublisher: \($publisher)\nRepo: \($repo)\nBuild step: \($build_step)\nLogs:\n```\n\($logs)\n```\nError Message:\n```\n\($error_message)\n```"
+              embeds: [
+                {
+                  title: "🚨 ERROR ON DEPLOYMENT",
+                  color: 15158332,
+                  fields: [
+                    { name: "Time when error occurred", value: $ts, inline: false },
+                    { name: "Publisher", value: $user, inline: true },
+                    { name: "Repo", value: $repo, inline: true },
+                    { name: "Build step", value: $step, inline: false },
+                    { name: "Version Tag", value: $ver, inline: true },
+                    { name: "Error Message", value: $err, inline: false }
+                  ],
+                  footer: { text: "PyrenzAI Deployment Pipeline" },
+                  timestamp: $ts
+                }
+              ]
             }')
 
           curl -H "Content-Type: application/json" \
