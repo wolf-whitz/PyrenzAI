@@ -1,6 +1,6 @@
-import { useEffect, useState, useCallback } from 'react'
-import { motion } from 'framer-motion'
-import { Container, useMediaQuery, Box, useTheme } from '@mui/material'
+import { useEffect, useState, useCallback } from 'react';
+import { motion } from 'framer-motion';
+import { Container, useMediaQuery, Box, useTheme } from '@mui/material';
 import {
   Sidebar,
   SearchBar,
@@ -13,8 +13,8 @@ import {
   Banner,
   GetUserData,
   AuthenticationModal,
-} from '@components'
-import { useHomepageAPI } from '@api'
+} from '@components';
+import { useHomepageAPI } from '@api';
 
 export function Home() {
   const {
@@ -30,52 +30,55 @@ export function Home() {
     handleButtonClick,
     fetchUserData,
     isOwner,
-    maxPage
-  } = useHomepageAPI()
+    maxPage,
+  } = useHomepageAPI();
 
-  const [showLogin, setShowLogin] = useState(false)
-  const [showRegister, setShowRegister] = useState(false)
-  const [user, setUser] = useState({ username: '', icon: '' })
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+  const [showLogin, setShowLogin] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
+  const [user, setUser] = useState({ username: '', icon: '' });
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const fetchData = useCallback(() => {
     fetchUserData().catch((error) => {
-      console.error('Error fetching user data:', error)
-    })
-  }, [fetchUserData])
+      console.error('Error fetching user data:', error);
+    });
+  }, [fetchUserData]);
 
   useEffect(() => {
-    fetchData()
-  }, [fetchData])
+    fetchData();
+  }, [fetchData]);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const userData = await GetUserData()
+        const userData = await GetUserData();
         if ('error' in userData) {
-          console.error('Error fetching user:', userData.error)
+          console.error('Error fetching user:', userData.error);
         } else {
           setUser({
             username: userData.username,
             icon: userData.icon,
-          })
+          });
         }
       } catch (error) {
-        console.error('Error fetching user:', error)
+        console.error('Error fetching user:', error);
       }
-    }
+    };
 
-    fetchUser()
-  }, [])
+    fetchUser();
+  }, []);
 
   const toggleMode = () => {
-    setShowLogin(!showLogin)
-    setShowRegister(!showRegister)
-  }
+    setShowLogin(!showLogin);
+    setShowRegister(!showRegister);
+  };
 
   return (
-    <Box component="div" sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+    <Box
+      component="div"
+      sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}
+    >
       <motion.div
         className="flex flex-col min-h-screen text-white font-baloo"
         aria-label={t('ariaLabels.homePage')}
@@ -85,14 +88,22 @@ export function Home() {
         transition={{ duration: 0.5 }}
       >
         <Box component="header" sx={{ width: '100%' }}>
-          <PreviewHeader setShowLogin={setShowLogin} setShowRegister={setShowRegister} user={user} />
+          <PreviewHeader
+            setShowLogin={setShowLogin}
+            setShowRegister={setShowRegister}
+            user={user}
+          />
         </Box>
 
         <Container
           component="div"
           maxWidth={false}
           disableGutters
-          sx={{ flex: 1, display: 'flex', flexDirection: { xs: 'column', md: 'row' } }}
+          sx={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: { xs: 'column', md: 'row' },
+          }}
         >
           {!isMobile && (
             <Box
@@ -122,7 +133,11 @@ export function Home() {
               <Banner />
             </Box>
 
-            <Box component="div" sx={{ mb: 6, width: '100%', maxWidth: 'lg' }} aria-labelledby="search-heading">
+            <Box
+              component="div"
+              sx={{ mb: 6, width: '100%', maxWidth: 'lg' }}
+              aria-labelledby="search-heading"
+            >
               <h2 id="search-heading" className="sr-only">
                 {t('ariaLabels.searchCharacters')}
               </h2>
@@ -134,14 +149,25 @@ export function Home() {
               />
             </Box>
 
-            <Box component="div" sx={{ mb: 6 }} aria-labelledby="custom-action-heading">
+            <Box
+              component="div"
+              sx={{ mb: 6 }}
+              aria-labelledby="custom-action-heading"
+            >
               <h2 id="custom-action-heading" className="sr-only">
                 {t('ariaLabels.customActionButton')}
               </h2>
-              <CustomButton onButtonClick={handleButtonClick} aria-label={t('ariaLabels.customActionButton')} />
+              <CustomButton
+                onButtonClick={handleButtonClick}
+                aria-label={t('ariaLabels.customActionButton')}
+              />
             </Box>
 
-            <Box component="div" sx={{ width: '100%' }} aria-labelledby="characters-heading">
+            <Box
+              component="div"
+              sx={{ width: '100%' }}
+              aria-labelledby="characters-heading"
+            >
               <h2 id="characters-heading" className="sr-only">
                 {t('ariaLabels.characterList')}
               </h2>
@@ -174,12 +200,12 @@ export function Home() {
         <AuthenticationModal
           mode={showLogin ? 'login' : 'register'}
           onClose={() => {
-            setShowLogin(false)
-            setShowRegister(false)
+            setShowLogin(false);
+            setShowRegister(false);
           }}
           toggleMode={toggleMode}
         />
       )}
     </Box>
-  )
+  );
 }

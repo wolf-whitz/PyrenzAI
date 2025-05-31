@@ -13,7 +13,12 @@ interface PaymentModalProps {
   isMonthly: boolean;
 }
 
-export function PaymentModal({ isOpen, onClose, plan, isMonthly }: PaymentModalProps) {
+export function PaymentModal({
+  isOpen,
+  onClose,
+  plan,
+  isMonthly,
+}: PaymentModalProps) {
   const handleKofiClick = () => {
     window.location.href = 'https://ko-fi.com/whitzscott';
   };
@@ -22,23 +27,27 @@ export function PaymentModal({ isOpen, onClose, plan, isMonthly }: PaymentModalP
     console.log(`Proceeding to Store payment for ${plan?.title}`);
   };
 
-  const price = isMonthly ? plan?.price_count_monthly : plan?.price_count_yearly;
+  const price = isMonthly
+    ? plan?.price_count_monthly
+    : plan?.price_count_yearly;
 
   return (
     <Modal open={isOpen} onClose={onClose}>
-      <Box sx={{
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: '90%',
-        maxWidth: 500,
-        bgcolor: 'background.paper',
-        boxShadow: 24,
-        p: 4,
-        borderRadius: 2,
-        textAlign: 'center',
-      }}>
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '90%',
+          maxWidth: 500,
+          bgcolor: 'background.paper',
+          boxShadow: 24,
+          p: 4,
+          borderRadius: 2,
+          textAlign: 'center',
+        }}
+      >
         <Typography variant="h6" gutterBottom>
           Payment for {plan?.title}
         </Typography>
@@ -46,7 +55,9 @@ export function PaymentModal({ isOpen, onClose, plan, isMonthly }: PaymentModalP
           <strong>Price:</strong> {price}
         </Typography>
         <Typography variant="body2" gutterBottom sx={{ mt: 2 }}>
-          <strong>Important when buying:</strong> PyrenzAI does not offer automatic refunds after <strong>3 days</strong> from the purchase date. Exceptions may apply to payments made through the store.
+          <strong>Important when buying:</strong> PyrenzAI does not offer
+          automatic refunds after <strong>3 days</strong> from the purchase
+          date. Exceptions may apply to payments made through the store.
         </Typography>
 
         <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center', gap: 2 }}>
@@ -59,7 +70,7 @@ export function PaymentModal({ isOpen, onClose, plan, isMonthly }: PaymentModalP
               color: 'white',
               '&:hover': {
                 backgroundColor: '#E04746',
-              }
+              },
             }}
           >
             <img
@@ -78,7 +89,7 @@ export function PaymentModal({ isOpen, onClose, plan, isMonthly }: PaymentModalP
               color: 'white',
               '&:hover': {
                 backgroundColor: '#3E8E41',
-              }
+              },
             }}
           >
             <img

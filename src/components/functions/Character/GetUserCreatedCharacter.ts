@@ -55,7 +55,9 @@ export const GetUserCreatedCharacters = (uuid?: string) => {
       return user.id;
     };
 
-    const fetchUserData = async (userUuid: string): Promise<UserData | null> => {
+    const fetchUserData = async (
+      userUuid: string
+    ): Promise<UserData | null> => {
       const { data, error } = await supabase
         .from('user_data')
         .select('username, avatar_url, user_uuid')
@@ -69,7 +71,9 @@ export const GetUserCreatedCharacters = (uuid?: string) => {
       return data as UserData;
     };
 
-    const fetchCharacters = async (creatorUuid: string): Promise<Character[] | null> => {
+    const fetchCharacters = async (
+      creatorUuid: string
+    ): Promise<Character[] | null> => {
       const { data, error } = await supabase
         .from('characters')
         .select('*')

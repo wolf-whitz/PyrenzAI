@@ -21,28 +21,49 @@ interface CustomizationProps {
   modelOptions: ModelOption[];
 }
 
-export const useCustomizeAPI = ({ customization, subscriptionPlan, modelOptions }: CustomizationProps) => {
+export const useCustomizeAPI = ({
+  customization,
+  subscriptionPlan,
+  modelOptions,
+}: CustomizationProps) => {
   const [maxTokens, setMaxTokens] = useState(customization?.maxTokens || 100);
-  const [temperature, setTemperature] = useState(customization?.temperature || 1);
+  const [temperature, setTemperature] = useState(
+    customization?.temperature || 1
+  );
   const [topP, setTopP] = useState(customization?.topP || 1);
-  const [presencePenalty, setPresencePenalty] = useState(customization?.presencePenalty || 0);
-  const [frequencyPenalty, setFrequencyPenalty] = useState(customization?.frequencyPenalty || 0);
-  const [preferredModel, setPreferredModel] = useState(customization?.model || 'Mango Ube');
+  const [presencePenalty, setPresencePenalty] = useState(
+    customization?.presencePenalty || 0
+  );
+  const [frequencyPenalty, setFrequencyPenalty] = useState(
+    customization?.frequencyPenalty || 0
+  );
+  const [preferredModel, setPreferredModel] = useState(
+    customization?.model || 'Mango Ube'
+  );
   const [apiKey, setApiKey] = useState('');
   const [customModelName, setCustomModelName] = useState('');
   const [providerUrl, setProviderUrl] = useState('');
-  const [modelId, setModelId] = useState<string | null>(customization?.model || 'Mango Ube');
-  const [maxTokenLimit, setMaxTokenLimit] = useState(customization?.maxTokens || 1000);
-  const [subscriptionModels, setSubscriptionModels] = useState<{ [key: string]: string[] }>({});
+  const [modelId, setModelId] = useState<string | null>(
+    customization?.model || 'Mango Ube'
+  );
+  const [maxTokenLimit, setMaxTokenLimit] = useState(
+    customization?.maxTokens || 1000
+  );
+  const [subscriptionModels, setSubscriptionModels] = useState<{
+    [key: string]: string[];
+  }>({});
 
   const showAlert = usePyrenzAlert();
 
   const stateSetters = {
     maxTokens: (value: number) => setMaxTokens(Math.min(value, maxTokenLimit)),
-    temperature: (value: number) => setTemperature(Math.min(Math.max(value, 0), 2)),
+    temperature: (value: number) =>
+      setTemperature(Math.min(Math.max(value, 0), 2)),
     topP: (value: number) => setTopP(Math.min(Math.max(value, 0), 1)),
-    presencePenalty: (value: number) => setPresencePenalty(Math.min(Math.max(value, -2), 2)),
-    frequencyPenalty: (value: number) => setFrequencyPenalty(Math.min(Math.max(value, -2), 2)),
+    presencePenalty: (value: number) =>
+      setPresencePenalty(Math.min(Math.max(value, -2), 2)),
+    frequencyPenalty: (value: number) =>
+      setFrequencyPenalty(Math.min(Math.max(value, -2), 2)),
   };
 
   useEffect(() => {
@@ -52,7 +73,9 @@ export const useCustomizeAPI = ({ customization, subscriptionPlan, modelOptions 
       }
 
       try {
-        const modelOption = modelOptions.find((option) => option.name === preferredModel);
+        const modelOption = modelOptions.find(
+          (option) => option.name === preferredModel
+        );
         if (modelOption) {
           setModelId(modelOption.name);
         }
@@ -72,7 +95,9 @@ export const useCustomizeAPI = ({ customization, subscriptionPlan, modelOptions 
         if (userData && 'subscription_data' in userData) {
           setMaxTokenLimit(userData.subscription_data.max_token);
           const models = userData.subscription_data.model || [];
-          setSubscriptionModels({ [userData.subscription_data.tier]: models.sort() });
+          setSubscriptionModels({
+            [userData.subscription_data.tier]: models.sort(),
+          });
         }
       } catch (error) {
         Sentry.captureException(error);
@@ -84,8 +109,15 @@ export const useCustomizeAPI = ({ customization, subscriptionPlan, modelOptions 
   }, []);
 
   const handleSubmit = async () => {
-    if (preferredModel !== 'Custom' && subscriptionPlan && !subscriptionModels[subscriptionPlan]?.includes(preferredModel)) {
-      showAlert(`This model is currently limited to users with Pyrenz+ ${preferredModel}, please use another model.`, 'Alert');
+    if (
+      preferredModel !== 'Custom' &&
+      subscriptionPlan &&
+      !subscriptionModels[subscriptionPlan]?.includes(preferredModel)
+    ) {
+      showAlert(
+        `This model is currently limited to users with Pyrenz+ ${preferredModel}, please use another model.`,
+        'Alert'
+      );
       return;
     }
 

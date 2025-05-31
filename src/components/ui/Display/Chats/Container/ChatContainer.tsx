@@ -21,10 +21,12 @@ export function ChatContainer({
   chat_uuid,
 }: ChatContainerPropsExtended) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const messageIdRef = useRef<{ charId: string | null; userId: string | null }>({
-    charId: null,
-    userId: null,
-  });
+  const messageIdRef = useRef<{ charId: string | null; userId: string | null }>(
+    {
+      charId: null,
+      userId: null,
+    }
+  );
   const [charIcon, setCharIcon] = useState<string>(char?.icon ?? '');
   const { messages, setMessages } = useChatStore();
   const [isGenerating, setIsGenerating] = useState<boolean>(false);

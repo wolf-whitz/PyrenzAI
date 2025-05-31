@@ -29,7 +29,6 @@ export function CharacterForm({ character_update }: CharacterFormProps) {
   const characterData = useCharacterStore((state) => state);
   const setCharacterData = useCharacterStore((state) => state.setCharacterData);
 
-  
   const [formState, setFormState] = useState({
     char_uuid: '',
     persona: '',

@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { Box, Typography } from '@mui/material';
-import { CustomModelFields, ModelSelection, SliderComponent } from '@components';
+import {
+  CustomModelFields,
+  ModelSelection,
+  SliderComponent,
+} from '@components';
 import InfoIcon from '@mui/icons-material/Info';
 import BuildIcon from '@mui/icons-material/Build';
 import { PyrenzBlueButton } from '~/theme';
@@ -26,14 +30,23 @@ interface CustomizationProps {
 
 const sliderDescriptions = {
   maxTokens: 'Controls the maximum number of tokens in the response.',
-  temperature: 'Controls the randomness of the output. Higher values make the output more random.',
+  temperature:
+    'Controls the randomness of the output. Higher values make the output more random.',
   topP: 'Controls the diversity of the output. Higher values make the output more diverse.',
-  presencePenalty: 'Penalizes new tokens based on their presence in the input. Higher values make the output more different from the input.',
-  frequencyPenalty: 'Penalizes new tokens based on their frequency in the input. Higher values make the output less repetitive.',
+  presencePenalty:
+    'Penalizes new tokens based on their presence in the input. Higher values make the output more different from the input.',
+  frequencyPenalty:
+    'Penalizes new tokens based on their frequency in the input. Higher values make the output less repetitive.',
 };
 
-export function Customization({ customization, subscriptionPlan, modelOptions }: CustomizationProps) {
-  const [showPopover, setShowPopover] = useState<keyof typeof sliderDescriptions | null>(null);
+export function Customization({
+  customization,
+  subscriptionPlan,
+  modelOptions,
+}: CustomizationProps) {
+  const [showPopover, setShowPopover] = useState<
+    keyof typeof sliderDescriptions | null
+  >(null);
 
   const {
     maxTokens,
@@ -59,7 +72,10 @@ export function Customization({ customization, subscriptionPlan, modelOptions }:
       <ModelSelection
         preferredModel={preferredModel}
         setPreferredModel={setPreferredModel}
-        modelOptions={modelOptions.map(option => ({ value: option.name, label: option.label }))}
+        modelOptions={modelOptions.map((option) => ({
+          value: option.name,
+          label: option.label,
+        }))}
       />
 
       {preferredModel === 'Custom' && (
@@ -75,7 +91,13 @@ export function Customization({ customization, subscriptionPlan, modelOptions }:
         </Box>
       )}
 
-      <Box border={1} borderColor="grey.300" borderRadius={2} p={2} boxShadow={1}>
+      <Box
+        border={1}
+        borderColor="grey.300"
+        borderRadius={2}
+        p={2}
+        boxShadow={1}
+      >
         <Box display="flex" alignItems="center" mb={2}>
           <BuildIcon color="action" />
           <Typography variant="subtitle1" component="h2" ml={1}>
@@ -121,7 +143,11 @@ export function Customization({ customization, subscriptionPlan, modelOptions }:
               stateValue={stateValue}
               stateSetter={stateSetter}
               sliderDescriptions={sliderDescriptions}
-              setShowPopover={setShowPopover as React.Dispatch<React.SetStateAction<string | null>>}
+              setShowPopover={
+                setShowPopover as React.Dispatch<
+                  React.SetStateAction<string | null>
+                >
+              }
               maxValue={maxValue}
             />
           );

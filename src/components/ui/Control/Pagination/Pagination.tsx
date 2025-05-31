@@ -25,10 +25,7 @@ export function Pagination({
 
     setIsLoading(true);
     try {
-      const { characters } = await fetchCharacters(
-        'character',
-        newPage
-      );
+      const { characters } = await fetchCharacters('character', newPage);
 
       if (characters.length > 0) {
         setCurrentPage(newPage);
@@ -92,7 +89,8 @@ export function Pagination({
               borderColor: '#add8e6',
               borderRadius: '9999px',
               padding: '0.5rem 1rem',
-              cursor: isLoading || currentPage >= maxPage ? 'not-allowed' : 'pointer',
+              cursor:
+                isLoading || currentPage >= maxPage ? 'not-allowed' : 'pointer',
               '&:hover': {
                 borderColor: 'blue',
                 backgroundColor: 'rgba(0, 0, 255, 0.04)',

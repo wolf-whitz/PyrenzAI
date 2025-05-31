@@ -81,7 +81,10 @@ export function SubscriptionCard({
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       initial={{ opacity: 0.5, scale: 0.9 }}
-      animate={{ opacity: isHighlighted ? 1 : 0.5, scale: isHighlighted ? 1 : 0.9 }}
+      animate={{
+        opacity: isHighlighted ? 1 : 0.5,
+        scale: isHighlighted ? 1 : 0.9,
+      }}
       whileHover={{ opacity: 1, scale: 1.05, zIndex: 3 }}
       transition={{ type: 'spring', stiffness: 400, damping: 25 }}
     >
@@ -94,7 +97,16 @@ export function SubscriptionCard({
         }}
       />
       {ribbonText && (
-        <PyrenzRibbon color={plan.color} sx={{ position: 'absolute', top: 50, right: -20, zIndex: 2, transform: 'rotate(45deg)' }}>
+        <PyrenzRibbon
+          color={plan.color}
+          sx={{
+            position: 'absolute',
+            top: 50,
+            right: -20,
+            zIndex: 2,
+            transform: 'rotate(45deg)',
+          }}
+        >
           {ribbonText}
         </PyrenzRibbon>
       )}

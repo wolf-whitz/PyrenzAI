@@ -21,7 +21,18 @@ export async function getChatData(chatId: string): Promise<ChatDataResponse> {
     .single();
 
   if (chatError || !chatData) {
-    return { error: 'Chat not found', name: '', persona: '', scenario: '', gender: '', description: '', first_message: '', tags: [], profile_image: '', token_total: 0 };
+    return {
+      error: 'Chat not found',
+      name: '',
+      persona: '',
+      scenario: '',
+      gender: '',
+      description: '',
+      first_message: '',
+      tags: [],
+      profile_image: '',
+      token_total: 0,
+    };
   }
 
   const inputCharUuid = chatData.char_uuid;
@@ -45,7 +56,18 @@ export async function getChatData(chatId: string): Promise<ChatDataResponse> {
     .single();
 
   if (characterError || !characterData) {
-    return { error: 'Character not found', name: '', persona: '', scenario: '', gender: '', description: '', first_message: '', tags: [], profile_image: '', token_total: 0 };
+    return {
+      error: 'Character not found',
+      name: '',
+      persona: '',
+      scenario: '',
+      gender: '',
+      description: '',
+      first_message: '',
+      tags: [],
+      profile_image: '',
+      token_total: 0,
+    };
   }
 
   return {

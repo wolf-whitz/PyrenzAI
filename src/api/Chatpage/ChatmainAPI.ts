@@ -33,8 +33,6 @@ export const useChatPageAPI = (
     scrollWithDelay();
   }, [previous_message, messagesEndRef]);
 
-
-
   const toggleSettings = () => {
     setIsSettingsOpen((prev) => !prev);
   };
@@ -110,7 +108,7 @@ export const useChatPageAPI = (
     type: 'user' | 'char'
   ) => {
     if (!messageId || !editedMessage) return;
-  
+
     try {
       const columnName = type === 'user' ? 'user_message' : 'char_message';
       const { error } = await supabase
@@ -119,7 +117,7 @@ export const useChatPageAPI = (
         .eq('id', messageId)
         .eq('user_uuid', user.user_uuid)
         .eq('chat_uuid', chat_uuid);
-  
+
       if (error) {
         console.error('Error updating message:', error);
       } else {
@@ -136,7 +134,6 @@ export const useChatPageAPI = (
       console.error('Error updating message:', error);
     }
   };
-  
 
   return {
     isSettingsOpen,

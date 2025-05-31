@@ -2,7 +2,7 @@
 # PyrenzAI Pipeline
 # ==============================================
 # This pipeline automatically handles:
-# 
+#
 # Building of the Application:
 #     - Uses Docker Buildx to build the latest image
 #     - Supports semantic versioning via Git tags
@@ -21,7 +21,6 @@
 #
 # ==============================================
 
-
 name: PyrenzAI Pipeline
 
 on:
@@ -34,7 +33,7 @@ env:
   IMAGE_TAG_LATEST: latest
 
 jobs:
- PyrenzAI-Pipeline:
+  PyrenzAI-Pipeline:
     runs-on: ubuntu-latest
 
     steps:

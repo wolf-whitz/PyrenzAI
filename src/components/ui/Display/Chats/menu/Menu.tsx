@@ -42,7 +42,7 @@ export function Menu({ onClose }: MenuProps) {
 
       if (error) throw error;
 
-      return data.map(item => ({ label: item.name, name: item.name }));
+      return data.map((item) => ({ label: item.name, name: item.name }));
     } catch (error) {
       console.error(error);
       return [];
@@ -108,7 +108,12 @@ export function Menu({ onClose }: MenuProps) {
             }}
           >
             {loading ? (
-              <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                height="100%"
+              >
                 <CircularProgress />
               </Box>
             ) : (

@@ -8,7 +8,10 @@ interface SettingsSidebarProps {
   onClose: () => void;
 }
 
-export function SettingsSidebar({ settingsOpen, onClose }: SettingsSidebarProps) {
+export function SettingsSidebar({
+  settingsOpen,
+  onClose,
+}: SettingsSidebarProps) {
   const [user, setUser] = useState({ username: '', icon: '' });
 
   useEffect(() => {

@@ -54,11 +54,20 @@ export function CharacterCard({ character, isOwner }: CharacterCardProps) {
       <Fade in={isLoaded} timeout={1500}>
         <PyrenzCharacterCard onClick={handleCardClick}>
           <PyrenzCharacterCardImage>
-            <PyrenzCharacterCardImageImg src={character.profile_image} alt={character.name} />
+            <PyrenzCharacterCardImageImg
+              src={character.profile_image}
+              alt={character.name}
+            />
           </PyrenzCharacterCardImage>
           <PyrenzCharacterCardContent>
-            <Box display="flex" justifyContent="space-between" alignItems="center">
-              <PyrenzCharacterCardTitle>{character.name}</PyrenzCharacterCardTitle>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <PyrenzCharacterCardTitle>
+                {character.name}
+              </PyrenzCharacterCardTitle>
               <Box
                 display={{ xs: 'none', sm: 'none', md: 'flex' }}
                 alignItems="center"
@@ -114,9 +123,13 @@ export function CharacterCard({ character, isOwner }: CharacterCardProps) {
                   Private
                 </PyrenzCharacterCardTag>
               )}
-              {character.tags?.slice(0, 5).map((tag, index) => (
-                <PyrenzCharacterCardTag key={index}>{tag}</PyrenzCharacterCardTag>
-              ))}
+              {character.tags
+                ?.slice(0, 5)
+                .map((tag, index) => (
+                  <PyrenzCharacterCardTag key={index}>
+                    {tag}
+                  </PyrenzCharacterCardTag>
+                ))}
             </PyrenzCharacterCardTags>
           </PyrenzCharacterCardContent>
         </PyrenzCharacterCard>

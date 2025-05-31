@@ -7,8 +7,6 @@ RUN npm install --production
 
 COPY . .
 
-RUN npm run format:check
-RUN npm run format
 RUN npm run build
 
 CMD ["npm", "run", "prod"]

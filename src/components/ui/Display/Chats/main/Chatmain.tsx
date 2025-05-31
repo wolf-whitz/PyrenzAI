@@ -61,9 +61,7 @@ export function ChatMain({
 
   return (
     <Fade in={true} timeout={500}>
-      <Box
-        className="flex flex-col h-screen w-full text-white relative"
-      >
+      <Box className="flex flex-col h-screen w-full text-white relative">
         <Box className="w-full max-w-6xl mx-auto pt-4">
           <ChatHeader
             char={{

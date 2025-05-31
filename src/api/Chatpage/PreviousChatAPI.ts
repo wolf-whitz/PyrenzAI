@@ -42,7 +42,7 @@ export const usePreviousChatAPI = () => {
           .select('id, chat_uuid, preview_message, created_at, preview_image')
           .eq('user_uuid', userUUID)
           .order('created_at', { ascending: false })
-          .limit(5); 
+          .limit(5);
 
         if (error) throw error;
 
@@ -63,7 +63,9 @@ export const usePreviousChatAPI = () => {
   }, []);
 
   const truncateMessage = (text: string, maxLength = 50) => {
-    return text?.length > maxLength ? text.slice(0, maxLength) + '...' : text || '';
+    return text?.length > maxLength
+      ? text.slice(0, maxLength) + '...'
+      : text || '';
   };
 
   const handleMessageClick = (chatUuid: string) => {

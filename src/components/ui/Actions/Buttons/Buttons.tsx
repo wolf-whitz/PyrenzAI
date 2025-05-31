@@ -56,7 +56,9 @@ export function CustomButton({ onButtonClick }: CustomButtonProps) {
                 btn.max_character,
                 btn.page,
                 btn.tag,
-               (btn.gender === 'male' || btn.gender === 'female') ? btn.gender : undefined
+                btn.gender === 'male' || btn.gender === 'female'
+                  ? btn.gender
+                  : undefined
               )
             }
             data-state={loading ? 'loading' : undefined}

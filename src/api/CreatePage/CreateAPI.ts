@@ -166,7 +166,7 @@ export const useCreateAPI = (
       characterData.first_message,
       characterData.creator,
       characterData.gender,
-      characterData.profile_image
+      characterData.profile_image,
     ];
 
     const isValid = fieldsToCheck.every((field) => field && field.length >= 2);

@@ -9,10 +9,18 @@ export const fetchCharacters = async (
   currentPage: number,
   itemsPerPage: number,
   search: string
-): Promise<{ characters: Character[]; total: number; isOwner: boolean; maxPage: number }> => {
+): Promise<{
+  characters: Character[];
+  total: number;
+  isOwner: boolean;
+  maxPage: number;
+}> => {
   try {
-    const data = await fetchCharactersFunction('character', currentPage, itemsPerPage)
-
+    const data = await fetchCharactersFunction(
+      'character',
+      currentPage,
+      itemsPerPage
+    );
 
     if (!data || !data.characters || data.characters.length === 0) {
       console.log('No characters found in the API response.');
@@ -48,8 +56,8 @@ export const fetchCharacters = async (
     });
 
     const { totalPages } = data;
-    const maxPage = totalPages
-    
+    const maxPage = totalPages;
+
     return {
       characters: formattedCharacters,
       total: data.total || 0,

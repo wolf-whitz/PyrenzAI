@@ -102,12 +102,21 @@ export function ChatPage() {
   }, [chat_uuid, userUuid, userData, setFirstMessage, clearData]);
 
   useEffect(() => {
-    if (chatData && chatData.messages && chatData.messages.every((msg: any) => msg.id != null)) {
+    if (
+      chatData &&
+      chatData.messages &&
+      chatData.messages.every((msg: any) => msg.id != null)
+    ) {
       setLoading(false);
     }
   }, [chatData]);
 
-  if (loading || (chatData && chatData.messages && chatData.messages.some((msg: any) => msg.id == null))) {
+  if (
+    loading ||
+    (chatData &&
+      chatData.messages &&
+      chatData.messages.some((msg: any) => msg.id == null))
+  ) {
     return (
       <Box
         display="flex"

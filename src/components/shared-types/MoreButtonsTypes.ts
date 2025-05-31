@@ -13,7 +13,7 @@ export type ButtonType = {
   max_character: number;
   page: number;
   tag?: string;
-  gender?: 'male' | 'female' 
+  gender?: 'male' | 'female';
 };
 
 export type CustomButtonProps = {

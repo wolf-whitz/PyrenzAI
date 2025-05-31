@@ -25,7 +25,10 @@ const Profile = lazyNamed(() => import('./Routing/Profile'), 'ProfilePage');
 const Chat = lazyNamed(() => import('./Routing/Chat'), 'ChatPage');
 const Setting = lazyNamed(() => import('./Routing/Setting/Setting'), 'Setting');
 const ErrorPage = lazyNamed(() => import('./Routing/404page'), 'ErrorPage');
-const Subscription = lazyNamed(() => import('./Routing/Subscription'), 'Subscription');
+const Subscription = lazyNamed(
+  () => import('./Routing/Subscription'),
+  'Subscription'
+);
 const Archive = lazyNamed(() => import('./Routing/Archive'), 'Archive');
 
 const getCookie = (name: string): string | undefined => {
@@ -47,13 +50,28 @@ export const AppRoutes = (
     <Route path="/" element={<ProtectedRoute element={<Home />} />} />
     <Route path="/Home" element={<ProtectedRoute element={<Home />} />} />
     <Route path="/Create" element={<ProtectedRoute element={<Create />} />} />
-    <Route path="/Subscription" element={<ProtectedRoute element={<Subscription />} />} />
+    <Route
+      path="/Subscription"
+      element={<ProtectedRoute element={<Subscription />} />}
+    />
     <Route path="/Archive" element={<ProtectedRoute element={<Archive />} />} />
-    <Route path="/Create/:uuid" element={<ProtectedRoute element={<Create />} />} />
-    <Route path="/Profile/:uuid" element={<ProtectedRoute element={<Profile />} />} />
+    <Route
+      path="/Create/:uuid"
+      element={<ProtectedRoute element={<Create />} />}
+    />
+    <Route
+      path="/Profile/:uuid"
+      element={<ProtectedRoute element={<Profile />} />}
+    />
     <Route path="/Profile" element={<ProtectedRoute element={<Profile />} />} />
-    <Route path="/Chat/:chat_uuid" element={<ProtectedRoute element={<Chat />} />} />
-    <Route path="/Settings" element={<ProtectedRoute element={<Setting />} />} />
+    <Route
+      path="/Chat/:chat_uuid"
+      element={<ProtectedRoute element={<Chat />} />}
+    />
+    <Route
+      path="/Settings"
+      element={<ProtectedRoute element={<Setting />} />}
+    />
     <Route path="*" element={<ErrorPage />} />
   </>
 );

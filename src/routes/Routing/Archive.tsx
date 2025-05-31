@@ -5,7 +5,7 @@ import {
   Typography,
   Box,
   useMediaQuery,
-  useTheme
+  useTheme,
 } from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -36,25 +36,47 @@ export function Archive() {
   } = useArchiveChatPageAPI(open, handleClose);
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: 'background.default' }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100vh',
+        backgroundColor: 'background.default',
+      }}
+    >
       <Box sx={{ display: 'flex', flex: 1 }}>
         {!isMobile && <Sidebar />}
         {isMobile && <MobileNav setShowLoginModal={setShowLoginModal} />}
 
         <Box sx={{ flex: 1, p: isMobile ? 2 : 4 }}>
           {isLoading ? (
-            <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              height="100%"
+            >
               <CircularProgress />
             </Box>
           ) : chats.length === 0 ? (
-            <Box display="flex" justifyContent="center" alignItems="center" height="52vh">
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              height="52vh"
+            >
               <Typography variant="h6" color="textSecondary">
                 No chats left, maybe start a new one? {'(⸝⸝> ᴗ•⸝⸝)'}
               </Typography>
             </Box>
           ) : (
             <>
-              <Box display="flex" justifyContent="space-between" alignItems="center" mt={4}>
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                mt={4}
+              >
                 <IconButton
                   onClick={goToPreviousPage}
                   disabled={currentPage === 0}
@@ -106,27 +128,30 @@ export function Archive() {
                 `}
               </style>
               <Box display="flex" flexWrap="wrap" justifyContent="center">
-                {chats.slice(currentPage * 5, currentPage * 5 + 5).map((chat) => (
-                  <Box key={chat.chat_uuid} mx={2} mb={4}>
-                    <PyrenzChatsCharacterCard
-                      sx={{
-                        transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
-                        '&:hover': {
-                          transform: 'scale(1.05)',
-                          boxShadow: 6,
-                        },
-                      }}
-                      imageSrc={chat.preview_image}
-                      characterName={characters[chat.char_uuid]}
-                      onCardClick={() => handleCardClick(chat.chat_uuid)}
-                      onDeleteClick={() => handleDeleteChat(chat.chat_uuid)}
-                    >
-                      <Typography variant="body2" color="text.secondary">
-                        {chat.preview_message}
-                      </Typography>
-                    </PyrenzChatsCharacterCard>
-                  </Box>
-                ))}
+                {chats
+                  .slice(currentPage * 5, currentPage * 5 + 5)
+                  .map((chat) => (
+                    <Box key={chat.chat_uuid} mx={2} mb={4}>
+                      <PyrenzChatsCharacterCard
+                        sx={{
+                          transition:
+                            'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
+                          '&:hover': {
+                            transform: 'scale(1.05)',
+                            boxShadow: 6,
+                          },
+                        }}
+                        imageSrc={chat.preview_image}
+                        characterName={characters[chat.char_uuid]}
+                        onCardClick={() => handleCardClick(chat.chat_uuid)}
+                        onDeleteClick={() => handleDeleteChat(chat.chat_uuid)}
+                      >
+                        <Typography variant="body2" color="text.secondary">
+                          {chat.preview_message}
+                        </Typography>
+                      </PyrenzChatsCharacterCard>
+                    </Box>
+                  ))}
               </Box>
             </>
           )}

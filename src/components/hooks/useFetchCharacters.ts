@@ -28,7 +28,7 @@ export function useFetchCharacters({
     isOwner,
     setIsOwner,
     maxPage,
-    setMaxPage
+    setMaxPage,
   } = useHomeStore();
 
   const fetchCharactersData = useCallback(async () => {
@@ -57,11 +57,21 @@ export function useFetchCharacters({
     } finally {
       setLoading(false);
     }
-  }, [currentPage, search, itemsPerPage, t, setLoading, setCharacters, setTotal, setIsOwner, setMaxPage]);
+  }, [
+    currentPage,
+    search,
+    itemsPerPage,
+    t,
+    setLoading,
+    setCharacters,
+    setTotal,
+    setIsOwner,
+    setMaxPage,
+  ]);
 
   useEffect(() => {
     fetchCharactersData();
-  }, []); 
+  }, []);
 
   return {
     characters,

@@ -21,42 +21,58 @@ export function PreviousChat() {
   } = usePreviousChatAPI();
 
   return (
-    <Box component="aside" sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <Box sx={{ display: { xs: 'none', lg: 'flex' }, flex: 1, padding: '16px', width: '256px' }}>
-        <Box sx={{
-          borderRadius: '12px',
-          backgroundColor: 'background.paper',
-          display: 'flex',
-          flexDirection: 'column',
-          overflow: 'auto',
-          minHeight: '500px', 
-          maxHeight: '700px', 
-        }}>
+    <Box
+      component="aside"
+      sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}
+    >
+      <Box
+        sx={{
+          display: { xs: 'none', lg: 'flex' },
+          flex: 1,
+          padding: '16px',
+          width: '256px',
+        }}
+      >
+        <Box
+          sx={{
+            borderRadius: '12px',
+            backgroundColor: 'background.paper',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'auto',
+            minHeight: '500px',
+            maxHeight: '700px',
+          }}
+        >
           {loading ? (
-            <Box sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '16px',
-              gap: '16px',
-              flex: 1
-            }}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '16px',
+                gap: '16px',
+                flex: 1,
+              }}
+            >
               <CircularProgress />
               <Typography variant="body2" color="textSecondary">
                 Loading previous chats...
               </Typography>
             </Box>
           ) : error ? (
-            <Box sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '16px',
-              gap: '16px',
-              flex: 1
-            }}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '16px',
+                gap: '16px',
+                flex: 1,
+              }}
+            >
               <motion.img
                 src="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MascotCrying.avif"
                 alt="Crying Mascot"
@@ -69,15 +85,17 @@ export function PreviousChat() {
               </Typography>
             </Box>
           ) : chats.length === 0 ? (
-            <Box sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '16px',
-              gap: '16px',
-              flex: 1
-            }}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '16px',
+                gap: '16px',
+                flex: 1,
+              }}
+            >
               <motion.img
                 src="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MascotCrying.avif"
                 alt="Crying Mascot"
@@ -137,11 +155,20 @@ export function PreviousChat() {
             <Suspense>
               <CustomContextMenu
                 items={[
-                  { label: 'Export', action: () => handleExport(contextMenu.chatId) },
-                  { label: 'Delete', action: () => handleDelete(contextMenu.chatId) },
+                  {
+                    label: 'Export',
+                    action: () => handleExport(contextMenu.chatId),
+                  },
+                  {
+                    label: 'Delete',
+                    action: () => handleDelete(contextMenu.chatId),
+                  },
                 ]}
                 onClose={handleClose}
-                anchorPosition={{ top: contextMenu.mouseY, left: contextMenu.mouseX }}
+                anchorPosition={{
+                  top: contextMenu.mouseY,
+                  left: contextMenu.mouseX,
+                }}
               />
             </Suspense>
           )}

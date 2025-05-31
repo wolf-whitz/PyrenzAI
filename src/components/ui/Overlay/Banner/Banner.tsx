@@ -25,7 +25,12 @@ export function Banner() {
         >
           <Typewriter
             options={{
-              strings: ['PyrenzAI', 'Get Pyrenz+ Now~!', 'Support Us', 'Join our discord server!'],
+              strings: [
+                'PyrenzAI',
+                'Get Pyrenz+ Now~!',
+                'Support Us',
+                'Join our discord server!',
+              ],
               autoStart: true,
               loop: true,
               delay: 100,

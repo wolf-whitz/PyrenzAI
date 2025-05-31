@@ -6,7 +6,7 @@ import {
   IconButton,
   Popover,
   SxProps,
-  Theme
+  Theme,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -72,7 +72,7 @@ export const PyrenzChatsCharacterCard = ({
   onContextMenu,
   onDeleteClick,
   style,
-  sx
+  sx,
 }: PyrenzChatsCharacterCardProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -107,7 +107,7 @@ export const PyrenzChatsCharacterCard = ({
           transform: 'scale(1.05)',
           boxShadow: '0 6px 25px rgba(0, 0, 0, 0.15)',
         },
-        ...sx, 
+        ...sx,
       }}
     >
       <StyledCardImage>

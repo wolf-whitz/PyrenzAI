@@ -50,7 +50,9 @@ export function CustomModelFields({
 
       <Box mb={2}>
         <PyrenzFormControl fullWidth variant="outlined">
-          <PyrenzInputLabel htmlFor="provider-url">Provider URL</PyrenzInputLabel>
+          <PyrenzInputLabel htmlFor="provider-url">
+            Provider URL
+          </PyrenzInputLabel>
           <PyrenzOutlinedInput
             id="provider-url"
             value={providerUrl}
