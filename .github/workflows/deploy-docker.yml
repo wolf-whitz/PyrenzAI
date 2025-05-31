@@ -55,27 +55,20 @@ jobs:
         run: |
           echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-      - name: Get semantic version tag
-        id: get_version
-        run: |
-          VERSION_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.1")
-          echo "version_tag=$VERSION_TAG" >> $GITHUB_OUTPUT
-
       - name: Build and push Docker image
         run: |
           docker buildx build \
             --cache-from=type=local,src=/tmp/.buildx-cache \
             --cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=max \
             -t $IMAGE_NAME:$IMAGE_TAG_LATEST \
-            -t $IMAGE_NAME:${{ steps.get_version.outputs.version_tag }} \
             --push \
             .
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-      - name: Print Docker Image Links
+      - name: Print Docker Image Link
         run: |
-          echo "🚀 Image deployed at: https://hub.docker.com/r/$IMAGE_NAME:${{ steps.get_version.outputs.version_tag }}"
+          echo "🚀 Image deployed at: https://hub.docker.com/r/$IMAGE_NAME:$IMAGE_TAG_LATEST"
 
       - name: Send Discord notification on success
         if: success()
@@ -84,15 +77,15 @@ jobs:
 
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           DOCKER_USER="${{ secrets.DOCKERHUB_USERNAME }}"
-          VERSION_TAG="${{ steps.get_version.outputs.version_tag }}"
           REPO="$IMAGE_NAME"
-          URL="https://hub.docker.com/r/$IMAGE_NAME:$VERSION_TAG"
+          TAG="$IMAGE_TAG_LATEST"
+          URL="https://hub.docker.com/r/$IMAGE_NAME:$TAG"
 
           PAYLOAD=$(jq -n \
             --arg ts "$TIMESTAMP" \
             --arg user "$DOCKER_USER" \
             --arg repo "$REPO" \
-            --arg tag "$VERSION_TAG" \
+            --arg tag "$TAG" \
             --arg url "$URL" \
             '{
               embeds: [
@@ -123,10 +116,10 @@ jobs:
 
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           DOCKER_USER="${{ secrets.DOCKERHUB_USERNAME }}"
-          VERSION_TAG="${{ steps.get_version.outputs.version_tag }}"
           REPO="$IMAGE_NAME"
           BUILD_STEP="${{ github.job }}"
           ERROR_MSG="Deployment failed on job $BUILD_STEP."
+          TAG="$IMAGE_TAG_LATEST"
 
           PAYLOAD=$(jq -n \
             --arg ts "$TIMESTAMP" \
@@ -134,7 +127,7 @@ jobs:
             --arg repo "$REPO" \
             --arg step "$BUILD_STEP" \
             --arg err "$ERROR_MSG" \
-            --arg ver "$VERSION_TAG" \
+            --arg ver "$TAG" \
             '{
               embeds: [
                 {
