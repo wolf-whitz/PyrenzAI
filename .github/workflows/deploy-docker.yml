@@ -1,4 +1,4 @@
-# Ignore this, this is  a way to automatically sync the codebase to docker.
+# Builder and publisher file 
 
 name: Deploy to Docker Hub
 
@@ -7,31 +7,77 @@ on:
     branches:
       - main
 
+env:
+  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/pyrenzai
+  IMAGE_TAG: latest
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repo
+        id: checkout
         uses: actions/checkout@v4
 
+      - name: Cache Docker layers
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-docker-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-docker-
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
       - name: Log in to Docker Hub
-        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
-
-      - name: Set up Docker image tag
-        id: vars
+        id: login
         run: |
-          IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/pyrenzai
-          IMAGE_TAG=latest
-          echo "image_name=${IMAGE_NAME}" >> $GITHUB_OUTPUT
-          echo "image_tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-      - name: Build Docker image
-        run: docker build -t ${{ steps.vars.outputs.image_name }}:${{ steps.vars.outputs.image_tag }} .
-
-      - name: Push Docker image
-        run: docker push ${{ steps.vars.outputs.image_name }}:${{ steps.vars.outputs.image_tag }}
+      - name: Build and push Docker image
+        id: build
+        run: |
+          docker buildx build \
+            --cache-from=type=local,src=/tmp/.buildx-cache \
+            --cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=max \
+            -t $IMAGE_NAME:$IMAGE_TAG \
+            --push \
+            .
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
       - name: Print Docker Image Link
+        id: print
         run: |
-          echo 🚀 Image deployed at: https://hub.docker.com/r/${{ secrets.DOCKERHUB_USERNAME }}/pyrenzai
+          echo "🚀 Image deployed at: https://hub.docker.com/r/$IMAGE_NAME"
+
+      - name: Send Discord notification on failure
+        if: failure()
+        run: |
+          echo "Sending Discord notification..."
+
+          PAYLOAD=$(jq -n \
+            --arg time "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
+            --arg publisher "${{ secrets.DOCKERHUB_USERNAME }}" \
+            --arg repo "$IMAGE_NAME" \
+            --arg build_step "${{ github.job }}" \
+            --arg logs "Check GitHub Actions logs for details." \
+            --arg error_message "Deployment failed on job ${{ github.job }}." \
+            '{
+              "content": "**ERROR ON DEPLOYMENT:**\n\n" +
+                         "Time when error occurred: \($time)\n" +
+                         "Publisher: \($publisher)\n" +
+                         "Repo: \($repo)\n" +
+                         "Build step: \($build_step)\n" +
+                         "Logs:\n```\n\($logs)\n```\n" +
+                         "Error Message:\n```\n\($error_message)\n```"
+            }')
+
+          curl -H "Content-Type: application/json" \
+            -X POST \
+            -d "$PAYLOAD" \
+            ${{ secrets.DISCORD_WEBHOOK_URL }}
