@@ -7,13 +7,6 @@ import { usePyrenzAlert } from '~/provider';
 import { useNavigate } from 'react-router-dom';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
-type AlertMode = 'Success' | 'success' | 'Alert' | 'alert';
-
-interface ApiResponse {
-  success: boolean;
-  error?: string;
-}
-
 export function Profile() {
   const [username, setUsername] = useState('');
   const [profileImage, setProfileImage] = useState<File | null>(null);

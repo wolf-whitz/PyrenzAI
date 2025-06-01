@@ -1,9 +1,6 @@
 import { Character } from '@shared-types/CharacterProp';
 import * as Sentry from '@sentry/react';
-import {
-  fetchCharacters as fetchCharactersFunction,
-  GetUserUUID,
-} from '@components';
+import { fetchCharacters as fetchCharactersFunction, GetUserUUID } from '@components';
 
 export const fetchCharacters = async (
   currentPage: number,
@@ -11,7 +8,6 @@ export const fetchCharacters = async (
   search: string
 ): Promise<{
   characters: Character[];
-  total: number;
   isOwner: boolean;
   maxPage: number;
 }> => {
@@ -19,15 +15,14 @@ export const fetchCharacters = async (
     const data = await fetchCharactersFunction(
       'character',
       currentPage,
-      itemsPerPage
+      itemsPerPage,
+      search
     );
 
-    console.log(data.character)
     if (!data || !data.characters || data.characters.length === 0) {
       console.log('No characters found in the API response.');
       return {
         characters: [],
-        total: 0,
         isOwner: false,
         maxPage: 0,
       };
@@ -56,12 +51,11 @@ export const fetchCharacters = async (
       };
     });
 
-    const { totalPages } = data;
-    const maxPage = totalPages;
+    const totalCharacters = data.total || 0;
+    const maxPage = Math.ceil(totalCharacters / itemsPerPage);
 
     return {
       characters: formattedCharacters,
-      total: data.total || 0,
       isOwner: formattedCharacters.some((char) => char.isOwner),
       maxPage,
     };
@@ -73,7 +67,6 @@ export const fetchCharacters = async (
     }
     return {
       characters: [],
-      total: 0,
       isOwner: false,
       maxPage: 0,
     };

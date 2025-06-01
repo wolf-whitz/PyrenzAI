@@ -11,7 +11,8 @@ interface FetchCharactersResponse {
 export async function fetchCharacters(
   requestType: string,
   page: number = 1,
-  itemsPerPage: number = 10
+  itemsPerPage: number = 10,
+  search: string = ''
 ): Promise<FetchCharactersResponse> {
   if (requestType !== 'character') {
     throw new Error(`Invalid request_type: ${requestType}`);
@@ -20,11 +21,17 @@ export async function fetchCharacters(
   const fromIndex = (page - 1) * itemsPerPage;
   const toIndex = page * itemsPerPage - 1;
 
-  const { data, error, count } = await supabase
+  let query = supabase
     .from('characters')
     .select('*', { count: 'exact' })
     .order('chat_messages_count', { ascending: false })
     .range(fromIndex, toIndex);
+
+  if (search) {
+    query = query.ilike('name', `%${search}%`);
+  }
+
+  const { data, error, count } = await query;
 
   if (error) {
     throw new Error(`error: ${error.message}`);
@@ -58,8 +65,6 @@ export async function fetchCharacters(
       selectedCharacter = highestCharacters[0];
     }
   }
-
-  console.log(characters);
 
   return {
     character: selectedCharacter,

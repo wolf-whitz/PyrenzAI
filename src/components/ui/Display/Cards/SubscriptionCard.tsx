@@ -61,130 +61,131 @@ export function SubscriptionCard({
   const ribbonText = getRibbonText(plan.plan_identifier);
 
   return (
-    <MotionCard
-      sx={{
-        flex: 1,
-        minWidth: 250,
-        maxWidth: 300,
-        boxShadow: isHighlighted ? 10 : 3,
-        borderRadius: 4,
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100%',
-        border: plan.color ? `2px solid ${plan.color}` : 'none',
-        backgroundImage: `url(${plan.backgroundImage})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        position: 'relative',
-        overflow: 'hidden',
-      }}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-      initial={{ opacity: 0.5, scale: 0.9 }}
-      animate={{
-        opacity: isHighlighted ? 1 : 0.5,
-        scale: isHighlighted ? 1 : 0.9,
-      }}
-      whileHover={{ opacity: 1, scale: 1.05, zIndex: 3 }}
-      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-    >
-      <Box
+    <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+      <MotionCard
         sx={{
-          position: 'absolute',
-          inset: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.6)',
-          zIndex: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          flex: 1,
+          boxShadow: isHighlighted ? 10 : 3,
+          borderRadius: 4,
+          border: plan.color ? `2px solid ${plan.color}` : 'none',
+          backgroundImage: `url(${plan.backgroundImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          position: 'relative',
+          overflow: 'hidden',
+          maxWidth: 350, // Maximum width for larger screens
+          width: '100%', // Full width for smaller screens
         }}
-      />
-      {ribbonText && (
-        <PyrenzRibbon
-          color={plan.color}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        initial={{ opacity: 0.5, scale: 0.9 }}
+        animate={{
+          opacity: isHighlighted ? 1 : 0.5,
+          scale: isHighlighted ? 1 : 0.9,
+        }}
+        whileHover={{ opacity: 1, scale: 1.05, zIndex: 3 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+      >
+        <Box
           sx={{
             position: 'absolute',
-            top: 50,
-            right: -20,
-            zIndex: 2,
-            transform: 'rotate(45deg)',
+            inset: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.6)',
+            zIndex: 0,
+          }}
+        />
+        {ribbonText && (
+          <PyrenzRibbon
+            color={plan.color}
+            sx={{
+              position: 'absolute',
+              top: 50,
+              right: -20,
+              zIndex: 2,
+              transform: 'rotate(45deg)',
+            }}
+          >
+            {ribbonText}
+          </PyrenzRibbon>
+        )}
+        <CardContent
+          sx={{
+            textAlign: 'center',
+            flexGrow: 1,
+            position: 'relative',
+            zIndex: 1,
+            color: 'white',
+            padding: 3,
           }}
         >
-          {ribbonText}
-        </PyrenzRibbon>
-      )}
-      <CardContent
-        sx={{
-          textAlign: 'center',
-          flexGrow: 1,
-          position: 'relative',
-          zIndex: 1,
-          color: 'white',
-          padding: 3,
-        }}
-      >
-        <MotionTypography
-          variant="h5"
-          color="inherit"
-          sx={{ mb: 2 }}
-          initial={{ y: -20 }}
-          animate={{ y: 0 }}
-          transition={{ type: 'spring', stiffness: 300 }}
-        >
-          {plan.title}
-        </MotionTypography>
-        <MotionTypography
-          variant="h6"
-          color="inherit"
-          sx={{ mb: 3 }}
-          initial={{ scale: 0.9 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.2 }}
-        >
-          {price}
-        </MotionTypography>
-        {plan.descriptions.map((description, i) => {
-          const { title, content, color } = parseDescription(description);
-          return (
-            <Box key={i} sx={{ mb: 2 }}>
-              <Box
-                sx={{
-                  backgroundColor: color,
-                  color: 'white',
-                  padding: '6px 12px',
-                  borderRadius: '16px',
-                  display: 'inline-block',
-                  marginBottom: '8px',
-                }}
-              >
-                <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>
-                  {title}
+          <MotionTypography
+            variant="h5"
+            color="inherit"
+            sx={{ mb: 2 }}
+            initial={{ y: -20 }}
+            animate={{ y: 0 }}
+            transition={{ type: 'spring', stiffness: 300 }}
+          >
+            {plan.title}
+          </MotionTypography>
+          <MotionTypography
+            variant="h6"
+            color="inherit"
+            sx={{ mb: 3 }}
+            initial={{ scale: 0.9 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.2 }}
+          >
+            {price}
+          </MotionTypography>
+          {plan.descriptions.map((description, i) => {
+            const { title, content, color } = parseDescription(description);
+            return (
+              <Box key={i} sx={{ mb: 2 }}>
+                <Box
+                  sx={{
+                    backgroundColor: color,
+                    color: 'white',
+                    padding: '6px 12px',
+                    borderRadius: '16px',
+                    display: 'inline-block',
+                    marginBottom: '8px',
+                  }}
+                >
+                  <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>
+                    {title}
+                  </Typography>
+                </Box>
+                <Typography variant="body2" color="inherit">
+                  {content}
                 </Typography>
               </Box>
-              <Typography variant="body2" color="inherit">
-                {content}
-              </Typography>
-            </Box>
-          );
-        })}
-      </CardContent>
-      <CardActions sx={{ justifyContent: 'center', p: 3 }}>
-        <MotionButton
-          variant="contained"
-          onClick={() => onSubscribe(plan.title)}
-          disabled={isSubscribed}
-          sx={{
-            backgroundColor: plan.color,
-            color: 'white',
-            '&:hover': {
-              backgroundColor: plan.color ? `${plan.color}CC` : undefined,
-            },
-            borderRadius: '20px',
-            padding: '8px 24px',
-          }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          {isSubscribed ? 'Subscribed' : 'Subscribe'}
-        </MotionButton>
-      </CardActions>
-    </MotionCard>
+            );
+          })}
+        </CardContent>
+        <CardActions sx={{ justifyContent: 'center', p: 3 }}>
+          <MotionButton
+            variant="contained"
+            onClick={() => onSubscribe(plan.title)}
+            disabled={isSubscribed}
+            sx={{
+              backgroundColor: plan.color,
+              color: 'white',
+              '&:hover': {
+                backgroundColor: plan.color ? `${plan.color}CC` : undefined,
+              },
+              borderRadius: '20px',
+              padding: '8px 24px',
+            }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {isSubscribed ? 'Subscribed' : 'Subscribe'}
+          </MotionButton>
+        </CardActions>
+      </MotionCard>
+    </Box>
   );
 }

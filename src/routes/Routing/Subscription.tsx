@@ -21,7 +21,7 @@ interface Plan {
 
 const subscriptionPlans: Plan[] = [
   {
-    title: 'Azura (Blueberry)',
+    title: 'Solara (Strawberry)',
     price_count_monthly: 'Free',
     price_count_yearly: 'Free',
     plan_identifier: 'melon',
@@ -32,10 +32,10 @@ const subscriptionPlans: Plan[] = [
     ],
     color: '#4CAF50',
     backgroundImage:
-      'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/cdn/Pyrenzia.png',
+      'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/cdn//Solara.avif',
   },
   {
-    title: 'Solara (Strawberry)',
+    title: 'Azura (Blueberry)',
     price_count_monthly: '$15/Month',
     price_count_yearly: '$150/Year',
     plan_identifier: 'pineapple',
@@ -46,7 +46,7 @@ const subscriptionPlans: Plan[] = [
     ],
     color: '#2196F3',
     backgroundImage:
-      'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/cdn//Azalea.png',
+      'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/cdn/Azura.avif',
   },
   {
     title: 'Nyra (Pineapple)',
@@ -60,14 +60,12 @@ const subscriptionPlans: Plan[] = [
     ],
     color: '#FF5722',
     backgroundImage:
-      'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/cdn/PyrenzImage.png',
+      'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/cdn/Nyra.avif',
   },
 ];
 
 export function Subscription() {
-  const [selectedPlanTitle, setSelectedPlanTitle] = useState<string | null>(
-    null
-  );
+  const [selectedPlanTitle, setSelectedPlanTitle] = useState<string | null>(null);
   const [isMonthly, setIsMonthly] = useState<boolean>(true);
   const [hoveredPlanTitle, setHoveredPlanTitle] = useState<string | null>(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -100,79 +98,49 @@ export function Subscription() {
   });
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        minHeight: '100vh',
-        backgroundColor: 'background.default',
-      }}
-    >
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: 'background.default' }}>
       <Box sx={{ display: 'flex', flex: 1 }}>
         {!isMobile && <Sidebar />}
-        {isMobile && <MobileNav setShowLoginModal={setShowLoginModal} />}
+        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+          {isMobile && <MobileNav setShowLoginModal={setShowLoginModal} />}
 
-        <Box
-          sx={{
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            p: isMobile ? 2 : 5,
-          }}
-        >
-          <Box display="flex" gap={4} mb={5}>
-            <PyrenzBlueButton
-              onClick={() => {
-                setIsMonthly(true);
-              }}
-              sx={getButtonStyle(isMonthly)}
-            >
-              Monthly
-            </PyrenzBlueButton>
-            <PyrenzBlueButton
-              onClick={() => {
-                setIsMonthly(false);
-              }}
-              sx={getButtonStyle(!isMonthly)}
-            >
-              Yearly
-            </PyrenzBlueButton>
-          </Box>
-          <Box display="flex" flexWrap="wrap" justifyContent="center" gap={5}>
-            {subscriptionPlans.map((plan) => {
-              const isSubscribed = userSubscriptionPlan.includes(plan.title);
-              const isHighlighted =
-                hoveredPlanTitle === null
-                  ? isSubscribed
-                  : hoveredPlanTitle === plan.title;
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', p: isMobile ? 2 : 5, flex: 1 }}>
+            <Box display="flex" gap={4} mb={5}>
+              <PyrenzBlueButton onClick={() => setIsMonthly(true)} sx={getButtonStyle(isMonthly)}>
+                Monthly
+              </PyrenzBlueButton>
+              <PyrenzBlueButton onClick={() => setIsMonthly(false)} sx={getButtonStyle(!isMonthly)}>
+                Yearly
+              </PyrenzBlueButton>
+            </Box>
+            <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', justifyContent: 'center',  width: '100%' }}>
+              {subscriptionPlans.map((plan) => {
+                const isSubscribed = userSubscriptionPlan.includes(plan.title);
+                const isHighlighted = hoveredPlanTitle === null ? isSubscribed : hoveredPlanTitle === plan.title;
 
-              return (
-                <SubscriptionCard
-                  key={plan.title}
-                  plan={plan}
-                  isSubscribed={isSubscribed}
-                  onSubscribe={handleSubscribeClick}
-                  isMonthly={isMonthly}
-                  isHighlighted={isHighlighted}
-                  onMouseEnter={() => {
-                    setHoveredPlanTitle(plan.title);
-                  }}
-                  onMouseLeave={() => {
-                    setHoveredPlanTitle(null);
-                  }}
-                />
-              );
-            })}
+                return (
+                  <SubscriptionCard
+                    key={plan.title}
+                    plan={plan}
+                    isSubscribed={isSubscribed}
+                    onSubscribe={handleSubscribeClick}
+                    isMonthly={isMonthly}
+                    isHighlighted={isHighlighted}
+                    onMouseEnter={() => setHoveredPlanTitle(plan.title)}
+                    onMouseLeave={() => setHoveredPlanTitle(null)}
+                  />
+                );
+              })}
+            </Box>
+            {selectedPlan && (
+              <PaymentModal
+                plan={selectedPlan}
+                isOpen={!!selectedPlan}
+                onClose={handleCloseModal}
+                isMonthly={isMonthly}
+              />
+            )}
           </Box>
-          {selectedPlan && (
-            <PaymentModal
-              plan={selectedPlan}
-              isOpen={!!selectedPlan}
-              onClose={handleCloseModal}
-              isMonthly={isMonthly}
-            />
-          )}
         </Box>
       </Box>
     </Box>

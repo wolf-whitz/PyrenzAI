@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useHomeStore } from '~/store';
 import { useTranslation } from 'react-i18next';
@@ -37,16 +37,23 @@ export const useHomepageAPI = () => {
   const itemsPerPage = 10;
   const showAlert = usePyrenzAlert();
 
-  const { isOwner, characters, total, maxPage } = useFetchCharacters({
+  const { isOwner, characters, maxPage } = useFetchCharacters({
     currentPage,
     search,
     itemsPerPage,
     t,
   });
 
-  const totalPages = Math.max(1, Math.ceil(total / itemsPerPage));
-
   useSyncSearchParams({ search, currentPage, setSearch, setCurrentPage });
+
+  useEffect(() => {
+    if (maxPage) {
+      const params = new URLSearchParams(window.location.search);
+      params.set('maxPage', maxPage.toString());
+      params.set('page', '1');
+      navigate({ search: params.toString() }, { replace: true });
+    }
+  }, [maxPage, navigate]);
 
   const handleButtonClick = async (
     functionName: string,
@@ -142,7 +149,6 @@ export const useHomepageAPI = () => {
     search,
     currentPage,
     characters,
-    total,
     maxPage,
     loading,
     setSearch,
@@ -151,7 +157,6 @@ export const useHomepageAPI = () => {
     t,
     userUUID,
     itemsPerPage,
-    totalPages,
     handleButtonClick,
     fetchUserData,
     isOwner,

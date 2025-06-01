@@ -25,7 +25,6 @@ export function Home() {
     setSearch,
     setCurrentPage,
     t,
-    userUUID,
     itemsPerPage,
     handleButtonClick,
     fetchUserData,
@@ -183,8 +182,9 @@ export function Home() {
             <Pagination
               maxPage={maxPage}
               currentPage={currentPage}
-              userUUID={userUUID}
               setCurrentPage={setCurrentPage}
+              itemsPerPage={itemsPerPage}
+              search={search}
             />
           </Box>
         </Container>

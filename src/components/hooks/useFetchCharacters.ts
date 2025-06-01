@@ -23,8 +23,6 @@ export function useFetchCharacters({
     setLoading,
     characters,
     setCharacters,
-    total,
-    setTotal,
     isOwner,
     setIsOwner,
     maxPage,
@@ -45,13 +43,11 @@ export function useFetchCharacters({
       }));
 
       setCharacters(safeCharacters);
-      setTotal(response.total);
       setIsOwner(response.isOwner);
       setMaxPage(response.maxPage);
     } catch (error) {
       showAlert(t('errors.fetchingCharacters'), 'Alert');
       setCharacters([]);
-      setTotal(0);
       setIsOwner(false);
       setMaxPage(0);
     } finally {
@@ -64,7 +60,6 @@ export function useFetchCharacters({
     t,
     setLoading,
     setCharacters,
-    setTotal,
     setIsOwner,
     setMaxPage,
   ]);
@@ -75,7 +70,6 @@ export function useFetchCharacters({
 
   return {
     characters,
-    total,
     loading,
     isOwner,
     maxPage,
