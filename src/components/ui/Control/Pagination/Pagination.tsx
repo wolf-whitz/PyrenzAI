@@ -8,7 +8,6 @@ import { usePyrenzAlert } from '~/provider';
 
 interface PaginationProps {
   currentPage: number;
-  maxPage: number;
   setCurrentPage: (page: number) => void;
   itemsPerPage: number;
   search: string;
@@ -16,26 +15,24 @@ interface PaginationProps {
 
 const useUrlQuery = () => {
   const [queryParams, setQueryParams] = useState<{ page?: string; maxPage?: string }>({});
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
     const page = searchParams.get('page');
     const maxPage = searchParams.get('maxPage');
 
-    if (page || maxPage) {
-      setQueryParams({
-        page: page ?? undefined,
-        maxPage: maxPage ?? undefined,
-      });
+    if (page && maxPage) {
+      setQueryParams({ page, maxPage });
+      setReady(true);
     }
   }, []);
 
-  return queryParams;
+  return { queryParams, ready };
 };
 
 export function Pagination({
   currentPage: initialCurrentPage,
-  maxPage: initialMaxPage,
   setCurrentPage,
   itemsPerPage,
   search,
@@ -43,29 +40,29 @@ export function Pagination({
   const [isLoading, setIsLoading] = useState(false);
   const showAlert = usePyrenzAlert();
   const setCharacters = useHomeStore((state) => state.setCharacters);
-  const queryParams = useUrlQuery();
+  const { queryParams, ready } = useUrlQuery();
 
   const [currentPage, setCurrentPageState] = useState(initialCurrentPage);
-  const [maxPage, setMaxPageState] = useState(initialMaxPage);
+  const [maxPage, setMaxPageState] = useState<number>(1);
 
   useEffect(() => {
-    if (queryParams.page) {
-      const page = parseInt(queryParams.page, 10);
-      if (!isNaN(page)) {
-        setCurrentPageState(page);
-        setCurrentPage(page);
-      }
+    if (!ready) return;
+
+    const parsedPage = parseInt(queryParams.page ?? '', 10);
+    const parsedMaxPage = parseInt(queryParams.maxPage ?? '', 10);
+
+    if (!isNaN(parsedPage)) {
+      setCurrentPageState(parsedPage);
+      setCurrentPage(parsedPage);
     }
-    if (queryParams.maxPage) {
-      const maxPage = parseInt(queryParams.maxPage, 10);
-      if (!isNaN(maxPage)) {
-        setMaxPageState(maxPage);
-      }
+
+    if (!isNaN(parsedMaxPage)) {
+      setMaxPageState(parsedMaxPage);
     }
-  }, [queryParams, setCurrentPage]);
+  }, [ready, queryParams, setCurrentPage]);
 
   const handlePageChange = async (newPage: number) => {
-    if (isLoading || newPage < 1 || (maxPage > 0 && newPage > maxPage)) return;
+    if (isLoading || newPage < 1 || newPage > maxPage) return;
 
     setIsLoading(true);
     try {
@@ -90,6 +87,14 @@ export function Pagination({
       setIsLoading(false);
     }
   };
+
+  if (!ready) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" py={4}>
+        <Typography color="#fff">Page Loading...</Typography>
+      </Box>
+    );
+  }
 
   return (
     <section aria-labelledby="pagination-heading" className="mt-6">

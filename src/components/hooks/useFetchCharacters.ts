@@ -59,9 +59,11 @@ export function useFetchCharacters({
     fetchCharactersData();
   }, [fetchCharactersData]);
 
+  const isLoadingMaxPage = loading || maxPage === 0 || maxPage == null;
+
   return {
     characters,
-    loading,
+    loading: isLoadingMaxPage,
     maxPage,
   };
 }

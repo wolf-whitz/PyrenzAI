@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '~/Utility/supabaseClient';
 import { Character } from '@shared-types';
 import { GetUserData } from '@components';
+import * as Sentry from '@sentry/react';
 
 interface ModelOption {
   label: string;
@@ -32,6 +33,7 @@ export const useMenuAPI = ({ char }: MenuAPIProps) => {
       return data.map((item) => ({ label: item.name, name: item.name }));
     } catch (error) {
       console.error(error);
+      Sentry.captureException(error); 
       return [];
     }
   };
@@ -52,6 +54,7 @@ export const useMenuAPI = ({ char }: MenuAPIProps) => {
       console.log('Character details updated successfully');
     } catch (error) {
       console.error('Error updating character details:', error);
+      Sentry.captureException(error);  
     }
   };
 
@@ -78,6 +81,8 @@ export const useMenuAPI = ({ char }: MenuAPIProps) => {
         const options = await fetchModelIdentifiers();
         options.push({ label: 'Custom', name: 'Custom' });
         setModelOptions(options);
+      } catch (error) {
+        Sentry.captureException(error); 
       } finally {
         setLoading(false);
       }

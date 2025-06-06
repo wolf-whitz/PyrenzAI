@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Container, useMediaQuery, Box, useTheme } from '@mui/material';
+import { Container, useMediaQuery, Box, useTheme, CircularProgress } from '@mui/material';
 import {
   Sidebar,
   SearchBar,
@@ -34,8 +34,17 @@ export function Home() {
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const [user, setUser] = useState({ username: '', user_avatar: '' });
+  const [hasRequiredParams, setHasRequiredParams] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const hasMaxPage = searchParams.has('maxPage');
+    const hasPage = searchParams.has('page');
+
+    setHasRequiredParams(hasMaxPage && hasPage);
+  }, []);
 
   const fetchData = useCallback(() => {
     fetchUserData().catch((error) => {
@@ -72,11 +81,16 @@ export function Home() {
     setShowRegister(!showRegister);
   };
 
+  if (!hasRequiredParams) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   return (
-    <Box
-      component="div"
-      sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}
-    >
+    <Box component="div" sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <motion.div
         className="flex flex-col min-h-screen text-white font-baloo"
         aria-label={t('ariaLabels.homePage')}
@@ -178,7 +192,6 @@ export function Home() {
             </Box>
 
             <Pagination
-              maxPage={maxPage}
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
               itemsPerPage={itemsPerPage}

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box } from '@mui/material';
 import { ChatMessagesProps, Message } from '@shared-types';
 import { speakMessage } from '@api';
-import { MessageBox } from '@components';
+import { MessageBox, Character } from '@components';
 
 export function ChatMessages({
   previous_message,
@@ -75,12 +75,6 @@ export function ChatMessages({
   return (
     <Box className="space-y-4 p-4 max-w-2xl mx-auto">
       {previous_message.map((msg: Message, index: number) => {
-        const isUser = msg.type === 'user';
-
-        const displayName = isUser
-          ? msg.username || user.username
-          : msg.name || char.name;
-        const profile_image = msg.profile_image;
         const isLastMessage = index === previous_message.length - 1;
 
         return (
@@ -88,12 +82,10 @@ export function ChatMessages({
             key={`${msg.type}-${msg.id ?? `temp-${index}`}`}
             msg={msg}
             index={index}
-            displayName={displayName}
-            profile_image={profile_image}
             isGenerating={isGenerating}
             isLastMessage={isLastMessage}
             user={user}
-            char={char}
+            char={char as Character}
             onRegenerate={onRegenerate || defaultOnRegenerate}
             onRemove={onRemove || defaultOnRemove}
             onEditMessage={onEditMessage || defaultOnEditMessage}

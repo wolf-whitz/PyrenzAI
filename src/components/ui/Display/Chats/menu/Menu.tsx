@@ -72,9 +72,6 @@ export function Menu({ onClose, char }: MenuProps) {
             ) : (
               <>
                 <Box display="flex" flexDirection="column">
-                  <Typography variant="h6" gutterBottom>
-                    {char.name}
-                  </Typography>
                   <Button
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     variant="contained"

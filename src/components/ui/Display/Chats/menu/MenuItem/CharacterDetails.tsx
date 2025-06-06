@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Box } from '@mui/material';
 import { Textarea } from '@components';
 import { Character } from '@shared-types';
 import { PyrenzBlueButton } from '~/theme';
@@ -23,7 +24,7 @@ export function CharacterDetails({ char, onSubmit }: CharacterDetailsProps) {
   };
 
   return (
-    <div>
+    <Box>
       <Textarea
         label="Name"
         value={characterDetails.name}
@@ -36,7 +37,7 @@ export function CharacterDetails({ char, onSubmit }: CharacterDetailsProps) {
         onChange={handleChange('persona')}
       />
       <Textarea
-        label="model_instructions"
+        label="Model instructions"
         value={characterDetails.model_instructions}
         onChange={handleChange('model_instructions')}
       />
@@ -47,6 +48,6 @@ export function CharacterDetails({ char, onSubmit }: CharacterDetailsProps) {
       >
         Submit
       </PyrenzBlueButton>
-    </div>
+    </Box>
   );
 }
