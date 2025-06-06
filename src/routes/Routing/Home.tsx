@@ -28,13 +28,12 @@ export function Home() {
     itemsPerPage,
     handleButtonClick,
     fetchUserData,
-    isOwner,
     maxPage,
   } = useHomepageAPI();
 
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
-  const [user, setUser] = useState({ username: '', icon: '' });
+  const [user, setUser] = useState({ username: '', user_avatar: '' });
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -57,7 +56,7 @@ export function Home() {
         } else {
           setUser({
             username: userData.username,
-            icon: userData.icon,
+            user_avatar: userData.user_avatar,
           });
         }
       } catch (error) {
@@ -175,7 +174,6 @@ export function Home() {
                 loading={loading}
                 itemsPerPage={itemsPerPage}
                 t={t}
-                isOwner={isOwner}
               />
             </Box>
 

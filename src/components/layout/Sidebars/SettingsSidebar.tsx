@@ -1,46 +1,28 @@
-import React, { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
-import { Persona, GetUserUUID, GetUserData } from '@components';
+import { Persona } from '@components';
 import { PyrenzStyledDrawer } from '~/theme';
 
 interface SettingsSidebarProps {
   settingsOpen: boolean;
   onClose: () => void;
+  user: {
+    username: string;
+    user_avatar: string;
+  };
 }
 
 export function SettingsSidebar({
   settingsOpen,
   onClose,
+  user,
 }: SettingsSidebarProps) {
-  const [user, setUser] = useState({ username: '', icon: '' });
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const userData = await GetUserData();
-        if ('error' in userData) {
-          console.error('Error fetching user:', userData.error);
-        } else {
-          setUser({
-            username: userData.username,
-            icon: userData.icon,
-          });
-        }
-      } catch (error) {
-        console.error('Error fetching user:', error);
-      }
-    };
-
-    fetchUser();
-  }, []);
-
   return (
     <PyrenzStyledDrawer
       isOpen={settingsOpen}
       onClose={onClose}
       profileData={{
         name: user.username,
-        avatarUrl: user.icon,
+        avatarUrl: user.user_avatar,
       }}
     >
       <Box className="flex justify-center">

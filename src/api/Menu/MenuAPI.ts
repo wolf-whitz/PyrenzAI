@@ -1,0 +1,101 @@
+import { useEffect, useState } from 'react';
+import { supabase } from '~/Utility/supabaseClient';
+import { Character } from '@shared-types';
+import { GetUserData } from '@components';
+
+interface ModelOption {
+  label: string;
+  name: string;
+}
+
+interface MenuAPIProps {
+  char: Character;
+}
+
+export const useMenuAPI = ({ char }: MenuAPIProps) => {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [selectedOption, setSelectedOption] = useState('Cosmetic');
+  const [bgImage, setBgImage] = useState<string | null>(null);
+  const [aiCustomization, setAiCustomization] = useState<any>(null);
+  const [subscriptionPlan, setSubscriptionPlan] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [modelOptions, setModelOptions] = useState<ModelOption[]>([]);
+
+  const fetchModelIdentifiers = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('model_identifiers')
+        .select('name');
+
+      if (error) throw error;
+
+      return data.map((item) => ({ label: item.name, name: item.name }));
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  };
+
+  const handleCharacterDetailsSubmit = async (characterDetails: Character) => {
+    try {
+      const { error } = await supabase
+        .from('chats')
+        .update({
+          name: characterDetails.name,
+          persona: characterDetails.persona,
+          model_instructions: characterDetails.model_instructions,
+        })
+        .eq('char_uuid', char.char_uuid);
+
+      if (error) throw error;
+
+      console.log('Character details updated successfully');
+    } catch (error) {
+      console.error('Error updating character details:', error);
+    }
+  };
+
+  useEffect(() => {
+    const savedBg = localStorage.getItem('bgImage');
+    if (savedBg) {
+      setBgImage(savedBg);
+    }
+
+    const fetchData = async () => {
+      try {
+        const userData = await GetUserData();
+        if (userData && 'ai_customization' in userData) {
+          setAiCustomization(userData.ai_customization);
+          const plan = userData.subscription_data.tier;
+
+          if (['MELON', 'PINEAPPLE', 'DURIAN'].includes(plan)) {
+            setSubscriptionPlan(plan);
+          } else {
+            setSubscriptionPlan(null);
+          }
+        }
+
+        const options = await fetchModelIdentifiers();
+        options.push({ label: 'Custom', name: 'Custom' });
+        setModelOptions(options);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  return {
+    isDropdownOpen,
+    setIsDropdownOpen,
+    selectedOption,
+    setSelectedOption,
+    bgImage,
+    aiCustomization,
+    subscriptionPlan,
+    loading,
+    modelOptions,
+    handleCharacterDetailsSubmit,
+  };
+};

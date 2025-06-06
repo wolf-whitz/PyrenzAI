@@ -1,7 +1,7 @@
 import { AuthenticationModal, CreateNewChat, GetUserUUID } from '@components';
 import { usePyrenzAlert } from '~/provider';
 import React, { useState, useEffect, useCallback } from 'react';
-import { Character } from '@shared-types/CharacterProp';
+import { Character } from '@shared-types';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
@@ -83,8 +83,6 @@ export function CharacterCardModal({
       const response = await CreateNewChat(
         character.char_uuid,
         userUUID,
-        character.profile_image,
-        character.description
       );
 
       if (response?.chat_uuid) {

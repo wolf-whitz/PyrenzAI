@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, MenuItem, Typography, TextField } from '@mui/material';
 import { supabase } from '~/Utility/supabaseClient';
-import { Tag, TextareaFormProps } from '@shared-types/TagTypes';
+import { Tag, TextareaFormProps } from '@shared-types';
 import { ImageUploader, Textarea } from '@components';
 import { v4 as uuidv4 } from 'uuid';
 

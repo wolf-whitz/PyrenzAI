@@ -11,19 +11,19 @@ import { useMediaQuery, useTheme, Box } from '@mui/material';
 import { supabase } from '~/Utility/supabaseClient';
 import { useParams } from 'react-router-dom';
 import { useCharacterStore } from '~/store';
-import { CharacterData } from '@shared-types/CharacterProp';
+import { Character } from '@shared-types';
 
 export function CreatePage() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
   const [characterUpdate, setCharacterUpdate] = useState(false);
-  const setCharacterData = useCharacterStore((state) => state.setCharacterData);
+  const setCharacter = useCharacterStore((state) => state.setCharacter);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { uuid } = useParams();
 
   useEffect(() => {
-    const fetchCharacterData = async () => {
+    const fetchCharacter = async () => {
       if (!uuid) {
         setIsDataLoaded(true);
         return;
@@ -48,7 +48,7 @@ export function CreatePage() {
         if (error) {
           console.error('Error fetching character data:', error);
         } else if (data) {
-          setCharacterData(data as CharacterData);
+          setCharacter(data as Character);
           setCharacterUpdate(true);
         }
       } catch (error) {
@@ -58,8 +58,8 @@ export function CreatePage() {
       }
     };
 
-    fetchCharacterData();
-  }, [uuid, setCharacterData]);
+    fetchCharacter();
+  }, [uuid, setCharacter]);
 
   if (!isDataLoaded) {
     return <CreatePageLoader />;

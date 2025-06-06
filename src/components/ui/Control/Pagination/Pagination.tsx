@@ -25,7 +25,7 @@ const useUrlQuery = () => {
     if (page || maxPage) {
       setQueryParams({
         page: page ?? undefined,
-        maxPage: maxPage ?? undefined
+        maxPage: maxPage ?? undefined,
       });
     }
   }, []);
@@ -65,13 +65,16 @@ export function Pagination({
   }, [queryParams, setCurrentPage]);
 
   const handlePageChange = async (newPage: number) => {
-    if (isLoading || newPage < 1 || newPage > maxPage) return;
+    if (isLoading || newPage < 1 || (maxPage > 0 && newPage > maxPage)) return;
 
     setIsLoading(true);
     try {
-      const { characters } = await fetchCharacters(newPage, itemsPerPage, search);
+      const response = await fetchCharacters(newPage, itemsPerPage, search);
+      const { characters, maxPage: fetchedMaxPage } = response;
+
       setCurrentPageState(newPage);
       setCurrentPage(newPage);
+      setMaxPageState(fetchedMaxPage);
 
       if (characters.length > 0) {
         setCharacters(characters);

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { CharacterCardModal } from '@components';
-import { Character } from '@shared-types/CharacterProp';
+import { Character } from '@shared-types';
 import { Box, Typography, Fade } from '@mui/material';
 import MessageIcon from '@mui/icons-material/Message';
 import PublicIcon from '@mui/icons-material/Public';
@@ -20,10 +20,10 @@ import {
 
 interface CharacterCardProps {
   character: Character;
-  isOwner: boolean;
+  isOwner?: boolean;
 }
 
-export function CharacterCard({ character, isOwner }: CharacterCardProps) {
+export function CharacterCard({ character, isOwner = false }: CharacterCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState<Character | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -123,13 +123,11 @@ export function CharacterCard({ character, isOwner }: CharacterCardProps) {
                   Private
                 </PyrenzCharacterCardTag>
               )}
-              {character.tags
-                ?.slice(0, 5)
-                .map((tag, index) => (
-                  <PyrenzCharacterCardTag key={index}>
-                    {tag}
-                  </PyrenzCharacterCardTag>
-                ))}
+              {character.tags?.slice(0, 5).map((tag: string, index: number) => (
+                <PyrenzCharacterCardTag key={index}>
+                  {tag}
+                </PyrenzCharacterCardTag>
+              ))}
             </PyrenzCharacterCardTags>
           </PyrenzCharacterCardContent>
         </PyrenzCharacterCard>

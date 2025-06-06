@@ -1,6 +1,6 @@
-import { Character } from '@shared-types/CharacterProp';
+import { Character } from '@shared-types';
 import * as Sentry from '@sentry/react';
-import { fetchCharacters as fetchCharactersFunction, GetUserUUID } from '@components';
+import { fetchCharacters as fetchCharactersFunction } from '@components';
 
 export const fetchCharacters = async (
   currentPage: number,
@@ -8,7 +8,6 @@ export const fetchCharacters = async (
   search: string
 ): Promise<{
   characters: Character[];
-  isOwner: boolean;
   maxPage: number;
 }> => {
   try {
@@ -23,40 +22,15 @@ export const fetchCharacters = async (
       console.log('No characters found in the API response.');
       return {
         characters: [],
-        isOwner: false,
         maxPage: 0,
       };
     }
 
-    const userUUID = await GetUserUUID();
-
-    const formattedCharacters = data.characters.map((char) => {
-      const isOwner = char.creator_uuid === userUUID;
-
-      return {
-        id: char.id.toString(),
-        name: char.name || '',
-        description: char.description || '',
-        creator: char.creator || null,
-        creator_uuid: char.creator_uuid || '',
-        chat_messages_count: char.chat_messages_count ?? 0,
-        profile_image: char.profile_image || '',
-        tags: char.tags || [],
-        is_public: !!char.is_public,
-        is_nsfw: false,
-        char_uuid: char.char_uuid || '',
-        token_total: char.token_total ?? 0,
-        isLoading: false,
-        isOwner,
-      };
-    });
-
-    const totalCharacters = data.total || 0;
+    const totalCharacters = data.totalPages || 0;
     const maxPage = Math.ceil(totalCharacters / itemsPerPage);
-
+    
     return {
-      characters: formattedCharacters,
-      isOwner: formattedCharacters.some((char) => char.isOwner),
+      characters: data.characters,
       maxPage,
     };
   } catch (error) {
@@ -67,7 +41,6 @@ export const fetchCharacters = async (
     }
     return {
       characters: [],
-      isOwner: false,
       maxPage: 0,
     };
   }

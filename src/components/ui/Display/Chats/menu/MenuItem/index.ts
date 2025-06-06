@@ -1,4 +1,4 @@
-import { Cosmetic } from './Cosmetic';
-import { Customization } from './Customization';
+export * from './CharacterDetails'
+export * from './Cosmetic'
 
-export { Customization, Cosmetic };
+export * from './Customization'

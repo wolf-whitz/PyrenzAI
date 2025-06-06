@@ -24,9 +24,9 @@
 
       "@components": ["src/components"],
       "@api": ["src/api"],
+      "@shared-types": ["src/components"],
 
       "@libs/*": ["src/lib/*"],
-      "@shared-types/*": ["src/components/shared-types/*"]
     }
   },
   "include": ["src/**/*", "electron"]

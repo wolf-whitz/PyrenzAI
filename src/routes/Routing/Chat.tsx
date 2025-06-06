@@ -14,9 +14,8 @@ import { Box, CircularProgress, Typography } from '@mui/material';
 
 interface PersonaResponse {
   user_uuid: string;
-  name: string;
   username: string;
-  icon: string;
+  user_avatar: string;
 }
 
 export function ChatPage() {
@@ -37,7 +36,6 @@ export function ChatPage() {
       const uuid = await GetUserUUID();
       setUserUuid(uuid);
     };
-
     fetchUserUuid();
   }, []);
 
@@ -55,9 +53,8 @@ export function ChatPage() {
 
         const updatedUserData: PersonaResponse = {
           user_uuid: userUuid,
-          name: response.username,
           username: response.username,
-          icon: response.icon || '',
+          user_avatar: response.user_avatar || '',
         };
 
         setUserData(updatedUserData);
@@ -75,20 +72,15 @@ export function ChatPage() {
       if (chat_uuid && userUuid && userData) {
         try {
           clearData();
-          const result = await fetchChatData(chat_uuid, userData.icon);
+          const result = await fetchChatData(chat_uuid, userData.user_avatar);
 
           const updatedCharacter = {
             ...result.character,
-            icon: result.character.profile_image,
           };
 
           setChatData({ ...result, character: updatedCharacter });
 
-          if (result.firstMessage) {
-            setFirstMessage(result.firstMessage);
-          } else {
-            setFirstMessage('');
-          }
+          setFirstMessage(result.firstMessage ?? '');
 
           setFetchError(false);
         } catch (error) {
@@ -113,9 +105,13 @@ export function ChatPage() {
 
   if (
     loading ||
-    (chatData &&
-      chatData.messages &&
-      chatData.messages.some((msg: any) => msg.id == null))
+    !userData ||
+    !chatData ||
+    !chatData.character ||
+    !chatData.character.char_uuid ||
+    !chatData.character.profile_image ||
+    !chatData.character.name ||
+    (chatData.messages && chatData.messages.some((msg: any) => msg.id == null))
   ) {
     return (
       <Box
@@ -130,7 +126,7 @@ export function ChatPage() {
     );
   }
 
-  if (fetchError || !chatData || !chat_uuid || userDataError) {
+  if (fetchError || !chat_uuid || userDataError) {
     return (
       <motion.div
         initial={{ opacity: 0, y: 20 }}

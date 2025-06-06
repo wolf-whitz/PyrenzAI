@@ -40,14 +40,14 @@ export function Textarea({
     characterCount > maxLength
   );
 
-  const setCharacterData = useCharacterStore((state) => state.setCharacterData);
+  const setCharacter = useCharacterStore((state) => state.setCharacter);
 
   useEffect(() => {
     if (showTokenizer) {
       const tokens = llamaTokenizer.encode(value);
       const tokenLength = tokens.length;
       setTokenCount(tokenLength);
-      setCharacterData({
+      setCharacter({
         textarea_token: {
           ...useCharacterStore.getState().textarea_token,
           [name || 'default']: tokenLength,
@@ -55,14 +55,14 @@ export function Textarea({
       });
     } else {
       setTokenCount(0);
-      setCharacterData({
+      setCharacter({
         textarea_token: {
           ...useCharacterStore.getState().textarea_token,
           [name || 'default']: 0,
         },
       });
     }
-  }, [value, showTokenizer, setCharacterData, name]);
+  }, [value, showTokenizer, setCharacter, name]);
 
   useEffect(() => {
     setCharacterCount(value.length);

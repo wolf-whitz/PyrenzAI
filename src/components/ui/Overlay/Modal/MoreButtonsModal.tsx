@@ -16,7 +16,7 @@ import {
   ButtonType,
   ModalResultType,
   MoreButtonsModalProps,
-} from '@shared-types/MoreButtonsTypes';
+} from '@shared-types';
 import { Tag } from 'lucide-react';
 
 const LoadingSpinner = () => (

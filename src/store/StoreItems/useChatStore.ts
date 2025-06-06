@@ -4,21 +4,20 @@ interface Message {
   character_name?: string;
   username?: string;
   text: string;
-  icon: string;
+  profile_image: string;
   type: 'assistant' | 'user';
 }
 
 export interface UserData {
   user_uuid: string;
   username: string;
-  icon: string;
+  profile_image: string;
 }
 
 interface Character {
   character_name: string;
-  icon: string;
+  profile_image: string;
   first_message: string;
-  profile_image?: string;
 }
 
 interface ChatStore {

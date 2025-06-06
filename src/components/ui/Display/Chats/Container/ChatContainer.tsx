@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState, Suspense } from 'react';
 import { useChatStore } from '~/store';
 import { ChatMain } from '~/components';
-import { Message, ChatContainerProps } from '@shared-types/chatTypes';
+import { Message, ChatContainerProps, Character } from '@shared-types';
 import { ChatPageSpinner } from '@components';
-import { useChatPageAPI } from '@api';
 import clsx from 'clsx';
 
-interface ChatContainerPropsExtended extends ChatContainerProps {
+interface ChatContainerPropsExtended extends Omit<ChatContainerProps, 'char'> {
+  char?: Partial<Character>;
   previous_message?: Message[];
   className?: string;
   chat_uuid: string;
@@ -20,48 +20,37 @@ export function ChatContainer({
   className = '',
   chat_uuid,
 }: ChatContainerPropsExtended) {
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const messageIdRef = useRef<{ charId: string | null; userId: string | null }>(
-    {
-      charId: null,
-      userId: null,
-    }
-  );
-  const [charIcon, setCharIcon] = useState<string>(char?.icon ?? '');
+  const messageIdRef = useRef<{ charId: string | null; userId: string | null }>({
+    charId: null,
+    userId: null,
+  });
+
   const { messages, setMessages } = useChatStore();
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [bgImage, setBgImage] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!char?.icon || charIcon === char.icon) return;
-    const img = new Image();
-    img.src = char.icon || '';
-    img.onload = () => setCharIcon(char.icon || '');
-    img.onerror = () => setCharIcon('');
-  }, [char?.icon, charIcon]);
-
-  useEffect(() => {
     if (char && firstMessage && messages.length === 0) {
       setMessages([
         {
-          character_name: char.character_name ?? 'Unknown',
+          name: char.name || 'Anon',
           text: firstMessage,
-          icon: char.icon ?? '',
+          profile_image: char.profile_image || '',
           type: 'assistant',
         },
         ...previous_message,
       ]);
     }
-  }, [char, firstMessage, previous_message, setMessages, messages.length]);
+  }, [char, firstMessage, previous_message, setMessages, messages.length, char?.profile_image]);
 
   useEffect(() => {
     const storedBgImage = localStorage.getItem('bgImage');
     if (storedBgImage) {
       setBgImage(storedBgImage);
-    } else if (char?.icon) {
-      setBgImage(char.icon);
+    } else if (char?.profile_image) {
+      setBgImage(char.profile_image);
     }
-  }, [char?.icon]);
+  }, [char?.profile_image]);
 
   return (
     <Suspense fallback={<ChatPageSpinner />}>
@@ -70,7 +59,7 @@ export function ChatContainer({
           'flex justify-center items-center w-full h-full',
           className,
           {
-            'bg-cover': bgImage,
+            'bg-cover': !!bgImage,
           }
         )}
         style={{
@@ -82,10 +71,9 @@ export function ChatContainer({
       >
         <ChatMain
           user={user}
-          char={{ ...char, icon: charIcon }}
+          char={char as Character}
           previous_message={messages}
           isGenerating={isGenerating}
-          messagesEndRef={messagesEndRef}
           setMessages={setMessages}
           messageIdRef={messageIdRef}
           setIsGenerating={setIsGenerating}

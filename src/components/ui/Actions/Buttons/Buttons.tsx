@@ -2,7 +2,7 @@ import { PyrenzBlueButton } from '~/theme';
 import React, { useState, useRef, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { buttons, CustomButtonProps } from '@shared-types/MoreButtonsTypes';
+import { buttons, CustomButtonProps } from '@shared-types';
 
 const MoreButtonsModal = React.lazy(() =>
   import('~/components/ui/Overlay/Modal/MoreButtonsModal').then((module) => ({

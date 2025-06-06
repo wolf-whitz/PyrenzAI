@@ -37,7 +37,7 @@ export const useHomepageAPI = () => {
   const itemsPerPage = 10;
   const showAlert = usePyrenzAlert();
 
-  const { isOwner, characters, maxPage } = useFetchCharacters({
+  const { characters, maxPage } = useFetchCharacters({
     currentPage,
     search,
     itemsPerPage,
@@ -98,13 +98,7 @@ export const useHomepageAPI = () => {
         return [];
       }
 
-      const safeCharacters = rawCharacters.map((char) => ({
-        ...char,
-        is_public: char.is_public ?? false,
-        is_nsfw: char.is_nsfw ?? false,
-        token_total: char.token_total ?? 0,
-        isLoading: false,
-      }));
+      const safeCharacters = rawCharacters.map((char) => (char));
 
       setCharacters(safeCharacters);
       return safeCharacters;
@@ -159,6 +153,5 @@ export const useHomepageAPI = () => {
     itemsPerPage,
     handleButtonClick,
     fetchUserData,
-    isOwner,
   };
 };

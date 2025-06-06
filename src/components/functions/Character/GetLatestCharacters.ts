@@ -1,5 +1,5 @@
 import { supabase } from '~/Utility/supabaseClient';
-import { Character } from '@shared-types/CharacterProp';
+import { Character } from '@shared-types';
 
 export async function GetLatestCharacters(
   type: string,

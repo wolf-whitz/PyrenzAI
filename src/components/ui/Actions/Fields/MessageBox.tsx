@@ -8,17 +8,17 @@ import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import EditIcon from '@mui/icons-material/Edit';
 import { PyrenzMessageBox, PyrenzBlueButton } from '~/theme';
 
-import type { Message } from '@shared-types/ChatmainTypes';
+import type { Message } from '@shared-types';
 
 interface MessageBoxProps {
   msg: Message;
   index: number;
   displayName: string;
-  icon: string;
+  profile_image: string;
   isGenerating: boolean;
   isLastMessage: boolean;
   user: { username: string };
-  char: { character_name: string; gender?: string };
+  char: { name: string; gender?: string };
   onRegenerate: (messageId: string) => void;
   onRemove: (messageId: string) => void;
   onEditMessage: (
@@ -46,16 +46,14 @@ export const MessageBox: React.FC<MessageBoxProps> = ({
   msg,
   index,
   displayName,
-  icon,
+  profile_image,
   isGenerating,
   isLastMessage,
   user,
   char,
   onRegenerate,
   onRemove,
-  onEditMessage,
   handleSpeak,
-  setIsGenerating,
   editingMessageId,
   editingMessageType,
   editedMessage,
@@ -84,7 +82,7 @@ export const MessageBox: React.FC<MessageBoxProps> = ({
       {isAssistant && (
         <Avatar
           alt={displayName}
-          src={icon}
+          src={profile_image}
           sx={{ width: 32, height: 32 }}
           className="rounded-full"
         />
@@ -167,7 +165,7 @@ export const MessageBox: React.FC<MessageBoxProps> = ({
       {isUser && (
         <Avatar
           alt={displayName}
-          src={icon}
+          src={profile_image}
           sx={{ width: 32, height: 32 }}
           className="rounded-full"
         />

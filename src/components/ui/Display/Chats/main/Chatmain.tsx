@@ -1,24 +1,28 @@
-import React, { useRef, useState } from 'react';
-import { ChatContainerProps, Message } from '@shared-types/chatTypes';
+import React, { useRef, useState, useEffect } from 'react';
+import { ChatContainerProps, Message, Character } from '@shared-types';
 import {
   SettingsSidebar,
   AdModal,
   ChatMessages,
   ChatInput,
   ChatHeader,
+  GetUserData
 } from '@components';
 import { useChatPageAPI } from '@api';
 import { Fade, Slide, Box } from '@mui/material';
 
-interface ChatMainProps extends ChatContainerProps {
+interface MessageIdRef {
+  charId: string | null;
+  userId: string | null;
+}
+
+interface ChatMainProps extends Omit<ChatContainerProps, 'messageIdRef'> {
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
-  messageIdRef: React.MutableRefObject<{
-    charId: string | null;
-    userId: string | null;
-  }>;
+  messageIdRef: React.MutableRefObject<MessageIdRef>;
   setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>;
   chat_uuid: string;
   isGenerating: boolean;
+  char: Character;
 }
 
 export function ChatMain({
@@ -32,11 +36,6 @@ export function ChatMain({
   chat_uuid,
 }: ChatMainProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [contextMenu, setContextMenu] = useState<{
-    mouseX: number;
-    mouseY: number;
-    messageId: string;
-  } | null>(null);
 
   const {
     isSettingsOpen,
@@ -64,10 +63,7 @@ export function ChatMain({
       <Box className="flex flex-col h-screen w-full text-white relative">
         <Box className="w-full max-w-6xl mx-auto pt-4">
           <ChatHeader
-            char={{
-              character_name: char?.character_name || 'Anon',
-              icon: char?.icon || '',
-            }}
+            char={char}
             handleGoHome={handleGoHome}
             toggleSettings={toggleSettings}
           />
@@ -77,13 +73,9 @@ export function ChatMain({
           <ChatMessages
             previous_message={previous_message.map((msg) => ({
               ...msg,
-              character_name: msg.character_name || 'Anon',
             }))}
-            user={{ username: user?.username || 'Anon' }}
-            char={{
-              character_name: char?.character_name || 'Anon',
-              gender: char?.gender,
-            }}
+            user={user}
+            char={char}
             isGenerating={isGenerating}
             onRemove={handleRemoveMessage}
             onRegenerate={handleRegenerateMessage}
@@ -94,13 +86,10 @@ export function ChatMain({
         </Box>
 
         <Slide direction="up" in={true} timeout={500}>
-          <Box className="w-full  relative sm:relative">
+          <Box className="w-full relative sm:relative">
             <ChatInput
-              user={{
-                username: user?.username || 'Anon',
-                icon: user?.icon || '',
-              }}
-              char={{ character_name: char?.character_name || 'Anon' }}
+              user={user}
+              char={char}
               handleSend={handleSend}
               isGenerating={isGenerating}
             />
@@ -110,6 +99,7 @@ export function ChatMain({
         <SettingsSidebar
           settingsOpen={isSettingsOpen}
           onClose={toggleSettings}
+          user={user}
         />
 
         <AdModal

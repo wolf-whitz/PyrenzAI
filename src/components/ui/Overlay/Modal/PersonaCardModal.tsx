@@ -16,6 +16,7 @@ interface PersonaCard {
   persona_name: string;
   persona_description: string;
   persona_profile: string;
+  is_selected: boolean;
 }
 
 interface PersonaModalProps {

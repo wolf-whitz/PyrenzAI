@@ -1,38 +1,30 @@
 import { z } from 'zod';
 
 export const CharacterSchema = z.object({
-  id: z.string(),
+  id: z.string().optional(),
   char_uuid: z.string(),
-  name: z.string(),
-  description: z.string(),
-  creator: z.string().nullable(),
-  creator_uuid: z.string(),
-  chat_messages_count: z.number(),
-  tags: z.array(z.string()),
-  profile_image: z.string(),
-  is_public: z.boolean(),
-  is_nsfw: z.boolean(),
-  token_total: z.number(),
-  isLoading: z.boolean(),
-});
 
-export const CharacterDataSchema = z.object({
-  char_uuid: z.string().optional(),
+  name: z.string().default('Anon'),
+  description: z.string(),  
   persona: z.string(),
-  name: z.string(),
+
   model_instructions: z.string(),
   scenario: z.string(),
-  description: z.string(),
-  first_message: z.string(),
-  tags: z.array(z.string()),
   gender: z.string(),
-  creator: z.string().nullable(),
-  is_public: z.boolean(),
-  is_nsfw: z.boolean(),
-  token_total: z.number(),
+
+  first_message: z.string(),
+  creator: z.string(),
+
+  tags: z.array(z.string()),  
   profile_image: z.string(),
-  textarea_token: z.record(z.number()).optional(),
-  chat_message_count: z.number().optional(),
+  chat_messages_count: z.number().optional(),
+
+  is_public: z.boolean(),
+  is_nsfw: z.boolean().optional(),
+  is_owner: z.boolean().optional(),
+  
+  isLoading: z.boolean().optional(),
+  creator_uuid: z.string().optional()
 });
 
 export const DraftSchema = z.object({
@@ -66,7 +58,6 @@ export const ApiResponseSchema = z.object({
     .optional(),
 });
 
-export type ApiResponse = z.infer<typeof ApiResponseSchema>;
-export type CharacterData = z.infer<typeof CharacterDataSchema>;
-export type Draft = z.infer<typeof DraftSchema>;
 export type Character = z.infer<typeof CharacterSchema>;
+export type Draft = z.infer<typeof DraftSchema>;
+export type ApiResponse = z.infer<typeof ApiResponseSchema>;

@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Avatar,
   Typography,
@@ -11,12 +10,10 @@ import {
 } from '@mui/material';
 import { ArrowLeft, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { Character } from '@shared-types';
 
 interface ChatHeaderProps {
-  char: {
-    character_name?: string;
-    icon?: string;
-  };
+  char: Character,
   handleGoHome: () => void;
   toggleSettings: () => void;
 }
@@ -66,13 +63,13 @@ export function ChatHeader({
               aria-label="Go home"
             >
               <Avatar
-                alt={char.character_name || 'Anon'}
-                src={char.icon || ''}
+                alt={char.name || 'Anon'}
+                src={char.profile_image || ''}
                 sx={{ width: 40, height: 40 }}
               />
             </IconButton>
             <Typography variant="h6" sx={{ fontSize: '1rem' }}>
-              {char.character_name || 'Anon'}
+              {char.name || 'Anon'}
             </Typography>
             <IconButton
               onClick={toggleSettings}

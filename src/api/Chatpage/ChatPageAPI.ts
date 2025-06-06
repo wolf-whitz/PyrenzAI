@@ -1,4 +1,4 @@
-import { Character, Message } from '@shared-types/chatTypes';
+import { Character, Message } from '@shared-types';
 import * as Sentry from '@sentry/react';
 import { supabase } from '~/Utility/supabaseClient';
 import { getChatData } from '@components';
@@ -24,22 +24,26 @@ export const fetchChatData = async (
   }
 
   try {
-    const characterData = await getChatData(chat_uuid);
+    const Character = await getChatData(chat_uuid);
 
-    if (characterData.error) {
-      throw new Error(characterData.error);
+    if ('error' in Character) {
+      throw new Error(Character.error);
     }
 
     const character: Character = {
-      character_name: characterData.name || 'Assistant',
-      persona: characterData.persona || '',
-      scenario: characterData.scenario || '',
-      gender: characterData.gender || '',
-      description: characterData.description || '',
-      first_message: characterData.first_message || '',
-      tags: characterData.tags || [],
-      profile_image: characterData.profile_image || '',
-      token_total: characterData.token_total || 0,
+      char_uuid: Character.char_uuid || '',
+      name: Character.name || 'Anon',
+      persona: Character.persona || '',
+      scenario: Character.scenario || '',
+      gender: Character.gender || '',
+      description: Character.description || '',
+      first_message: Character.first_message || '',
+      tags: Character.tags || [],
+      profile_image: Character.profile_image || '',
+      model_instructions: Character.model_instructions || '',
+      creator: Character.creator ?? null,
+      is_public: Character.is_public || false,
+      is_nsfw: Character.is_nsfw || false,
     };
 
     const { data, error } = await supabase
@@ -55,15 +59,16 @@ export const fetchChatData = async (
 
     const reversedMessages = (data || []).reverse();
 
-    const formattedMessages = reversedMessages.flatMap(
+    const formattedMessages: Message[] = reversedMessages.flatMap(
       (msg: ChatMessageWithId) => {
         const messages: Message[] = [];
 
         if (msg.user_message) {
           messages.push({
             id: `${msg.id}`,
+            name: character.name || 'Anon',  
             text: msg.user_message,
-            icon: avatar_url || '',
+            profile_image: avatar_url || '',
             type: 'user',
             chat_uuid,
           });
@@ -72,8 +77,9 @@ export const fetchChatData = async (
         if (msg.char_message) {
           messages.push({
             id: `${msg.id}`,
+            name: character.name || 'Anon', 
             text: msg.char_message,
-            icon: character.profile_image || '',
+            profile_image: character.profile_image || '',
             type: 'assistant',
             chat_uuid,
             gender: character.gender,
@@ -93,7 +99,7 @@ export const fetchChatData = async (
     if (error instanceof Error) {
       Sentry.captureException(error);
     } else {
-      Sentry.captureException(error);
+      Sentry.captureException(new Error(String(error)));
     }
     throw error;
   }

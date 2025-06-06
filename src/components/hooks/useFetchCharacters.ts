@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
-import { fetchCharacters } from '~/api';
+import { fetchCharacters, GetUserData } from '@components';
 import { usePyrenzAlert } from '~/provider';
-import type { Character } from '@shared-types/CharacterProp';
+import type { Character } from '@shared-types';
 import { useHomeStore } from '~/store';
 
 interface UseFetchCharactersProps {
@@ -23,8 +23,6 @@ export function useFetchCharacters({
     setLoading,
     characters,
     setCharacters,
-    isOwner,
-    setIsOwner,
     maxPage,
     setMaxPage,
   } = useHomeStore();
@@ -32,46 +30,38 @@ export function useFetchCharacters({
   const fetchCharactersData = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetchCharacters(currentPage, itemsPerPage, search);
+      const response = await fetchCharacters('character', currentPage, itemsPerPage, search || ' ');
+      const userData = await GetUserData();
+
+      if ('error' in userData) {
+        throw new Error(userData.error);
+      }
+
+      const currentUsername = String(userData.username);
 
       const safeCharacters = response.characters.map((char: Character) => ({
         ...char,
-        is_public: char.is_public ?? false,
-        is_nsfw: char.is_nsfw ?? false,
-        token_total: char.token_total ?? 0,
-        isLoading: false,
+        isOwner: String(char.creator) === currentUsername,
       }));
 
       setCharacters(safeCharacters);
-      setIsOwner(response.isOwner);
-      setMaxPage(response.maxPage);
+      setMaxPage(response.totalPages);
     } catch (error) {
       showAlert(t('errors.fetchingCharacters'), 'Alert');
       setCharacters([]);
-      setIsOwner(false);
       setMaxPage(0);
     } finally {
       setLoading(false);
     }
-  }, [
-    currentPage,
-    search,
-    itemsPerPage,
-    t,
-    setLoading,
-    setCharacters,
-    setIsOwner,
-    setMaxPage,
-  ]);
+  }, [currentPage, search, itemsPerPage, t, setLoading, setCharacters, setMaxPage]);
 
   useEffect(() => {
     fetchCharactersData();
-  }, []);
+  }, [fetchCharactersData]);
 
   return {
     characters,
     loading,
-    isOwner,
     maxPage,
   };
 }

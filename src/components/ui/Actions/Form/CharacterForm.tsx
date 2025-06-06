@@ -26,8 +26,8 @@ export function CharacterForm({ character_update }: CharacterFormProps) {
     handleSubmit,
   } = useCreateAPI(navigate, character_update);
 
-  const characterData = useCharacterStore((state) => state);
-  const setCharacterData = useCharacterStore((state) => state.setCharacterData);
+  const Character = useCharacterStore((state) => state);
+  const setCharacter = useCharacterStore((state) => state.setCharacter);
 
   const [formState, setFormState] = useState({
     char_uuid: '',
@@ -48,24 +48,24 @@ export function CharacterForm({ character_update }: CharacterFormProps) {
 
   useEffect(() => {
     setFormState({
-      char_uuid: characterData.char_uuid,
-      persona: characterData.persona,
-      name: characterData.name,
-      model_instructions: characterData.model_instructions,
-      scenario: characterData.scenario,
-      description: characterData.description,
-      first_message: characterData.first_message,
-      tags: Array.isArray(characterData.tags)
-        ? characterData.tags.join(', ')
-        : characterData.tags,
-      gender: characterData.gender,
-      is_public: characterData.is_public,
-      is_nsfw: characterData.is_nsfw,
-      profile_image: characterData.profile_image || '',
-      textarea_token: characterData.textarea_token,
-      token_total: characterData.token_total,
+      char_uuid: Character.char_uuid,
+      persona: Character.persona,
+      name: Character.name,
+      model_instructions: Character.model_instructions,
+      scenario: Character.scenario,
+      description: Character.description,
+      first_message: Character.first_message,
+      tags: Array.isArray(Character.tags)
+        ? Character.tags.join(', ')
+        : Character.tags,
+      gender: Character.gender,
+      is_public: Character.is_public,
+      is_nsfw: Character.is_nsfw,
+      profile_image: Character.profile_image || '',
+      textarea_token: Character.textarea_token,
+      token_total: Character.token_total,
     });
-  }, [characterData]);
+  }, [Character]);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -75,9 +75,9 @@ export function CharacterForm({ character_update }: CharacterFormProps) {
     const { name, value, type } = e.target;
 
     if (type === 'checkbox' && e.target instanceof HTMLInputElement) {
-      setCharacterData({ [name]: e.target.checked } as any);
+      setCharacter({ [name]: e.target.checked } as any);
     } else {
-      setCharacterData({ [name]: value } as any);
+      setCharacter({ [name]: value } as any);
     }
   };
 

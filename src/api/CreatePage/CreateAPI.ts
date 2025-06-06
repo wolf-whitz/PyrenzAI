@@ -9,8 +9,9 @@ import { useState, useEffect } from 'react';
 import { useCharacterStore } from '~/store';
 import { supabase } from '~/Utility/supabaseClient';
 import * as Sentry from '@sentry/react';
-import { CharacterData, Draft } from '@shared-types/CharacterProp';
+import { Character, Draft } from '@shared-types';
 import { usePyrenzAlert } from '~/provider';
+import { v4 as uuidv4 } from 'uuid';
 
 export const useCreateAPI = (
   navigate: (path: string) => void,
@@ -21,8 +22,8 @@ export const useCreateAPI = (
   const [showRequiredFieldsPopup, setShowRequiredFieldsPopup] = useState(false);
   const [userUuid, setUserUuid] = useState<string | null>(null);
 
-  const characterData = useCharacterStore((state) => state);
-  const setCharacterData = useCharacterStore((state) => state.setCharacterData);
+  const Character = useCharacterStore((state) => state);
+  const setCharacter = useCharacterStore((state) => state.setCharacter);
   const showAlert = usePyrenzAlert();
 
   useEffect(() => {
@@ -32,7 +33,7 @@ export const useCreateAPI = (
         setUserUuid(uuid);
         if (uuid) {
           const name = await fetchUserName(uuid);
-          setCharacterData({ creator: name });
+          setCharacter({ creator: name });
         }
       } catch (error) {
         console.error('Error fetching user UUID:', error);
@@ -41,11 +42,11 @@ export const useCreateAPI = (
     };
 
     fetchUserUuid();
-  }, [setCharacterData]);
+  }, [setCharacter]);
 
-  const tags = Array.isArray(characterData.tags)
-    ? characterData.tags
-    : (characterData.tags as string)
+  const tags = Array.isArray(Character.tags)
+    ? Character.tags
+    : (Character.tags as string)
         .split(',')
         .map((tag: string) => tag.trim());
 
@@ -68,31 +69,29 @@ export const useCreateAPI = (
   const handleImageSelect = (file: File | null) => {
     if (file) {
       const blobUrl = URL.createObjectURL(file);
-      setCharacterData({ profile_image: blobUrl });
+      setCharacter({ profile_image: blobUrl });
     }
   };
 
-  const character = {
-    persona: characterData.persona,
-    name: characterData.name,
-    model_instructions: characterData.model_instructions,
-    scenario: characterData.scenario,
-    description: characterData.description,
-    first_message: characterData.first_message,
+  const character: Character = {
+    persona: Character.persona,
+    name: Character.name,
+    model_instructions: Character.model_instructions,
+    scenario: Character.scenario,
+    description: Character.description,
+    first_message: Character.first_message,
     tags: tags,
-    gender: characterData.gender,
-    creator: characterData.creator,
-    is_public: characterData.is_public,
-    is_nsfw: characterData.is_nsfw,
-    profile_image: characterData.profile_image || '',
-    textarea_token: {},
-    token_total: 0,
-    creator_uuid: userUuid,
-    char_uuid: characterData.char_uuid || undefined,
+    gender: Character.gender,
+    creator: Character.creator || '',
+    is_public: Character.is_public,
+    is_nsfw: Character.is_nsfw,
+    profile_image: Character.profile_image || '',
+    creator_uuid: userUuid || '',
+    char_uuid: Character.char_uuid || '', 
   };
 
   const handleClear = () => {
-    const emptyData = {
+    setCharacter({
       persona: '',
       name: '',
       model_instructions: '',
@@ -105,14 +104,10 @@ export const useCreateAPI = (
       is_public: false,
       is_nsfw: false,
       profile_image: '',
-      textarea_token: {},
-      token_total: 0,
-    };
-    setCharacterData(emptyData);
-    if (characterData.profile_image) {
-      URL.revokeObjectURL(characterData.profile_image);
-    }
+    });
+    URL.revokeObjectURL(Character.profile_image ?? '');
   };
+  
 
   const handleSave = async () => {
     setSaveLoading(true);
@@ -122,9 +117,15 @@ export const useCreateAPI = (
         setSaveLoading(false);
         return;
       }
-
-      const response = await handleSaveDraft(character, userUuid);
-
+  
+      const char_uuid = uuidv4();
+      const characterWithUUID = {
+        ...character,
+        char_uuid,
+      };
+  
+      const response = await handleSaveDraft(characterWithUUID, userUuid);
+  
       if (!response.success) {
         alert(`Error saving draft: ${response.error}`);
       } else {
@@ -136,18 +137,16 @@ export const useCreateAPI = (
   };
 
   const handleSelectDraft = (draft: Draft) => {
-    setCharacterData({
-      ...character,
-    });
+    setCharacter(draft);
   };
 
-  const handleImportCharacter = (data: CharacterData | null) => {
+  const handleImportCharacter = (data: Character | null) => {
     if (!data) {
       console.error('No data provided to import character.');
       return;
     }
 
-    setCharacterData({ ...data });
+    setCharacter({ ...data });
     console.log('Character Uploaded', useCharacterStore.getState());
   };
 
@@ -159,14 +158,14 @@ export const useCreateAPI = (
     setLoading(true);
 
     const fieldsToCheck = [
-      characterData.persona,
-      characterData.model_instructions,
-      characterData.scenario,
-      characterData.description,
-      characterData.first_message,
-      characterData.creator,
-      characterData.gender,
-      characterData.profile_image,
+      Character.persona,
+      Character.model_instructions,
+      Character.scenario,
+      Character.description,
+      Character.first_message,
+      Character.creator,
+      Character.gender,
+      Character.profile_image,
     ];
 
     const isValid = fieldsToCheck.every((field) => field && field.length >= 2);
@@ -203,8 +202,6 @@ export const useCreateAPI = (
           const chatResponse = await CreateNewChat(
             characterUuid,
             userUuid,
-            character.profile_image,
-            character.description
           );
           if (chatResponse.error) {
             console.error('Error creating chat:', chatResponse.error);
@@ -248,9 +245,9 @@ export const useCreateAPI = (
     saveLoading,
     showRequiredFieldsPopup,
     setShowRequiredFieldsPopup,
-    characterData,
+    Character,
     character,
-    setCharacterData,
+    setCharacter,
     handleClear,
     handleSave,
     handleSelectDraft,

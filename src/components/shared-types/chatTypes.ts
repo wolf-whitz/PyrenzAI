@@ -1,80 +1,74 @@
-import { MutableRefObject, RefObject } from 'react';
+import { z } from 'zod'
+import { CharacterSchema } from './CharacterProp'
 
-export interface Message {
-  character_name?: string;
-  text: string;
-  id?: string;
-  icon: string;
-  type: 'user' | 'assistant';
-  username?: string;
-  char_name?: string;
-  isGenerate?: boolean;
-  isFirst?: boolean;
-  token?: number | null;
-  role?: string;
-  chat_uuid?: string;
-  error?: boolean;
-  gender?: string;
-}
+export const MessageSchema = z.object({
+  id: z.string().optional(),
+  name: z.string().optional(),
 
-export interface User {
-  username: string;
-  icon: string;
-}
+  text: z.string(),
+  profile_image: z.string(),
 
-export interface Character {
-  character_name: string;
-  persona?: string;
-  scenario?: string;
-  gender?: string;
-  description: string;
-  first_message: string;
-  tags?: string[];
-  profile_image?: string;
-  token_total?: number;
-  icon?: string;
-}
+  type: z.enum(['user', 'assistant']),
+  username: z.string().optional(),
 
-export interface ChatContainerProps {
-  user: User | null;
-  char?: Partial<Character>;
-  firstMessage?: string | null;
-  previous_message?: Message[];
-  isGenerating?: boolean;
-  handleSend?: (text: string) => Promise<void>;
-  messageIdRef?: MutableRefObject<{
-    charId: string | null;
-    userId: string | null;
-  } | null>;
-  messagesEndRef?: RefObject<HTMLDivElement>;
-}
+  isGenerate: z.boolean().optional(),
+  isFirst: z.boolean().optional(),
 
-export interface ChatMessagesProps {
-  previous_message: Message[];
-  user: User;
-  char: Character;
-  isGenerating?: boolean;
-  onRemove?: (messageId: string) => void;
-  setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>;
-}
+  token: z.number().nullable().optional(),
+  role: z.string().optional(),
+  
+  chat_uuid: z.string().optional(),
+  error: z.boolean().optional(),
+  gender: z.string().optional(),
+})
 
-export interface GenerateResponse {
-  data: {
-    role: string;
-    content: string;
-  };
-  Engine: string;
-  token: number;
-  id: Array<{
-    userMessageUuid: string;
-    charMessageUuid: string;
-  }>;
-  remainingMessages: number;
-}
+export const UserSchema = z.object({
+  username: z.string(),
+  user_avatar: z.string(),
+})
 
-export type Chat = {
-  chat_uuid: string;
-  char_uuid: string;
-  preview_message: string;
-  preview_image: string;
-};
+export const ChatContainerPropsSchema = z.object({
+  user: UserSchema,
+  char: CharacterSchema,
+  firstMessage: z.string().nullable().optional(),
+  previous_message: z.array(MessageSchema).optional(),
+  isGenerating: z.boolean().optional(),
+  handleSend: z.function().args(z.string()).returns(z.promise(z.void())).optional(),
+  messageIdRef: z
+    .object({
+      charId: z.string().nullable(),
+      userId: z.string().nullable(),
+    })
+    .nullable()
+    .optional(),
+  messagesEndRef: z.any().optional(), 
+})
+
+export const GenerateResponseSchema = z.object({
+  data: z.object({
+    role: z.string(),
+    content: z.string(),
+  }),
+  Engine: z.string(),
+  token: z.number(),
+  id: z.array(
+    z.object({
+      userMessageUuid: z.string(),
+      charMessageUuid: z.string(),
+    })
+  ),
+  remainingMessages: z.number(),
+})
+
+export const ChatSchema = z.object({
+  chat_uuid: z.string(),
+  char_uuid: z.string(),
+  preview_message: z.string(),
+  preview_image: z.string(),
+})
+
+export type GenerateResponse = z.infer<typeof GenerateResponseSchema>;
+export type Message = z.infer<typeof MessageSchema>
+export type User = z.infer<typeof UserSchema>
+export type ChatContainerProps = z.infer<typeof ChatContainerPropsSchema>
+export type Chat = z.infer<typeof ChatSchema>

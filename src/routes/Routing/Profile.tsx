@@ -9,7 +9,7 @@ import {
   MobileNav,
 } from '@components';
 import { Box, Typography, useMediaQuery, useTheme } from '@mui/material';
-import { Character } from '@shared-types/CharacterProp';
+import { Character } from '@shared-types';
 import { useEffect, useState } from 'react';
 
 export function ProfilePage() {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '~/Utility/supabaseClient';
-import { Character } from '@shared-types/CharacterProp';
+import { Character } from '@shared-types';
 
 type UserData = {
   username: string;
@@ -84,23 +84,7 @@ export const GetUserCreatedCharacters = (uuid?: string) => {
         return null;
       }
 
-      return data.map((char) => ({
-        id: char.id.toString(),
-        char_uuid: char.char_uuid,
-        name: char.name,
-        description: char.description,
-        creator: char.creator,
-        creator_uuid: char.creator_uuid,
-        chat_messages_count: char.chat_messages_count ?? 0,
-        profile_image: char.profile_image,
-        tags: Array.isArray(char.tags)
-          ? char.tags
-          : char.tags?.split(',').map((tag: string) => tag.trim()) || [],
-        is_public: char.is_public,
-        is_nsfw: char.is_nsfw ?? false,
-        token_total: char.token_total ?? 0,
-        isLoading: false,
-      }));
+      return data
     };
 
     const updateMetaAndTitle = (username: string, avatarUrl: string) => {

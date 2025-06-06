@@ -10,20 +10,12 @@ interface PersonaCard {
   persona_name: string;
   persona_description: string;
   persona_profile: string;
-}
-
-interface PersonaData {
-  id: string;
-  persona_name: string;
-  persona_description: string;
-  persona_profile: string;
+  is_selected: boolean;
 }
 
 export function Persona() {
   const [isModalOpen, setModalOpen] = useState(false);
-  const [selectedPersona, setSelectedPersona] = useState<PersonaCard | null>(
-    null
-  );
+  const [selectedPersona, setSelectedPersona] = useState<PersonaCard | null>(null);
   const [personaData, setPersonaData] = useState<PersonaCard[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -32,15 +24,13 @@ export function Persona() {
     try {
       const { data, error } = await supabase
         .from('personas')
-        .select(
-          'id, persona_name, persona_description, persona_profile, is_selected'
-        );
+        .select('id, persona_name, persona_description, persona_profile, is_selected');
 
       if (error) {
         throw error;
       }
 
-      const mappedData = data.map((item: any) => ({
+      const mappedData = data.map((item) => ({
         id: item.id,
         persona_name: item.persona_name,
         persona_description: item.persona_description,
@@ -65,20 +55,22 @@ export function Persona() {
     fetchPersona();
   }, []);
 
-  const handleSelectPersona = async (persona: PersonaCard) => {
-    try {
-      await supabase
-        .from('personas')
-        .update({ is_selected: true })
-        .eq('id', persona.id);
+  const handleSelectPersona = (persona: PersonaCard) => {
+    (async () => {
+      try {
+        await supabase
+          .from('personas')
+          .update({ is_selected: true })
+          .eq('id', persona.id);
 
-      await fetchPersona();
+        await fetchPersona();
 
-      setSelectedPersona(persona);
-      setModalOpen(false);
-    } catch (error) {
-      console.error('Failed to update persona selection', error);
-    }
+        setSelectedPersona(persona);
+        setModalOpen(false);
+      } catch (error) {
+        console.error('Failed to update persona selection', error);
+      }
+    })();
   };
 
   const handleDeletePersona = async (personaId: string) => {
@@ -127,12 +119,7 @@ export function Persona() {
         className="w-full text-left text-gray-300 px-3 py-2 rounded-md transition hover:bg-gray-700"
       >
         <Typography variant="body1">
-          Description:{' '}
-          {selectedPersona?.persona_description
-            ? selectedPersona.persona_description.length > 100
-              ? `${selectedPersona.persona_description.slice(0, 100)}...`
-              : selectedPersona.persona_description
-            : ''}
+          Description: {selectedPersona?.persona_description ? `${selectedPersona.persona_description.slice(0, 5)}...` : ''}
         </Typography>
       </motion.button>
 

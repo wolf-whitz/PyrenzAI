@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -12,73 +11,27 @@ import {
   CircularProgress,
 } from '@mui/material';
 import { ExpandMore, ExpandLess } from '@mui/icons-material';
-import { Customization, Cosmetic } from './MenuItem';
-import { GetUserData } from '~/components/functions';
-import { supabase } from '~/Utility/supabaseClient';
+import { Customization, Cosmetic, CharacterDetails } from './MenuItem';
+import { useMenuAPI } from '@api';
+import { Character } from '@shared-types';
 
 interface MenuProps {
   onClose: () => void;
+  char: Character;
 }
 
-interface ModelOption {
-  label: string;
-  name: string;
-}
-
-export function Menu({ onClose }: MenuProps) {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState('Cosmetic');
-  const [bgImage, setBgImage] = useState<string | null>(null);
-  const [aiCustomization, setAiCustomization] = useState<any>(null);
-  const [subscriptionPlan, setSubscriptionPlan] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [modelOptions, setModelOptions] = useState<ModelOption[]>([]);
-
-  const fetchModelIdentifiers = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('model_identifiers')
-        .select('name');
-
-      if (error) throw error;
-
-      return data.map((item) => ({ label: item.name, name: item.name }));
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-  };
-
-  useEffect(() => {
-    const savedBg = localStorage.getItem('bgImage');
-    if (savedBg) {
-      setBgImage(savedBg);
-    }
-
-    const fetchData = async () => {
-      try {
-        const userData = await GetUserData();
-        if (userData && 'ai_customization' in userData) {
-          setAiCustomization(userData.ai_customization);
-          const plan = userData.subscription_data.tier;
-
-          if (['MELON', 'PINEAPPLE', 'DURIAN'].includes(plan)) {
-            setSubscriptionPlan(plan);
-          } else {
-            setSubscriptionPlan(null);
-          }
-        }
-
-        const options = await fetchModelIdentifiers();
-        options.push({ label: 'Custom', name: 'Custom' });
-        setModelOptions(options);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+export function Menu({ onClose, char }: MenuProps) {
+  const {
+    isDropdownOpen,
+    setIsDropdownOpen,
+    selectedOption,
+    setSelectedOption,
+    loading,
+    handleCharacterDetailsSubmit,
+    aiCustomization,
+    subscriptionPlan,
+    modelOptions,
+  } = useMenuAPI({ char });
 
   return (
     <Fade in={true} onClick={onClose}>
@@ -119,6 +72,9 @@ export function Menu({ onClose }: MenuProps) {
             ) : (
               <>
                 <Box display="flex" flexDirection="column">
+                  <Typography variant="h6" gutterBottom>
+                    {char.name}
+                  </Typography>
                   <Button
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     variant="contained"
@@ -158,6 +114,15 @@ export function Menu({ onClose }: MenuProps) {
                         >
                           AI Customization
                         </MenuItem>
+                        <MenuItem
+                          onClick={() => {
+                            setSelectedOption('Character Details');
+                            setIsDropdownOpen(false);
+                          }}
+                          sx={{ '&:hover': { backgroundColor: '#718096' } }}
+                        >
+                          Character Details
+                        </MenuItem>
                       </MenuList>
                     </Paper>
                   </Collapse>
@@ -170,6 +135,9 @@ export function Menu({ onClose }: MenuProps) {
                     subscriptionPlan={subscriptionPlan}
                     modelOptions={modelOptions}
                   />
+                )}
+                {selectedOption === 'Character Details' && (
+                  <CharacterDetails char={char} onSubmit={handleCharacterDetailsSubmit} />
                 )}
               </>
             )}

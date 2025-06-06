@@ -5,7 +5,7 @@ import { CreateButton, DraftsModal, ImportCharacterModal } from '@components';
 import SaveIcon from '@mui/icons-material/Save';
 import DescriptionIcon from '@mui/icons-material/Description';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
-import { CharacterData, Draft } from '@shared-types/CharacterProp';
+import { Character, Draft } from '@shared-types';
 import { PyrenzBlueButton } from '~/theme';
 
 interface FormActionsProps {
@@ -14,7 +14,7 @@ interface FormActionsProps {
   loading: boolean;
   saveLoading: boolean;
   onSelectDraft: (draft: Draft) => void;
-  onImportCharacter: (data: CharacterData | null) => void;
+  onImportCharacter: (data: Character | null) => void;
   character_update: boolean;
 }
 

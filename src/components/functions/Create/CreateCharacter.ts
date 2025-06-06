@@ -1,7 +1,7 @@
 import { supabase } from '~/Utility/supabaseClient';
 import { v4 as uuidv4 } from 'uuid';
 import * as Sentry from '@sentry/react';
-import { CharacterData } from '@shared-types/CharacterProp';
+import { Character } from '@shared-types';
 
 interface CreateCharacterResponse {
   char_uuid?: string;
@@ -31,16 +31,16 @@ function cleanTags(tags?: string | string[]): string | undefined {
 }
 
 export const createCharacter = async (
-  characterData: CharacterData
+  Character: Character
 ): Promise<CreateCharacterResponse> => {
   try {
-    if (!characterData.creator || characterData.creator.trim() === '')
+    if (!Character.creator || Character.creator.trim() === '')
       return { error: 'Creator is required.' };
 
     const characterUuid = uuidv4();
     if (!characterUuid) throw new Error('Failed to generate UUID.');
 
-    const { textarea_token, char_uuid, tags, ...rest } = characterData;
+    const { char_uuid, tags, ...rest } = Character;
     const cleanedTags = cleanTags(tags);
 
     const insertData = { char_uuid: characterUuid, ...rest, tags: cleanedTags };
@@ -62,12 +62,12 @@ export const createCharacter = async (
 };
 
 export const updateCharacter = async (
-  characterData: CharacterData
+  Character: Character
 ): Promise<CreateCharacterResponse> => {
   try {
-    if (!characterData.creator || characterData.creator.trim() === '')
+    if (!Character.creator || Character.creator.trim() === '')
       return { error: 'Creator is required.' };
-    const { char_uuid, textarea_token, tags, ...rest } = characterData;
+    const { char_uuid, tags, ...rest } = Character;
     if (!char_uuid)
       return { error: 'Character UUID is required for updating.' };
 

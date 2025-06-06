@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, ArrowRight, MoreVertical, Loader2 } from 'lucide-react';
 import { Menu } from '@components';
+import { Character } from '@shared-types'; 
 
 interface ChatInputProps {
   className?: string;
   handleSend: (message: string) => void;
-  user: { username: string; icon: string };
-  char: { character_name: string };
+  user: { username: string; user_avatar: string };
+  char: { name: string };
   isGenerating: boolean;
 }
 
@@ -16,7 +17,6 @@ const MAX_CHAR_LIMIT = 1500;
 export function ChatInput({
   className,
   handleSend,
-  user,
   char,
   isGenerating,
 }: ChatInputProps) {
@@ -69,7 +69,7 @@ export function ChatInput({
                 sendMessage();
               }
             }}
-            placeholder={`Chat with ${char.character_name}`}
+            placeholder={`Chat with ${char.name}`}
             className="flex-1 w-full bg-transparent outline-none text-white px-4 py-2 rounded-full focus:ring-0 resize-none overflow-hidden min-w-0"
             rows={1}
             disabled={isGenerating}
@@ -157,7 +157,7 @@ export function ChatInput({
         )}
       </motion.div>
 
-      {isMenuOpen && <Menu onClose={() => setIsMenuOpen(false)} />}
+      {isMenuOpen && <Menu onClose={() => setIsMenuOpen(false)} char={char as Character} />}
     </>
   );
 }

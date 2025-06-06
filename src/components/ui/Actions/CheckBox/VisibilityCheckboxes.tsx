@@ -4,13 +4,13 @@ import { Checkbox, FormControlLabel, Typography } from '@mui/material';
 import { useCharacterStore } from '~/store';
 
 export function VisibilityCheckboxes() {
-  const setCharacterData = useCharacterStore((state) => state.setCharacterData);
+  const setCharacter = useCharacterStore((state) => state.setCharacter);
   const isPublic = useCharacterStore((state) => state.is_public);
   const isNSFW = useCharacterStore((state) => state.is_nsfw);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
-    setCharacterData({ [name]: checked });
+    setCharacter({ [name]: checked });
   };
 
   return (

@@ -1,13 +1,12 @@
 import { SkeletonCard, CharacterCard } from '~/components';
 import { Typography, Box } from '@mui/material';
-import { Character } from '@shared-types/CharacterProp';
+import { Character } from '@shared-types';
 
 interface CharacterListProps {
   characters: Character[];
   loading: boolean;
   itemsPerPage: number;
   t: (key: string, options?: Record<string, any>) => string;
-  isOwner: boolean;
 }
 
 export function CharacterList({
@@ -15,7 +14,6 @@ export function CharacterList({
   loading,
   itemsPerPage,
   t,
-  isOwner,
 }: CharacterListProps) {
   return (
     <Box
@@ -56,7 +54,7 @@ export function CharacterList({
             }}
             aria-labelledby={`character-${char.name}`}
           >
-            <CharacterCard character={char} isOwner={isOwner} />
+            <CharacterCard character={char} />
           </Box>
         ))
       ) : (

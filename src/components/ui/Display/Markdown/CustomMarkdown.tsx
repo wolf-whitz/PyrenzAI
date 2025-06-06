@@ -5,7 +5,7 @@ import { Typography, Box } from '@mui/material';
 
 interface CustomMarkdownProps {
   text?: string;
-  char?: { character_name: string };
+  char?: { name: string };
   user?: { username: string };
   ai_message?: string;
 }
@@ -25,7 +25,7 @@ export function CustomMarkdown({
 
     const replacePlaceholders = (content: string) =>
       content
-        .replace(/{{char}}/g, char?.character_name || '')
+        .replace(/{{char}}/g, char?.name || '')
         .replace(/{{user}}/g, user?.username || '')
         .replace(/{{you}}:/g, '')
         .replace(/{{ai_message}}/g, ai_message);

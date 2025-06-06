@@ -15,7 +15,7 @@ import {
   Backdrop,
   Fade,
 } from '@mui/material';
-import { Draft } from '@shared-types/CharacterProp';
+import { Draft } from '@shared-types';
 
 interface DraftsModalProps {
   onClose: () => void;
@@ -65,27 +65,14 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
           return;
         }
 
-        const mappedDrafts: Draft[] = data.map((draft: any) => ({
-          id: draft.id,
-          user_uuid: draft.user_uuid,
-          persona: draft.persona,
-          name: draft.name,
-          model_instructions: draft.model_instructions,
-          scenario: draft.scenario,
-          description: draft.description,
-          first_message: draft.first_message,
-          tags: Array.isArray(draft.tags)
-            ? draft.tags.join(', ')
-            : (draft.tags ?? ''),
-          gender: draft.gender,
-          is_public: draft.is_public,
-          is_nsfw: draft.is_nsfw,
-          textarea_token: draft.textarea_token,
-          token_total: draft.token_total,
-          created_at: draft.created_at,
-          updated_at: draft.updated_at,
-          creator: '',
-        }));
+        const mappedDrafts: Draft[] = data.map((draft: any) => {
+          const tags = Array.isArray(draft.tags)
+            ? draft.tags
+            : (draft.tags as string)
+                .split(',')
+                .map((tag: string) => tag.trim());
+          return { ...draft, tags };
+        });
 
         setDrafts(mappedDrafts);
         setDisplayedDrafts(mappedDrafts.slice(0, 3));
@@ -136,6 +123,11 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
     } catch (err) {
       console.error('Unexpected error:', err);
     }
+  };
+
+  const handleSelectDraft = (draft: Draft) => {
+    onSelect(draft);
+    onClose();
   };
 
   return (
@@ -208,7 +200,7 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
                       </IconButton>
                     </CardActions>
                     <CardContent
-                      onClick={() => onSelect(draft)}
+                      onClick={() => handleSelectDraft(draft)}
                       className="cursor-pointer"
                     >
                       <Typography
@@ -240,13 +232,17 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
                     disabled={currentPage === 0}
                     className="text-white p-2 rounded-lg bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50"
                     startIcon={<ChevronLeft />}
-                  />
+                  >
+                    Previous
+                  </Button>
                   <Button
                     onClick={handleNextPage}
                     disabled={(currentPage + 1) * 3 >= drafts.length}
                     className="text-white p-2 rounded-lg bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50"
                     endIcon={<ChevronRight />}
-                  />
+                  >
+                    Next
+                  </Button>
                 </div>
               </>
             )}

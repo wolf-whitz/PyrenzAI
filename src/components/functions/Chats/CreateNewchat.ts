@@ -1,5 +1,6 @@
 import { supabase } from '~/Utility/supabaseClient';
 import { v4 as uuidv4 } from 'uuid';
+import { Character } from '@shared-types';
 
 interface CreateChatResponse {
   error?: string;
@@ -15,19 +16,39 @@ interface SupabaseError {
 
 export async function CreateNewChat(
   characterUuid: string,
-  userUUID: string,
-  profileImage: string,
-  description: string
+  userUUID: string
 ): Promise<CreateChatResponse> {
   const chatUuid = uuidv4();
 
   try {
+    const { data: Character, error: fetchError } = await supabase
+      .from('characters')
+      .select('*')
+      .eq('char_uuid', characterUuid)
+      .single<Character>();
+
+    if (fetchError) {
+      throw fetchError;
+    }
+
+    const {
+      model_instructions,
+      name,
+      persona,
+      description,
+      profile_image,
+    } = Character;
+
     const { error: insertError } = await supabase.from('chats').insert([
       {
         chat_uuid: chatUuid,
         char_uuid: characterUuid,
-        preview_image: profileImage,
+        user_uuid: userUUID,
+        preview_image: profile_image,
         preview_message: description,
+        model_instructions,
+        name,
+        persona,
       },
     ]);
 

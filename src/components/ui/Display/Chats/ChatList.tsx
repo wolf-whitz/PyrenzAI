@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 interface Message {
   name: string;
   text: string;
-  icon: string;
+  profile_image: string;
 }
 
 interface ChatListProps {
@@ -27,7 +27,7 @@ export function ChatList({ messages }: ChatListProps) {
           className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 cursor-pointer transition duration-200"
         >
           <img
-            src={msg.icon}
+            src={msg.profile_image}
             alt={msg.name}
             className="w-10 h-10 rounded-full"
           />

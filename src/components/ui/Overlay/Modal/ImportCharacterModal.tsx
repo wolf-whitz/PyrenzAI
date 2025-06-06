@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
-  Button,
   Typography,
   SelectChangeEvent,
   CircularProgress,
@@ -14,6 +13,7 @@ import { Textarea, AISelectDropdown } from '~/components';
 import { Utils } from '~/Utility/Utility';
 import * as Sentry from '@sentry/react';
 import { usePyrenzAlert } from '~/provider';
+import { PyrenzBlueButton } from '~/theme';
 
 interface ImportCharacterModalProps {
   onClose: () => void;
@@ -215,16 +215,14 @@ export function ImportCharacterModal({
               />
             </div>
             <div className="flex justify-end mt-4 space-x-2">
-              <Button
+              <PyrenzBlueButton
                 variant="outlined"
                 onClick={onClose}
-                sx={{ color: 'white', borderColor: 'white' }}
               >
                 Cancel
-              </Button>
-              <Button
+              </PyrenzBlueButton>
+              <PyrenzBlueButton
                 variant="contained"
-                color="primary"
                 onClick={handleImport}
                 disabled={loading || !link || !selectedAI}
               >
@@ -233,7 +231,7 @@ export function ImportCharacterModal({
                 ) : (
                   'Import'
                 )}
-              </Button>
+              </PyrenzBlueButton>
             </div>
           </motion.div>
         </Box>

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Character } from '@shared-types/CharacterProp';
+import { Character } from '@shared-types';
 
 interface StoreState {
   search: string;

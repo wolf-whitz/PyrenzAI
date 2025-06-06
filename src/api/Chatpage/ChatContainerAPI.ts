@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { Utils } from '~/Utility/Utility';
-import { GenerateResponse, Message } from '@shared-types/chatTypes';
+import { GenerateResponse, Message } from '@shared-types';
 import { GetUserUUID } from '@components';
 import { supabase } from '~/Utility/supabaseClient';
 import { usePyrenzAlert } from '~/provider';
@@ -32,13 +32,13 @@ export const useGenerateMessage = () => {
       const userMessage: Message = {
         username: user.username,
         text,
-        icon: user.icon,
+        profile_image: user.user_avatar,
         type: 'user',
       };
       const assistantMessage: Message = {
-        character_name: char.character_name ?? 'Assistant',
+        name: char.character_name ?? 'Assistant',
         text: '',
-        icon: char.icon,
+        profile_image: char.user_avatar,
         type: 'assistant',
         isGenerate: true,
       };

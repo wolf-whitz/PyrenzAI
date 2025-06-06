@@ -1,3 +1,4 @@
 export * from './GuidelineSidebar';
 export * from './SettingsSidebar';
-export { Sidebar } from './Sidebar';
+
+export * from './Sidebar';

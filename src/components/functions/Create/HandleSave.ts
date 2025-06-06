@@ -1,6 +1,6 @@
 import { supabase } from '~/Utility/supabaseClient';
 import * as Sentry from '@sentry/react';
-import { CharacterData } from '@shared-types/CharacterProp';
+import { Character } from '@shared-types';
 
 interface SaveDraftResponse {
   success: boolean;
@@ -8,23 +8,15 @@ interface SaveDraftResponse {
 }
 
 export const handleSaveDraft = async (
-  characterData: CharacterData,
+  Character: Character,
   userUuid: string
 ): Promise<SaveDraftResponse> => {
   try {
     if (!userUuid) {
       return { success: false, error: 'User UUID is missing.' };
     }
-
-    const characterDataToSave = { ...characterData };
-
-    const { error } = await supabase.from('draft_characters').upsert([
-      {
-        user_uuid: userUuid,
-        ...characterDataToSave,
-        tags: characterData.tags,
-      },
-    ]);
+    
+    const { error } = await supabase.from('draft_characters').upsert(Character);
 
     if (error) {
       Sentry.captureException(error);

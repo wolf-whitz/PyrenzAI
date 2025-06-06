@@ -1,10 +1,9 @@
 import { supabase } from '~/Utility/supabaseClient';
-import { Character } from '@shared-types/CharacterProp';
+import { Character } from '@shared-types';
 
 interface FetchCharactersResponse {
   character: Character | null;
   characters: Character[];
-  total: number;
   totalPages: number;
 }
 
@@ -12,7 +11,7 @@ export async function fetchCharacters(
   requestType: string,
   page: number = 1,
   itemsPerPage: number = 10,
-  search: string = ''
+  search?: string
 ): Promise<FetchCharactersResponse> {
   if (requestType !== 'character') {
     throw new Error(`Invalid request_type: ${requestType}`);
@@ -23,19 +22,19 @@ export async function fetchCharacters(
 
   let query = supabase
     .from('characters')
-    .select('*', { count: 'exact' })
+    .select('*', { count: 'exact' });
+
+  if (search?.trim()) {
+    query = query.ilike('name', `%${search.trim()}%`);
+  }
+
+  query = query
     .order('chat_messages_count', { ascending: false })
     .range(fromIndex, toIndex);
 
-  if (search) {
-    query = query.ilike('name', `%${search}%`);
-  }
-
   const { data, error, count } = await query;
 
-  if (error) {
-    throw new Error(`error: ${error.message}`);
-  }
+  if (error) throw new Error(`error: ${error.message}`);
 
   const uniqueMap = new Map<string, Character>();
   data.forEach((char: Character) => {
@@ -46,30 +45,21 @@ export async function fetchCharacters(
   });
 
   const characters = Array.from(uniqueMap.values());
-  const total = count || 0;
-  const totalPages = Math.ceil(total / itemsPerPage);
+  const totalPages = Math.ceil((count ?? 0) / itemsPerPage);
 
   let selectedCharacter: Character | null = null;
-  if (characters.length > 0) {
-    const highestCount = Math.max(
-      ...characters.map((c) => c.chat_messages_count)
-    );
-    const highestCharacters = characters.filter(
-      (c) => c.chat_messages_count === highestCount
-    );
 
-    if (highestCharacters.length === 1) {
-      selectedCharacter = highestCharacters[0];
-    } else {
-      highestCharacters.sort((a, b) => String(a.id).localeCompare(String(b.id)));
-      selectedCharacter = highestCharacters[0];
-    }
+  if (characters.length > 0) {
+    const highestCount = Math.max(...characters.map((c) => c.chat_messages_count ?? 0));
+    const topCharacters = characters.filter((c) => (c.chat_messages_count ?? 0) === highestCount);
+    selectedCharacter = topCharacters.length === 1
+      ? topCharacters[0]
+      : topCharacters.sort((a, b) => String(a.id).localeCompare(String(b.id)))[0];
   }
 
   return {
     character: selectedCharacter,
     characters,
-    total,
     totalPages,
   };
 }
