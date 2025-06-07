@@ -80,10 +80,7 @@ export function CharacterCardModal({
     setIsLoading(true);
 
     try {
-      const response = await CreateNewChat(
-        character.char_uuid,
-        userUUID,
-      );
+      const response = await CreateNewChat(character.char_uuid, userUUID);
 
       if (response?.chat_uuid) {
         navigate(`/chat/${response.chat_uuid}`);
@@ -223,22 +220,20 @@ export function CharacterCardModal({
                     )}
                   </motion.span>
                 )}
-                {character.tags &&
-                  character.tags.length > 0 &&
-                  character.tags.map((tag, index) => (
-                    <motion.span
-                      key={index}
-                      className="bg-black text-white text-xs font-semibold py-1 px-3 rounded-full"
-                      initial={{ opacity: 0, scale: 0.5 }}
-                      animate={{
-                        opacity: 1,
-                        scale: 1,
-                        transition: { delay: (index + 1) * 0.05 },
-                      }}
-                    >
-                      {tag}
-                    </motion.span>
-                  ))}
+                {(character.tags || []).map((tag, index) => (
+                  <motion.span
+                    key={index}
+                    className="bg-black text-white text-xs font-semibold py-1 px-3 rounded-full"
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    animate={{
+                      opacity: 1,
+                      scale: 1,
+                      transition: { delay: (index + 1) * 0.05 },
+                    }}
+                  >
+                    {tag}
+                  </motion.span>
+                ))}
               </Box>
             </Box>
           </Box>

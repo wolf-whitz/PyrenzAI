@@ -123,7 +123,7 @@ export function CharacterCard({ character, isOwner = false }: CharacterCardProps
                   Private
                 </PyrenzCharacterCardTag>
               )}
-              {character.tags?.slice(0, 5).map((tag: string, index: number) => (
+              {Array.isArray(character.tags) && character.tags.map((tag, index) => (
                 <PyrenzCharacterCardTag key={index}>
                   {tag}
                 </PyrenzCharacterCardTag>

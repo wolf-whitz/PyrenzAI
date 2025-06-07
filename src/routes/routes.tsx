@@ -30,6 +30,7 @@ const Subscription = lazyNamed(
   'Subscription'
 );
 const Archive = lazyNamed(() => import('./Routing/Archive'), 'Archive');
+const Policy = lazyNamed(() => import('./Routing/Policy'), 'Policy');
 
 const getCookie = (name: string): string | undefined => {
   const value = `; ${document.cookie}`;
@@ -49,6 +50,7 @@ export const AppRoutes = (
     <Route path="/Auth" element={<Auth />} />
     <Route path="/" element={<ProtectedRoute element={<Home />} />} />
     <Route path="/Home" element={<ProtectedRoute element={<Home />} />} />
+    <Route path="/Policy" element={<ProtectedRoute element={<Policy />} />} />
     <Route path="/Create" element={<ProtectedRoute element={<Create />} />} />
     <Route
       path="/Subscription"

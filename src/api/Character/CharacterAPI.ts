@@ -1,6 +1,12 @@
 import { Character } from '@shared-types';
 import * as Sentry from '@sentry/react';
 import { fetchCharacters as fetchCharactersFunction } from '@components';
+import { useHomeStore } from '~/store';
+
+const setMaxPageInStore = (maxPage: number) => {
+  const { setMaxPage } = useHomeStore.getState();
+  setMaxPage(maxPage);
+};
 
 export const fetchCharacters = async (
   currentPage: number,
@@ -8,30 +14,25 @@ export const fetchCharacters = async (
   search: string
 ): Promise<{
   characters: Character[];
-  maxPage: number;
 }> => {
   try {
     const data = await fetchCharactersFunction(
       'character',
       currentPage,
       itemsPerPage,
-      search
+      search,
     );
 
     if (!data || !data.characters || data.characters.length === 0) {
       console.log('No characters found in the API response.');
+      setMaxPageInStore(0);
       return {
         characters: [],
-        maxPage: 0,
       };
     }
 
-    const totalCharacters = data.totalPages || 0;
-    const maxPage = Math.ceil(totalCharacters / itemsPerPage);
-    
     return {
       characters: data.characters,
-      maxPage,
     };
   } catch (error) {
     if (error instanceof Error) {
@@ -39,9 +40,9 @@ export const fetchCharacters = async (
     } else {
       Sentry.captureMessage('An unknown error occurred.');
     }
+    setMaxPageInStore(0);
     return {
       characters: [],
-      maxPage: 0,
     };
   }
 };

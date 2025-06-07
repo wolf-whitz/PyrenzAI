@@ -28,23 +28,13 @@ export function Home() {
     itemsPerPage,
     handleButtonClick,
     fetchUserData,
-    maxPage,
   } = useHomepageAPI();
 
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const [user, setUser] = useState({ username: '', user_avatar: '' });
-  const [hasRequiredParams, setHasRequiredParams] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-
-  useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const hasMaxPage = searchParams.has('maxPage');
-    const hasPage = searchParams.has('page');
-
-    setHasRequiredParams(hasMaxPage && hasPage);
-  }, []);
 
   const fetchData = useCallback(() => {
     fetchUserData().catch((error) => {
@@ -80,14 +70,6 @@ export function Home() {
     setShowLogin(!showLogin);
     setShowRegister(!showRegister);
   };
-
-  if (!hasRequiredParams) {
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <CircularProgress />
-      </Box>
-    );
-  }
 
   return (
     <Box component="div" sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
@@ -191,12 +173,16 @@ export function Home() {
               />
             </Box>
 
-            <Pagination
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-              itemsPerPage={itemsPerPage}
-              search={search}
-            />
+            {loading ? (
+              <CircularProgress />
+            ) : (
+              <Pagination
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                itemsPerPage={itemsPerPage}
+                search={search}
+              />
+            )}
           </Box>
         </Container>
 

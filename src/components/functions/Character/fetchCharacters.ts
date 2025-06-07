@@ -4,14 +4,14 @@ import { Character } from '@shared-types';
 interface FetchCharactersResponse {
   character: Character | null;
   characters: Character[];
-  totalPages: number;
 }
 
 export async function fetchCharacters(
   requestType: string,
   page: number = 1,
   itemsPerPage: number = 10,
-  search?: string
+  search?: string,
+  setMaxPage?: (maxPage: number) => void
 ): Promise<FetchCharactersResponse> {
   if (requestType !== 'character') {
     throw new Error(`Invalid request_type: ${requestType}`);
@@ -45,7 +45,11 @@ export async function fetchCharacters(
   });
 
   const characters = Array.from(uniqueMap.values());
-  const totalPages = Math.ceil((count ?? 0) / itemsPerPage);
+  const maxPage = Math.ceil((count ?? 0) / itemsPerPage);
+
+  if (setMaxPage) {
+    setMaxPage(maxPage);
+  }
 
   let selectedCharacter: Character | null = null;
 
@@ -60,6 +64,5 @@ export async function fetchCharacters(
   return {
     character: selectedCharacter,
     characters,
-    totalPages,
   };
 }

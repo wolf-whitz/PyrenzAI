@@ -30,7 +30,7 @@ export function useFetchCharacters({
   const fetchCharactersData = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetchCharacters('character', currentPage, itemsPerPage, search || ' ');
+      const response = await fetchCharacters('character', currentPage, itemsPerPage, search || ' ', setMaxPage);
       const userData = await GetUserData();
 
       if ('error' in userData) {
@@ -45,7 +45,6 @@ export function useFetchCharacters({
       }));
 
       setCharacters(safeCharacters);
-      setMaxPage(response.totalPages);
     } catch (error) {
       showAlert(t('errors.fetchingCharacters'), 'Alert');
       setCharacters([]);

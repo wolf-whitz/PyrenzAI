@@ -8,7 +8,6 @@ import {
   GetRandomCharacters,
   GetCharactersWithTags,
   useFetchUserUUID,
-  useSyncSearchParams,
   useFetchCharacters,
 } from '@components';
 import { supabase } from '~/Utility/supabaseClient';
@@ -37,23 +36,12 @@ export const useHomepageAPI = () => {
   const itemsPerPage = 10;
   const showAlert = usePyrenzAlert();
 
-  const { characters, maxPage } = useFetchCharacters({
+  const { characters } = useFetchCharacters({
     currentPage,
     search,
     itemsPerPage,
     t,
   });
-
-  useSyncSearchParams({ search, currentPage, setSearch, setCurrentPage });
-
-  useEffect(() => {
-    if (maxPage) {
-      const params = new URLSearchParams(window.location.search);
-      params.set('maxPage', maxPage.toString());
-      params.set('page', '1');
-      navigate({ search: params.toString() }, { replace: true });
-    }
-  }, [maxPage, navigate]);
 
   const handleButtonClick = async (
     functionName: string,
@@ -143,7 +131,6 @@ export const useHomepageAPI = () => {
     search,
     currentPage,
     characters,
-    maxPage,
     loading,
     setSearch,
     setCurrentPage,

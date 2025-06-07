@@ -1,6 +1,6 @@
 import { useHomeStore } from '~/store';
-import React, { useState, useEffect } from 'react';
-import { Button, CircularProgress, Box, Typography } from '@mui/material';
+import React, { useState } from 'react';
+import { Button, Box, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 import { fetchCharacters } from '~/api';
 import * as Sentry from '@sentry/react';
@@ -13,24 +13,6 @@ interface PaginationProps {
   search: string;
 }
 
-const useUrlQuery = () => {
-  const [queryParams, setQueryParams] = useState<{ page?: string; maxPage?: string }>({});
-  const [ready, setReady] = useState(false);
-
-  useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const page = searchParams.get('page');
-    const maxPage = searchParams.get('maxPage');
-
-    if (page && maxPage) {
-      setQueryParams({ page, maxPage });
-      setReady(true);
-    }
-  }, []);
-
-  return { queryParams, ready };
-};
-
 export function Pagination({
   currentPage: initialCurrentPage,
   setCurrentPage,
@@ -40,26 +22,9 @@ export function Pagination({
   const [isLoading, setIsLoading] = useState(false);
   const showAlert = usePyrenzAlert();
   const setCharacters = useHomeStore((state) => state.setCharacters);
-  const { queryParams, ready } = useUrlQuery();
+  const maxPage = useHomeStore((state) => state.maxPage);
 
   const [currentPage, setCurrentPageState] = useState(initialCurrentPage);
-  const [maxPage, setMaxPageState] = useState<number>(1);
-
-  useEffect(() => {
-    if (!ready) return;
-
-    const parsedPage = parseInt(queryParams.page ?? '', 10);
-    const parsedMaxPage = parseInt(queryParams.maxPage ?? '', 10);
-
-    if (!isNaN(parsedPage)) {
-      setCurrentPageState(parsedPage);
-      setCurrentPage(parsedPage);
-    }
-
-    if (!isNaN(parsedMaxPage)) {
-      setMaxPageState(parsedMaxPage);
-    }
-  }, [ready, queryParams, setCurrentPage]);
 
   const handlePageChange = async (newPage: number) => {
     if (isLoading || newPage < 1 || newPage > maxPage) return;
@@ -67,11 +32,10 @@ export function Pagination({
     setIsLoading(true);
     try {
       const response = await fetchCharacters(newPage, itemsPerPage, search);
-      const { characters, maxPage: fetchedMaxPage } = response;
+      const { characters } = response;
 
       setCurrentPageState(newPage);
       setCurrentPage(newPage);
-      setMaxPageState(fetchedMaxPage);
 
       if (characters.length > 0) {
         setCharacters(characters);
@@ -87,14 +51,6 @@ export function Pagination({
       setIsLoading(false);
     }
   };
-
-  if (!ready) {
-    return (
-      <Box display="flex" justifyContent="center" alignItems="center" py={4}>
-        <Typography color="#fff">Page Loading...</Typography>
-      </Box>
-    );
-  }
 
   return (
     <section aria-labelledby="pagination-heading" className="mt-6">
@@ -120,7 +76,7 @@ export function Pagination({
             }}
             aria-label="Previous Page"
           >
-            {isLoading ? <CircularProgress size={24} color="inherit" /> : '<'}
+            {'<'}
           </Button>
         </motion.div>
         <Typography color="#fff">
@@ -144,7 +100,7 @@ export function Pagination({
             }}
             aria-label="Next Page"
           >
-            {isLoading ? <CircularProgress size={24} color="inherit" /> : '>'}
+            {'>'}
           </Button>
         </motion.div>
       </Box>
