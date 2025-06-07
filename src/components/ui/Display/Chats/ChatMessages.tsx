@@ -4,6 +4,16 @@ import { ChatMessagesProps, Message } from '@shared-types';
 import { speakMessage } from '@api';
 import { MessageBox, Character } from '@components';
 
+interface ChatMessagesExtendedProps extends ChatMessagesProps {
+  setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>;
+  onEditMessage?: (
+    messageId: string,
+    editedMessage: string,
+    type: 'user' | 'char'
+  ) => void;
+  firstMessage?: string;
+}
+
 export function ChatMessages({
   previous_message,
   isGenerating = false,
@@ -13,14 +23,8 @@ export function ChatMessages({
   onRemove,
   onEditMessage,
   setIsGenerating,
-}: ChatMessagesProps & {
-  setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>;
-  onEditMessage?: (
-    messageId: string,
-    editedMessage: string,
-    type: 'user' | 'char'
-  ) => void;
-}) {
+  firstMessage,
+}: ChatMessagesExtendedProps) {
   const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
   const [editingMessageType, setEditingMessageType] = useState<
     'user' | 'char' | null
@@ -72,10 +76,23 @@ export function ChatMessages({
     type: 'user' | 'char'
   ) => {};
 
+  const messages = firstMessage
+    ? [
+        {
+          id: 'first-message',
+          type: 'assistant',
+          text: firstMessage,
+          name: char.name,
+          profile_image: char.profile_image,
+        },
+        ...previous_message,
+      ]
+    : previous_message;
+
   return (
     <Box className="space-y-4 p-4 max-w-2xl mx-auto">
-      {previous_message.map((msg: Message, index: number) => {
-        const isLastMessage = index === previous_message.length - 1;
+      {messages.map((msg: Message, index: number) => {
+        const isLastMessage = index === messages.length - 1;
 
         return (
           <MessageBox

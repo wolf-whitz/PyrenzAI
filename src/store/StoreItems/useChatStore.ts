@@ -1,24 +1,5 @@
 import { create } from 'zustand';
-
-interface Message {
-  character_name?: string;
-  username?: string;
-  text: string;
-  profile_image: string;
-  type: 'assistant' | 'user';
-}
-
-export interface UserData {
-  user_uuid: string;
-  username: string;
-  profile_image: string;
-}
-
-interface Character {
-  character_name: string;
-  profile_image: string;
-  first_message: string;
-}
+import { Message, User as UserData, Character } from '@components';
 
 interface ChatStore {
   firstMessage: string;

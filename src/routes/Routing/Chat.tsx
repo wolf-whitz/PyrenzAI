@@ -11,6 +11,7 @@ import {
   GetUserData,
 } from '@components';
 import { Box, CircularProgress, Typography } from '@mui/material';
+import { Character } from '@shared-types';
 
 interface PersonaResponse {
   user_uuid: string;
@@ -18,18 +19,23 @@ interface PersonaResponse {
   user_avatar: string;
 }
 
+interface ChatData {
+  character: Character;
+  firstMessage?: string;
+}
+
 export function ChatPage() {
   const { chat_uuid } = useParams<{ chat_uuid: string }>();
   const navigate = useNavigate();
 
-  const [chatData, setChatData] = useState<any>(null);
+  const [chatData, setChatData] = useState<ChatData | null>(null);
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState<PersonaResponse | null>(null);
   const [userUuid, setUserUuid] = useState<string | null>(null);
   const [fetchError, setFetchError] = useState(false);
   const [userDataError, setUserDataError] = useState(false);
 
-  const { setFirstMessage, clearData } = useChatStore();
+  const { setFirstMessage, setMessages, clearData, messages } = useChatStore();
 
   useEffect(() => {
     const fetchUserUuid = async () => {
@@ -51,7 +57,7 @@ export function ChatPage() {
           return;
         }
 
-        const updatedUserData: PersonaResponse = {
+        const updatedUserData = {
           user_uuid: userUuid,
           username: response.username,
           user_avatar: response.user_avatar || '',
@@ -78,30 +84,22 @@ export function ChatPage() {
             ...result.character,
           };
 
-          setChatData({ ...result, character: updatedCharacter });
+          setChatData({ character: updatedCharacter, firstMessage: result.firstMessage });
 
-          setFirstMessage(result.firstMessage ?? '');
+          setFirstMessage(result.firstMessage ?? updatedCharacter.first_message);
 
+          setLoading(false);
           setFetchError(false);
         } catch (error) {
           console.error('Error fetching chat data:', error);
           setFetchError(true);
+          setLoading(false);
         }
       }
     };
 
     getChatData();
   }, [chat_uuid, userUuid, userData, setFirstMessage, clearData]);
-
-  useEffect(() => {
-    if (
-      chatData &&
-      chatData.messages &&
-      chatData.messages.every((msg: any) => msg.id != null)
-    ) {
-      setLoading(false);
-    }
-  }, [chatData]);
 
   if (
     loading ||
@@ -110,8 +108,7 @@ export function ChatPage() {
     !chatData.character ||
     !chatData.character.char_uuid ||
     !chatData.character.profile_image ||
-    !chatData.character.name ||
-    (chatData.messages && chatData.messages.some((msg: any) => msg.id == null))
+    !chatData.character.name
   ) {
     return (
       <Box
@@ -171,8 +168,6 @@ export function ChatPage() {
     );
   }
 
-  const { character, messages, firstMessage } = chatData;
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -194,9 +189,7 @@ export function ChatPage() {
         <Box flex={1} overflow="auto" component="main">
           <ChatContainer
             user={userData}
-            char={character}
-            firstMessage={firstMessage || character.first_message}
-            previous_message={messages}
+            char={chatData.character}
             chat_uuid={chat_uuid}
           />
         </Box>

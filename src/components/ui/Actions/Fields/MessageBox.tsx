@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { TypingIndicator, CustomMarkdown } from '@components';
 import { Box, Avatar, IconButton, TextField } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
@@ -64,13 +64,12 @@ export const MessageBox: React.FC<MessageBoxProps> = ({
   const isFirstMessage = index === 0;
 
   const displayName = isUser ? msg.username || user.username : msg.name || char.name;
-  const avatarImage = isUser ? user.user_avatar : char.profile_image;
 
   const isEditingThisMessage =
     editingMessageId === msg.id &&
     editingMessageType === (isUser ? 'user' : 'char');
 
-  return (
+    return (
     <Box
       key={msg.id ? `${msg.id}-${index}` : `temp-${index}`}
       display="flex"
@@ -81,7 +80,7 @@ export const MessageBox: React.FC<MessageBoxProps> = ({
       {isAssistant && (
         <Avatar
           alt={displayName}
-          src={avatarImage}
+          src={char.profile_image}
           sx={{ width: 32, height: 32 }}
           className="rounded-full"
         />
@@ -164,7 +163,7 @@ export const MessageBox: React.FC<MessageBoxProps> = ({
       {isUser && (
         <Avatar
           alt={displayName}
-          src={avatarImage}
+          src={user.user_avatar}
           sx={{ width: 32, height: 32 }}
           className="rounded-full"
         />

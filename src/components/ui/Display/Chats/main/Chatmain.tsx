@@ -6,7 +6,6 @@ import {
   ChatMessages,
   ChatInput,
   ChatHeader,
-  GetUserData
 } from '@components';
 import { useChatPageAPI } from '@api';
 import { Fade, Slide, Box } from '@mui/material';
@@ -23,6 +22,7 @@ interface ChatMainProps extends Omit<ChatContainerProps, 'messageIdRef'> {
   chat_uuid: string;
   isGenerating: boolean;
   char: Character;
+  firstMessage?: string;
 }
 
 export function ChatMain({
@@ -34,6 +34,7 @@ export function ChatMain({
   messageIdRef,
   setIsGenerating,
   chat_uuid,
+  firstMessage,
 }: ChatMainProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -71,9 +72,8 @@ export function ChatMain({
 
         <Box className="flex-1 w-full max-w-6xl mx-auto overflow-y-auto pb-16 lg:pb-20 xl:pb-20 pl-0 lg:pl-12">
           <ChatMessages
-            previous_message={previous_message.map((msg) => ({
-              ...msg,
-            }))}
+            firstMessage={firstMessage}
+            previous_message={previous_message.map((msg) => (msg))}
             user={user}
             char={char}
             isGenerating={isGenerating}

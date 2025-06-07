@@ -48,11 +48,10 @@ export const useChatPageAPI = (
         char,
         chat_uuid,
         setMessages,
-        messageIdRef,
         setIsGenerating
       );
 
-      if (response.remainingMessages === 0) {
+      if (response.remainingMessages === 0 || response.showAd) {
         setIsAdModalOpen(true);
       }
     } catch (error) {

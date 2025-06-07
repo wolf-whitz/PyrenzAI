@@ -13,6 +13,7 @@ export const ChatMessagesPropsSchema = z.object({
   char: z.object({
     name: z.string(),
     gender: z.string().optional(),
+    profile_image: z.string()
   }),
   onRegenerate: z.function().args(z.string()).returns(z.void()).optional(),
   onRemove: z.function().args(z.string()).returns(z.void()).optional(),

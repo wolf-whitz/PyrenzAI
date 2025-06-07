@@ -1,3 +1,4 @@
+import { useChatStore } from '~/store';
 import { Character, Message } from '@shared-types';
 import * as Sentry from '@sentry/react';
 import { supabase } from '~/Utility/supabaseClient';
@@ -16,7 +17,6 @@ export const fetchChatData = async (
   avatar_url: string
 ): Promise<{
   character: Character;
-  messages: Message[];
   firstMessage: string;
 }> => {
   if (!chat_uuid) {
@@ -66,7 +66,7 @@ export const fetchChatData = async (
         if (msg.user_message) {
           messages.push({
             id: `${msg.id}`,
-            name: character.name || 'Anon',  
+            name: character.name || 'Anon',
             text: msg.user_message,
             profile_image: avatar_url || '',
             type: 'user',
@@ -77,7 +77,7 @@ export const fetchChatData = async (
         if (msg.char_message) {
           messages.push({
             id: `${msg.id}`,
-            name: character.name || 'Anon', 
+            name: character.name || 'Anon',
             text: msg.char_message,
             profile_image: character.profile_image || '',
             type: 'assistant',
@@ -90,9 +90,10 @@ export const fetchChatData = async (
       }
     );
 
+    useChatStore.getState().setMessages(formattedMessages);
+
     return {
       character,
-      messages: formattedMessages,
       firstMessage: character.first_message,
     };
   } catch (error) {

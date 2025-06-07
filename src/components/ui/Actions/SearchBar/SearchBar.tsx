@@ -1,9 +1,11 @@
-import { useState, ChangeEvent, KeyboardEvent } from 'react';
+import { useState, ChangeEvent, KeyboardEvent, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
+import CircularProgress from '@mui/material/CircularProgress';
 import { useTranslation } from 'react-i18next';
+import Box from '@mui/material/Box';
 
 interface SearchBarProps {
   search: string;
@@ -17,11 +19,27 @@ export function SearchBar({
   setCurrentPage,
 }: SearchBarProps) {
   const [inputValue, setInputValue] = useState(search);
+  const [isLoading, setIsLoading] = useState(false);
   const { t } = useTranslation();
 
+  useEffect(() => {
+    if (inputValue.trim() === '') {
+      const timer = setTimeout(() => {
+        setSearch('');
+        setCurrentPage(1);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [inputValue, setSearch, setCurrentPage]);
+
   const handleSearch = () => {
-    setSearch(inputValue);
-    setCurrentPage(1);
+    setIsLoading(true);
+    const timer = setTimeout(() => {
+      setSearch(inputValue);
+      setCurrentPage(1);
+      setIsLoading(false);
+    }, 2000);
+    return () => clearTimeout(timer);
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -31,8 +49,14 @@ export function SearchBar({
   };
 
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full">
-      <div className="relative w-full sm:w-auto flex-1">
+    <Box
+      display="flex"
+      flexDirection={{ xs: 'column', sm: 'row' }}
+      alignItems={{ xs: 'flex-start', sm: 'center' }}
+      gap={4}
+      width="100%"
+    >
+      <Box position="relative" width={{ xs: '100%', sm: 'auto' }} flex={1}>
         <TextField
           fullWidth
           variant="outlined"
@@ -50,7 +74,7 @@ export function SearchBar({
                   edge="start"
                   sx={{ padding: '8px', color: 'grey' }}
                 >
-                  <SearchIcon />
+                  {isLoading ? <CircularProgress size={24} /> : <SearchIcon />}
                 </IconButton>
               </InputAdornment>
             ),
@@ -71,9 +95,8 @@ export function SearchBar({
               fontSize: '1rem',
             },
           }}
-          className="w-full sm:w-auto"
         />
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }

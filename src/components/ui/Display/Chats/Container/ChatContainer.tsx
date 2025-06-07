@@ -5,9 +5,8 @@ import { Message, ChatContainerProps, Character } from '@shared-types';
 import { ChatPageSpinner } from '@components';
 import clsx from 'clsx';
 
-interface ChatContainerPropsExtended extends Omit<ChatContainerProps, 'char'> {
+interface ChatContainerPropsExtended extends Omit<ChatContainerProps, 'char' | 'firstMessage'> {
   char?: Partial<Character>;
-  previous_message?: Message[];
   className?: string;
   chat_uuid: string;
 }
@@ -15,8 +14,6 @@ interface ChatContainerPropsExtended extends Omit<ChatContainerProps, 'char'> {
 export function ChatContainer({
   user,
   char,
-  firstMessage,
-  previous_message = [],
   className = '',
   chat_uuid,
 }: ChatContainerPropsExtended) {
@@ -25,23 +22,9 @@ export function ChatContainer({
     userId: null,
   });
 
-  const { messages, setMessages } = useChatStore();
+  const { messages, setMessages, firstMessage } = useChatStore();
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [bgImage, setBgImage] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (char && firstMessage && messages.length === 0) {
-      setMessages([
-        {
-          name: char.name || 'Anon',
-          text: firstMessage,
-          profile_image: char.profile_image || '',
-          type: 'assistant',
-        },
-        ...previous_message,
-      ]);
-    }
-  }, [char, firstMessage, previous_message, setMessages, messages.length, char?.profile_image]);
 
   useEffect(() => {
     const storedBgImage = localStorage.getItem('bgImage');
@@ -72,6 +55,7 @@ export function ChatContainer({
         <ChatMain
           user={user}
           char={char as Character}
+          firstMessage={firstMessage}
           previous_message={messages}
           isGenerating={isGenerating}
           setMessages={setMessages}
