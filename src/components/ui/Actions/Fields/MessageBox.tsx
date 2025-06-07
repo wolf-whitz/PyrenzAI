@@ -63,13 +63,15 @@ export const MessageBox: React.FC<MessageBoxProps> = ({
   const isAssistant = msg.type === 'assistant';
   const isFirstMessage = index === 0;
 
-  const displayName = isUser ? msg.username || user.username : msg.name || char.name;
+  const displayName = isUser
+    ? msg.username || user.username
+    : msg.name || char.name;
 
   const isEditingThisMessage =
     editingMessageId === msg.id &&
     editingMessageType === (isUser ? 'user' : 'char');
 
-    return (
+  return (
     <Box
       key={msg.id ? `${msg.id}-${index}` : `temp-${index}`}
       display="flex"

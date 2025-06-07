@@ -73,7 +73,7 @@ export function ChatMain({
         <Box className="flex-1 w-full max-w-6xl mx-auto overflow-y-auto pb-16 lg:pb-20 xl:pb-20 pl-0 lg:pl-12">
           <ChatMessages
             firstMessage={firstMessage}
-            previous_message={previous_message.map((msg) => (msg))}
+            previous_message={previous_message.map((msg) => msg)}
             user={user}
             char={char}
             isGenerating={isGenerating}

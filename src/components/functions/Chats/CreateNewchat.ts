@@ -31,13 +31,8 @@ export async function CreateNewChat(
       throw fetchError;
     }
 
-    const {
-      model_instructions,
-      name,
-      persona,
-      description,
-      profile_image,
-    } = Character;
+    const { model_instructions, name, persona, description, profile_image } =
+      Character;
 
     const { error: insertError } = await supabase.from('chats').insert([
       {

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, ArrowRight, MoreVertical, Loader2 } from 'lucide-react';
 import { Menu } from '@components';
-import { Character } from '@shared-types'; 
+import { Character } from '@shared-types';
 
 interface ChatInputProps {
   className?: string;
@@ -157,7 +157,9 @@ export function ChatInput({
         )}
       </motion.div>
 
-      {isMenuOpen && <Menu onClose={() => setIsMenuOpen(false)} char={char as Character} />}
+      {isMenuOpen && (
+        <Menu onClose={() => setIsMenuOpen(false)} char={char as Character} />
+      )}
     </>
   );
 }

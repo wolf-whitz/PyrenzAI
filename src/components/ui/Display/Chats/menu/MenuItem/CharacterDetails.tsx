@@ -12,12 +12,13 @@ interface CharacterDetailsProps {
 export function CharacterDetails({ char, onSubmit }: CharacterDetailsProps) {
   const [characterDetails, setCharacterDetails] = useState<Character>(char);
 
-  const handleChange = (field: keyof Character) => (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setCharacterDetails({
-      ...characterDetails,
-      [field]: e.target.value,
-    });
-  };
+  const handleChange =
+    (field: keyof Character) => (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setCharacterDetails({
+        ...characterDetails,
+        [field]: e.target.value,
+      });
+    };
 
   const handleSubmit = () => {
     onSubmit(characterDetails);
@@ -41,11 +42,7 @@ export function CharacterDetails({ char, onSubmit }: CharacterDetailsProps) {
         value={characterDetails.model_instructions}
         onChange={handleChange('model_instructions')}
       />
-      <PyrenzBlueButton
-        onClick={handleSubmit}
-        variant="contained"
-        fullWidth
-      >
+      <PyrenzBlueButton onClick={handleSubmit} variant="contained" fullWidth>
         Submit
       </PyrenzBlueButton>
     </Box>

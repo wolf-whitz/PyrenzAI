@@ -13,8 +13,12 @@ interface UserDataResponse {
   };
 }
 
-export async function GetUserData(): Promise<UserDataResponse | { error: string }> {
-  const { data: { user } } = await supabase.auth.getUser();
+export async function GetUserData(): Promise<
+  UserDataResponse | { error: string }
+> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
     return { error: 'User not authenticated' };
@@ -30,11 +34,12 @@ export async function GetUserData(): Promise<UserDataResponse | { error: string 
     return { error: 'User not found' };
   }
 
-  const { data: subscriptionPlanData, error: subscriptionError } = await supabase
-    .from('subscription_plan')
-    .select('subscription_plan')
-    .eq('user_uuid', user.id)
-    .single();
+  const { data: subscriptionPlanData, error: subscriptionError } =
+    await supabase
+      .from('subscription_plan')
+      .select('subscription_plan')
+      .eq('user_uuid', user.id)
+      .single();
 
   if (subscriptionError || !subscriptionPlanData) {
     return { error: 'Subscription plan not found' };
@@ -52,16 +57,21 @@ export async function GetUserData(): Promise<UserDataResponse | { error: string 
   const avatarUrl = userData.avatar_url || '';
   const aiCustomization = userData.inference_settings || {};
 
-  useUserStore.getState().setSubscriptionPlan(subscriptionPlanData.subscription_plan.trim());
+  useUserStore
+    .getState()
+    .setSubscriptionPlan(subscriptionPlanData.subscription_plan.trim());
 
-  const modelsByPlan = modelIdentifiers.reduce((acc, model) => {
-    const plan = model.subscription_plan.trim().toUpperCase();
-    if (!acc[plan]) {
-      acc[plan] = [];
-    }
-    acc[plan].push(model.name);
-    return acc;
-  }, {} as Record<string, string[]>);
+  const modelsByPlan = modelIdentifiers.reduce(
+    (acc, model) => {
+      const plan = model.subscription_plan.trim().toUpperCase();
+      if (!acc[plan]) {
+        acc[plan] = [];
+      }
+      acc[plan].push(model.name);
+      return acc;
+    },
+    {} as Record<string, string[]>
+  );
 
   const plan = subscriptionPlanData.subscription_plan.trim().toUpperCase();
 

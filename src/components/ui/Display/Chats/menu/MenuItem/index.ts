@@ -1,4 +1,5 @@
-export * from './CharacterDetails'
-export * from './Cosmetic'
+export * from './CharacterDetails';
+export * from './Cosmetic';
 
-export * from './Customization'
+export * from './Customization';
+export * from './Memory';

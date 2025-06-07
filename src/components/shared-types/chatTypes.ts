@@ -1,5 +1,5 @@
-import { z } from 'zod'
-import { CharacterSchema } from './CharacterProp'
+import { z } from 'zod';
+import { CharacterSchema } from './CharacterProp';
 
 export const MessageSchema = z.object({
   id: z.string().optional(),
@@ -16,16 +16,16 @@ export const MessageSchema = z.object({
 
   token: z.number().nullable().optional(),
   role: z.string().optional(),
-  
+
   chat_uuid: z.string().optional(),
   error: z.boolean().optional(),
   gender: z.string().optional(),
-})
+});
 
 export const UserSchema = z.object({
   username: z.string(),
   user_avatar: z.string(),
-})
+});
 
 export const ChatContainerPropsSchema = z.object({
   user: UserSchema,
@@ -33,7 +33,11 @@ export const ChatContainerPropsSchema = z.object({
   firstMessage: z.string().nullable().optional(),
   previous_message: z.array(MessageSchema).optional(),
   isGenerating: z.boolean().optional(),
-  handleSend: z.function().args(z.string()).returns(z.promise(z.void())).optional(),
+  handleSend: z
+    .function()
+    .args(z.string())
+    .returns(z.promise(z.void()))
+    .optional(),
   messageIdRef: z
     .object({
       charId: z.string().nullable(),
@@ -41,8 +45,8 @@ export const ChatContainerPropsSchema = z.object({
     })
     .nullable()
     .optional(),
-  messagesEndRef: z.any().optional(), 
-})
+  messagesEndRef: z.any().optional(),
+});
 
 export const GenerateResponseSchema = z.object({
   data: z.object({
@@ -58,17 +62,17 @@ export const GenerateResponseSchema = z.object({
     })
   ),
   remainingMessages: z.number(),
-})
+});
 
 export const ChatSchema = z.object({
   chat_uuid: z.string(),
   char_uuid: z.string(),
   preview_message: z.string(),
   preview_image: z.string(),
-})
+});
 
 export type GenerateResponse = z.infer<typeof GenerateResponseSchema>;
-export type Message = z.infer<typeof MessageSchema>
-export type User = z.infer<typeof UserSchema>
-export type ChatContainerProps = z.infer<typeof ChatContainerPropsSchema>
-export type Chat = z.infer<typeof ChatSchema>
+export type Message = z.infer<typeof MessageSchema>;
+export type User = z.infer<typeof UserSchema>;
+export type ChatContainerProps = z.infer<typeof ChatContainerPropsSchema>;
+export type Chat = z.infer<typeof ChatSchema>;

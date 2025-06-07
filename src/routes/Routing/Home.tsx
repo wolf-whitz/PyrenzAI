@@ -1,6 +1,12 @@
 import { useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Container, useMediaQuery, Box, useTheme, CircularProgress } from '@mui/material';
+import {
+  Container,
+  useMediaQuery,
+  Box,
+  useTheme,
+  CircularProgress,
+} from '@mui/material';
 import {
   Sidebar,
   SearchBar,
@@ -72,7 +78,10 @@ export function Home() {
   };
 
   return (
-    <Box component="div" sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+    <Box
+      component="div"
+      sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}
+    >
       <motion.div
         className="flex flex-col min-h-screen text-white font-baloo"
         aria-label={t('ariaLabels.homePage')}

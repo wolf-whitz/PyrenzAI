@@ -84,9 +84,14 @@ export function ChatPage() {
             ...result.character,
           };
 
-          setChatData({ character: updatedCharacter, firstMessage: result.firstMessage });
+          setChatData({
+            character: updatedCharacter,
+            firstMessage: result.firstMessage,
+          });
 
-          setFirstMessage(result.firstMessage ?? updatedCharacter.first_message);
+          setFirstMessage(
+            result.firstMessage ?? updatedCharacter.first_message
+          );
 
           setLoading(false);
           setFetchError(false);

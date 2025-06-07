@@ -5,7 +5,7 @@ export const CharacterSchema = z.object({
   char_uuid: z.string(),
 
   name: z.string().default('Anon'),
-  description: z.string(),  
+  description: z.string(),
   persona: z.string(),
 
   model_instructions: z.string(),
@@ -15,16 +15,16 @@ export const CharacterSchema = z.object({
   first_message: z.string(),
   creator: z.string(),
 
-  tags: z.array(z.string()),  
+  tags: z.array(z.string()),
   profile_image: z.string(),
   chat_messages_count: z.number().optional(),
 
   is_public: z.boolean(),
   is_nsfw: z.boolean().optional(),
   is_owner: z.boolean().optional(),
-  
+
   isLoading: z.boolean().optional(),
-  creator_uuid: z.string().optional()
+  creator_uuid: z.string().optional(),
 });
 
 export const DraftSchema = z.object({

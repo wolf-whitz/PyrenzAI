@@ -1,1 +1,1 @@
-export * from './MenuAPI'
+export * from './MenuAPI';

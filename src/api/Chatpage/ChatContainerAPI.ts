@@ -50,7 +50,11 @@ export const useGenerateMessage = () => {
         isGenerate: true,
       };
 
-      setMessages((prevMessages) => [...prevMessages, userMessage, assistantMessage]);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        userMessage,
+        assistantMessage,
+      ]);
 
       try {
         const user_uuid = await GetUserUUID();
@@ -60,7 +64,8 @@ export const useGenerateMessage = () => {
           .eq('user_uuid', user_uuid)
           .single();
 
-        if (userDataError) throw new Error('Failed to fetch inference settings');
+        if (userDataError)
+          throw new Error('Failed to fetch inference settings');
 
         const { inference_settings } = userData;
         const adWatchKey = localStorage.getItem('ad_watch_token');
@@ -83,17 +88,23 @@ export const useGenerateMessage = () => {
 
         const response = await Utils.post<GenerateResponse>(url, payload);
 
-        if (!response?.data?.content) throw new Error('No valid response from API');
+        if (!response?.data?.content)
+          throw new Error('No valid response from API');
 
         const responseId = response.id?.[0]?.charMessageUuid;
 
         setMessages((prevMessages) =>
           prevMessages.map((msg) =>
             msg.isGenerate
-              ? { ...msg, id: responseId, text: response.data.content, isGenerate: false }
+              ? {
+                  ...msg,
+                  id: responseId,
+                  text: response.data.content,
+                  isGenerate: false,
+                }
               : msg.type === 'user' && msg.id === undefined
-              ? { ...msg, id: responseId }
-              : msg
+                ? { ...msg, id: responseId }
+                : msg
           )
         );
 
@@ -104,7 +115,11 @@ export const useGenerateMessage = () => {
 
         if (error instanceof Error) {
           errorMessage = error.message;
-        } else if (typeof error === 'object' && error !== null && 'error' in error) {
+        } else if (
+          typeof error === 'object' &&
+          error !== null &&
+          'error' in error
+        ) {
           const customError = error as CustomError;
           errorMessage = customError.error;
           showAd = customError.show_ad || false;
@@ -113,7 +128,13 @@ export const useGenerateMessage = () => {
         setMessages((prevMessages) =>
           prevMessages.map((msg) =>
             msg.isGenerate
-              ? { ...msg, id: undefined, text: errorMessage, isGenerate: false, error: true }
+              ? {
+                  ...msg,
+                  id: undefined,
+                  text: errorMessage,
+                  isGenerate: false,
+                  error: true,
+                }
               : msg
           )
         );

@@ -20,9 +20,7 @@ export async function fetchCharacters(
   const fromIndex = (page - 1) * itemsPerPage;
   const toIndex = page * itemsPerPage - 1;
 
-  let query = supabase
-    .from('characters')
-    .select('*', { count: 'exact' });
+  let query = supabase.from('characters').select('*', { count: 'exact' });
 
   if (search?.trim()) {
     query = query.ilike('name', `%${search.trim()}%`);
@@ -54,11 +52,18 @@ export async function fetchCharacters(
   let selectedCharacter: Character | null = null;
 
   if (characters.length > 0) {
-    const highestCount = Math.max(...characters.map((c) => c.chat_messages_count ?? 0));
-    const topCharacters = characters.filter((c) => (c.chat_messages_count ?? 0) === highestCount);
-    selectedCharacter = topCharacters.length === 1
-      ? topCharacters[0]
-      : topCharacters.sort((a, b) => String(a.id).localeCompare(String(b.id)))[0];
+    const highestCount = Math.max(
+      ...characters.map((c) => c.chat_messages_count ?? 0)
+    );
+    const topCharacters = characters.filter(
+      (c) => (c.chat_messages_count ?? 0) === highestCount
+    );
+    selectedCharacter =
+      topCharacters.length === 1
+        ? topCharacters[0]
+        : topCharacters.sort((a, b) =>
+            String(a.id).localeCompare(String(b.id))
+          )[0];
   }
 
   return {

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const ChatMessagesPropsSchema = z.object({
-  previous_message: z.any(),  
+  previous_message: z.any(),
   isGenerating: z.boolean().optional(),
   messageId: z.string().nullable().optional(),
   token: z.number().nullable().optional(),
@@ -13,7 +13,7 @@ export const ChatMessagesPropsSchema = z.object({
   char: z.object({
     name: z.string(),
     gender: z.string().optional(),
-    profile_image: z.string()
+    profile_image: z.string(),
   }),
   onRegenerate: z.function().args(z.string()).returns(z.void()).optional(),
   onRemove: z.function().args(z.string()).returns(z.void()).optional(),

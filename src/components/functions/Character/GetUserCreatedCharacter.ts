@@ -84,7 +84,7 @@ export const GetUserCreatedCharacters = (uuid?: string) => {
         return null;
       }
 
-      return data
+      return data;
     };
 
     const updateMetaAndTitle = (username: string, avatarUrl: string) => {

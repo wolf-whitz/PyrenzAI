@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Container, Box, Typography, useMediaQuery, useTheme } from '@mui/material';
+import {
+  Container,
+  Box,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import { Sidebar, MobileNav } from '@components';
 
 const PolicyText = `

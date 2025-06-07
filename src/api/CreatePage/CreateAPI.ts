@@ -46,9 +46,7 @@ export const useCreateAPI = (
 
   const tags = Array.isArray(Character.tags)
     ? Character.tags
-    : (Character.tags as string)
-        .split(',')
-        .map((tag: string) => tag.trim());
+    : (Character.tags as string).split(',').map((tag: string) => tag.trim());
 
   const fetchUserName = async (userUuid: string): Promise<string> => {
     const { data, error } = await supabase
@@ -87,7 +85,7 @@ export const useCreateAPI = (
     is_nsfw: Character.is_nsfw,
     profile_image: Character.profile_image || '',
     creator_uuid: userUuid || '',
-    char_uuid: Character.char_uuid || '', 
+    char_uuid: Character.char_uuid || '',
   };
 
   const handleClear = () => {
@@ -107,7 +105,6 @@ export const useCreateAPI = (
     });
     URL.revokeObjectURL(Character.profile_image ?? '');
   };
-  
 
   const handleSave = async () => {
     setSaveLoading(true);
@@ -117,15 +114,15 @@ export const useCreateAPI = (
         setSaveLoading(false);
         return;
       }
-  
+
       const char_uuid = uuidv4();
       const characterWithUUID = {
         ...character,
         char_uuid,
       };
-  
+
       const response = await handleSaveDraft(characterWithUUID, userUuid);
-  
+
       if (!response.success) {
         alert(`Error saving draft: ${response.error}`);
       } else {
@@ -199,10 +196,7 @@ export const useCreateAPI = (
       } else {
         const characterUuid = response.char_uuid;
         if (characterUuid) {
-          const chatResponse = await CreateNewChat(
-            characterUuid,
-            userUuid,
-          );
+          const chatResponse = await CreateNewChat(characterUuid, userUuid);
           if (chatResponse.error) {
             console.error('Error creating chat:', chatResponse.error);
             Sentry.captureException(new Error(chatResponse.error));

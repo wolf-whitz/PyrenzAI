@@ -15,7 +15,7 @@ export const handleSaveDraft = async (
     if (!userUuid) {
       return { success: false, error: 'User UUID is missing.' };
     }
-    
+
     const { error } = await supabase.from('draft_characters').upsert(Character);
 
     if (error) {

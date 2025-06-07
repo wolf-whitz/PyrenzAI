@@ -22,16 +22,11 @@ export function Archive() {
   };
 
   const loadMore = () => {
-    setItemsToShow(prevItemsToShow => prevItemsToShow + 5);
+    setItemsToShow((prevItemsToShow) => prevItemsToShow + 5);
   };
 
-  const {
-    chats,
-    characters,
-    isLoading,
-    handleCardClick,
-    handleDeleteChat,
-  } = useArchiveChatPageAPI(open, handleClose);
+  const { chats, characters, isLoading, handleCardClick, handleDeleteChat } =
+    useArchiveChatPageAPI(open, handleClose);
 
   return (
     <Box

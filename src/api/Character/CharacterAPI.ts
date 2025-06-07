@@ -20,7 +20,7 @@ export const fetchCharacters = async (
       'character',
       currentPage,
       itemsPerPage,
-      search,
+      search
     );
 
     if (!data || !data.characters || data.characters.length === 0) {

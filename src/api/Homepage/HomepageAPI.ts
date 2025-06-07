@@ -86,7 +86,7 @@ export const useHomepageAPI = () => {
         return [];
       }
 
-      const safeCharacters = rawCharacters.map((char) => (char));
+      const safeCharacters = rawCharacters.map((char) => char);
 
       setCharacters(safeCharacters);
       return safeCharacters;

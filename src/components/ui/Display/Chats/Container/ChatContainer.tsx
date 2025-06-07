@@ -5,7 +5,8 @@ import { Message, ChatContainerProps, Character } from '@shared-types';
 import { ChatPageSpinner } from '@components';
 import clsx from 'clsx';
 
-interface ChatContainerPropsExtended extends Omit<ChatContainerProps, 'char' | 'firstMessage'> {
+interface ChatContainerPropsExtended
+  extends Omit<ChatContainerProps, 'char' | 'firstMessage'> {
   char?: Partial<Character>;
   className?: string;
   chat_uuid: string;
@@ -17,10 +18,12 @@ export function ChatContainer({
   className = '',
   chat_uuid,
 }: ChatContainerPropsExtended) {
-  const messageIdRef = useRef<{ charId: string | null; userId: string | null }>({
-    charId: null,
-    userId: null,
-  });
+  const messageIdRef = useRef<{ charId: string | null; userId: string | null }>(
+    {
+      charId: null,
+      userId: null,
+    }
+  );
 
   const { messages, setMessages, firstMessage } = useChatStore();
   const [isGenerating, setIsGenerating] = useState<boolean>(false);

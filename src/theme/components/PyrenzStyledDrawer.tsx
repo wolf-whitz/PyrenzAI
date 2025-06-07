@@ -36,7 +36,11 @@ export const PyrenzStyledDrawer = ({
       }}
     >
       <Box display="flex" alignItems="center" mb={1}>
-        <Avatar alt="Profile" src={profileData.avatarUrl} sx={{ width: 32, height: 32 }} />
+        <Avatar
+          alt="Profile"
+          src={profileData.avatarUrl}
+          sx={{ width: 32, height: 32 }}
+        />
         <Typography
           variant="subtitle2"
           className="font-baloo"
@@ -46,9 +50,7 @@ export const PyrenzStyledDrawer = ({
         </Typography>
       </Box>
       <Divider sx={{ backgroundColor: 'rgba(75, 85, 99, 0.3)', marginY: 1 }} />
-      <Box sx={{ paddingTop: 1 }}>
-        {children}
-      </Box>
+      <Box sx={{ paddingTop: 1 }}>{children}</Box>
     </Drawer>
   );
 };

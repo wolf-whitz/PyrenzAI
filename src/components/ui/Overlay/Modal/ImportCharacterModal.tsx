@@ -215,10 +215,7 @@ export function ImportCharacterModal({
               />
             </div>
             <div className="flex justify-end mt-4 space-x-2">
-              <PyrenzBlueButton
-                variant="outlined"
-                onClick={onClose}
-              >
+              <PyrenzBlueButton variant="outlined" onClick={onClose}>
                 Cancel
               </PyrenzBlueButton>
               <PyrenzBlueButton

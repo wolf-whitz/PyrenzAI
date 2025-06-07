@@ -30,7 +30,13 @@ export function useFetchCharacters({
   const fetchCharactersData = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetchCharacters('character', currentPage, itemsPerPage, search || ' ', setMaxPage);
+      const response = await fetchCharacters(
+        'character',
+        currentPage,
+        itemsPerPage,
+        search || ' ',
+        setMaxPage
+      );
       const userData = await GetUserData();
 
       if ('error' in userData) {
@@ -52,7 +58,15 @@ export function useFetchCharacters({
     } finally {
       setLoading(false);
     }
-  }, [currentPage, search, itemsPerPage, t, setLoading, setCharacters, setMaxPage]);
+  }, [
+    currentPage,
+    search,
+    itemsPerPage,
+    t,
+    setLoading,
+    setCharacters,
+    setMaxPage,
+  ]);
 
   useEffect(() => {
     fetchCharactersData();

@@ -11,7 +11,7 @@ import {
   CircularProgress,
 } from '@mui/material';
 import { ExpandMore, ExpandLess } from '@mui/icons-material';
-import { Customization, Cosmetic, CharacterDetails } from './MenuItem';
+import { Customization, Cosmetic, CharacterDetails, Memory } from './MenuItem';
 import { useMenuAPI } from '@api';
 import { Character } from '@shared-types';
 
@@ -120,6 +120,15 @@ export function Menu({ onClose, char }: MenuProps) {
                         >
                           Character Details
                         </MenuItem>
+                        <MenuItem
+                          onClick={() => {
+                            setSelectedOption('Memory');
+                            setIsDropdownOpen(false);
+                          }}
+                          sx={{ '&:hover': { backgroundColor: '#718096' } }}
+                        >
+                          Memory
+                        </MenuItem>
                       </MenuList>
                     </Paper>
                   </Collapse>
@@ -134,8 +143,12 @@ export function Menu({ onClose, char }: MenuProps) {
                   />
                 )}
                 {selectedOption === 'Character Details' && (
-                  <CharacterDetails char={char} onSubmit={handleCharacterDetailsSubmit} />
+                  <CharacterDetails
+                    char={char}
+                    onSubmit={handleCharacterDetailsSubmit}
+                  />
                 )}
+                {selectedOption === 'Memory' && <Memory />}
               </>
             )}
           </Box>

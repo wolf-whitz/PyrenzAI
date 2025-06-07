@@ -23,7 +23,10 @@ interface CharacterCardProps {
   isOwner?: boolean;
 }
 
-export function CharacterCard({ character, isOwner = false }: CharacterCardProps) {
+export function CharacterCard({
+  character,
+  isOwner = false,
+}: CharacterCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState<Character | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -123,11 +126,12 @@ export function CharacterCard({ character, isOwner = false }: CharacterCardProps
                   Private
                 </PyrenzCharacterCardTag>
               )}
-              {Array.isArray(character.tags) && character.tags.map((tag, index) => (
-                <PyrenzCharacterCardTag key={index}>
-                  {tag}
-                </PyrenzCharacterCardTag>
-              ))}
+              {Array.isArray(character.tags) &&
+                character.tags.map((tag, index) => (
+                  <PyrenzCharacterCardTag key={index}>
+                    {tag}
+                  </PyrenzCharacterCardTag>
+                ))}
             </PyrenzCharacterCardTags>
           </PyrenzCharacterCardContent>
         </PyrenzCharacterCard>

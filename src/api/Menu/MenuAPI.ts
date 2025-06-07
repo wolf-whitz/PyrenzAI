@@ -33,7 +33,7 @@ export const useMenuAPI = ({ char }: MenuAPIProps) => {
       return data.map((item) => ({ label: item.name, name: item.name }));
     } catch (error) {
       console.error(error);
-      Sentry.captureException(error); 
+      Sentry.captureException(error);
       return [];
     }
   };
@@ -54,7 +54,7 @@ export const useMenuAPI = ({ char }: MenuAPIProps) => {
       console.log('Character details updated successfully');
     } catch (error) {
       console.error('Error updating character details:', error);
-      Sentry.captureException(error);  
+      Sentry.captureException(error);
     }
   };
 
@@ -82,7 +82,7 @@ export const useMenuAPI = ({ char }: MenuAPIProps) => {
         options.push({ label: 'Custom', name: 'Custom' });
         setModelOptions(options);
       } catch (error) {
-        Sentry.captureException(error); 
+        Sentry.captureException(error);
       } finally {
         setLoading(false);
       }

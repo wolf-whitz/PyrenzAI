@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { Character } from '@shared-types';
 
 interface ChatHeaderProps {
-  char: Character,
+  char: Character;
   handleGoHome: () => void;
   toggleSettings: () => void;
 }
