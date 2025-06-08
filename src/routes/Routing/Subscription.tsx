@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   SubscriptionCard,
   PaymentModal,
@@ -31,8 +31,7 @@ const subscriptionPlans: Plan[] = [
       '### Multiple Personas\nCreate up to 3 unique personas.\n#4CAF50',
     ],
     color: '#4CAF50',
-    backgroundImage:
-      'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/cdn//Solara.avif',
+    backgroundImage: 'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/cdn//Solara.avif',
   },
   {
     title: 'Azura (Blueberry)',
@@ -45,8 +44,7 @@ const subscriptionPlans: Plan[] = [
       '### Expanded Lore Support\nEnhance your stories with expanded lore support for deeper worldbuilding.\n#2196F3',
     ],
     color: '#2196F3',
-    backgroundImage:
-      'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/cdn/Azura.avif',
+    backgroundImage: 'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/cdn/Azura.avif',
   },
   {
     title: 'Nyra (Pineapple)',
@@ -59,20 +57,17 @@ const subscriptionPlans: Plan[] = [
       '### Unlimited Personalities\nUnlock unlimited personalities to keep your conversations fresh.\n#FF5722',
     ],
     color: '#FF5722',
-    backgroundImage:
-      'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/cdn/Nyra.avif',
+    backgroundImage: 'https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/cdn/Nyra.avif',
   },
 ];
 
 export function Subscription() {
-  const [selectedPlanTitle, setSelectedPlanTitle] = useState<string | null>(
-    null
-  );
+  const [selectedPlanTitle, setSelectedPlanTitle] = useState<string | null>(null);
   const [isMonthly, setIsMonthly] = useState<boolean>(true);
   const [hoveredPlanTitle, setHoveredPlanTitle] = useState<string | null>(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const userStore = useUserStore();
-  const userSubscriptionPlan = userStore.subscription_plan || [];
+  const userSubscriptionPlan: string | string[] | null = userStore.subscription_plan || null;
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -84,72 +79,39 @@ export function Subscription() {
     setSelectedPlanTitle(null);
   };
 
-  const selectedPlan = subscriptionPlans.find(
-    (plan) => plan.title === selectedPlanTitle
-  );
+  const selectedPlan = subscriptionPlans.find((plan) => plan.title === selectedPlanTitle);
 
   const getButtonStyle = (isActive: boolean) => ({
     color: 'white',
-    backgroundColor: isActive
-      ? isMonthly
-        ? '#2196F3'
-        : '#4CAF50'
-      : 'rgba(0, 0, 0, 0.3)',
+    backgroundColor: isActive ? (isMonthly ? '#2196F3' : '#4CAF50') : 'rgba(0, 0, 0, 0.3)',
     border: `2px solid ${isMonthly ? '#2196F3' : '#4CAF50'}`,
     borderRadius: '20px',
   });
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        minHeight: '100vh',
-        backgroundColor: 'background.default',
-      }}
-    >
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: 'background.default' }}>
       <Box sx={{ display: 'flex', flex: 1 }}>
         {!isMobile && <Sidebar />}
         <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
           {isMobile && <MobileNav setShowLoginModal={setShowLoginModal} />}
-
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              p: isMobile ? 2 : 5,
-              flex: 1,
-            }}
-          >
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', p: isMobile ? 2 : 5, flex: 1 }}>
             <Box display="flex" gap={4} mb={5}>
-              <PyrenzBlueButton
-                onClick={() => setIsMonthly(true)}
-                sx={getButtonStyle(isMonthly)}
-              >
+              <PyrenzBlueButton onClick={() => setIsMonthly(true)} sx={getButtonStyle(isMonthly)}>
                 Monthly
               </PyrenzBlueButton>
-              <PyrenzBlueButton
-                onClick={() => setIsMonthly(false)}
-                sx={getButtonStyle(!isMonthly)}
-              >
+              <PyrenzBlueButton onClick={() => setIsMonthly(false)} sx={getButtonStyle(!isMonthly)}>
                 Yearly
               </PyrenzBlueButton>
             </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: isMobile ? 'column' : 'row',
-                justifyContent: 'center',
-                width: '100%',
-              }}
-            >
+            <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', justifyContent: 'center', width: '100%' }}>
               {subscriptionPlans.map((plan) => {
-                const isSubscribed = userSubscriptionPlan.includes(plan.title);
-                const isHighlighted =
-                  hoveredPlanTitle === null
-                    ? isSubscribed
-                    : hoveredPlanTitle === plan.title;
+const isSubscribed = Array.isArray(userSubscriptionPlan)
+? userSubscriptionPlan.includes(plan.plan_identifier)
+: typeof userSubscriptionPlan === 'string'
+  ? (userSubscriptionPlan as string).toLowerCase().trim() === plan.plan_identifier.toLowerCase().trim()
+  : false;
+
+                const isHighlighted = hoveredPlanTitle === null ? isSubscribed || (userSubscriptionPlan === null && plan.title === 'Azura (Blueberry)') : hoveredPlanTitle === plan.title;
 
                 return (
                   <SubscriptionCard

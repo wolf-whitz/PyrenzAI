@@ -1,4 +1,5 @@
-import { AuthenticationModal, CreateNewChat, GetUserUUID } from '@components';
+import { AuthenticationModal } from '@components';
+import { CreateNewChat, GetUserUUID } from '@components';
 import { usePyrenzAlert } from '~/provider';
 import React, { useState, useEffect, useCallback } from 'react';
 import { Character } from '@shared-types';

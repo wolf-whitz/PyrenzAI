@@ -1,6 +1,6 @@
 import { FaDiscord } from 'react-icons/fa';
 import { motion } from 'framer-motion';
-import { Button, Card, CardContent, Typography } from '@mui/material';
+import { Button, Card, CardContent, Typography, Link } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import Typewriter from 'typewriter-effect';
 
@@ -94,6 +94,15 @@ export function Footer() {
           {t('buttons.joinDiscord')}
         </Button>
       </motion.div>
+
+      <Link
+        href="/Policy"
+        variant="body2"
+        style={{ color: '#9ca3af', textAlign: 'center' }}
+      >
+        Privacy Policy
+      </Link>
+
       <Typography
         variant="body2"
         style={{ textAlign: 'center', color: '#6b7280', marginTop: '1rem' }}
