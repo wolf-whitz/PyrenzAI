@@ -137,11 +137,11 @@ export const useCreateAPI = (
     setSaveLoading(true);
     try {
       if (!userUuid) {
-        alert('User UUID is missing.');
+        showAlert('User UUID is missing.', 'Alert');
         setSaveLoading(false);
         return;
       }
-
+      
       const char_uuid = uuidv4();
       const characterWithUUID = {
         ...character,
@@ -151,9 +151,9 @@ export const useCreateAPI = (
       const response = await handleSaveDraft(characterWithUUID, userUuid);
 
       if (!response.success) {
-        alert(`Error saving draft: ${response.error}`);
+        showAlert(`Error saving draft: ${response.error}`, 'Alert');
       } else {
-        alert('Saved');
+        showAlert('Draft saved successfully!', 'Success');
       }
     } finally {
       setSaveLoading(false);
@@ -171,13 +171,9 @@ export const useCreateAPI = (
     }
 
     setCharacter({ ...data });
-    console.log('Character Uploaded', useCharacterStore.getState());
   };
 
-  const handleSubmit = async (
-    e: React.FormEvent,
-    character_update: boolean
-  ) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
@@ -191,11 +187,11 @@ export const useCreateAPI = (
       Character.gender,
     ];
 
-    const isValid = fieldsToCheck.every((field) => field && field.length >= 2);
+    const hasUndefinedValues = fieldsToCheck.some((field) => field === undefined);
 
-    if (!isValid) {
+    if (hasUndefinedValues) {
       showAlert(
-        'Each field must be at least 2 characters long (excluding tags). Please make sure the checkbox is selected and a gender is chosen from the dropdown.',
+        'Some fields are undefined. Please fill in all the required fields.',
         'Alert'
       );
       setLoading(false);
@@ -204,7 +200,7 @@ export const useCreateAPI = (
 
     try {
       if (!userUuid) {
-        alert('User UUID is missing.');
+        showAlert('User UUID is missing.', 'Alert');
         setLoading(false);
         return;
       }
@@ -219,6 +215,7 @@ export const useCreateAPI = (
       if (response.error) {
         console.error('Error creating/updating character:', response.error);
         Sentry.captureException(new Error(response.error));
+        showAlert(`Error creating/updating character: ${response.error}`, 'Alert');
       } else {
         const characterUuid = response.char_uuid;
         if (characterUuid) {
@@ -226,6 +223,7 @@ export const useCreateAPI = (
           if (chatResponse.error) {
             console.error('Error creating chat:', chatResponse.error);
             Sentry.captureException(new Error(chatResponse.error));
+            showAlert(`Error creating chat: ${chatResponse.error}`, 'Alert');
           } else {
             const chatUuid = chatResponse.chat_uuid;
             if (chatUuid) {
@@ -235,6 +233,7 @@ export const useCreateAPI = (
               Sentry.captureException(
                 new Error('Chat created but no chat UUID returned.')
               );
+              showAlert('Chat created but no chat UUID returned.', 'Alert');
             }
           }
         } else {
@@ -246,11 +245,13 @@ export const useCreateAPI = (
               'Character created/updated but no character UUID returned.'
             )
           );
+          showAlert('Character created/updated but no character UUID returned.', 'Alert');
         }
       }
     } catch (error) {
       console.error('Unexpected error:', error);
       Sentry.captureException(error);
+      showAlert('An unexpected error occurred.', 'Alert');
     } finally {
       setLoading(false);
     }
@@ -270,10 +271,10 @@ export const useCreateAPI = (
     setCharacter,
     handleClear,
     handleSave,
-    handleDelete, 
+    handleDelete,
     handleSelectDraft,
     handleImportCharacter,
-    handleSubmit: (e: React.FormEvent) => handleSubmit(e, character_update),
+    handleSubmit,
     formState,
     handleImageSelect,
   };
