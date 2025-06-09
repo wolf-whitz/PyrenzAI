@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, MenuItem, Typography, TextField } from '@mui/material';
 import { supabase } from '~/Utility/supabaseClient';
-import { Tag, TextareaFormProps } from '@shared-types';
+import { Tag } from '@shared-types';
 import { ImageUploader, Textarea } from '@components';
 import { v4 as uuidv4 } from 'uuid';
+import { useCharacterStore } from '~/store';
 
-export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
+export function TextareaForm() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [tags, setTags] = useState<Tag[]>([]);
   const [filteredTags, setFilteredTags] = useState<Tag[]>([]);
@@ -13,12 +14,14 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
   const [imageBlobUrl, setImageBlobUrl] = useState<string | null>(null);
   const isUploading = useRef(false);
 
+  const character = useCharacterStore((state) => state);
+  const setCharacter = useCharacterStore((state) => state.setCharacter);
+
   useEffect(() => {
-    if (!isUploading.current && formState.profile_image) {
-      setImageBlobUrl(formState.profile_image);
-      console.log('Image URL (effect):', formState.profile_image);
+    if (!isUploading.current && character.profile_image) {
+      setImageBlobUrl(character.profile_image);
     }
-  }, [formState.profile_image]);
+  }, [character.profile_image]);
 
   const handleOpenDropdown = async (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -37,17 +40,21 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
   };
 
   const handleTagClick = (tag: string) => {
-    const newValue = formState.tags
-      ? `${formState.tags}${formState.tags.trim().endsWith(',') ? '' : ', '}${tag}`
-      : tag;
-    const event = {
-      target: {
-        value: newValue,
-        name: 'tags',
-      },
-    } as React.ChangeEvent<HTMLTextAreaElement>;
-    handleChange(event);
+    const newTags = character.tags ? [...character.tags, tag] : [tag];
+    setCharacter({ tags: newTags });
     handleCloseDropdown();
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    const { name, value, type } = e.target;
+    const checked = type === 'checkbox' ? (e.target as HTMLInputElement).checked : undefined;
+
+    if (name === 'tags') {
+      const tagsArray = value.split(',').map(tag => tag.trim());
+      setCharacter({ [name]: tagsArray });
+    } else {
+      setCharacter({ [name]: type === 'checkbox' ? checked : value });
+    }
   };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,13 +86,7 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
         .from('character-image')
         .getPublicUrl(fileName);
 
-      handleChange({
-        target: {
-          name: 'profile_image',
-          value: publicUrlData.publicUrl,
-        },
-      } as React.ChangeEvent<HTMLTextAreaElement>);
-
+      setCharacter({ profile_image: publicUrlData.publicUrl });
       isUploading.current = false;
     }
   };
@@ -94,7 +95,7 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
     <>
       <Textarea
         name="name"
-        value={formState.name}
+        value={character.name}
         onChange={handleChange}
         label="Name"
         aria-label="Name"
@@ -109,7 +110,7 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
 
       <Textarea
         name="description"
-        value={formState.description}
+        value={character.description}
         onChange={handleChange}
         label="Description"
         aria-label="Description"
@@ -118,7 +119,7 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
       />
       <Textarea
         name="persona"
-        value={formState.persona}
+        value={character.persona}
         onChange={handleChange}
         label="Persona"
         aria-label="Persona"
@@ -127,7 +128,7 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
       />
       <Textarea
         name="scenario"
-        value={formState.scenario}
+        value={character.scenario}
         onChange={handleChange}
         label="Scenario"
         aria-label="Scenario"
@@ -136,7 +137,7 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
       />
       <Textarea
         name="model_instructions"
-        value={formState.model_instructions}
+        value={character.model_instructions}
         onChange={handleChange}
         label="Model Instructions"
         aria-label="Model Instructions"
@@ -145,7 +146,7 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
       />
       <Textarea
         name="first_message"
-        value={formState.first_message}
+        value={character.first_message}
         onChange={handleChange}
         label="First Message"
         aria-label="First Message"
@@ -154,7 +155,7 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
       />
       <Textarea
         name="tags"
-        value={formState.tags}
+        value={character.tags?.join(', ')}
         onChange={handleChange}
         label="Tags"
         aria-label="Tags"
