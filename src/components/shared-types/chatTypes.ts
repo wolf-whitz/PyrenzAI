@@ -54,11 +54,9 @@ export const GenerateResponseSchema = z.object({
     content: z.string(),
   }),
   Engine: z.string(),
-  token: z.number(),
   id: z.array(
     z.object({
-      userMessageUuid: z.string(),
-      charMessageUuid: z.string(),
+      MessageID: z.string(),
     })
   ),
   remainingMessages: z.number(),

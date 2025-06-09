@@ -43,7 +43,7 @@ export const useGenerateMessage = () => {
 
       const assistantMessage: Message = {
         id: undefined,
-        name: char.character_name ?? 'Assistant',
+        name: char.character_name,
         text: '',
         profile_image: char.user_avatar,
         type: 'assistant',
@@ -82,7 +82,6 @@ export const useGenerateMessage = () => {
           Type: 'Generate',
           chat_uuid,
           Message: { User: text },
-          Engine: 'b234e3de-7dbb-4a4c-b7c0-d8d4dce4f3c5',
           inference_settings,
         };
 
@@ -91,7 +90,7 @@ export const useGenerateMessage = () => {
         if (!response?.data?.content)
           throw new Error('No valid response from API');
 
-        const responseId = response.id?.[0]?.charMessageUuid;
+        const responseId = response.id?.[0]?.MessageID;
 
         setMessages((prevMessages) =>
           prevMessages.map((msg) =>
