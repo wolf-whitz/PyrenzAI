@@ -74,7 +74,7 @@ export function Home() {
       sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}
     >
       <motion.div
-        className="flex flex-col min-h-screen text-white font-baloo"
+        className="flex flex-col min-h-screen text-white"
         aria-label={t('ariaLabels.homePage')}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

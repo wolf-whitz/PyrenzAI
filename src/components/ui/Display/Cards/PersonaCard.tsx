@@ -10,7 +10,7 @@ interface PersonaCardProps {
   persona_profile?: string;
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
-  onEdit: (id: string) => void; // Add onEdit prop
+  onEdit: (id: string) => void;
 }
 
 export function PersonaCard({
@@ -21,7 +21,7 @@ export function PersonaCard({
   persona_profile,
   onSelect,
   onDelete,
-  onEdit, // Add onEdit to the destructured props
+  onEdit,
 }: PersonaCardProps) {
   const truncateDescription = (description: string, limit: number = 100) => {
     return description.length > limit

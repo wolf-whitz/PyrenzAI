@@ -38,7 +38,7 @@ export function LanguageModal({
       }}
     >
       <motion.div
-        className="bg-black p-6 rounded-lg max-w-lg w-full text-white font-baloo"
+        className="bg-black p-6 rounded-lg max-w-lg w-full text-white font-pyrenzfont"
         initial={{ scale: 0.8 }}
         animate={{ scale: 1 }}
         exit={{ scale: 0.8 }}

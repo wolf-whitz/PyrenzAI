@@ -10,7 +10,7 @@ export function Banner() {
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
-        className="p-4 rounded-3xl mb-4 flex justify-center items-center h-36 font-baloo text-white border-none relative bg-cover bg-center"
+        className="p-4 rounded-3xl mb-4 flex justify-center items-center h-36 text-white border-none relative bg-cover bg-center"
         style={{
           backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif)`,
           width: '100%',

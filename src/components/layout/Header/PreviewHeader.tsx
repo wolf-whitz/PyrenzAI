@@ -90,7 +90,7 @@ export function PreviewHeader({
             alt={t('footer.pyrenzLogo')}
             className="h-8 w-8"
           />
-          <h1 className="text-2xl font-bold font-baloo">
+          <h1 className="text-2xl font-bold font-pyrenzfont">
             Pyrenz<span className="text-[#add8e6]">AI</span>
           </h1>
         </div>
@@ -102,7 +102,7 @@ export function PreviewHeader({
                 key={name}
                 startIcon={icon}
                 sx={{ backgroundColor: 'transparent' }}
-                className="font-baloo hover:text-blue-600"
+                className="font-pyrenzfont hover:text-blue-600"
                 onClick={() =>
                   external
                     ? window.open(link, '_blank')
@@ -117,7 +117,7 @@ export function PreviewHeader({
                 <PyrenzBlueButton
                   startIcon={<LoginIcon />}
                   sx={{ backgroundColor: 'transparent' }}
-                  className="font-baloo hover:text-blue-600"
+                  className="font-pyrenzfont hover:text-blue-600"
                   onClick={() => setShowLogin(true)}
                 >
                   {t('buttons.login')}
@@ -126,7 +126,7 @@ export function PreviewHeader({
                   startIcon={<PersonAddIcon />}
                   variant="contained"
                   sx={{ backgroundColor: 'transparent' }}
-                  className="bg-[#E03201] font-baloo hover:bg-blue-600"
+                  className="bg-[#E03201] font-pyrenzfont hover:bg-blue-600"
                   onClick={() => setShowRegister(true)}
                 >
                   {t('buttons.signUp')}

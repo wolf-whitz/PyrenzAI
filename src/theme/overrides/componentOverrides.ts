@@ -43,7 +43,6 @@ export const componentOverrides = {
         borderRadius: '4px',
         backgroundColor: '#add8e6',
         color: getIsDarkMode() ? '#fff' : '#000',
-        fontFamily: 'Baloo Tammudu 2, system-ui',
       },
     },
   },

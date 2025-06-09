@@ -113,7 +113,6 @@ export const SubscriptionCard: React.FC<SubscriptionCardsProps> = ({
         >
           <MotionTypography
             variant="h5"
-            className="font-baloo"
             sx={{ mb: 2 }}
             initial={{ y: -20 }}
             animate={{ y: 0 }}
@@ -123,7 +122,6 @@ export const SubscriptionCard: React.FC<SubscriptionCardsProps> = ({
           </MotionTypography>
           <MotionTypography
             variant="h6"
-            className="font-baloo"
             sx={{ mb: 3 }}
             initial={{ scale: 0.9 }}
             animate={{ scale: 1 }}
@@ -145,11 +143,11 @@ export const SubscriptionCard: React.FC<SubscriptionCardsProps> = ({
                     marginBottom: '8px',
                   }}
                 >
-                  <Typography variant="subtitle2" className="font-bold font-baloo">
+                  <Typography variant="subtitle2">
                     {title}
                   </Typography>
                 </Box>
-                <Typography variant="body2" className="font-baloo">
+                <Typography variant="body2">
                   {content}
                 </Typography>
               </Box>

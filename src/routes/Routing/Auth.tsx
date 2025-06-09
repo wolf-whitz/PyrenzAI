@@ -53,7 +53,7 @@ export function Auth() {
 
   return (
     <main
-      className="min-h-screen flex justify-center items-center bg-cover bg-center bg-no-repeat font-baloo"
+      className="min-h-screen flex justify-center items-center bg-cover bg-center bg-no-repeat"
       style={{
         backgroundImage:
           "linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.4)), url('https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif')",
@@ -68,7 +68,7 @@ export function Auth() {
       >
         <Typography
           variant="h4"
-          className="text-center text-white mb-8 font-baloo"
+          className="text-center text-white mb-8"
         >
           {t('messages.verifyNotBot')}
         </Typography>

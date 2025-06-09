@@ -84,9 +84,6 @@ export function SearchBar({
               color: 'white',
               '& fieldset': { border: 'none' },
               '&:hover fieldset': { border: 'none' },
-              '&.Mui-focused fieldset': {
-                border: '2px solid #3B82F6',
-              },
             },
           }}
           sx={{

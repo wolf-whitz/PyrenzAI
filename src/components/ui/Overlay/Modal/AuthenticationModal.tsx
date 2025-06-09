@@ -89,7 +89,7 @@ export function AuthenticationModal({
                 <FaTimes className="text-xl" />
               </button>
 
-              <Dialog.Title className="text-2xl font-bold mb-6 text-center font-baloo">
+              <Dialog.Title className="text-2xl font-bold mb-6 text-center font-pyrenzfont">
                 {mode === 'login'
                   ? t('buttons.login')
                   : t('buttons.createAccount')}
@@ -106,7 +106,7 @@ export function AuthenticationModal({
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="text-red-500 text-sm text-center mb-3 font-baloo"
+                  className="text-red-500 text-sm text-center mb-3 font-pyrenzfont"
                 >
                   {error}
                 </motion.p>
@@ -117,7 +117,7 @@ export function AuthenticationModal({
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => handleOAuth('google')}
-                  className="flex items-center justify-center gap-3 bg-white text-black py-2 rounded font-bold transition-all hover:bg-gray-200 font-baloo border border-gray-400 shadow-md"
+                  className="flex items-center justify-center gap-3 bg-white text-black py-2 rounded font-bold transition-all hover:bg-gray-200 font-pyrenzfont border border-gray-400 shadow-md"
                   disabled={loading}
                 >
                   <FcGoogle className="text-xl" />
@@ -130,7 +130,7 @@ export function AuthenticationModal({
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => handleOAuth('discord')}
-                  className="flex items-center justify-center gap-3 bg-[#5865F2] text-white py-2 rounded font-bold transition-all hover:bg-[#4651c8] font-baloo shadow-md"
+                  className="flex items-center justify-center gap-3 bg-[#5865F2] text-white py-2 rounded font-bold transition-all hover:bg-[#4651c8] font-pyrenzfont shadow-md"
                   disabled={loading}
                 >
                   <FaDiscord className="text-xl" />
@@ -142,7 +142,7 @@ export function AuthenticationModal({
 
               <div className="flex items-center my-6">
                 <div className="flex-1 border-t border-gray-700"></div>
-                <span className="mx-4 text-gray-400 text-sm font-baloo">
+                <span className="mx-4 text-gray-400 text-sm font-pyrenzfont">
                   {t('auth.or')}
                 </span>
                 <div className="flex-1 border-t border-gray-700"></div>
@@ -150,13 +150,13 @@ export function AuthenticationModal({
 
               <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                 <div>
-                  <label className="text-gray-400 text-sm font-baloo">
+                  <label className="text-gray-400 text-sm font-pyrenzfont">
                     {t('auth.email')}
                   </label>
                   <input
                     type="email"
                     placeholder={t('auth.yourEmailAddress')}
-                    className="mt-1 p-3 rounded bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none w-full font-baloo transition-all"
+                    className="mt-1 p-3 rounded bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none w-full font-pyrenzfont transition-all"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -164,13 +164,13 @@ export function AuthenticationModal({
                 </div>
 
                 <div>
-                  <label className="text-gray-400 text-sm font-baloo">
+                  <label className="text-gray-400 text-sm font-pyrenzfont">
                     {t('auth.password')}
                   </label>
                   <input
                     type="password"
                     placeholder={t('auth.yourPassword')}
-                    className="mt-1 p-3 rounded bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none w-full font-baloo transition-all"
+                    className="mt-1 p-3 rounded bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none w-full font-pyrenzfont transition-all"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
@@ -200,7 +200,7 @@ export function AuthenticationModal({
                       </motion.div>
                     </label>
                     <span
-                      className="text-gray-400 text-sm cursor-pointer font-baloo"
+                      className="text-gray-400 text-sm cursor-pointer font-pyrenzfont"
                       onClick={() => setIsAdult(!isAdult)}
                     >
                       {t('auth.confirm18')}
@@ -212,7 +212,7 @@ export function AuthenticationModal({
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   type="submit"
-                  className="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-bold transition-all font-baloo"
+                  className="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-bold transition-all font-pyrenzfont"
                   disabled={loading}
                 >
                   {loading
@@ -223,7 +223,7 @@ export function AuthenticationModal({
                 </motion.button>
               </form>
 
-              <p className="text-gray-500 text-xs text-center mt-6 font-baloo">
+              <p className="text-gray-500 text-xs text-center mt-6 font-pyrenzfont">
                 {t('auth.byContinuing')}
                 <span className="text-blue-500 cursor-pointer">
                   {t('footer.legal.termsOfService')}
@@ -237,7 +237,7 @@ export function AuthenticationModal({
 
               <hr className="mt-4 border-t-2 border-gray-700 w-4/5 mx-auto opacity-50" />
 
-              <p className="text-gray-400 text-sm text-center mt-4 font-baloo">
+              <p className="text-gray-400 text-sm text-center mt-4 font-pyrenzfont">
                 {mode === 'login'
                   ? t('auth.dontHaveAccount')
                   : t('auth.alreadyHaveAccount')}{' '}

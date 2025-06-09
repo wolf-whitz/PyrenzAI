@@ -108,7 +108,6 @@ export function Policy() {
                     variant="h2"
                     component="h1"
                     gutterBottom
-                    className="font-baloo"
                     {...rest}
                   />
                 );
@@ -120,7 +119,6 @@ export function Policy() {
                     variant="h4"
                     component="h2"
                     gutterBottom
-                    className="font-baloo"
                     {...rest}
                   />
                 );
@@ -132,7 +130,6 @@ export function Policy() {
                     variant="body1"
                     component="p"
                     paragraph
-                    className="font-baloo"
                     {...rest}
                   />
                 );
@@ -143,7 +140,7 @@ export function Policy() {
               li: ({ node, ...props }) => {
                 const { ref, ...rest } = props;
                 return (
-                  <li className="font-baloo">
+                  <li>
                     <Typography component="span" variant="body1" {...rest} />
                   </li>
                 );

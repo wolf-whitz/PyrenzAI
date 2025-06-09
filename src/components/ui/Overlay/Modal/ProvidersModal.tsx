@@ -101,7 +101,6 @@ export function ProviderModals({
             id="modal-title"
             variant="h6"
             component="h2"
-            className="text-2xl font-bold"
           >
             Premade Providers
           </Typography>

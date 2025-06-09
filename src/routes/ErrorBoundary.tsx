@@ -92,7 +92,7 @@ class ErrorBoundary extends Component<Props, State> {
               variant="h4"
               component="h1"
               gutterBottom
-              className="text-red-400 font-bold mb-4"
+              className="text-red-400 mb-4"
               data-aos="fade-down"
             >
               Something went wrong. The developer has been notified and is

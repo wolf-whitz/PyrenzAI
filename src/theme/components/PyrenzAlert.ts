@@ -2,7 +2,6 @@ import { Alert, AlertTitle, styled } from '@mui/material';
 
 export const PyrenzAlertTitle = styled(AlertTitle)({
   fontWeight: 'bold',
-  fontFamily: 'Baloo Tammudu 2, system-ui',
   fontSize: '1.1rem',
 });
 
