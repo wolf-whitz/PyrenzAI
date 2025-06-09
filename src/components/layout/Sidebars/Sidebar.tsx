@@ -127,12 +127,19 @@ function SidebarItem({
   navigate,
   setShowLoginModal,
   user,
-}: any) {
+}: {
+  item: { name: string; icon: React.ReactNode; path: string };
+  hovered: string | null;
+  setHovered: (name: string | null) => void;
+  navigate: (path: string) => void;
+  setShowLoginModal: (show: boolean) => void;
+  user: SupabaseUser | null;
+}) {
   const { t } = useTranslation();
 
   const handleClick = () => {
     if (
-      [t('navigation.settings'), t('navigation.create')].includes(item.name) &&
+      [t('navigation.settings'), t('navigation.create'), t('navigation.chats')].includes(item.name) &&
       !user
     ) {
       setShowLoginModal(true);
@@ -152,7 +159,7 @@ function SidebarItem({
         onMouseEnter={() => setHovered(item.name)}
         onMouseLeave={() => setHovered(null)}
       >
-        <ListItemIcon>{item.icon}</ListItemIcon>
+        <ListItemIcon className="text-white">{item.icon}</ListItemIcon>
       </IconButton>
     </Tooltip>
   );

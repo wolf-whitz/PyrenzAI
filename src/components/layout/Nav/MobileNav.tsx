@@ -11,11 +11,7 @@ import { useNavigate } from 'react-router-dom';
 
 type SetShowLoginModal = (show: boolean) => void;
 
-export function MobileNav({
-  setShowLoginModal,
-}: {
-  setShowLoginModal: SetShowLoginModal;
-}) {
+export function MobileNav({ setShowLoginModal }: { setShowLoginModal: SetShowLoginModal }) {
   const { t } = useTranslation();
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const navigate = useNavigate();
@@ -52,29 +48,28 @@ export function MobileNav({
     checkUser();
   }, []);
 
+  const handleNavigation = (item: { name: string; path: string }) => {
+    if (
+      [t('navigation.settings'), t('navigation.create'), t('navigation.chats')].includes(
+        item.name
+      ) &&
+      !user
+    ) {
+      setShowLoginModal(true);
+    } else {
+      navigate(item.path);
+    }
+  };
+
   return (
-    <Paper
-      sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50 }}
-      elevation={3}
-    >
+    <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50 }} elevation={3}>
       <BottomNavigation showLabels>
         {menuItems.map((item) => (
           <BottomNavigationAction
             key={item.name}
             label={item.name}
             icon={item.icon}
-            onClick={() => {
-              if (
-                [t('navigation.settings'), t('navigation.create')].includes(
-                  item.name
-                ) &&
-                !user
-              ) {
-                setShowLoginModal(true);
-              } else {
-                navigate(item.path);
-              }
-            }}
+            onClick={() => handleNavigation(item)}
             sx={{
               transition: 'all 0.3s ease',
               '&:hover': {
