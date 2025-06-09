@@ -3,15 +3,17 @@ import {
   CreateNewChat,
   createCharacter,
   updateCharacter,
-  handleSaveDraft,
+  fetchUserName,
+  handleClearCharacter,
+  handleDeleteCharacter,
+  handleSaveCharacter,
+  handleSubmitCharacter,
 } from '@components';
 import { useState, useEffect } from 'react';
 import { useCharacterStore } from '~/store';
-import { supabase } from '~/Utility/supabaseClient';
 import * as Sentry from '@sentry/react';
 import { Character, Draft } from '@shared-types';
 import { usePyrenzAlert } from '~/provider';
-import { v4 as uuidv4 } from 'uuid';
 
 export const useCreateAPI = (
   navigate: (path: string) => void,
@@ -33,7 +35,7 @@ export const useCreateAPI = (
         setUserUuid(uuid);
         if (uuid) {
           const name = await fetchUserName(uuid);
-          setCharacter({ creator: name });
+          setCharacter({ creator: name || '' });
         }
       } catch (error) {
         console.error('Error fetching user UUID:', error);
@@ -47,22 +49,6 @@ export const useCreateAPI = (
   const tags = Array.isArray(Character.tags)
     ? Character.tags
     : (Character.tags as string).split(',').map((tag: string) => tag.trim());
-
-  const fetchUserName = async (userUuid: string): Promise<string> => {
-    const { data, error } = await supabase
-      .from('user_data')
-      .select('username')
-      .eq('user_uuid', userUuid)
-      .single();
-
-    if (error) {
-      console.error('Error fetching user data:', error);
-      Sentry.captureException(error);
-      return '';
-    }
-
-    return data.username || '';
-  };
 
   const handleImageSelect = (file: File | null) => {
     if (file) {
@@ -89,75 +75,16 @@ export const useCreateAPI = (
   };
 
   const handleClear = () => {
-    setCharacter({
-      persona: '',
-      name: '',
-      model_instructions: '',
-      scenario: '',
-      description: '',
-      first_message: '',
-      tags: [],
-      gender: '',
-      creator: '',
-      is_public: false,
-      is_nsfw: false,
-      profile_image: '',
-    });
+    handleClearCharacter(setCharacter);
     URL.revokeObjectURL(Character.profile_image ?? '');
   };
 
   const handleDelete = async () => {
-    if (!Character.char_uuid) {
-      handleClear();
-      showAlert('Character data cleared.', 'success');
-    } else {
-      try {
-        const { error } = await supabase
-          .from('characters')
-          .delete()
-          .eq('char_uuid', Character.char_uuid);
-
-        if (error) {
-          console.error('Error deleting character:', error);
-          Sentry.captureException(error);
-          showAlert('Error deleting character.', 'alert');
-        } else {
-          handleClear();
-          showAlert('Character deleted successfully.', 'success');
-        }
-      } catch (error) {
-        console.error('Unexpected error:', error);
-        Sentry.captureException(error);
-        showAlert('Unexpected error occurred while deleting character.', 'alert');
-      }
-    }
+    await handleDeleteCharacter(character, setCharacter, showAlert);
   };
 
   const handleSave = async () => {
-    setSaveLoading(true);
-    try {
-      if (!userUuid) {
-        showAlert('User UUID is missing.', 'Alert');
-        setSaveLoading(false);
-        return;
-      }
-
-      const char_uuid = uuidv4();
-      const characterWithUUID = {
-        ...character,
-        char_uuid,
-      };
-
-      const response = await handleSaveDraft(characterWithUUID, userUuid);
-
-      if (!response.success) {
-        showAlert(`Error saving draft: ${response.error}`, 'Alert');
-      } else {
-        showAlert('Draft saved successfully!', 'Success');
-      }
-    } finally {
-      setSaveLoading(false);
-    }
+    await handleSaveCharacter(character, userUuid, setSaveLoading, showAlert);
   };
 
   const handleSelectDraft = (draft: Draft) => {
@@ -174,87 +101,18 @@ export const useCreateAPI = (
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    const fieldsToCheck = [
-      Character.persona,
-      Character.model_instructions,
-      Character.scenario,
-      Character.description,
-      Character.first_message,
-      Character.creator,
-      Character.gender,
-    ];
-
-    const hasUndefinedValues = fieldsToCheck.some((field) => field === undefined);
-
-    if (hasUndefinedValues) {
-      showAlert(
-        'Each field must be at least 2 characters long (excluding tags). Please make sure the checkbox is selected and a gender is chosen from the dropdown.',
-        'Alert'
-      );      
-      setLoading(false);
-      return;
-    }
-
-    try {
-      if (!userUuid) {
-        showAlert('User UUID is missing.', 'Alert');
-        setLoading(false);
-        return;
-      }
-
-      let response;
-      if (character_update) {
-        response = await updateCharacter(character);
-      } else {
-        response = await createCharacter(character);
-      }
-
-      if (response.error) {
-        console.error('Error creating/updating character:', response.error);
-        Sentry.captureException(new Error(response.error));
-        showAlert(`Error creating/updating character: ${response.error}`, 'Alert');
-      } else {
-        const characterUuid = response.char_uuid;
-        if (characterUuid) {
-          const chatResponse = await CreateNewChat(characterUuid, userUuid);
-          if (chatResponse.error) {
-            console.error('Error creating chat:', chatResponse.error);
-            Sentry.captureException(new Error(chatResponse.error));
-            showAlert(`Error creating chat: ${chatResponse.error}`, 'Alert');
-          } else {
-            const chatUuid = chatResponse.chat_uuid;
-            if (chatUuid) {
-              navigate(`/chat/${chatUuid}`);
-            } else {
-              console.error('Chat created but no chat UUID returned.');
-              Sentry.captureException(
-                new Error('Chat created but no chat UUID returned.')
-              );
-              showAlert('Chat created but no chat UUID returned.', 'Alert');
-            }
-          }
-        } else {
-          console.error(
-            'Character created/updated but no character UUID returned.'
-          );
-          Sentry.captureException(
-            new Error(
-              'Character created/updated but no character UUID returned.'
-            )
-          );
-          showAlert('Character created/updated but no character UUID returned.', 'Alert');
-        }
-      }
-    } catch (error) {
-      console.error('Unexpected error:', error);
-      Sentry.captureException(error);
-      showAlert('An unexpected error occurred.', 'Alert');
-    } finally {
-      setLoading(false);
-    }
+    await handleSubmitCharacter(
+      e,
+      character,
+      character_update,
+      userUuid,
+      setLoading,
+      showAlert,
+      navigate,
+      createCharacter,
+      updateCharacter,
+      CreateNewChat
+    );
   };
 
   const formState = {
