@@ -141,7 +141,7 @@ export const useCreateAPI = (
         setSaveLoading(false);
         return;
       }
-      
+
       const char_uuid = uuidv4();
       const characterWithUUID = {
         ...character,
@@ -191,9 +191,9 @@ export const useCreateAPI = (
 
     if (hasUndefinedValues) {
       showAlert(
-        'Some fields are undefined. Please fill in all the required fields.',
+        'Each field must be at least 2 characters long (excluding tags). Please make sure the checkbox is selected and a gender is chosen from the dropdown.',
         'Alert'
-      );
+      );      
       setLoading(false);
       return;
     }

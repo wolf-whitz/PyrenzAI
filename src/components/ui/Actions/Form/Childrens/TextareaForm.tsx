@@ -98,7 +98,7 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
         onChange={handleChange}
         label="Name"
         aria-label="Name"
-        placeholder="Enter character name"
+        placeholder="Enter character name e.g., John Doe"
         maxLength={50}
       />
 
@@ -113,7 +113,7 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
         onChange={handleChange}
         label="Description"
         aria-label="Description"
-        placeholder="Describe the character"
+        placeholder="Describe the character e.g., A brave knight with a mysterious past"
         showTokenizer
       />
       <Textarea
@@ -122,7 +122,7 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
         onChange={handleChange}
         label="Persona"
         aria-label="Persona"
-        placeholder="Define the character's persona"
+        placeholder="Define the character's persona e.g., Adventurous and wise"
         showTokenizer
       />
       <Textarea
@@ -131,7 +131,7 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
         onChange={handleChange}
         label="Scenario"
         aria-label="Scenario"
-        placeholder="Describe a scenario involving the character"
+        placeholder="Describe a scenario involving the character e.g., Saving a village from a dragon"
         showTokenizer
       />
       <Textarea
@@ -140,7 +140,7 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
         onChange={handleChange}
         label="Model Instructions"
         aria-label="Model Instructions"
-        placeholder="Provide instructions for the model"
+        placeholder="Provide instructions for the model e.g., The character should always seek justice"
         showTokenizer
       />
       <Textarea
@@ -149,7 +149,7 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
         onChange={handleChange}
         label="First Message"
         aria-label="First Message"
-        placeholder="What is the first message the character says?"
+        placeholder="What is the first message the character says? e.g., Hello, traveler! What brings you here?"
         showTokenizer
       />
       <Textarea
@@ -158,7 +158,7 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
         onChange={handleChange}
         label="Tags"
         aria-label="Tags"
-        placeholder="Add tags separated by commas"
+        placeholder="Add tags separated by commas e.g., hero, knight, adventure"
         is_tag
         onTagPressed={handleOpenDropdown}
       />
@@ -182,7 +182,7 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
             value={searchQuery}
             onChange={handleSearchChange}
             className="mb-2"
-            placeholder="Search for tags"
+            placeholder="Search for tags e.g., fantasy"
           />
           <div className="max-h-96 overflow-y-auto">
             {filteredTags.map((tag) => (
