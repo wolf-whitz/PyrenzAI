@@ -23,10 +23,7 @@ interface CharacterCardProps {
   isOwner?: boolean;
 }
 
-export function CharacterCard({
-  character,
-  isOwner = false,
-}: CharacterCardProps) {
+export function CharacterCard({ character, isOwner = false }: CharacterCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState<Character | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -63,19 +60,11 @@ export function CharacterCard({
             />
           </PyrenzCharacterCardImage>
           <PyrenzCharacterCardContent>
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-            >
+            <Box display="flex" justifyContent="space-between" alignItems="center">
               <PyrenzCharacterCardTitle>
                 {character.name}
               </PyrenzCharacterCardTitle>
-              <Box
-                display={{ xs: 'none', sm: 'none', md: 'flex' }}
-                alignItems="center"
-                gap={0.5}
-              >
+              <Box display={{ xs: 'none', sm: 'none', md: 'flex' }} alignItems="center" gap={0.5}>
                 <MessageIcon fontSize="small" sx={{ color: 'white' }} />
                 <Typography variant="caption" className="font-medium">
                   {character.chat_messages_count}
@@ -96,11 +85,7 @@ export function CharacterCard({
             >
               <PyrenzAltTag>@{character.creator}</PyrenzAltTag>
 
-              <Box
-                display={{ xs: 'flex', sm: 'flex', md: 'none' }}
-                alignItems="center"
-                gap={0.5}
-              >
+              <Box display={{ xs: 'flex', sm: 'flex', md: 'none' }} alignItems="center" gap={0.5}>
                 <MessageIcon fontSize="small" sx={{ color: 'white' }} />
                 <Typography variant="caption" className="font-medium">
                   {character.chat_messages_count}
@@ -127,7 +112,7 @@ export function CharacterCard({
                 </PyrenzCharacterCardTag>
               )}
               {Array.isArray(character.tags) &&
-                character.tags.map((tag, index) => (
+                character.tags.slice(0, 5).map((tag, index) => (
                   <PyrenzCharacterCardTag key={index}>
                     {tag}
                   </PyrenzCharacterCardTag>

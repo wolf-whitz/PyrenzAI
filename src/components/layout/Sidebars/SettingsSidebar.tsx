@@ -5,25 +5,16 @@ import { PyrenzStyledDrawer } from '~/theme';
 interface SettingsSidebarProps {
   settingsOpen: boolean;
   onClose: () => void;
-  user: {
-    username: string;
-    user_avatar: string;
-  };
 }
 
 export function SettingsSidebar({
   settingsOpen,
   onClose,
-  user,
 }: SettingsSidebarProps) {
   return (
     <PyrenzStyledDrawer
       isOpen={settingsOpen}
       onClose={onClose}
-      profileData={{
-        name: user.username,
-        avatarUrl: user.user_avatar,
-      }}
     >
       <Box className="flex justify-center">
         <img
