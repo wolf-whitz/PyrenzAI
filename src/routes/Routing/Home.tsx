@@ -5,7 +5,6 @@ import {
   useMediaQuery,
   Box,
   useTheme,
-  CircularProgress,
 } from '@mui/material';
 import {
   Sidebar,
@@ -182,9 +181,7 @@ export function Home() {
               />
             </Box>
 
-            {loading ? (
-              <CircularProgress />
-            ) : (
+            {!loading && (
               <Pagination
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}

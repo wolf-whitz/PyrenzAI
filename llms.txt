@@ -1,0 +1,25 @@
+# PyrenzAI
+
+> PyrenzAI is a full-on AI chat app for immersive conversations with endless anime characters and story creation, built with TypeScript. Hosted as a web platform where users can interact freely at https://pyrenzai.com.
+
+PyrenzAI lets users:
+- Chat with various AI-powered anime characters anytime.
+- Create and guide interactive storylines between them and the characters.
+
+## GitHub Repository
+
+- [PyrenzAI on GitHub](https://github.com/Whitzzscott/PyrenzAI): Source code, issue tracker, and contribution guide.
+
+## Live App
+
+- [PyrenzAI Website](https://pyrenzai.com): The deployed application.
+
+## Architecture & Tech Stack
+
+- **Frontend**: TypeScript, React 
+- **AI features**: Powered by LLM APIs and character-specific prompt engineering.
+
+## Developer Guidance
+
+- If contributing: check for setup instructions, install dependencies (probably `npm install`) and run locally (`npm start`).
+- Refer to GitHub README and code comments for configuration details.

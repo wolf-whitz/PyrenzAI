@@ -7,6 +7,7 @@ import * as Sentry from '@sentry/react';
 interface ModelOption {
   label: string;
   name: string;
+  description: string;
 }
 
 interface MenuAPIProps {
@@ -26,11 +27,15 @@ export const useMenuAPI = ({ char }: MenuAPIProps) => {
     try {
       const { data, error } = await supabase
         .from('model_identifiers')
-        .select('name');
+        .select('name, model_description');
 
       if (error) throw error;
 
-      return data.map((item) => ({ label: item.name, name: item.name }));
+      return data.map((item) => ({
+        label: item.name,
+        name: item.name,
+        description: item.model_description
+      }));
     } catch (error) {
       console.error(error);
       Sentry.captureException(error);
@@ -79,7 +84,7 @@ export const useMenuAPI = ({ char }: MenuAPIProps) => {
         }
 
         const options = await fetchModelIdentifiers();
-        options.push({ label: 'Custom', name: 'Custom' });
+        options.push({ label: 'Custom', name: 'Custom', description: 'Custom description' });
         setModelOptions(options);
       } catch (error) {
         Sentry.captureException(error);

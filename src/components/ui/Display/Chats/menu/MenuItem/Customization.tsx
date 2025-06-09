@@ -13,6 +13,7 @@ import { useCustomizeAPI } from '@api';
 interface ModelOption {
   label: string;
   name: string;
+  description: string;
 }
 
 interface CustomizationProps {
@@ -44,9 +45,7 @@ export function Customization({
   subscriptionPlan,
   modelOptions,
 }: CustomizationProps) {
-  const [showPopover, setShowPopover] = useState<
-    keyof typeof sliderDescriptions | null
-  >(null);
+  const [showPopover, setShowPopover] = useState<keyof typeof sliderDescriptions | null>(null);
 
   const {
     maxTokens,
@@ -75,6 +74,7 @@ export function Customization({
         modelOptions={modelOptions.map((option) => ({
           value: option.name,
           label: option.label,
+          description: option.description,
         }))}
       />
 

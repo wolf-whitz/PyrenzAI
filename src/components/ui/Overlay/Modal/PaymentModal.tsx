@@ -20,11 +20,7 @@ export function PaymentModal({
   isMonthly,
 }: PaymentModalProps) {
   const handleKofiClick = () => {
-    window.location.href = 'https://ko-fi.com/whitzscott';
-  };
-
-  const handleStoreClick = () => {
-    console.log(`Proceeding to Store payment for ${plan?.title}`);
+    window.location.href = 'https://ko-fi.com/whitzscott/tiers';
   };
 
   const price = isMonthly
@@ -56,8 +52,8 @@ export function PaymentModal({
         </Typography>
         <Typography variant="body2" gutterBottom sx={{ mt: 2 }}>
           <strong>Important when buying:</strong> PyrenzAI does not offer
-          automatic refunds after <strong>3 days</strong> from the purchase
-          date. Exceptions may apply to payments made through the store.
+          refunds after <strong>5 days</strong> from the purchase
+          date.
         </Typography>
 
         <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center', gap: 2 }}>
@@ -78,26 +74,7 @@ export function PaymentModal({
               alt="Kofi"
               style={{ width: '20px', marginRight: '8px' }}
             />
-            Support via Kofi
-          </PyrenzBlueButton>
-          <PyrenzBlueButton
-            variant="contained"
-            onClick={handleStoreClick}
-            sx={{
-              borderRadius: '20px',
-              backgroundColor: '#4CAF50',
-              color: 'white',
-              '&:hover': {
-                backgroundColor: '#3E8E41',
-              },
-            }}
-          >
-            <img
-              src="/Favicons/Fastspring.png"
-              alt="FastSpring"
-              style={{ width: '20px', marginRight: '8px' }}
-            />
-            Buy via Store
+Buy via Ko-fi
           </PyrenzBlueButton>
         </Box>
       </Box>
