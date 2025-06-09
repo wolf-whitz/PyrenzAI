@@ -81,32 +81,6 @@ export const handleSaveCharacter = async (
       setSaveLoading(false);
       return;
     }
-
-    const fieldsToCheck = [
-        character.persona,
-        character.model_instructions,
-        character.scenario,
-        character.description,
-        character.first_message,
-        character.creator,
-        character.gender,
-      ];
-  
-      const hasEmptyOrUndefinedValues = fieldsToCheck.some(
-        (field) =>
-          field === undefined ||
-          (typeof field === 'string' && field.trim() === '')
-      );
-
-
-      if (hasEmptyOrUndefinedValues) {
-        showAlert(
-          'Each field must be at least 2 characters long (excluding tags). Please make sure the checkbox is selected and a gender is chosen from the dropdown.',
-          'Alert'
-        );
-        setSaveLoading(false);
-        return;
-      }
       
     const char_uuid = uuidv4();
     const characterWithUUID = {
@@ -140,32 +114,6 @@ export const handleSubmitCharacter = async (
 ) => {
   e.preventDefault();
   setLoading(true);
-
-  const fieldsToCheck = [
-    character.persona,
-    character.model_instructions,
-    character.scenario,
-    character.description,
-    character.first_message,
-    character.creator,
-    character.gender,
-  ];
-
-  console.log(fieldsToCheck)
-  const hasEmptyOrUndefinedValues = fieldsToCheck.some(
-    (field) =>
-      field === undefined ||
-      (typeof field === 'string' && field.trim() === '')
-  );
-  
-  if (hasEmptyOrUndefinedValues) {
-    showAlert(
-      'Each field must be at least 2 characters long (excluding tags). Please make sure the checkbox is selected and a gender is chosen from the dropdown.',
-      'Alert'
-    );
-    setLoading(false);
-    return;
-  }
 
   try {
     if (!userUuid) {
