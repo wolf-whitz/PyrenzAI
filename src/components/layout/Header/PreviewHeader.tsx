@@ -17,6 +17,8 @@ import {
   Chat as ChatIcon,
   Menu as MenuIcon,
   AutoAwesome as PyrenzPlusIcon,
+  Login as LoginIcon,
+  PersonAdd as PersonAddIcon,
 } from '@mui/icons-material';
 import { FaDiscord } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
@@ -26,18 +28,11 @@ import { PyrenzStyledDrawer, PyrenzBlueButton } from '~/theme';
 interface HeaderProps {
   setShowLogin: (value: boolean) => void;
   setShowRegister: (value: boolean) => void;
-  user: User;
-}
-
-interface User {
-  username: string;
-  icon?: string;
 }
 
 export function PreviewHeader({
   setShowLogin,
   setShowRegister,
-  user,
 }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -120,6 +115,7 @@ export function PreviewHeader({
             {!isLoggedIn && (
               <>
                 <PyrenzBlueButton
+                  startIcon={<LoginIcon />}
                   sx={{ backgroundColor: 'transparent' }}
                   className="font-baloo hover:text-blue-600"
                   onClick={() => setShowLogin(true)}
@@ -127,6 +123,7 @@ export function PreviewHeader({
                   {t('buttons.login')}
                 </PyrenzBlueButton>
                 <PyrenzBlueButton
+                  startIcon={<PersonAddIcon />}
                   variant="contained"
                   sx={{ backgroundColor: 'transparent' }}
                   className="bg-[#E03201] font-baloo hover:bg-blue-600"
@@ -147,10 +144,6 @@ export function PreviewHeader({
             <PyrenzStyledDrawer
               isOpen={menuOpen}
               onClose={() => setMenuOpen(false)}
-              profileData={{
-                name: user.username,
-                avatarUrl: user.icon || '/path-to-avatar.jpg',
-              }}
             >
               <Box
                 sx={{ width: 250 }}
@@ -199,6 +192,7 @@ export function PreviewHeader({
                           },
                         }}
                       >
+                        <ListItemIcon><LoginIcon /></ListItemIcon>
                         <ListItemText primary={t('buttons.login')} />
                       </ListItem>
                       <ListItem
@@ -215,6 +209,7 @@ export function PreviewHeader({
                           },
                         }}
                       >
+                        <ListItemIcon><PersonAddIcon /></ListItemIcon>
                         <ListItemText primary={t('buttons.signUp')} />
                       </ListItem>
                     </>

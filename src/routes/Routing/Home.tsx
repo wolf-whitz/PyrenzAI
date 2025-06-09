@@ -16,12 +16,28 @@ import {
   CustomButton,
   Pagination,
   Banner,
-  GetUserData,
   AuthenticationModal,
 } from '@components';
 import { useHomepageAPI } from '@api';
+import { supabase } from '~/Utility/supabaseClient';
+import { User } from '@supabase/supabase-js';
 
 export function Home() {
+  const [user, setUser] = useState<User | null>(null);
+  const [showLogin, setShowLogin] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  const fetchUser = useCallback(async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    setUser(user);
+  }, []);
+
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
+
   const {
     search,
     currentPage,
@@ -33,43 +49,19 @@ export function Home() {
     itemsPerPage,
     handleButtonClick,
     fetchUserData,
-  } = useHomepageAPI();
-
-  const [showLogin, setShowLogin] = useState(false);
-  const [showRegister, setShowRegister] = useState(false);
-  const [user, setUser] = useState({ username: '', user_avatar: '' });
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  } = useHomepageAPI(user);
 
   const fetchData = useCallback(() => {
-    fetchUserData().catch((error) => {
-      console.error('Error fetching user data:', error);
-    });
-  }, [fetchUserData]);
+    if (user) {
+      fetchUserData().catch((error) => {
+        console.error('Error fetching user data:', error);
+      });
+    }
+  }, [fetchUserData, user]);
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const userData = await GetUserData();
-        if ('error' in userData) {
-          console.error('Error fetching user:', userData.error);
-        } else {
-          setUser({
-            username: userData.username,
-            user_avatar: userData.user_avatar,
-          });
-        }
-      } catch (error) {
-        console.error('Error fetching user:', error);
-      }
-    };
-
-    fetchUser();
-  }, []);
 
   const toggleMode = () => {
     setShowLogin(!showLogin);
@@ -93,7 +85,6 @@ export function Home() {
           <PreviewHeader
             setShowLogin={setShowLogin}
             setShowRegister={setShowRegister}
-            user={user}
           />
         </Box>
 

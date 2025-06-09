@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { fetchCharacters, GetUserData } from '@components';
+import { fetchCharacters } from '@components';
 import { usePyrenzAlert } from '~/provider';
 import type { Character } from '@shared-types';
 import { useHomeStore } from '~/store';
@@ -37,18 +37,8 @@ export function useFetchCharacters({
         search || ' ',
         setMaxPage
       );
-      const userData = await GetUserData();
 
-      if ('error' in userData) {
-        throw new Error(userData.error);
-      }
-
-      const currentUsername = String(userData.username);
-
-      const safeCharacters = response.characters.map((char: Character) => ({
-        ...char,
-        isOwner: String(char.creator) === currentUsername,
-      }));
+      const safeCharacters = response.characters.map((char: Character) => (char));
 
       setCharacters(safeCharacters);
     } catch (error) {

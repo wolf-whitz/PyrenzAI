@@ -1,20 +1,15 @@
 import React from 'react';
-import { Drawer, Avatar, Typography, Divider, Box } from '@mui/material';
+import { Drawer, Box } from '@mui/material';
 
 interface PyrenzStyledDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  profileData: {
-    name: string;
-    avatarUrl: string;
-  };
   children: React.ReactNode;
 }
 
 export const PyrenzStyledDrawer = ({
   isOpen,
   onClose,
-  profileData,
   children,
 }: PyrenzStyledDrawerProps) => {
   return (
@@ -35,21 +30,6 @@ export const PyrenzStyledDrawer = ({
         },
       }}
     >
-      <Box display="flex" alignItems="center" mb={1}>
-        <Avatar
-          alt="Profile"
-          src={profileData.avatarUrl}
-          sx={{ width: 32, height: 32 }}
-        />
-        <Typography
-          variant="subtitle2"
-          className="font-baloo"
-          sx={{ marginLeft: 1 }}
-        >
-          {profileData.name}
-        </Typography>
-      </Box>
-      <Divider sx={{ backgroundColor: 'rgba(75, 85, 99, 0.3)', marginY: 1 }} />
       <Box sx={{ paddingTop: 1 }}>{children}</Box>
     </Drawer>
   );

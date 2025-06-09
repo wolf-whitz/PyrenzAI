@@ -19,7 +19,7 @@ interface PostResponse {
   success: boolean;
 }
 
-export const useHomepageAPI = () => {
+export const useHomepageAPI = (user: any) => {
   const navigate = useNavigate();
   const {
     search,
@@ -104,10 +104,6 @@ export const useHomepageAPI = () => {
   };
 
   const fetchUserData = useCallback(async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
     if (user) {
       const userData = { userUUID: user.id };
 
@@ -124,7 +120,8 @@ export const useHomepageAPI = () => {
         return { success: false, error: 'Failed to create user data' };
       }
     }
-  }, []);
+    return { success: false, error: 'No user exists' };
+  }, [user]);
 
   return {
     navigate,
