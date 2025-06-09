@@ -12,7 +12,7 @@ export function GetTheme() {
   } else {
     return createTheme({
       typography: {
-        fontFamily: 'Baloo Tammudu 2, system-ui',
+        fontFamily: 'Comic Neue, system-ui',
       },
       palette: {
         mode: 'dark',
@@ -30,20 +30,6 @@ export function GetTheme() {
       },
       components: {
         ...componentOverrides,
-        MuiAlert: {
-          styleOverrides: {
-            root: {
-              fontFamily: 'Baloo Tammudu 2, system-ui',
-            },
-          },
-        },
-        MuiAlertTitle: {
-          styleOverrides: {
-            root: {
-              fontFamily: 'Baloo Tammudu 2, system-ui',
-            },
-          },
-        },
       },
     });
   }

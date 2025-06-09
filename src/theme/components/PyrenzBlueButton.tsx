@@ -14,7 +14,6 @@ export const PyrenzBlueButton = styled(Button)<{
   dataState?: string;
   component?: React.ElementType;
 }>({
-  fontFamily: 'font-baloo, sans-serif',
   color: 'white',
   backgroundColor: 'black',
   transition: 'all 0.3s ease',
