@@ -15,9 +15,7 @@ interface PersonaCard {
 
 export function Persona() {
   const [isModalOpen, setModalOpen] = useState(false);
-  const [selectedPersona, setSelectedPersona] = useState<PersonaCard | null>(
-    null
-  );
+  const [selectedPersona, setSelectedPersona] = useState<PersonaCard | null>(null);
   const [personaData, setPersonaData] = useState<PersonaCard[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -26,9 +24,7 @@ export function Persona() {
     try {
       const { data, error } = await supabase
         .from('personas')
-        .select(
-          'id, persona_name, persona_description, persona_profile, is_selected'
-        );
+        .select('id, persona_name, persona_description, persona_profile, is_selected');
 
       if (error) {
         throw error;
@@ -59,22 +55,25 @@ export function Persona() {
     fetchPersona();
   }, []);
 
-  const handleSelectPersona = (persona: PersonaCard) => {
-    (async () => {
-      try {
-        await supabase
-          .from('personas')
-          .update({ is_selected: true })
-          .eq('id', persona.id);
+  const handleSelectPersona = async (persona: PersonaCard) => {
+    try {
+      await supabase
+        .from('personas')
+        .update({ is_selected: false })
+        .eq('user_uuid', (await supabase.auth.getUser()).data.user?.id);
 
-        await fetchPersona();
+      await supabase
+        .from('personas')
+        .update({ is_selected: true })
+        .eq('id', persona.id);
 
-        setSelectedPersona(persona);
-        setModalOpen(false);
-      } catch (error) {
-        console.error('Failed to update persona selection', error);
-      }
-    })();
+      await fetchPersona();
+
+      setSelectedPersona(persona);
+      setModalOpen(false);
+    } catch (error) {
+      console.error('Failed to update persona selection', error);
+    }
   };
 
   const handleDeletePersona = async (personaId: string) => {
