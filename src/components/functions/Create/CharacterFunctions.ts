@@ -151,6 +151,7 @@ export const handleSubmitCharacter = async (
     character.gender,
   ];
 
+  console.log(fieldsToCheck)
   const hasEmptyOrUndefinedValues = fieldsToCheck.some(
     (field) =>
       field === undefined ||

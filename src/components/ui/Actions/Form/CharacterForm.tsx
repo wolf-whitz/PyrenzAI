@@ -1,4 +1,3 @@
-import React, { ChangeEvent } from 'react';
 import {
   GenderDropdown,
   VisibilityCheckboxes,
@@ -8,7 +7,6 @@ import {
 import { TextareaForm } from './Childrens/TextareaForm';
 import { useNavigate } from 'react-router-dom';
 import { useCreateAPI } from '@api';
-import { useCharacterStore } from '~/store';
 
 interface CharacterFormProps {
   character_update: boolean;
