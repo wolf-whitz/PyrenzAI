@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        baloo: ['comic-neue', 'Baloo 2', 'system-ui'],
+        baloo: ['Comic Neue', 'Baloo 2', 'system-ui'],
         lato: ['Lato', 'Baloo Tammudu 2', 'system-ui'],
         fredoka: ['Fredoka', 'Baloo Tammudu 2', 'system-ui'],
         baloo2: ['Baloo 2', 'Baloo Tammudu 2', 'system-ui'],

@@ -99,7 +99,6 @@ export function ChatMain({
         <SettingsSidebar
           settingsOpen={isSettingsOpen}
           onClose={toggleSettings}
-          user={user}
         />
 
         <AdModal

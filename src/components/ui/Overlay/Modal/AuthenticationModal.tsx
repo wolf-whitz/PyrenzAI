@@ -68,7 +68,7 @@ export function AuthenticationModal({
   return ReactDOM.createPortal(
     <Dialog.Root open onOpenChange={onClose}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-50 bg-black bg-opacity-50" />
+        <Dialog.Overlay className="fixed inset-0 z-5`0 bg-black bg-opacity-50" />
         <AnimatePresence>
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}

@@ -27,7 +27,7 @@ const MotionCard = motion(Card);
 const MotionTypography = motion(Typography);
 const MotionButton = motion(PyrenzBlueButton);
 
-const getRibbonText = (planIdentifier: string | undefined) => {
+const getRibbonText = (planIdentifier: string | undefined): string | null => {
   switch (planIdentifier) {
     case 'durian':
       return 'Popular';
@@ -40,7 +40,15 @@ const getRibbonText = (planIdentifier: string | undefined) => {
   }
 };
 
-export function SubscriptionCard({
+const parseDescription = (description: string) => {
+  const parts = description.split('\n');
+  const title = parts[0].replace(/^###\s/, '');
+  const content = parts.slice(1, -1).join('\n');
+  const color = parts[parts.length - 1];
+  return { title, content, color };
+};
+
+export const SubscriptionCard: React.FC<SubscriptionCardsProps> = ({
   plan,
   isSubscribed,
   onSubscribe,
@@ -48,25 +56,15 @@ export function SubscriptionCard({
   isHighlighted,
   onMouseEnter,
   onMouseLeave,
-}: SubscriptionCardsProps) {
-  const parseDescription = (description: string) => {
-    const parts = description.split('\n');
-    const title = parts[0].replace(/^###\s/, '');
-    const content = parts.slice(1, -1).join('\n');
-    const color = parts[parts.length - 1];
-    return { title, content, color };
-  };
-
+}) => {
   const price = isMonthly ? plan.price_count_monthly : plan.price_count_yearly;
   const ribbonText = getRibbonText(plan.plan_identifier);
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+    <Box className="flex justify-center w-full">
       <MotionCard
+        className="flex flex-col flex-1"
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          flex: 1,
           boxShadow: isHighlighted ? 10 : 3,
           borderRadius: 4,
           border: plan.color ? `2px solid ${plan.color}` : 'none',
@@ -75,8 +73,8 @@ export function SubscriptionCard({
           backgroundPosition: 'center',
           position: 'relative',
           overflow: 'hidden',
-          maxWidth: 350, // Maximum width for larger screens
-          width: '100%', // Full width for smaller screens
+          maxWidth: 350,
+          width: '100%',
         }}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
@@ -111,18 +109,11 @@ export function SubscriptionCard({
           </PyrenzRibbon>
         )}
         <CardContent
-          sx={{
-            textAlign: 'center',
-            flexGrow: 1,
-            position: 'relative',
-            zIndex: 1,
-            color: 'white',
-            padding: 3,
-          }}
+          className="text-center flex-grow relative z-10 text-white p-6"
         >
           <MotionTypography
             variant="h5"
-            color="inherit"
+            className="font-baloo"
             sx={{ mb: 2 }}
             initial={{ y: -20 }}
             animate={{ y: 0 }}
@@ -132,7 +123,7 @@ export function SubscriptionCard({
           </MotionTypography>
           <MotionTypography
             variant="h6"
-            color="inherit"
+            className="font-baloo"
             sx={{ mb: 3 }}
             initial={{ scale: 0.9 }}
             animate={{ scale: 1 }}
@@ -140,10 +131,10 @@ export function SubscriptionCard({
           >
             {price}
           </MotionTypography>
-          {plan.descriptions.map((description, i) => {
+          {plan.descriptions.map((description: string, i: number) => {
             const { title, content, color } = parseDescription(description);
             return (
-              <Box key={i} sx={{ mb: 2 }}>
+              <Box key={i} className="mb-4">
                 <Box
                   sx={{
                     backgroundColor: color,
@@ -154,18 +145,18 @@ export function SubscriptionCard({
                     marginBottom: '8px',
                   }}
                 >
-                  <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>
+                  <Typography variant="subtitle2" className="font-bold font-baloo">
                     {title}
                   </Typography>
                 </Box>
-                <Typography variant="body2" color="inherit">
+                <Typography variant="body2" className="font-baloo">
                   {content}
                 </Typography>
               </Box>
             );
           })}
         </CardContent>
-        <CardActions sx={{ justifyContent: 'center', p: 3 }}>
+        <CardActions className="justify-center p-6">
           <MotionButton
             variant="contained"
             onClick={() => onSubscribe(plan.title)}
@@ -188,4 +179,4 @@ export function SubscriptionCard({
       </MotionCard>
     </Box>
   );
-}
+};
