@@ -4,6 +4,7 @@ import { ChatMain } from '~/components';
 import { Message, ChatContainerProps, Character } from '@shared-types';
 import { ChatPageSpinner } from '@components';
 import clsx from 'clsx';
+import { getImageFromDB } from '~/Utility/IndexDB'; 
 
 interface ChatContainerPropsExtended
   extends Omit<ChatContainerProps, 'char' | 'firstMessage'> {
@@ -18,24 +19,27 @@ export function ChatContainer({
   className = '',
   chat_uuid,
 }: ChatContainerPropsExtended) {
-  const messageIdRef = useRef<{ charId: string | null; userId: string | null }>(
-    {
-      charId: null,
-      userId: null,
-    }
-  );
+  const messageIdRef = useRef<{ charId: string | null; userId: string | null }>({
+    charId: null,
+    userId: null,
+  });
 
   const { messages, setMessages, firstMessage } = useChatStore();
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [bgImage, setBgImage] = useState<string | null>(null);
 
   useEffect(() => {
-    const storedBgImage = localStorage.getItem('bgImage');
-    if (storedBgImage) {
-      setBgImage(storedBgImage);
-    } else if (char?.profile_image) {
-      setBgImage(char.profile_image);
-    }
+    const loadImage = async () => {
+      const blob = await getImageFromDB();
+      if (blob) {
+        const imageUrl = URL.createObjectURL(blob);
+        setBgImage(imageUrl);
+      } else if (char?.profile_image) {
+        setBgImage(char.profile_image);
+      }
+    };
+
+    loadImage();
   }, [char?.profile_image]);
 
   return (

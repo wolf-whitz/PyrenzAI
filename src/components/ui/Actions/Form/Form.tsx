@@ -5,12 +5,14 @@ import { CreateButton, DraftsModal, ImportCharacterModal } from '@components';
 import SaveIcon from '@mui/icons-material/Save';
 import DescriptionIcon from '@mui/icons-material/Description';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
+import DeleteIcon from '@mui/icons-material/Delete'; 
 import { Character, Draft } from '@shared-types';
 import { PyrenzBlueButton } from '~/theme';
 
 interface FormActionsProps {
   onClear: () => void;
   onSave: () => void;
+  onDelete: () => void;  
   loading: boolean;
   saveLoading: boolean;
   onSelectDraft: (draft: Draft) => void;
@@ -21,6 +23,7 @@ interface FormActionsProps {
 export function FormActions({
   onClear,
   onSave,
+  onDelete,  
   loading,
   saveLoading,
   onSelectDraft,
@@ -28,8 +31,7 @@ export function FormActions({
   character_update,
 }: FormActionsProps) {
   const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
-  const [isImportCharacterModalOpen, setIsImportCharacterModalOpen] =
-    useState(false);
+  const [isImportCharacterModalOpen, setIsImportCharacterModalOpen] = useState(false);
 
   const handleOpenDraftModal = () => {
     setIsDraftModalOpen(true);
@@ -104,6 +106,15 @@ export function FormActions({
         startIcon={<UploadFileIcon className="text-xl" />}
       >
         Import Character
+      </PyrenzBlueButton>
+      <PyrenzBlueButton
+        variant="contained"
+        color="error"  
+        onClick={onDelete}
+        className="w-full sm:w-auto"
+        startIcon={<DeleteIcon className="text-xl" />}
+      >
+        Delete
       </PyrenzBlueButton>
       <CreateButton
         loading={loading}

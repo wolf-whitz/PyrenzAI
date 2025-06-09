@@ -1,91 +1,68 @@
 import { useEffect, useState, useRef } from 'react';
+import { saveImageToDB, getImageFromDB, openDB } from '~/Utility/IndexDB';
 
 export function Cosmetic() {
-  const [charColor, setCharColor] = useState<string>('green');
-  const [tempColor, setTempColor] = useState<string>('green');
   const [bgImage, setBgImage] = useState<string | null>(null);
   const [tempBgImage, setTempBgImage] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const savedColor = localStorage.getItem('charColor');
-    const savedBgImage = localStorage.getItem('bgImage');
-
-    if (savedColor) {
-      setCharColor(savedColor);
-      setTempColor(savedColor);
-    }
-    if (savedBgImage) {
-      setBgImage(savedBgImage);
-      setTempBgImage(savedBgImage);
-    }
+    const loadImage = async () => {
+      const blob = await getImageFromDB();
+      if (blob) {
+        const imageUrl = URL.createObjectURL(blob);
+        setBgImage(imageUrl);
+        setTempBgImage(imageUrl);
+      }
+    };
+    loadImage();
   }, []);
 
-  const handleSave = () => {
-    setCharColor(tempColor);
-    setBgImage(tempBgImage);
-    localStorage.setItem('charColor', tempColor);
-
+  const handleSave = async () => {
     if (tempBgImage) {
-      localStorage.setItem('bgImage', tempBgImage);
+      const response = await fetch(tempBgImage);
+      const blob = await response.blob();
+      await saveImageToDB(blob);
     } else {
-      localStorage.removeItem('bgImage');
+      const db = await openDB();
+      const transaction = db.transaction('images', 'readwrite');
+      const store = transaction.objectStore('images');
+      store.delete('bgImage');
     }
+    setBgImage(tempBgImage);
   };
 
-  const handleFileDrop = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleFileDrop = async (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setDragging(false);
     const file = e.dataTransfer.files[0];
     if (file && file.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const imageUrl = reader.result as string;
-        setTempBgImage(imageUrl);
-      };
-      reader.readAsDataURL(file);
+      const imageUrl = URL.createObjectURL(file);
+      setTempBgImage(imageUrl);
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && file.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const imageUrl = reader.result as string;
-        setTempBgImage(imageUrl);
-      };
-      reader.readAsDataURL(file);
+      const imageUrl = URL.createObjectURL(file);
+      setTempBgImage(imageUrl);
     }
   };
 
-  const handleDeleteImage = () => {
+  const handleDeleteImage = async () => {
     setTempBgImage(null);
     setBgImage(null);
-    localStorage.removeItem('bgImage');
+    const db = await openDB();
+    const transaction = db.transaction('images', 'readwrite');
+    const store = transaction.objectStore('images');
+    store.delete('bgImage');
   };
 
   return (
     <div className="mt-4 p-4 bg-gray-700 rounded-md">
       <h3 className="text-lg font-semibold">Customization</h3>
-
-      <div className="mt-3">
-        <label className="block font-medium">Character Text Color</label>
-        <input
-          type="color"
-          value={tempColor}
-          onChange={(e) => setTempColor(e.target.value)}
-          className="mt-2 w-full h-10 cursor-pointer border border-gray-500 rounded-md"
-        />
-      </div>
-
-      <p className="mt-3">
-        Preview:{' '}
-        <span style={{ color: tempColor, fontWeight: 'bold' }}>
-          Character's Text
-        </span>
-      </p>
 
       <div className="mt-3">
         <p className="text-gray-300">Change Background</p>
@@ -109,7 +86,10 @@ export function Cosmetic() {
                 className="w-full h-full object-cover rounded-md"
               />
               <button
-                onClick={handleDeleteImage}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteImage();
+                }}
                 className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition"
               >
                 &times;

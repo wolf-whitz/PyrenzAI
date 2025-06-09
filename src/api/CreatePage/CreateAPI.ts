@@ -106,6 +106,33 @@ export const useCreateAPI = (
     URL.revokeObjectURL(Character.profile_image ?? '');
   };
 
+  const handleDelete = async () => {
+    if (!Character.char_uuid) {
+      handleClear();
+      showAlert('Character data cleared.', 'success');
+    } else {
+      try {
+        const { error } = await supabase
+          .from('characters')
+          .delete()
+          .eq('char_uuid', Character.char_uuid);
+
+        if (error) {
+          console.error('Error deleting character:', error);
+          Sentry.captureException(error);
+          showAlert('Error deleting character.', 'alert');
+        } else {
+          handleClear();
+          showAlert('Character deleted successfully.', 'success');
+        }
+      } catch (error) {
+        console.error('Unexpected error:', error);
+        Sentry.captureException(error);
+        showAlert('Unexpected error occurred while deleting character.', 'alert');
+      }
+    }
+  };
+
   const handleSave = async () => {
     setSaveLoading(true);
     try {
@@ -169,7 +196,7 @@ export const useCreateAPI = (
 
     if (!isValid) {
       showAlert(
-        'Each field must be at least 2 characters long. (Excluding tags)',
+        'Each field must be at least 2 characters long (excluding tags). Please make sure the checkbox is selected and a gender is chosen from the dropdown.',
         'Alert'
       );
       setLoading(false);
@@ -244,6 +271,7 @@ export const useCreateAPI = (
     setCharacter,
     handleClear,
     handleSave,
+    handleDelete, 
     handleSelectDraft,
     handleImportCharacter,
     handleSubmit: (e: React.FormEvent) => handleSubmit(e, character_update),

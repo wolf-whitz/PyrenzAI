@@ -98,6 +98,7 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
         onChange={handleChange}
         label="Name"
         aria-label="Name"
+        placeholder="Enter character name"
         maxLength={50}
       />
 
@@ -112,6 +113,7 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
         onChange={handleChange}
         label="Description"
         aria-label="Description"
+        placeholder="Describe the character"
         showTokenizer
       />
       <Textarea
@@ -120,6 +122,7 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
         onChange={handleChange}
         label="Persona"
         aria-label="Persona"
+        placeholder="Define the character's persona"
         showTokenizer
       />
       <Textarea
@@ -128,6 +131,7 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
         onChange={handleChange}
         label="Scenario"
         aria-label="Scenario"
+        placeholder="Describe a scenario involving the character"
         showTokenizer
       />
       <Textarea
@@ -136,6 +140,7 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
         onChange={handleChange}
         label="Model Instructions"
         aria-label="Model Instructions"
+        placeholder="Provide instructions for the model"
         showTokenizer
       />
       <Textarea
@@ -144,6 +149,7 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
         onChange={handleChange}
         label="First Message"
         aria-label="First Message"
+        placeholder="What is the first message the character says?"
         showTokenizer
       />
       <Textarea
@@ -152,6 +158,7 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
         onChange={handleChange}
         label="Tags"
         aria-label="Tags"
+        placeholder="Add tags separated by commas"
         is_tag
         onTagPressed={handleOpenDropdown}
       />
@@ -175,6 +182,7 @@ export function TextareaForm({ formState, handleChange }: TextareaFormProps) {
             value={searchQuery}
             onChange={handleSearchChange}
             className="mb-2"
+            placeholder="Search for tags"
           />
           <div className="max-h-96 overflow-y-auto">
             {filteredTags.map((tag) => (

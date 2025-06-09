@@ -24,6 +24,7 @@ export function CharacterForm({ character_update }: CharacterFormProps) {
     handleSelectDraft,
     handleImportCharacter,
     handleSubmit,
+    handleDelete,  
   } = useCreateAPI(navigate, character_update);
 
   const Character = useCharacterStore((state) => state);
@@ -113,6 +114,7 @@ export function CharacterForm({ character_update }: CharacterFormProps) {
         <FormActions
           onClear={handleClear}
           onSave={handleSave}
+          onDelete={handleDelete}  
           loading={loading}
           saveLoading={saveLoading}
           onSelectDraft={handleSelectDraft}
