@@ -3,58 +3,7 @@ import { supabase } from '~/Utility/supabaseClient';
 import * as Sentry from '@sentry/react';
 import { usePyrenzAlert } from '~/provider';
 
-interface AppUser {
-  id: string;
-  email?: string;
-  user_metadata?: {
-    avatar_url?: string;
-    full_name?: string;
-    is_adult?: boolean;
-  };
-}
 
-export const sendUserDataToUserDataTable = async (user: AppUser) => {
-  try {
-    const { data: userData, error: userError } = await supabase
-      .from('user_data')
-      .upsert(
-        {
-          user_uuid: user.id,
-          avatar_url: user.user_metadata?.avatar_url,
-          username: user.user_metadata?.full_name || user.email?.split('@')[0],
-          last_sign_in_at: new Date().toISOString(),
-        },
-        { onConflict: 'user_uuid' }
-      );
-
-    if (userError) throw userError;
-
-    const { data: emailData, error: emailError } = await supabase.rpc(
-      'insert_email',
-      {
-        p_user_uuid: user.id,
-        p_email: user.email,
-      }
-    );
-
-    if (emailError) throw emailError;
-
-    posthog.identify(user.id, {
-      email: user.email,
-      full_name: user.user_metadata?.full_name,
-      avatar_url: user.user_metadata?.avatar_url,
-    });
-
-    Sentry.setUser({
-      id: user.id,
-      email: user.email,
-      username: user.user_metadata?.full_name || user.email?.split('@')[0],
-    });
-  } catch (err) {
-    const error = err as Error;
-    Sentry.captureException(error);
-  }
-};
 
 export const handleLogin = async (email: string, password: string) => {
   try {

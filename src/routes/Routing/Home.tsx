@@ -61,7 +61,7 @@ export function Home() {
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+  }, []);
 
   const toggleMode = () => {
     setShowLogin(!showLogin);
