@@ -5,8 +5,6 @@ import './GlobalStyles.css';
 
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
-import posthog from 'posthog-js';
-import { posthogConfig } from '~/config';
 
 import { ThemeProvider, CssBaseline, Box, Fade } from '@mui/material';
 import { I18nextProvider } from 'react-i18next';
@@ -23,10 +21,6 @@ import { AlertProvider } from '~/provider';
 const theme = GetTheme();
 const currentTheme = theme.palette.mode;
 
-posthog.init(posthogConfig.apiKey, {
-  api_host: posthogConfig.apiHost,
-  loaded: posthogConfig.loaded,
-});
 
 Sentry.init({
   dsn: 'https://2bed6b35dd70e8068f61a53812a8a5fc@o4509146215284736.ingest.us.sentry.io/4509243214725120',
