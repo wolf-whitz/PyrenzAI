@@ -88,7 +88,7 @@ export const MessageBox: React.FC<MessageBoxProps> = ({
         />
       )}
 
-      {isUser && !isFirstMessage && (
+      {!isGenerating && isUser && !isFirstMessage && (
         <Box display="flex" flexDirection="column" mr={1}>
           <IconButton onClick={() => msg.id && onRemove(msg.id)} size="small">
             <DeleteIcon />
@@ -137,7 +137,7 @@ export const MessageBox: React.FC<MessageBoxProps> = ({
         )}
       </PyrenzMessageBox>
 
-      {isAssistant && !isGenerating && !isFirstMessage && (
+      {!isGenerating && isAssistant && !isFirstMessage && (
         <Box display="flex" flexDirection="column" ml={1}>
           <IconButton
             onClick={() => msg.id && onRegenerate(msg.id)}
@@ -171,7 +171,7 @@ export const MessageBox: React.FC<MessageBoxProps> = ({
         />
       )}
 
-      {msg.error && (
+      {!isGenerating && msg.error && (
         <Box display="flex" alignItems="center" ml={1} mt={1}>
           <ErrorOutlineIcon color="error" fontSize="small" />
           <Box ml={1} color="error">
