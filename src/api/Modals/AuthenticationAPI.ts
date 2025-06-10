@@ -1,9 +1,6 @@
-import posthog from 'posthog-js';
 import { supabase } from '~/Utility/supabaseClient';
 import * as Sentry from '@sentry/react';
 import { usePyrenzAlert } from '~/provider';
-
-
 
 export const handleLogin = async (email: string, password: string) => {
   try {

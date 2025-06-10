@@ -10,8 +10,6 @@ import {
   useFetchUserUUID,
   useFetchCharacters,
 } from '@components';
-import { supabase } from '~/Utility/supabaseClient';
-import { Utils } from '~/Utility/Utility';
 import { usePyrenzAlert } from '~/provider';
 
 interface PostResponse {
@@ -102,53 +100,6 @@ export const useHomepageAPI = (user: any) => {
     }
   };
 
-  const fetchUserData = useCallback(async () => {
-    if (user) {
-      try {
-        const userData = {
-          username: user.user_metadata?.name,
-          user_uuid: user.id,
-          last_sign_in_at: user.last_sign_in_at,
-          avatar_url: user.user_metadata?.avatar_url,
-        };
-
-        const { error: upsertError } = await supabase
-          .from('user_data')
-          .upsert([userData], { onConflict: 'user_uuid' });
-
-        if (upsertError) {
-          throw upsertError;
-        }
-
-        const emailData = {
-          user_uuid: user.id,
-          email: user.email,
-        };
-
-        const { error: emailUpsertError } = await supabase
-          .from('emails')
-          .upsert([emailData], { onConflict: 'user_uuid' });
-
-        if (emailUpsertError) {
-          throw emailUpsertError;
-        }
-
-        const response = await Utils.post('/api/createUserData', { userUUID: user.id }) as PostResponse;
-
-        if (!response.success) {
-          throw new Error('Failed to create user data via API');
-        }
-
-        console.log('User data stored successfully');
-        return { success: true, user: userData };
-      } catch (error) {
-        console.error('Error storing user data:', error);
-        return { success: false, error: 'Failed to store user data' };
-      }
-    }
-    return { success: false, error: 'No user exists' };
-  }, [user]);
-
   return {
     navigate,
     search,
@@ -162,6 +113,5 @@ export const useHomepageAPI = (user: any) => {
     userUUID,
     itemsPerPage,
     handleButtonClick,
-    fetchUserData,
   };
 };

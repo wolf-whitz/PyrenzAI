@@ -36,7 +36,7 @@ export function Home() {
 
   useEffect(() => {
     fetchUser();
-  }, [fetchUser]);
+  }, []);
 
   const {
     search,
@@ -48,20 +48,7 @@ export function Home() {
     t,
     itemsPerPage,
     handleButtonClick,
-    fetchUserData,
   } = useHomepageAPI(user);
-
-  const fetchData = useCallback(() => {
-    if (user) {
-      fetchUserData().catch((error) => {
-        console.error('Error fetching user data:', error);
-      });
-    }
-  }, [fetchUserData, user]);
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   const toggleMode = () => {
     setShowLogin(!showLogin);
