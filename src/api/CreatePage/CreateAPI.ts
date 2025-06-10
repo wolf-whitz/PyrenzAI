@@ -3,13 +3,12 @@ import {
   CreateNewChat,
   createCharacter,
   updateCharacter,
-  fetchUserName,
   handleClearCharacter,
   handleDeleteCharacter,
   handleSaveCharacter,
   handleSubmitCharacter,
 } from '@components';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useCharacterStore } from '~/store';
 import * as Sentry from '@sentry/react';
 import { Character, Draft } from '@shared-types';
@@ -17,34 +16,17 @@ import { usePyrenzAlert } from '~/provider';
 
 export const useCreateAPI = (
   navigate: (path: string) => void,
-  character_update: boolean
+  character_update: boolean,
+  user_uuid: string | null,
+  creator: string | null
 ) => {
   const [loading, setLoading] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
   const [showRequiredFieldsPopup, setShowRequiredFieldsPopup] = useState(false);
-  const [userUuid, setUserUuid] = useState<string | null>(null);
 
   const Character = useCharacterStore((state) => state);
   const setCharacter = useCharacterStore((state) => state.setCharacter);
   const showAlert = usePyrenzAlert();
-
-  useEffect(() => {
-    const fetchUserUuid = async () => {
-      try {
-        const uuid = await GetUserUUID();
-        setUserUuid(uuid);
-        if (uuid) {
-          const name = await fetchUserName(uuid);
-          setCharacter({ creator: name || '' });
-        }
-      } catch (error) {
-        console.error('Error fetching user UUID:', error);
-        Sentry.captureException(error);
-      }
-    };
-
-    fetchUserUuid();
-  }, [setCharacter]);
 
   const tags = Array.isArray(Character.tags)
     ? Character.tags
@@ -66,11 +48,11 @@ export const useCreateAPI = (
     first_message: Character.first_message,
     tags: tags,
     gender: Character.gender,
-    creator: Character.creator || '',
+    creator: creator || '',
     is_public: Character.is_public,
     is_nsfw: Character.is_nsfw,
     profile_image: Character.profile_image || '',
-    creator_uuid: userUuid || '',
+    creator_uuid: user_uuid || '',
     char_uuid: Character.char_uuid || '',
   };
 
@@ -84,7 +66,7 @@ export const useCreateAPI = (
   };
 
   const handleSave = async () => {
-    await handleSaveCharacter(character, userUuid, setSaveLoading, showAlert);
+    await handleSaveCharacter(character, user_uuid, setSaveLoading, showAlert);
   };
 
   const handleSelectDraft = (draft: Draft) => {
@@ -105,7 +87,7 @@ export const useCreateAPI = (
       e,
       character,
       character_update,
-      userUuid,
+      user_uuid,
       setLoading,
       showAlert,
       navigate,

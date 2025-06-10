@@ -27,17 +27,12 @@ interface CharacterCardModalProps {
   isOwner: boolean;
 }
 
-const truncateText = (text: string, maxLength: number): string => {
+const truncateText = (text: string, maxLength: number) => {
   if (text.length <= maxLength) return text;
   return text.substring(0, maxLength) + '...';
 };
 
-export function CharacterCardModal({
-  isOpen,
-  onClose,
-  character,
-  isOwner,
-}: CharacterCardModalProps) {
+export function CharacterCardModal({ isOpen, onClose, character, isOwner }: CharacterCardModalProps) {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [userUUID, setUserUUID] = useState<string | null>(null);
@@ -217,7 +212,7 @@ export function CharacterCardModal({
                   )}
                 </motion.span>
               )}
-              {(character.tags || []).map((tag, index) => (
+              {(Array.isArray(character.tags) ? character.tags : []).map((tag, index) => (
                 <motion.span
                   key={index}
                   className="bg-black text-white text-xs font-semibold py-1 px-3 rounded-full"

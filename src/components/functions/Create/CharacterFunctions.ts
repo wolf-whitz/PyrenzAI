@@ -4,6 +4,28 @@ import { Character, Draft } from '@shared-types';
 import { v4 as uuidv4 } from 'uuid';
 import { handleSaveDraft } from '@components';
 
+const requiredCharacterFields: Array<keyof Character> = [
+  'persona',
+  'name',
+  'model_instructions',
+  'scenario',
+  'description',
+  'first_message',
+  'tags',
+  'gender',
+  'creator',
+  'profile_image'
+];
+
+const validateCharacterData = (character: Character): { isValid: boolean; missingFields: string[] } => {
+  const missingFields = requiredCharacterFields.filter(field => !character[field]);
+
+  return {
+    isValid: missingFields.length === 0,
+    missingFields
+  };
+};
+
 export const fetchUserName = async (userUuid: string): Promise<string> => {
   const { data, error } = await supabase
     .from('user_data')
@@ -17,7 +39,7 @@ export const fetchUserName = async (userUuid: string): Promise<string> => {
     return '';
   }
 
-  return data.username || '';
+  return data.username;
 };
 
 export const handleClearCharacter = (setCharacter: any) => {
@@ -81,7 +103,14 @@ export const handleSaveCharacter = async (
       setSaveLoading(false);
       return;
     }
-      
+
+    const validation = validateCharacterData(character);
+    if (!validation.isValid) {
+      showAlert(`Missing or undefined fields: ${validation.missingFields.join(', ')}`, 'Alert');
+      setSaveLoading(false);
+      return;
+    }
+
     const char_uuid = uuidv4();
     const characterWithUUID = {
       ...character,
@@ -118,6 +147,13 @@ export const handleSubmitCharacter = async (
   try {
     if (!userUuid) {
       showAlert('User UUID is missing.', 'Alert');
+      setLoading(false);
+      return;
+    }
+
+    const validation = validateCharacterData(character);
+    if (!validation.isValid) {
+      showAlert(`Missing or undefined fields: ${validation.missingFields.join(', ')}`, 'Alert');
       setLoading(false);
       return;
     }

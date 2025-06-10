@@ -10,9 +10,11 @@ import { useCreateAPI } from '@api';
 
 interface CharacterFormProps {
   character_update: boolean;
+  user_uuid: string | null;
+  creator: string | null;
 }
 
-export function CharacterForm({ character_update }: CharacterFormProps) {
+export function CharacterForm({ character_update, user_uuid, creator }: CharacterFormProps) {
   const navigate = useNavigate();
   const {
     loading,
@@ -23,7 +25,7 @@ export function CharacterForm({ character_update }: CharacterFormProps) {
     handleImportCharacter,
     handleSubmit,
     handleDelete,
-  } = useCreateAPI(navigate, character_update);
+  } = useCreateAPI(navigate, character_update, user_uuid, creator);
 
   return (
     <div className="flex flex-col items-center justify-center bg-gray-900 p-6">
@@ -31,7 +33,7 @@ export function CharacterForm({ character_update }: CharacterFormProps) {
         onSubmit={handleSubmit}
         className="bg-black p-8 rounded-lg shadow-lg w-full flex flex-col space-y-6"
       >
-        <TextareaForm   />
+        <TextareaForm />
         <GenderDropdown />
         <VisibilityCheckboxes />
         <TokenSummary />

@@ -155,7 +155,7 @@ export function TextareaForm() {
       />
       <Textarea
         name="tags"
-        value={character.tags?.join(', ')}
+        value={Array.isArray(character.tags) ? character.tags.join(', ') : ''}
         onChange={handleChange}
         label="Tags"
         aria-label="Tags"

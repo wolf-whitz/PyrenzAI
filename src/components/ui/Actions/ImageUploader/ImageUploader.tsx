@@ -20,13 +20,8 @@ interface ImageUploaderProps {
   initialImage?: string | null;
 }
 
-export function ImageUploader({
-  onImageSelect,
-  initialImage,
-}: ImageUploaderProps) {
-  const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(
-    initialImage || null
-  );
+export function ImageUploader({ onImageSelect, initialImage }: ImageUploaderProps) {
+  const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(initialImage || null);
   const [open, setOpen] = useState(false);
   const [textareaValue, setTextareaValue] = useState('');
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -46,7 +41,6 @@ export function ImageUploader({
     setImageUrl(null);
     setIsSubmitted(false);
     if (bannerImagePreview) {
-      URL.revokeObjectURL(bannerImagePreview);
       setBannerImagePreview(null);
     }
   };
@@ -54,8 +48,7 @@ export function ImageUploader({
   const handleDrop = (acceptedFiles: File[]) => {
     const file = acceptedFiles[0] || null;
     if (file) {
-      const blobUrl = URL.createObjectURL(file);
-      setBannerImagePreview(blobUrl);
+      setBannerImagePreview(URL.createObjectURL(file));
     }
     onImageSelect(file);
   };
@@ -86,7 +79,7 @@ export function ImageUploader({
       const blobUrl = URL.createObjectURL(blob);
       setImageUrl(blobUrl);
 
-      const file = new File([blob], '', { type: 'image/png' });
+      const file = new File([blob], 'generated-image.png', { type: 'image/png' });
       onImageSelect(file);
       setBannerImagePreview(blobUrl);
     } catch (error) {

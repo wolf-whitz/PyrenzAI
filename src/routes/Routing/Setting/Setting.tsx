@@ -57,7 +57,7 @@ export function Setting() {
           value={tab}
           label={
             <PyrenzBlueButton>
-              {tab[0].toUpperCase() + tab.slice(1)}
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
             </PyrenzBlueButton>
           }
         />
@@ -68,8 +68,8 @@ export function Setting() {
     const chunkedTabs = isMobile
       ? [mutableTabs.slice(0, 2), mutableTabs.slice(2)]
       : isMedium
-        ? [mutableTabs.slice(0, 3), mutableTabs.slice(3)]
-        : [mutableTabs];
+      ? [mutableTabs.slice(0, 3), mutableTabs.slice(3)]
+      : [mutableTabs];
 
     return (
       <Box
