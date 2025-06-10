@@ -12,10 +12,6 @@ import {
 } from '@components';
 import { usePyrenzAlert } from '~/provider';
 
-interface PostResponse {
-  success: boolean;
-}
-
 export const useHomepageAPI = (user: any) => {
   const navigate = useNavigate();
   const {

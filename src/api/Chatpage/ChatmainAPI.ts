@@ -51,7 +51,11 @@ export const useChatPageAPI = (
         setIsGenerating
       );
 
-      if (response.remainingMessages === 0 || response.showAd) {
+      if (response.isSubscribed) {
+        return;
+      }
+
+      if (response.remainingMessages === 0) {
         setIsAdModalOpen(true);
       }
     } catch (error) {

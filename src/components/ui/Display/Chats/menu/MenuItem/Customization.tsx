@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Typography } from '@mui/material';
-import {
-  CustomModelFields,
-  ModelSelection,
-  SliderComponent,
-} from '@components';
+import { CustomModelFields, ModelSelection, SliderComponent } from '@components';
 import InfoIcon from '@mui/icons-material/Info';
 import BuildIcon from '@mui/icons-material/Build';
 import { PyrenzBlueButton } from '~/theme';
@@ -55,12 +51,6 @@ export function Customization({
     frequencyPenalty,
     preferredModel,
     setPreferredModel,
-    apiKey,
-    setApiKey,
-    customModelName,
-    setCustomModelName,
-    providerUrl,
-    setProviderUrl,
     maxTokenLimit,
     stateSetters,
     handleSubmit,
@@ -80,14 +70,7 @@ export function Customization({
 
       {preferredModel === 'Custom' && (
         <Box>
-          <CustomModelFields
-            apiKey={apiKey}
-            setApiKey={setApiKey}
-            customModelName={customModelName}
-            setCustomModelName={setCustomModelName}
-            providerUrl={providerUrl}
-            setProviderUrl={setProviderUrl}
-          />
+          <CustomModelFields />
         </Box>
       )}
 

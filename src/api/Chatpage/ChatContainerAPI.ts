@@ -11,8 +11,9 @@ interface CustomError {
 }
 
 interface GenerateMessageResponse {
-  remainingMessages: number;
+  remainingMessages?: number;
   showAd?: boolean;
+  isSubscribed?: boolean;
 }
 
 export const useGenerateMessage = () => {
@@ -28,7 +29,7 @@ export const useGenerateMessage = () => {
       setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>
     ): Promise<GenerateMessageResponse> => {
       if (!user || !char || !chat_uuid) {
-        return { remainingMessages: 0 };
+        return { isSubscribed: false };
       }
 
       setIsGenerating(true);
@@ -102,10 +103,25 @@ export const useGenerateMessage = () => {
                   isGenerate: false,
                 }
               : msg.type === 'user' && msg.id === undefined
-                ? { ...msg, id: responseId }
-                : msg
+              ? { ...msg, id: responseId }
+              : msg
           )
         );
+
+        if (response.remainingMessages === undefined) {
+          const { data: subscriptionData, error: subscriptionError } = await supabase
+            .from('subscription_plan')
+            .select('is_subscribed')
+            .eq('user_uuid', user_uuid)
+            .single();
+
+          if (subscriptionError) {
+            console.error('Error fetching subscription status:', subscriptionError);
+            return { isSubscribed: false };
+          }
+
+          return { isSubscribed: subscriptionData?.is_subscribed };
+        }
 
         return { remainingMessages: response.remainingMessages || 0 };
       } catch (error) {

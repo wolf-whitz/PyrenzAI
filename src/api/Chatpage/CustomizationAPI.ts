@@ -40,9 +40,6 @@ export const useCustomizeAPI = ({
   const [preferredModel, setPreferredModel] = useState(
     customization?.model || 'Mango Ube'
   );
-  const [apiKey, setApiKey] = useState('');
-  const [customModelName, setCustomModelName] = useState('');
-  const [providerUrl, setProviderUrl] = useState('');
   const [modelId, setModelId] = useState<string | null>(
     customization?.model || 'Mango Ube'
   );
@@ -128,11 +125,6 @@ export const useCustomizeAPI = ({
       topP,
       presencePenalty,
       frequencyPenalty,
-      ...(preferredModel === 'Custom' && {
-        api_key: apiKey,
-        custom_model_name: customModelName,
-        provider_url: providerUrl,
-      }),
     };
 
     const data = {
@@ -170,12 +162,6 @@ export const useCustomizeAPI = ({
     setFrequencyPenalty,
     preferredModel,
     setPreferredModel,
-    apiKey,
-    setApiKey,
-    customModelName,
-    setCustomModelName,
-    providerUrl,
-    setProviderUrl,
     modelId,
     setModelId,
     maxTokenLimit,

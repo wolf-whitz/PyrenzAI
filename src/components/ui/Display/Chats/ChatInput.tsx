@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Send, ArrowRight, MoreVertical, Loader2 } from 'lucide-react';
 import { Menu } from '@components';
 import { Character } from '@shared-types';
+import { usePyrenzAlert } from '~/provider';
 
 interface ChatInputProps {
   className?: string;
@@ -22,7 +23,7 @@ export function ChatInput({
 }: ChatInputProps) {
   const [message, setMessage] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showWarning, setShowWarning] = useState(false);
+  const showAlert = usePyrenzAlert();
 
   const sendMessage = () => {
     const trimmedMessage = message.trim();
@@ -30,6 +31,15 @@ export function ChatInput({
 
     handleSend(trimmedMessage);
     setMessage('');
+  };
+
+  const handleMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newMessage = e.target.value;
+    if (newMessage.length <= MAX_CHAR_LIMIT) {
+      setMessage(newMessage);
+    } else {
+      showAlert(`Exceeded ${MAX_CHAR_LIMIT} characters, please shorten your message.`, 'alert');
+    }
   };
 
   return (
@@ -44,7 +54,7 @@ export function ChatInput({
           className={`relative flex bg-gray-700 rounded-2xl p-3 w-full ${className}`}
         >
           <motion.button
-            className="mr-2 text-gray-400 hover:text-white transition duration-200 p-2 rounded-full bg-gray-800 hover:bg-gray-600 flex-shrink-0"
+            className="mr-2 text-gray-400 hover:text-white transition duration-200 p-2 rounded-full flex-shrink-0"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={() => setIsMenuOpen(true)}
@@ -55,14 +65,7 @@ export function ChatInput({
 
           <textarea
             value={message}
-            onChange={(e) => {
-              if (e.target.value.length <= MAX_CHAR_LIMIT) {
-                setMessage(e.target.value);
-                setShowWarning(false);
-              } else {
-                setShowWarning(true);
-              }
-            }}
+            onChange={handleMessageChange}
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -76,24 +79,24 @@ export function ChatInput({
           />
 
           <motion.button
-            onClick={message.trim().length > 0 ? sendMessage : undefined}
+            onClick={sendMessage}
             className={`ml-2 flex items-center gap-1 text-gray-400 transition duration-200 px-4 py-2 rounded-full flex-shrink-0 ${
-              message.length > MAX_CHAR_LIMIT || isGenerating
+              !message.trim() || message.length > MAX_CHAR_LIMIT || isGenerating
                 ? 'cursor-not-allowed opacity-50'
-                : 'hover:text-white bg-gray-800 hover:bg-gray-600'
+                : 'hover:text-white'
             }`}
             whileHover={
-              message.length <= MAX_CHAR_LIMIT && !isGenerating
+              message.length <= MAX_CHAR_LIMIT && !isGenerating && message.trim()
                 ? { scale: 1.05 }
                 : {}
             }
             whileTap={
-              message.length <= MAX_CHAR_LIMIT && !isGenerating
+              message.length <= MAX_CHAR_LIMIT && !isGenerating && message.trim()
                 ? { scale: 0.95 }
                 : {}
             }
             aria-label="Send message"
-            disabled={isGenerating}
+            disabled={!message.trim() || message.length > MAX_CHAR_LIMIT || isGenerating}
           >
             <AnimatePresence mode="wait">
               <motion.div
@@ -101,8 +104,8 @@ export function ChatInput({
                   isGenerating
                     ? 'Generating'
                     : message.trim()
-                      ? 'send'
-                      : 'continue'
+                    ? 'send'
+                    : 'continue'
                 }
                 initial={{ x: -10, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
@@ -120,41 +123,21 @@ export function ChatInput({
             </AnimatePresence>
 
             <AnimatePresence mode="wait">
-              <motion.span
-                key={
-                  isGenerating
-                    ? 'Generating'
-                    : message.trim()
-                      ? 'Send'
-                      : 'Continue'
-                }
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="text-sm font-medium"
-              >
-                {isGenerating
-                  ? 'Generating...'
-                  : message.trim().length > 0
-                    ? 'Send'
-                    : 'Continue'}
-              </motion.span>
+              {message.trim().length > 0 && (
+                <motion.span
+                  key={isGenerating ? 'Generating' : 'Send'}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="text-sm font-medium"
+                >
+                  {isGenerating ? 'Generating...' : 'Send'}
+                </motion.span>
+              )}
             </AnimatePresence>
           </motion.button>
         </div>
-
-        {showWarning && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3 }}
-            className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-red-600 text-white text-sm px-3 py-2 rounded-md shadow-lg"
-          >
-            Exceeded {MAX_CHAR_LIMIT} characters, please shorten your message.
-          </motion.div>
-        )}
       </motion.div>
 
       {isMenuOpen && (

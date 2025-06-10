@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState, Suspense } from 'react';
-import { useChatStore } from '~/store';
+import { useChatStore, useUserStore } from '~/store';
 import { ChatMain } from '~/components';
 import { Message, ChatContainerProps, Character } from '@shared-types';
 import { ChatPageSpinner } from '@components';
 import clsx from 'clsx';
-import { getImageFromDB } from '~/Utility/IndexDB'; 
 
 interface ChatContainerPropsExtended
   extends Omit<ChatContainerProps, 'char' | 'firstMessage'> {
@@ -25,22 +24,24 @@ export function ChatContainer({
   });
 
   const { messages, setMessages, firstMessage } = useChatStore();
+  const { imageURL } = useUserStore();
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [bgImage, setBgImage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const loadImage = async () => {
-      const blob = await getImageFromDB();
-      if (blob) {
-        const imageUrl = URL.createObjectURL(blob);
-        setBgImage(imageUrl);
+      setIsLoading(true);
+      if (imageURL) {
+        setBgImage(imageURL);
       } else if (char?.profile_image) {
         setBgImage(char.profile_image);
       }
+      setIsLoading(false);
     };
 
     loadImage();
-  }, [char?.profile_image]);
+  }, [imageURL, char?.profile_image]);
 
   return (
     <Suspense fallback={<ChatPageSpinner />}>
@@ -59,17 +60,20 @@ export function ChatContainer({
           backgroundPosition: bgImage ? 'center calc(20%)' : 'center',
         }}
       >
-        <ChatMain
-          user={user}
-          char={char as Character}
-          firstMessage={firstMessage}
-          previous_message={messages}
-          isGenerating={isGenerating}
-          setMessages={setMessages}
-          messageIdRef={messageIdRef}
-          setIsGenerating={setIsGenerating}
-          chat_uuid={chat_uuid}
-        />
+        {isLoading && <ChatPageSpinner />}
+        {!isLoading && (
+          <ChatMain
+            user={user}
+            char={char as Character}
+            firstMessage={firstMessage}
+            previous_message={messages}
+            isGenerating={isGenerating}
+            setMessages={setMessages}
+            messageIdRef={messageIdRef}
+            setIsGenerating={setIsGenerating}
+            chat_uuid={chat_uuid}
+          />
+        )}
       </div>
     </Suspense>
   );

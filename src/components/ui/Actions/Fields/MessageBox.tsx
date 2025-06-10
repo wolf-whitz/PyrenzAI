@@ -6,6 +6,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import EditIcon from '@mui/icons-material/Edit';
+import FileCopyIcon from '@mui/icons-material/FileCopy';
 import { PyrenzMessageBox, PyrenzBlueButton } from '~/theme';
 
 import type { Message, User, Character } from '@shared-types';
@@ -71,6 +72,10 @@ export const MessageBox: React.FC<MessageBoxProps> = ({
     editingMessageId === msg.id &&
     editingMessageType === (isUser ? 'user' : 'char');
 
+  const handleCopy = () => {
+    navigator.clipboard.writeText(msg.text || '');
+  };
+
   return (
     <Box
       key={msg.id ? `${msg.id}-${index}` : `temp-${index}`}
@@ -79,7 +84,7 @@ export const MessageBox: React.FC<MessageBoxProps> = ({
       justifyContent={isUser ? 'flex-end' : 'flex-start'}
       className={`flex items-start ${isUser ? 'justify-end' : 'justify-start'}`}
     >
-      {isAssistant && (
+      {isAssistant && !msg.error && (
         <Avatar
           alt={displayName}
           src={char.profile_image}
@@ -88,10 +93,13 @@ export const MessageBox: React.FC<MessageBoxProps> = ({
         />
       )}
 
-      {!isGenerating && isUser && !isFirstMessage && (
+      {!isGenerating && isUser && !isFirstMessage && !msg.error && (
         <Box display="flex" flexDirection="column" mr={1}>
           <IconButton onClick={() => msg.id && onRemove(msg.id)} size="small">
             <DeleteIcon />
+          </IconButton>
+          <IconButton onClick={handleCopy} size="small">
+            <FileCopyIcon />
           </IconButton>
           <IconButton
             onClick={() =>
@@ -137,7 +145,7 @@ export const MessageBox: React.FC<MessageBoxProps> = ({
         )}
       </PyrenzMessageBox>
 
-      {!isGenerating && isAssistant && !isFirstMessage && (
+      {!isGenerating && isAssistant && !isFirstMessage && !msg.error && (
         <Box display="flex" flexDirection="column" ml={1}>
           <IconButton
             onClick={() => msg.id && onRegenerate(msg.id)}
@@ -151,6 +159,9 @@ export const MessageBox: React.FC<MessageBoxProps> = ({
           <IconButton onClick={() => handleSpeak(msg.text || '')} size="small">
             <VolumeUpIcon />
           </IconButton>
+          <IconButton onClick={handleCopy} size="small">
+            <FileCopyIcon />
+          </IconButton>
           <IconButton
             onClick={() =>
               msg.id && onEditClick(msg.id, msg.text || '', 'char')
@@ -162,7 +173,7 @@ export const MessageBox: React.FC<MessageBoxProps> = ({
         </Box>
       )}
 
-      {isUser && (
+      {isUser && !msg.error && (
         <Avatar
           alt={displayName}
           src={user.user_avatar}

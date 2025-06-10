@@ -1,11 +1,14 @@
-import { useEffect, useState, useRef } from 'react';
+import { useUserStore } from '~/store';
+import React, { useEffect, useState, useRef } from 'react';
 import { saveImageToDB, getImageFromDB, openDB } from '~/Utility/IndexDB';
+import { Box, Typography } from '@mui/material';
+import { PyrenzBlueButton } from '~/theme';
 
 export function Cosmetic() {
   const [bgImage, setBgImage] = useState<string | null>(null);
-  const [tempBgImage, setTempBgImage] = useState<string | null>(null);
-  const [dragging, setDragging] = useState(false);
+  const [dragging, setDragging] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { setImageURL } = useUserStore();
 
   useEffect(() => {
     const loadImage = async () => {
@@ -13,24 +16,25 @@ export function Cosmetic() {
       if (blob) {
         const imageUrl = URL.createObjectURL(blob);
         setBgImage(imageUrl);
-        setTempBgImage(imageUrl);
+        setImageURL(imageUrl);
       }
     };
     loadImage();
-  }, []);
+  }, [setImageURL]);
 
   const handleSave = async () => {
-    if (tempBgImage) {
-      const response = await fetch(tempBgImage);
+    if (bgImage) {
+      const response = await fetch(bgImage);
       const blob = await response.blob();
       await saveImageToDB(blob);
+      setImageURL(bgImage);
     } else {
       const db = await openDB();
       const transaction = db.transaction('images', 'readwrite');
       const store = transaction.objectStore('images');
       store.delete('bgImage');
+      setImageURL(null);
     }
-    setBgImage(tempBgImage);
   };
 
   const handleFileDrop = async (e: React.DragEvent<HTMLDivElement>) => {
@@ -39,7 +43,8 @@ export function Cosmetic() {
     const file = e.dataTransfer.files[0];
     if (file && file.type.startsWith('image/')) {
       const imageUrl = URL.createObjectURL(file);
-      setTempBgImage(imageUrl);
+      setBgImage(imageUrl);
+      setImageURL(imageUrl);
     }
   };
 
@@ -47,30 +52,45 @@ export function Cosmetic() {
     const file = e.target.files?.[0];
     if (file && file.type.startsWith('image/')) {
       const imageUrl = URL.createObjectURL(file);
-      setTempBgImage(imageUrl);
+      setBgImage(imageUrl);
+      setImageURL(imageUrl);
     }
   };
 
   const handleDeleteImage = async () => {
-    setTempBgImage(null);
     setBgImage(null);
     const db = await openDB();
     const transaction = db.transaction('images', 'readwrite');
     const store = transaction.objectStore('images');
     store.delete('bgImage');
+    setImageURL(null);
   };
 
   return (
-    <div className="mt-4 p-4 bg-gray-700 rounded-md">
-      <h3 className="text-lg font-semibold">Customization</h3>
-
-      <div className="mt-3">
-        <p className="text-gray-300">Change Background</p>
-        <div
-          className={`w-full h-32 flex items-center justify-center border-2 border-dashed rounded-md cursor-pointer relative ${
-            dragging ? 'border-blue-500 bg-gray-600' : 'border-gray-500'
-          }`}
-          onDragOver={(e) => {
+    <Box sx={{ mt: 4, p: 4, bgcolor: 'background.paper', borderRadius: 2 }}>
+      <Typography variant="h6" gutterBottom>
+        Customization
+      </Typography>
+      <Box sx={{ mt: 3 }}>
+        <Typography variant="body1" color="text.secondary" gutterBottom>
+          Change Background
+        </Typography>
+        <Box
+          sx={{
+            width: '100%',
+            height: 128,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            border: '2px dashed',
+            borderColor: dragging ? 'primary.main' : 'grey.500',
+            borderRadius: 1,
+            cursor: 'pointer',
+            bgcolor: dragging ? 'grey.600' : 'transparent',
+            position: 'relative',
+            overflow: 'hidden',
+          }}
+          onDragOver={(e: React.DragEvent<HTMLDivElement>) => {
             e.preventDefault();
             setDragging(true);
           }}
@@ -78,49 +98,44 @@ export function Cosmetic() {
           onDrop={handleFileDrop}
           onClick={() => fileInputRef.current?.click()}
         >
-          {tempBgImage ? (
-            <>
-              <img
-                src={tempBgImage}
-                alt="Background Preview"
-                className="w-full h-full object-cover rounded-md"
-              />
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDeleteImage();
-                }}
-                className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition"
-              >
-                &times;
-              </button>
-            </>
+          {bgImage ? (
+            <img
+              src={bgImage}
+              alt="Background Preview"
+              style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 4 }}
+            />
           ) : (
-            <p className="text-gray-300">Click or Drag & Drop an image here</p>
+            <Typography variant="body2" color="text.secondary">
+              Click or Drag & Drop an image here
+            </Typography>
           )}
-        </div>
-        <button
+        </Box>
+        <PyrenzBlueButton
           onClick={handleDeleteImage}
-          className="mt-2 w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md transition"
+          variant="contained"
+          color="error"
+          fullWidth
+          sx={{ mt: 2 }}
         >
           Remove Image
-        </button>
-      </div>
-
+        </PyrenzBlueButton>
+      </Box>
       <input
         type="file"
         accept="image/*"
         ref={fileInputRef}
-        className="hidden"
+        style={{ display: 'none' }}
         onChange={handleFileChange}
       />
-
-      <button
+      <PyrenzBlueButton
         onClick={handleSave}
-        className="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition"
+        variant="contained"
+        color="primary"
+        fullWidth
+        sx={{ mt: 4 }}
       >
         Save Changes
-      </button>
-    </div>
+      </PyrenzBlueButton>
+    </Box>
   );
 }
