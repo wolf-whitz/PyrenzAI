@@ -36,16 +36,22 @@ export const AppRoutes = (
   <>
     <Route path="/" element={<Home />} />
     <Route path="/Home" element={<Home />} />
+
     <Route path="/Policy" element={<Policy />} />
     <Route path="/Create" element={<Create />} />
+
     <Route path="/Subscription" element={<Subscription />} />
     <Route path="/Archive" element={<Archive />} />
-    <Route path="/Create/:uuid" element={<Create />} />
-    <Route path="/Profile/:uuid" element={<Profile />} />
+
+    <Route path="/Create/:char_uuid" element={<Create />} />
+    <Route path="/Profile/:user_uuid" element={<Profile />} />
+
     <Route path="/Profile" element={<Profile />} />
     <Route path="/Chat/:chat_uuid" element={<Chat />} />
+
     <Route path="/Settings" element={<Setting />} />
     <Route path="/ContentPolicy" element={<ContentPolicy />} />
+
     <Route path="*" element={<ErrorPage />} />
   </>
 );

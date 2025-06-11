@@ -73,7 +73,7 @@ export const CreatePageLoader = () => (
       <>
         Loading.. Please Wait While{' '}
         <span className="font-baloo text-blue-500">Pyrenz</span> loads the
-        Chatpage.
+        CreatePage.
       </>
     }
     subMessage="It may take a few seconds."
