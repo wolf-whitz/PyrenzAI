@@ -15,14 +15,7 @@ export const componentOverrides = {
         color: '#fff',
       },
     },
-  },
-  MuiTextField: {
-    styleOverrides: {
-      root: {
-        marginBottom: '16px',
-      },
-    },
-  },
+  },    
   MuiIconButton: {
     styleOverrides: {
       root: {

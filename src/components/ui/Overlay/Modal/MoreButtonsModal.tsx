@@ -3,15 +3,15 @@ import { motion } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
 import {
   Button,
-  TextField,
   CircularProgress,
   Box,
   Modal,
   Backdrop,
   Fade,
+  Typography
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { GetCharactersWithTags } from '@components';
+import { GetCharactersWithTags, Textarea } from '@components';
 import {
   ButtonType,
   ModalResultType,
@@ -35,12 +35,10 @@ export function MoreButtonsModal({
   const [modalResults, setModalResults] = useState<ModalResultType[]>([]);
   const [loading, setLoading] = useState(false);
   const modalRef = useRef<HTMLDivElement | null>(null);
-  const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(
-    null
-  );
+  const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
   const { t } = useTranslation();
 
-  const handleSearch = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearch = async (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const query = event.target.value;
     setSearchQuery(query);
 
@@ -141,8 +139,8 @@ export function MoreButtonsModal({
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            width: '90%',
-            maxWidth: 'xs',
+            width: '80%',
+            maxWidth: '400px',
             bgcolor: 'background.paper',
             boxShadow: 24,
             p: 4,
@@ -155,24 +153,16 @@ export function MoreButtonsModal({
             animate={{ scale: 1 }}
             exit={{ scale: 0.5 }}
           >
-            <TextField
-              label={t('search.placeholder')}
-              variant="outlined"
+            <Textarea
+              placeholder={t('search.placeholder')}
               value={searchQuery}
               onChange={handleSearch}
-              fullWidth
-              InputProps={{
-                className: 'text-white border-white',
-              }}
-              InputLabelProps={{
-                className: 'text-white',
-              }}
               className="mb-4"
             />
             <div className="flex flex-col gap-2">
               {loading ? (
                 <LoadingSpinner />
-              ) : (
+              ) : filteredModalButtons.length > 0 ? (
                 filteredModalButtons.map((btn, index) => (
                   <motion.div
                     key={index}
@@ -203,6 +193,10 @@ export function MoreButtonsModal({
                     </Button>
                   </motion.div>
                 ))
+              ) : (
+                <Typography variant="body1" align="center">
+                  No tags found
+                </Typography>
               )}
             </div>
           </motion.div>
