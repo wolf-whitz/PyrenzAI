@@ -1,11 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import {
-  Container,
-  useMediaQuery,
-  Box,
-  useTheme,
-} from '@mui/material';
+import { Container, useMediaQuery, Box, useTheme } from '@mui/material';
 import {
   Sidebar,
   SearchBar,
@@ -19,24 +14,12 @@ import {
   AuthenticationModal,
 } from '@components';
 import { useHomepageAPI } from '@api';
-import { supabase } from '~/Utility/supabaseClient';
-import { User } from '@supabase/supabase-js';
 
 export function Home() {
-  const [user, setUser] = useState<User | null>(null);
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-
-  const fetchUser = useCallback(async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    setUser(user);
-  }, []);
-
-  useEffect(() => {
-    fetchUser();
-  }, []);
 
   const {
     search,
@@ -48,7 +31,7 @@ export function Home() {
     t,
     itemsPerPage,
     handleButtonClick,
-  } = useHomepageAPI(user);
+  } = useHomepageAPI();
 
   const toggleMode = () => {
     setShowLogin(!showLogin);

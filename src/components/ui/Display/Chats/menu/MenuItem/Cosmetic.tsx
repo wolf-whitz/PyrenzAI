@@ -102,7 +102,12 @@ export function Cosmetic() {
             <img
               src={bgImage}
               alt="Background Preview"
-              style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 4 }}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                borderRadius: 4,
+              }}
             />
           ) : (
             <Typography variant="body2" color="text.secondary">

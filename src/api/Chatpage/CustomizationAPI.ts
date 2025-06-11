@@ -28,24 +28,49 @@ export const useCustomizeAPI = ({
   modelOptions,
 }: CustomizationProps) => {
   const userStore = useUserStore();
-  const [maxTokens, setMaxTokens] = useState(customization?.maxTokens || userStore.inferenceSettings.maxTokens || 100);
-  const [temperature, setTemperature] = useState(customization?.temperature || userStore.inferenceSettings.temperature || 1);
-  const [topP, setTopP] = useState(customization?.topP || userStore.inferenceSettings.topP || 1);
-  const [presencePenalty, setPresencePenalty] = useState(customization?.presencePenalty || userStore.inferenceSettings.presencePenalty || 0);
-  const [frequencyPenalty, setFrequencyPenalty] = useState(customization?.frequencyPenalty || userStore.inferenceSettings.frequencyPenalty || 0);
-  const [preferredModel, setPreferredModel] = useState(customization?.model || userStore.preferredModel || 'Mango Ube');
-  const [modelId, setModelId] = useState<string | null>(customization?.model || userStore.preferredModel || 'Mango Ube');
-  const [maxTokenLimit, setMaxTokenLimit] = useState(customization?.maxTokens || userStore.maxTokenLimit || 1000);
-  const [subscriptionModels, setSubscriptionModels] = useState<{ [key: string]: string[] }>({});
+  const [maxTokens, setMaxTokens] = useState(
+    customization?.maxTokens || userStore.inferenceSettings.maxTokens || 100
+  );
+  const [temperature, setTemperature] = useState(
+    customization?.temperature || userStore.inferenceSettings.temperature || 1
+  );
+  const [topP, setTopP] = useState(
+    customization?.topP || userStore.inferenceSettings.topP || 1
+  );
+  const [presencePenalty, setPresencePenalty] = useState(
+    customization?.presencePenalty ||
+      userStore.inferenceSettings.presencePenalty ||
+      0
+  );
+  const [frequencyPenalty, setFrequencyPenalty] = useState(
+    customization?.frequencyPenalty ||
+      userStore.inferenceSettings.frequencyPenalty ||
+      0
+  );
+  const [preferredModel, setPreferredModel] = useState(
+    customization?.model || userStore.preferredModel || 'Mango Ube'
+  );
+  const [modelId, setModelId] = useState<string | null>(
+    customization?.model || userStore.preferredModel || 'Mango Ube'
+  );
+  const [maxTokenLimit, setMaxTokenLimit] = useState(
+    customization?.maxTokens || userStore.maxTokenLimit || 1000
+  );
+  const [subscriptionModels, setSubscriptionModels] = useState<{
+    [key: string]: string[];
+  }>({});
 
   const showAlert = usePyrenzAlert();
 
   const stateSetters = {
     maxTokens: (value: number) => setMaxTokens(Math.min(value, maxTokenLimit)),
-    temperature: (value: number) => setTemperature(Math.min(Math.max(value, 0), 2)),
+    temperature: (value: number) =>
+      setTemperature(Math.min(Math.max(value, 0), 2)),
     topP: (value: number) => setTopP(Math.min(Math.max(value, 0), 1)),
-    presencePenalty: (value: number) => setPresencePenalty(Math.min(Math.max(value, -2), 2)),
-    frequencyPenalty: (value: number) => setFrequencyPenalty(Math.min(Math.max(value, -2), 2)),
+    presencePenalty: (value: number) =>
+      setPresencePenalty(Math.min(Math.max(value, -2), 2)),
+    frequencyPenalty: (value: number) =>
+      setFrequencyPenalty(Math.min(Math.max(value, -2), 2)),
   };
 
   useEffect(() => {
@@ -55,7 +80,9 @@ export const useCustomizeAPI = ({
       }
 
       try {
-        const modelOption = modelOptions.find(option => option.name === preferredModel);
+        const modelOption = modelOptions.find(
+          (option) => option.name === preferredModel
+        );
         if (modelOption) {
           setModelId(modelOption.name);
         }
@@ -118,7 +145,7 @@ export const useCustomizeAPI = ({
       preferred_model: preferredModel,
     };
 
-    console.log(data)
+    console.log(data);
 
     try {
       const userUUID = await GetUserUUID();

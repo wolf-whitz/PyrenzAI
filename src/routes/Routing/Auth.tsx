@@ -31,7 +31,10 @@ export function Auth() {
 
   const handleCaptcha = async (token: string) => {
     try {
-      const response: CaptchaVerificationResponse = await Utils.post('/api/TokenVerify', { token });
+      const response: CaptchaVerificationResponse = await Utils.post(
+        '/api/TokenVerify',
+        { token }
+      );
 
       if (response.success && response.token) {
         document.cookie =
@@ -66,10 +69,7 @@ export function Auth() {
         className="w-full max-w-md p-10 rounded-2xl bg-gray-900 bg-opacity-70 shadow-2xl border border-gray-700"
         data-aos="fade-up"
       >
-        <Typography
-          variant="h4"
-          className="text-center text-white mb-8"
-        >
+        <Typography variant="h4" className="text-center text-white mb-8">
           {t('messages.verifyNotBot')}
         </Typography>
         <Box className="flex justify-center flex-col items-center">

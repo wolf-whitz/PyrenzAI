@@ -31,7 +31,8 @@ export function FormActions({
   character_update,
 }: FormActionsProps) {
   const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
-  const [isImportCharacterModalOpen, setIsImportCharacterModalOpen] = useState(false);
+  const [isImportCharacterModalOpen, setIsImportCharacterModalOpen] =
+    useState(false);
 
   const handleOpenDraftModal = () => {
     setIsDraftModalOpen(true);

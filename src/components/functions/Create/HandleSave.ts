@@ -15,7 +15,7 @@ export const handleSaveDraft = async (
     if (!userUuid) {
       return { success: false, error: 'User UUID is missing.' };
     }
-    
+
     const allowedCharacterData = {
       user_uuid: userUuid,
       persona: Character.persona,

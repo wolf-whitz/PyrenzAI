@@ -21,7 +21,6 @@ import { AlertProvider } from '~/provider';
 const theme = GetTheme();
 const currentTheme = theme.palette.mode;
 
-
 Sentry.init({
   dsn: 'https://2bed6b35dd70e8068f61a53812a8a5fc@o4509146215284736.ingest.us.sentry.io/4509243214725120',
   sendDefaultPii: true,

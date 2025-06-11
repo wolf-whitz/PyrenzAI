@@ -1,5 +1,12 @@
 import { SkeletonCard, CharacterCard } from '~/components';
-import { Typography, Box, useMediaQuery, useTheme, keyframes, styled } from '@mui/material';
+import {
+  Typography,
+  Box,
+  useMediaQuery,
+  useTheme,
+  keyframes,
+  styled,
+} from '@mui/material';
 import { Character } from '@shared-types';
 
 const ellipsisAnimation = keyframes`
@@ -41,7 +48,12 @@ interface CharacterListProps {
   t: (key: string, options?: Record<string, any>) => string;
 }
 
-export function CharacterList({ characters, loading, itemsPerPage, t }: CharacterListProps) {
+export function CharacterList({
+  characters,
+  loading,
+  itemsPerPage,
+  t,
+}: CharacterListProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -76,7 +88,11 @@ export function CharacterList({ characters, loading, itemsPerPage, t }: Characte
             <img
               src="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MascotHappy.avif"
               alt="Mascot"
-              style={{ width: '100px', height: '100px', animation: 'bounce 2s infinite' }}
+              style={{
+                width: '100px',
+                height: '100px',
+                animation: 'bounce 2s infinite',
+              }}
             />
             <LoadingText variant="body1">Loading</LoadingText>
           </Box>

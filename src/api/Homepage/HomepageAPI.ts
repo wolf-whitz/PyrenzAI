@@ -12,7 +12,7 @@ import {
 } from '@components';
 import { usePyrenzAlert } from '~/provider';
 
-export const useHomepageAPI = (user: any) => {
+export const useHomepageAPI = () => {
   const navigate = useNavigate();
   const {
     search,
@@ -26,7 +26,7 @@ export const useHomepageAPI = (user: any) => {
 
   const { t } = useTranslation();
   const userUUID = useFetchUserUUID();
-  const itemsPerPage = 10;
+  const itemsPerPage = 20;
   const showAlert = usePyrenzAlert();
 
   const { characters } = useFetchCharacters({

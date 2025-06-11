@@ -24,7 +24,9 @@ export async function GetUserData(): Promise<ApiResponse | { error: string }> {
       return { error: 'User UUID not found' };
     }
 
-    const response: ApiResponse = await Utils.post('/api/GetUserData', { user_uuid });
+    const response: ApiResponse = await Utils.post('/api/GetUserData', {
+      user_uuid,
+    });
 
     if (!response) {
       return { error: 'Failed to fetch user data' };
@@ -37,8 +39,18 @@ export async function GetUserData(): Promise<ApiResponse | { error: string }> {
     const preferredModel = response.preferred_model || 'Default Model';
     const subscriptionPlan = response.subscription_data?.tier || 'MELON';
 
-    const { setSubscriptionPlan, setPreferredModel, setInferenceSettings } = useUserStore.getState();
+    const {
+      setUserUUID,
+      setUsername,
+      setUserIcon,
+      setSubscriptionPlan,
+      setPreferredModel,
+      setInferenceSettings,
+    } = useUserStore.getState();
 
+    setUserUUID(user_uuid);
+    setUsername(personaName);
+    setUserIcon(avatarUrl);
     setSubscriptionPlan([subscriptionPlan.trim()]);
     setPreferredModel(preferredModel);
 
@@ -49,7 +61,10 @@ export async function GetUserData(): Promise<ApiResponse | { error: string }> {
     const plan = subscriptionPlan.trim().toUpperCase();
     const modelsByPlan = response.subscription_data?.model || [];
 
-    const getSubscriptionData = (plan: string, models: string[]): ApiResponse['subscription_data'] => {
+    const getSubscriptionData = (
+      plan: string,
+      models: string[]
+    ): ApiResponse['subscription_data'] => {
       switch (plan) {
         case 'MELON':
           return {

@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { Box, Typography } from '@mui/material';
-import { CustomModelFields, ModelSelection, SliderComponent } from '@components';
+import {
+  CustomModelFields,
+  ModelSelection,
+  SliderComponent,
+} from '@components';
 import InfoIcon from '@mui/icons-material/Info';
 import BuildIcon from '@mui/icons-material/Build';
 import { PyrenzBlueButton } from '~/theme';
@@ -41,7 +45,9 @@ export function Customization({
   subscriptionPlan,
   modelOptions,
 }: CustomizationProps) {
-  const [showPopover, setShowPopover] = useState<keyof typeof sliderDescriptions | null>(null);
+  const [showPopover, setShowPopover] = useState<
+    keyof typeof sliderDescriptions | null
+  >(null);
 
   const {
     maxTokens,

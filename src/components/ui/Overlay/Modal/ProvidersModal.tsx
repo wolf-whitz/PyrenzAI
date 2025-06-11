@@ -97,11 +97,7 @@ export function ProviderModals({
             flexDirection: 'column',
           }}
         >
-          <Typography
-            id="modal-title"
-            variant="h6"
-            component="h2"
-          >
+          <Typography id="modal-title" variant="h6" component="h2">
             Premade Providers
           </Typography>
           <Box

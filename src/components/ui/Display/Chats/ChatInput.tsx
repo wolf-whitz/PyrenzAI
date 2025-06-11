@@ -38,7 +38,10 @@ export function ChatInput({
     if (newMessage.length <= MAX_CHAR_LIMIT) {
       setMessage(newMessage);
     } else {
-      showAlert(`Exceeded ${MAX_CHAR_LIMIT} characters, please shorten your message.`, 'alert');
+      showAlert(
+        `Exceeded ${MAX_CHAR_LIMIT} characters, please shorten your message.`,
+        'alert'
+      );
     }
   };
 
@@ -86,17 +89,23 @@ export function ChatInput({
                 : 'hover:text-white'
             }`}
             whileHover={
-              message.length <= MAX_CHAR_LIMIT && !isGenerating && message.trim()
+              message.length <= MAX_CHAR_LIMIT &&
+              !isGenerating &&
+              message.trim()
                 ? { scale: 1.05 }
                 : {}
             }
             whileTap={
-              message.length <= MAX_CHAR_LIMIT && !isGenerating && message.trim()
+              message.length <= MAX_CHAR_LIMIT &&
+              !isGenerating &&
+              message.trim()
                 ? { scale: 0.95 }
                 : {}
             }
             aria-label="Send message"
-            disabled={!message.trim() || message.length > MAX_CHAR_LIMIT || isGenerating}
+            disabled={
+              !message.trim() || message.length > MAX_CHAR_LIMIT || isGenerating
+            }
           >
             <AnimatePresence mode="wait">
               <motion.div
@@ -104,8 +113,8 @@ export function ChatInput({
                   isGenerating
                     ? 'Generating'
                     : message.trim()
-                    ? 'send'
-                    : 'continue'
+                      ? 'send'
+                      : 'continue'
                 }
                 initial={{ x: -10, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}

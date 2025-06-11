@@ -5,7 +5,7 @@ import {
   CommunityGuidelines,
   MobileNav,
   CreatePageLoader,
-  GetUserData
+  GetUserData,
 } from '@components';
 import { useMediaQuery, useTheme, Box } from '@mui/material';
 import { supabase } from '~/Utility/supabaseClient';
@@ -94,7 +94,9 @@ export function CreatePage() {
           </Box>
         </Box>
 
-        <Box sx={{ display: { xs: 'none', sm: 'block' }, width: { sm: '256px' } }}>
+        <Box
+          sx={{ display: { xs: 'none', sm: 'block' }, width: { sm: '256px' } }}
+        >
           <CommunityGuidelines />
         </Box>
 

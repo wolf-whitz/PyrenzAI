@@ -30,10 +30,7 @@ interface HeaderProps {
   setShowRegister: (value: boolean) => void;
 }
 
-export function PreviewHeader({
-  setShowLogin,
-  setShowRegister,
-}: HeaderProps) {
+export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { t } = useTranslation();
@@ -192,7 +189,9 @@ export function PreviewHeader({
                           },
                         }}
                       >
-                        <ListItemIcon><LoginIcon /></ListItemIcon>
+                        <ListItemIcon>
+                          <LoginIcon />
+                        </ListItemIcon>
                         <ListItemText primary={t('buttons.login')} />
                       </ListItem>
                       <ListItem
@@ -209,7 +208,9 @@ export function PreviewHeader({
                           },
                         }}
                       >
-                        <ListItemIcon><PersonAddIcon /></ListItemIcon>
+                        <ListItemIcon>
+                          <PersonAddIcon />
+                        </ListItemIcon>
                         <ListItemText primary={t('buttons.signUp')} />
                       </ListItem>
                     </>

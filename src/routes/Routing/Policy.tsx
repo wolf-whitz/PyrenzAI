@@ -10,7 +10,7 @@ import {
 import { Sidebar, MobileNav } from '@components';
 
 const PolicyText = `
-# Privacy Policy  
+## Privacy Policy  
 **Effective Date:** June 7, 2025  
 **Company Name:** PyrenzAI
 

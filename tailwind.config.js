@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        pyrenzfont: ['Comic Neue', 'system ui']
+        pyrenzfont: ['Comic Neue', 'system ui'],
       },
       colors: {
         midnight: '#0F0F0F',

@@ -38,7 +38,7 @@ export function useFetchCharacters({
         setMaxPage
       );
 
-      const safeCharacters = response.characters.map((char: Character) => (char));
+      const safeCharacters = response.characters.map((char: Character) => char);
 
       setCharacters(safeCharacters);
     } catch (error) {

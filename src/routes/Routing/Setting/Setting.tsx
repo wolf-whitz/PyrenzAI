@@ -68,8 +68,8 @@ export function Setting() {
     const chunkedTabs = isMobile
       ? [mutableTabs.slice(0, 2), mutableTabs.slice(2)]
       : isMedium
-      ? [mutableTabs.slice(0, 3), mutableTabs.slice(3)]
-      : [mutableTabs];
+        ? [mutableTabs.slice(0, 3), mutableTabs.slice(3)]
+        : [mutableTabs];
 
     return (
       <Box

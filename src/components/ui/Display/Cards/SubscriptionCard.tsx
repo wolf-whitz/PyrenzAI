@@ -108,9 +108,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardsProps> = ({
             {ribbonText}
           </PyrenzRibbon>
         )}
-        <CardContent
-          className="text-center flex-grow relative z-10 text-white p-6"
-        >
+        <CardContent className="text-center flex-grow relative z-10 text-white p-6">
           <MotionTypography
             variant="h5"
             sx={{ mb: 2 }}
@@ -143,13 +141,9 @@ export const SubscriptionCard: React.FC<SubscriptionCardsProps> = ({
                     marginBottom: '8px',
                   }}
                 >
-                  <Typography variant="subtitle2">
-                    {title}
-                  </Typography>
+                  <Typography variant="subtitle2">{title}</Typography>
                 </Box>
-                <Typography variant="body2">
-                  {content}
-                </Typography>
+                <Typography variant="body2">{content}</Typography>
               </Box>
             );
           })}

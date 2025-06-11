@@ -45,12 +45,15 @@ export function TextareaForm() {
     handleCloseDropdown();
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  ) => {
     const { name, value, type } = e.target;
-    const checked = type === 'checkbox' ? (e.target as HTMLInputElement).checked : undefined;
+    const checked =
+      type === 'checkbox' ? (e.target as HTMLInputElement).checked : undefined;
 
     if (name === 'tags') {
-      const tagsArray = value.split(',').map(tag => tag.trim());
+      const tagsArray = value.split(',').map((tag) => tag.trim());
       setCharacter({ [name]: tagsArray });
     } else {
       setCharacter({ [name]: type === 'checkbox' ? checked : value });

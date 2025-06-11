@@ -45,7 +45,9 @@ export const saveImageToDB = async (imageBlob: Blob): Promise<void> => {
 export const getImageFromDB = async (): Promise<Blob | null> => {
   return performDBOperation<Blob | undefined>('images', 'readonly', (store) => {
     return store.get('bgImage');
-  }).then(result => result ?? null).catch(() => null);
+  })
+    .then((result) => result ?? null)
+    .catch(() => null);
 };
 
 export const insertData = async <T>(

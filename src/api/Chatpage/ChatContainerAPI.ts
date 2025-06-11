@@ -103,20 +103,24 @@ export const useGenerateMessage = () => {
                   isGenerate: false,
                 }
               : msg.type === 'user' && msg.id === undefined
-              ? { ...msg, id: responseId }
-              : msg
+                ? { ...msg, id: responseId }
+                : msg
           )
         );
 
         if (response.remainingMessages === undefined) {
-          const { data: subscriptionData, error: subscriptionError } = await supabase
-            .from('subscription_plan')
-            .select('is_subscribed')
-            .eq('user_uuid', user_uuid)
-            .single();
+          const { data: subscriptionData, error: subscriptionError } =
+            await supabase
+              .from('subscription_plan')
+              .select('is_subscribed')
+              .eq('user_uuid', user_uuid)
+              .single();
 
           if (subscriptionError) {
-            console.error('Error fetching subscription status:', subscriptionError);
+            console.error(
+              'Error fetching subscription status:',
+              subscriptionError
+            );
             return { isSubscribed: false };
           }
 

@@ -18,10 +18,12 @@ export function ChatContainer({
   className = '',
   chat_uuid,
 }: ChatContainerPropsExtended) {
-  const messageIdRef = useRef<{ charId: string | null; userId: string | null }>({
-    charId: null,
-    userId: null,
-  });
+  const messageIdRef = useRef<{ charId: string | null; userId: string | null }>(
+    {
+      charId: null,
+      userId: null,
+    }
+  );
 
   const { messages, setMessages, firstMessage } = useChatStore();
   const { imageURL } = useUserStore();

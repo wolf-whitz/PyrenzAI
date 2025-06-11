@@ -20,8 +20,13 @@ interface ImageUploaderProps {
   initialImage?: string | null;
 }
 
-export function ImageUploader({ onImageSelect, initialImage }: ImageUploaderProps) {
-  const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(initialImage || null);
+export function ImageUploader({
+  onImageSelect,
+  initialImage,
+}: ImageUploaderProps) {
+  const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(
+    initialImage || null
+  );
   const [open, setOpen] = useState(false);
   const [textareaValue, setTextareaValue] = useState('');
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -79,7 +84,9 @@ export function ImageUploader({ onImageSelect, initialImage }: ImageUploaderProp
       const blobUrl = URL.createObjectURL(blob);
       setImageUrl(blobUrl);
 
-      const file = new File([blob], 'generated-image.png', { type: 'image/png' });
+      const file = new File([blob], 'generated-image.png', {
+        type: 'image/png',
+      });
       onImageSelect(file);
       setBannerImagePreview(blobUrl);
     } catch (error) {

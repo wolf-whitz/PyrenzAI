@@ -14,7 +14,11 @@ interface CharacterFormProps {
   creator: string | null;
 }
 
-export function CharacterForm({ character_update, user_uuid, creator }: CharacterFormProps) {
+export function CharacterForm({
+  character_update,
+  user_uuid,
+  creator,
+}: CharacterFormProps) {
   const navigate = useNavigate();
   const {
     loading,

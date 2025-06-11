@@ -16,6 +16,7 @@ interface InferenceSettings {
 
 interface UserStore {
   userUUID: string | null;
+  username: string | null;
   userIcon: string | null;
   subscription_plan: string[] | null;
   imageURL: string | null;
@@ -24,6 +25,7 @@ interface UserStore {
   modelIdentifiers: ModelIdentifier[];
   maxTokenLimit: number;
   setUserUUID: (uuid: string) => void;
+  setUsername: (name: string) => void;
   setUserIcon: (icon: string) => void;
   setSubscriptionPlan: (plan: string[]) => void;
   setImageURL: (url: string | null) => void;
@@ -37,6 +39,7 @@ export const useUserStore = create<UserStore>()(
   persist(
     (set) => ({
       userUUID: null,
+      username: null,
       userIcon: null,
       subscription_plan: null,
       imageURL: null,
@@ -51,6 +54,7 @@ export const useUserStore = create<UserStore>()(
       modelIdentifiers: [],
       maxTokenLimit: 200,
       setUserUUID: (uuid) => set({ userUUID: uuid }),
+      setUsername: (name) => set({ username: name }),
       setUserIcon: (icon) => set({ userIcon: icon }),
       setSubscriptionPlan: (plan) => set({ subscription_plan: plan }),
       setImageURL: (url) => set({ imageURL: url }),

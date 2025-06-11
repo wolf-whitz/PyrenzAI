@@ -24,9 +24,13 @@ const Profile = lazyNamed(() => import('./Routing/Profile'), 'ProfilePage');
 const Chat = lazyNamed(() => import('./Routing/Chat'), 'ChatPage');
 const Setting = lazyNamed(() => import('./Routing/Setting/Setting'), 'Setting');
 const ErrorPage = lazyNamed(() => import('./Routing/404page'), 'ErrorPage');
-const Subscription = lazyNamed(() => import('./Routing/Subscription'), 'Subscription');
+const Subscription = lazyNamed(
+  () => import('./Routing/Subscription'),
+  'Subscription'
+);
 const Archive = lazyNamed(() => import('./Routing/Archive'), 'Archive');
 const Policy = lazyNamed(() => import('./Routing/Policy'), 'Policy');
+const ContentPolicy = lazyNamed(() => import('./Routing/ContentPolicy'), 'ContentPolicy');
 
 export const AppRoutes = (
   <>
@@ -41,6 +45,7 @@ export const AppRoutes = (
     <Route path="/Profile" element={<Profile />} />
     <Route path="/Chat/:chat_uuid" element={<Chat />} />
     <Route path="/Settings" element={<Setting />} />
+    <Route path="/ContentPolicy" element={<ContentPolicy />} />
     <Route path="*" element={<ErrorPage />} />
   </>
 );

@@ -1,20 +1,23 @@
-import React, { useEffect, useState } from 'react';
 import { BottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { supabase } from '~/Utility/supabaseClient';
-import type { User as SupabaseUser } from '@supabase/supabase-js';
 import HomeIcon from '@mui/icons-material/Home';
 import PlusIcon from '@mui/icons-material/Add';
 import MessageSquareIcon from '@mui/icons-material/Message';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useNavigate } from 'react-router-dom';
+import { useUserStore } from '~/store';
 
 type SetShowLoginModal = (show: boolean) => void;
 
-export function MobileNav({ setShowLoginModal }: { setShowLoginModal: SetShowLoginModal }) {
+export function MobileNav({
+  setShowLoginModal,
+}: {
+  setShowLoginModal: SetShowLoginModal;
+}) {
   const { t } = useTranslation();
-  const [user, setUser] = useState<SupabaseUser | null>(null);
   const navigate = useNavigate();
+
+  const userUUID = useUserStore((state) => state.userUUID);
 
   const menuItems = [
     {
@@ -39,21 +42,14 @@ export function MobileNav({ setShowLoginModal }: { setShowLoginModal: SetShowLog
     },
   ];
 
-  useEffect(() => {
-    const checkUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      setUser(data.user);
-    };
-
-    checkUser();
-  }, []);
-
   const handleNavigation = (item: { name: string; path: string }) => {
     if (
-      [t('navigation.settings'), t('navigation.create'), t('navigation.chats')].includes(
-        item.name
-      ) &&
-      !user
+      [
+        t('navigation.settings'),
+        t('navigation.create'),
+        t('navigation.chats'),
+      ].includes(item.name) &&
+      !userUUID
     ) {
       setShowLoginModal(true);
     } else {
@@ -62,7 +58,10 @@ export function MobileNav({ setShowLoginModal }: { setShowLoginModal: SetShowLog
   };
 
   return (
-    <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50 }} elevation={3}>
+    <Paper
+      sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50 }}
+      elevation={3}
+    >
       <BottomNavigation showLabels>
         {menuItems.map((item) => (
           <BottomNavigationAction

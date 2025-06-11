@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import {
   Home as HomeIcon,
@@ -7,8 +7,7 @@ import {
   Chat as MessageSquareIcon,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '~/Utility/supabaseClient';
-import type { User as SupabaseUser } from '@supabase/supabase-js';
+import { useUserStore } from '~/store';
 import { AuthenticationModal } from '@components';
 import {
   Tooltip,
@@ -20,10 +19,10 @@ import {
   IconButton,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { User } from '@shared-types';
 
 export function Sidebar({ className }: { className?: string }) {
   const [hovered, setHovered] = useState<string | null>(null);
-  const [user, setUser] = useState<SupabaseUser | null>(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [modalMode, setModalMode] = useState<'login' | 'register'>('login');
   const navigate = useNavigate();
@@ -31,14 +30,9 @@ export function Sidebar({ className }: { className?: string }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  useEffect(() => {
-    const checkUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      setUser(data.user);
-    };
-
-    checkUser();
-  }, []);
+  const user_uuid = useUserStore((state) => state.userUUID);
+  const username = useUserStore((state) => state.username);
+  const user_avatar = useUserStore((state) => state.userIcon);
 
   const menuItems = [
     {
@@ -67,6 +61,17 @@ export function Sidebar({ className }: { className?: string }) {
     setModalMode((prevMode) => (prevMode === 'login' ? 'register' : 'login'));
   };
 
+  const getUser = (): User | null => {
+    if (user_uuid) {
+      return {
+        username: username || 'Anon',
+        user_avatar: user_avatar || '',
+        user_uuid,
+      };
+    }
+    return null;
+  };
+
   return (
     <>
       {!isMobile && (
@@ -89,7 +94,7 @@ export function Sidebar({ className }: { className?: string }) {
                 setHovered={setHovered}
                 navigate={navigate}
                 setShowLoginModal={setShowLoginModal}
-                user={user}
+                user={getUser()}
               />
             ))}
           </List>
@@ -102,7 +107,7 @@ export function Sidebar({ className }: { className?: string }) {
                 setHovered={setHovered}
                 navigate={navigate}
                 setShowLoginModal={setShowLoginModal}
-                user={user}
+                user={getUser()}
               />
             ))}
           </List>
@@ -120,6 +125,15 @@ export function Sidebar({ className }: { className?: string }) {
   );
 }
 
+interface SidebarItemProps {
+  item: { name: string; icon: React.ReactNode; path: string };
+  hovered: string | null;
+  setHovered: (name: string | null) => void;
+  navigate: (path: string) => void;
+  setShowLoginModal: (show: boolean) => void;
+  user: User | null;
+}
+
 function SidebarItem({
   item,
   hovered,
@@ -127,19 +141,16 @@ function SidebarItem({
   navigate,
   setShowLoginModal,
   user,
-}: {
-  item: { name: string; icon: React.ReactNode; path: string };
-  hovered: string | null;
-  setHovered: (name: string | null) => void;
-  navigate: (path: string) => void;
-  setShowLoginModal: (show: boolean) => void;
-  user: SupabaseUser | null;
-}) {
+}: SidebarItemProps) {
   const { t } = useTranslation();
 
   const handleClick = () => {
     if (
-      [t('navigation.settings'), t('navigation.create'), t('navigation.chats')].includes(item.name) &&
+      [
+        t('navigation.settings'),
+        t('navigation.create'),
+        t('navigation.chats'),
+      ].includes(item.name) &&
       !user
     ) {
       setShowLoginModal(true);

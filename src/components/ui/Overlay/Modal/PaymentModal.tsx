@@ -52,8 +52,7 @@ export function PaymentModal({
         </Typography>
         <Typography variant="body2" gutterBottom sx={{ mt: 2 }}>
           <strong>Important when buying:</strong> PyrenzAI does not offer
-          refunds after <strong>5 days</strong> from the purchase
-          date.
+          refunds after <strong>5 days</strong> from the purchase date.
         </Typography>
 
         <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center', gap: 2 }}>
@@ -74,7 +73,7 @@ export function PaymentModal({
               alt="Kofi"
               style={{ width: '20px', marginRight: '8px' }}
             />
-Buy via Ko-fi
+            Buy via Ko-fi
           </PyrenzBlueButton>
         </Box>
       </Box>

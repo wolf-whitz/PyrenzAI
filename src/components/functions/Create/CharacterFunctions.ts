@@ -14,15 +14,19 @@ const requiredCharacterFields: Array<keyof Character> = [
   'tags',
   'gender',
   'creator',
-  'profile_image'
+  'profile_image',
 ];
 
-const validateCharacterData = (character: Character): { isValid: boolean; missingFields: string[] } => {
-  const missingFields = requiredCharacterFields.filter(field => !character[field]);
+const validateCharacterData = (
+  character: Character
+): { isValid: boolean; missingFields: string[] } => {
+  const missingFields = requiredCharacterFields.filter(
+    (field) => !character[field]
+  );
 
   return {
     isValid: missingFields.length === 0,
-    missingFields
+    missingFields,
   };
 };
 
@@ -106,7 +110,10 @@ export const handleSaveCharacter = async (
 
     const validation = validateCharacterData(character);
     if (!validation.isValid) {
-      showAlert(`Missing or undefined fields: ${validation.missingFields.join(', ')}`, 'Alert');
+      showAlert(
+        `Missing or undefined fields: ${validation.missingFields.join(', ')}`,
+        'Alert'
+      );
       setSaveLoading(false);
       return;
     }
@@ -153,7 +160,10 @@ export const handleSubmitCharacter = async (
 
     const validation = validateCharacterData(character);
     if (!validation.isValid) {
-      showAlert(`Missing or undefined fields: ${validation.missingFields.join(', ')}`, 'Alert');
+      showAlert(
+        `Missing or undefined fields: ${validation.missingFields.join(', ')}`,
+        'Alert'
+      );
       setLoading(false);
       return;
     }
@@ -168,7 +178,10 @@ export const handleSubmitCharacter = async (
     if (response.error) {
       console.error('Error creating/updating character:', response.error);
       Sentry.captureException(new Error(response.error));
-      showAlert(`Error creating/updating character: ${response.error}`, 'Alert');
+      showAlert(
+        `Error creating/updating character: ${response.error}`,
+        'Alert'
+      );
     } else {
       const characterUuid = response.char_uuid;
       if (characterUuid) {
@@ -194,11 +207,12 @@ export const handleSubmitCharacter = async (
           'Character created/updated but no character UUID returned.'
         );
         Sentry.captureException(
-          new Error(
-            'Character created/updated but no character UUID returned.'
-          )
+          new Error('Character created/updated but no character UUID returned.')
         );
-        showAlert('Character created/updated but no character UUID returned.', 'Alert');
+        showAlert(
+          'Character created/updated but no character UUID returned.',
+          'Alert'
+        );
       }
     }
   } catch (error) {

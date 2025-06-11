@@ -32,7 +32,12 @@ const truncateText = (text: string, maxLength: number) => {
   return text.substring(0, maxLength) + '...';
 };
 
-export function CharacterCardModal({ isOpen, onClose, character, isOwner }: CharacterCardModalProps) {
+export function CharacterCardModal({
+  isOpen,
+  onClose,
+  character,
+  isOwner,
+}: CharacterCardModalProps) {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [userUUID, setUserUUID] = useState<string | null>(null);
@@ -212,20 +217,22 @@ export function CharacterCardModal({ isOpen, onClose, character, isOwner }: Char
                   )}
                 </motion.span>
               )}
-              {(Array.isArray(character.tags) ? character.tags : []).map((tag, index) => (
-                <motion.span
-                  key={index}
-                  className="bg-black text-white text-xs font-semibold py-1 px-3 rounded-full"
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{
-                    opacity: 1,
-                    scale: 1,
-                    transition: { delay: (index + 1) * 0.05 },
-                  }}
-                >
-                  {tag}
-                </motion.span>
-              ))}
+              {(Array.isArray(character.tags) ? character.tags : []).map(
+                (tag, index) => (
+                  <motion.span
+                    key={index}
+                    className="bg-black text-white text-xs font-semibold py-1 px-3 rounded-full"
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    animate={{
+                      opacity: 1,
+                      scale: 1,
+                      transition: { delay: (index + 1) * 0.05 },
+                    }}
+                  >
+                    {tag}
+                  </motion.span>
+                )
+              )}
             </Box>
           </Box>
         </Box>

@@ -95,13 +95,22 @@ export function Footer() {
         </Button>
       </motion.div>
 
-      <Link
-        href="/Policy"
-        variant="body2"
-        style={{ color: '#9ca3af', textAlign: 'center' }}
-      >
-        Privacy Policy
-      </Link>
+      <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+        <Link
+          href="/Policy"
+          variant="body2"
+          style={{ color: '#9ca3af', textAlign: 'center' }}
+        >
+          Privacy Policy
+        </Link>
+        <Link
+          href="/ContentPolicy"
+          variant="body2"
+          style={{ color: '#9ca3af', textAlign: 'center' }}
+        >
+          Content Removal
+        </Link>
+      </div>
 
       <Typography
         variant="body2"

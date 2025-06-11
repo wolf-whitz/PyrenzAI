@@ -34,7 +34,7 @@ export const useMenuAPI = ({ char }: MenuAPIProps) => {
       return data.map((item) => ({
         label: item.name,
         name: item.name,
-        description: item.model_description
+        description: item.model_description,
       }));
     } catch (error) {
       console.error(error);
@@ -72,7 +72,7 @@ export const useMenuAPI = ({ char }: MenuAPIProps) => {
     const fetchData = async () => {
       try {
         const userData = await GetUserData();
-        console.log(userData)
+        console.log(userData);
         if (userData && 'ai_customization' in userData) {
           setAiCustomization(userData.ai_customization);
           const plan = userData.subscription_data.tier;
@@ -85,7 +85,11 @@ export const useMenuAPI = ({ char }: MenuAPIProps) => {
         }
 
         const options = await fetchModelIdentifiers();
-        options.push({ label: 'Custom', name: 'Custom', description: 'Custom description' });
+        options.push({
+          label: 'Custom',
+          name: 'Custom',
+          description: 'Custom description',
+        });
         setModelOptions(options);
       } catch (error) {
         Sentry.captureException(error);

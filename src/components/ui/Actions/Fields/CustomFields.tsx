@@ -35,7 +35,10 @@ export function CustomModelFields() {
         }
       } catch (err) {
         if (err instanceof Error) {
-          console.error('Error fetching custom provider settings:', err.message);
+          console.error(
+            'Error fetching custom provider settings:',
+            err.message
+          );
         } else {
           console.error('An unknown error occurred:', err);
         }
@@ -123,18 +126,10 @@ export function CustomModelFields() {
       </Box>
 
       <Box display="flex" justifyContent="space-between" mb={4}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleClear}
-        >
+        <Button variant="contained" color="primary" onClick={handleClear}>
           Clear
         </Button>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={handleSubmit}
-        >
+        <Button variant="contained" color="secondary" onClick={handleSubmit}>
           Submit
         </Button>
       </Box>

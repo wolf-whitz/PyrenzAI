@@ -52,7 +52,12 @@ export function ModelSelection({
         >
           {modelOptions.map((option) => (
             <MenuItem key={option.value} value={option.value}>
-              <Box display="flex" alignItems="center" justifyContent="space-between" width="100%">
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+                width="100%"
+              >
                 {option.label}
                 <IconButton
                   onMouseEnter={(e) => handlePopoverOpen(e, option.description)}
@@ -82,9 +87,7 @@ export function ModelSelection({
           pointerEvents: 'none',
         }}
       >
-        <Box p={2}>
-          {popoverContent}
-        </Box>
+        <Box p={2}>{popoverContent}</Box>
       </Popover>
     </Box>
   );

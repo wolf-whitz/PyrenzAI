@@ -12,10 +12,7 @@ export function SettingsSidebar({
   onClose,
 }: SettingsSidebarProps) {
   return (
-    <PyrenzStyledDrawer
-      isOpen={settingsOpen}
-      onClose={onClose}
-    >
+    <PyrenzStyledDrawer isOpen={settingsOpen} onClose={onClose}>
       <Box className="flex justify-center">
         <img
           src="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/Support.avif"
