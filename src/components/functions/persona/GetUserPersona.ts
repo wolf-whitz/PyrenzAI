@@ -1,10 +1,13 @@
-import { supabase } from '~/Utility/supabaseClient';
+import { Utils } from '~/Utility/Utility';
 import { useUserStore } from '~/store';
+import { GetUserUUID } from '../General/GetUserUUID';
 
-interface UserDataResponse {
+interface ApiResponse {
   username: string;
   user_avatar: string;
   ai_customization: any;
+  custom_provider?: any;
+  preferred_model?: string;
   subscription_data: {
     tier: string;
     max_token: number;
@@ -13,108 +16,83 @@ interface UserDataResponse {
   };
 }
 
-export async function GetUserData(): Promise<
-  UserDataResponse | { error: string }
-> {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+export async function GetUserData(): Promise<ApiResponse | { error: string }> {
+  try {
+    const user_uuid = await GetUserUUID();
 
-  if (!user) {
-    return { error: 'User not authenticated' };
-  }
+    if (!user_uuid) {
+      return { error: 'User UUID not found' };
+    }
 
-  const { data: userData, error: userError } = await supabase
-    .from('user_data')
-    .select('username, avatar_url, inference_settings')
-    .eq('user_uuid', user.id)
-    .single();
+    const response: ApiResponse = await Utils.post('/api/GetUserData', { user_uuid });
 
-  if (userError || !userData) {
-    return { error: 'User not found' };
-  }
+    if (!response) {
+      return { error: 'Failed to fetch user data' };
+    }
 
-  const { data: subscriptionPlanData, error: subscriptionError } =
-    await supabase
-      .from('subscription_plan')
-      .select('subscription_plan')
-      .eq('user_uuid', user.id)
-      .single();
+    const personaName = response.username || 'Anon';
+    const avatarUrl = response.user_avatar || '';
+    const aiCustomization = response.ai_customization || {};
+    const customProvider = response.custom_provider || {};
+    const preferredModel = response.preferred_model || 'Default Model';
+    const subscriptionPlan = response.subscription_data?.tier || 'MELON';
 
-  if (subscriptionError || !subscriptionPlanData) {
-    return { error: 'Subscription plan not found' };
-  }
+    const { setSubscriptionPlan, setPreferredModel, setInferenceSettings } = useUserStore.getState();
 
-  const { data: modelIdentifiers, error: modelError } = await supabase
-    .from('model_identifiers')
-    .select('name, subscription_plan');
+    setSubscriptionPlan([subscriptionPlan.trim()]);
+    setPreferredModel(preferredModel);
 
-  if (modelError || !modelIdentifiers) {
-    return { error: 'Model identifiers not found' };
-  }
+    if (aiCustomization.inference_settings) {
+      setInferenceSettings(aiCustomization.inference_settings);
+    }
 
-  const personaName = userData.username || 'Anon';
-  const avatarUrl = userData.avatar_url || '';
-  const aiCustomization = userData.inference_settings || {};
+    const plan = subscriptionPlan.trim().toUpperCase();
+    const modelsByPlan = response.subscription_data?.model || [];
 
-  useUserStore
-    .getState()
-    .setSubscriptionPlan(subscriptionPlanData.subscription_plan.trim());
-
-  const modelsByPlan = modelIdentifiers.reduce(
-    (acc, model) => {
-      const plan = model.subscription_plan.trim().toUpperCase();
-      if (!acc[plan]) {
-        acc[plan] = [];
+    const getSubscriptionData = (plan: string, models: string[]): ApiResponse['subscription_data'] => {
+      switch (plan) {
+        case 'MELON':
+          return {
+            tier: 'MELON',
+            max_token: 200,
+            model: models,
+            max_persona: 3,
+          };
+        case 'PINEAPPLE':
+          return {
+            tier: 'PINEAPPLE',
+            max_token: 500,
+            model: models,
+            max_persona: 20,
+          };
+        case 'DURIAN':
+          return {
+            tier: 'DURIAN',
+            max_token: 1000,
+            model: models,
+            max_persona: 'unlimited',
+          };
+        default:
+          return {
+            tier: 'MELON',
+            max_token: 200,
+            model: models,
+            max_persona: 3,
+          };
       }
-      acc[plan].push(model.name);
-      return acc;
-    },
-    {} as Record<string, string[]>
-  );
+    };
 
-  const plan = subscriptionPlanData.subscription_plan.trim().toUpperCase();
+    const subscriptionData = getSubscriptionData(plan, modelsByPlan);
 
-  let subscriptionData;
-  switch (plan) {
-    case 'MELON':
-      subscriptionData = {
-        tier: 'MELON',
-        max_token: 200,
-        model: modelsByPlan['MELON'] || [],
-        max_persona: 3,
-      };
-      break;
-    case 'PINEAPPLE':
-      subscriptionData = {
-        tier: 'PINEAPPLE',
-        max_token: 500,
-        model: modelsByPlan['PINEAPPLE'] || [],
-        max_persona: 20,
-      };
-      break;
-    case 'DURIAN':
-      subscriptionData = {
-        tier: 'DURIAN',
-        max_token: 1000,
-        model: modelsByPlan['DURIAN'] || [],
-        max_persona: 'unlimited',
-      };
-      break;
-    default:
-      subscriptionData = {
-        tier: 'MELON',
-        max_token: 200,
-        model: modelsByPlan['MELON'] || [],
-        max_persona: 3,
-      };
-      break;
+    return {
+      username: personaName,
+      user_avatar: avatarUrl,
+      ai_customization: aiCustomization,
+      custom_provider: customProvider,
+      preferred_model: preferredModel,
+      subscription_data: subscriptionData,
+    };
+  } catch (error) {
+    return { error: 'An error occurred while fetching user data' };
   }
-
-  return {
-    username: personaName,
-    user_avatar: avatarUrl,
-    ai_customization: aiCustomization,
-    subscription_data: subscriptionData,
-  };
 }

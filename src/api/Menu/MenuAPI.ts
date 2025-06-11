@@ -72,6 +72,7 @@ export const useMenuAPI = ({ char }: MenuAPIProps) => {
     const fetchData = async () => {
       try {
         const userData = await GetUserData();
+        console.log(userData)
         if (userData && 'ai_customization' in userData) {
           setAiCustomization(userData.ai_customization);
           const plan = userData.subscription_data.tier;
