@@ -7,6 +7,7 @@ import { handleLogin, handleOAuthSignIn, handleSignUp } from '~/api';
 import posthog from 'posthog-js';
 import * as Dialog from '@radix-ui/react-dialog';
 import { useTranslation } from 'react-i18next';
+import { useUserStore } from '~/store';
 
 interface AuthenticationModalProps {
   mode: 'login' | 'register';
@@ -25,6 +26,7 @@ export function AuthenticationModal({
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const { t } = useTranslation();
+  const setIsLogin = useUserStore((state) => state.setIsLogin); 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,6 +43,7 @@ export function AuthenticationModal({
           return;
         }
       }
+      setIsLogin(true); 
       onClose();
     } catch (err: any) {
       setError(err.message || t('errors.anErrorOccurred'));
@@ -56,6 +59,7 @@ export function AuthenticationModal({
 
     try {
       await handleOAuthSignIn(provider);
+      setIsLogin(true); 
       onClose();
     } catch (err: any) {
       setError(err.message || t('errors.oauthError'));
@@ -68,7 +72,7 @@ export function AuthenticationModal({
   return ReactDOM.createPortal(
     <Dialog.Root open onOpenChange={onClose}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-5`0 bg-black bg-opacity-50" />
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-black bg-opacity-50" />
         <AnimatePresence>
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -218,8 +222,8 @@ export function AuthenticationModal({
                   {loading
                     ? `${mode === 'login' ? t('auth.loggingIn') : t('auth.signingUp')}...`
                     : mode === 'login'
-                      ? t('buttons.login')
-                      : t('buttons.signUp')}
+                    ? t('buttons.login')
+                    : t('buttons.signUp')}
                 </motion.button>
               </form>
 

@@ -33,6 +33,7 @@ export function Sidebar({ className }: { className?: string }) {
   const user_uuid = useUserStore((state) => state.userUUID);
   const username = useUserStore((state) => state.username);
   const user_avatar = useUserStore((state) => state.userIcon);
+  const is_login = useUserStore((state) => state.is_login);  
 
   const menuItems = [
     {
@@ -62,7 +63,7 @@ export function Sidebar({ className }: { className?: string }) {
   };
 
   const getUser = (): User | null => {
-    if (user_uuid) {
+    if (is_login && user_uuid) {
       return {
         username: username || 'Anon',
         user_avatar: user_avatar || '',

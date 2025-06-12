@@ -8,6 +8,7 @@ interface CharacterState {
   scenario: string;
   description: string;
   first_message: string;
+  lorebook: string;  
   is_public: boolean;
   is_nsfw: boolean;
   tags: string[];
@@ -34,6 +35,7 @@ export const useCharacterStore = create<CharacterState & CharacterActions>(
     scenario: '',
     description: '',
     first_message: '',
+    lorebook: '', 
     tags: [],
     gender: '',
     creator: null,

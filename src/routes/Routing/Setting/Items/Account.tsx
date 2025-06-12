@@ -1,10 +1,6 @@
-import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { LanguageModal } from '@components';
 import { ChevronLeft } from 'lucide-react';
-import { supabase } from '~/Utility/supabaseClient';
-import { User } from '@supabase/supabase-js';
-import { useNavigate } from 'react-router-dom';
 import {
   Avatar,
   Button,
@@ -16,95 +12,20 @@ import {
   DialogContentText,
   DialogTitle,
 } from '@mui/material';
+import { useAccountAPI } from '@api';
 
 export function Account() {
-  const [languages, setLanguages] = useState<{ code: string; name: string }[]>(
-    []
-  );
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
-  const [openDialog, setOpenDialog] = useState(false);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    fetch('/Languages/Languages.json')
-      .then((response) => response.json())
-      .then((data) => {
-        setLanguages(data.languages || []);
-      })
-      .catch((error) => console.error('Error fetching languages:', error));
-
-    const fetchUser = async () => {
-      const { data: sessionData, error: sessionError } =
-        await supabase.auth.getSession();
-      if (sessionError || !sessionData.session) {
-        console.error('Error fetching session:', sessionError);
-      } else {
-        const { data: userData, error: userError } =
-          await supabase.auth.getUser();
-        if (userError) {
-          console.error('Error fetching user:', userError);
-        } else {
-          setUser(userData.user);
-        }
-      }
-    };
-
-    fetchUser();
-  }, []);
-
-  const toggleModal = () => {
-    setIsModalOpen((prev) => !prev);
-  };
-
-  const handleLogOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error('Error logging out:', error);
-    } else {
-      console.log('Logged out successfully');
-      setUser(null);
-      navigate('/');
-    }
-  };
-
-  const handleDeleteAccount = async () => {
-    setOpenDialog(true);
-  };
-
-  const confirmDeleteAccount = async () => {
-    setOpenDialog(false);
-
-    try {
-      const { error: emailError } = await supabase.functions.invoke(
-        'send-delete-account-email',
-        {
-          body: { userEmail: user?.email },
-        }
-      );
-
-      const { error: deleteError } = await supabase
-        .from('user_data')
-        .delete()
-        .eq('user_uuid', user?.id);
-
-      if (deleteError) {
-        console.error('Error deleting user from user_data:', deleteError);
-        return;
-      }
-
-      const { error: logoutError } = await supabase.auth.signOut();
-      if (logoutError) {
-        console.error('Error logging out:', logoutError);
-      } else {
-        console.log('Logged out successfully');
-        setUser(null);
-        navigate('/');
-      }
-    } catch (error) {
-      console.error('Error deleting account:', error);
-    }
-  };
+  const {
+    languages,
+    isModalOpen,
+    user,
+    openDialog,
+    toggleModal,
+    handleLogOut,
+    handleDeleteAccount,
+    confirmDeleteAccount,
+    setOpenDialog,
+  } = useAccountAPI();
 
   return (
     <motion.div
@@ -238,15 +159,14 @@ export function Account() {
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure you want to delete your account? This action cannot be
-            undone.
+            Are you sure you want to delete your account? This action cannot be undone.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenDialog(false)} color="primary">
+          <Button onClick={() => setOpenDialog(false)} style={{ color: 'white' }}>
             Cancel
           </Button>
-          <Button onClick={confirmDeleteAccount} color="primary" autoFocus>
+          <Button onClick={confirmDeleteAccount} style={{ color: 'white' }} autoFocus>
             Confirm
           </Button>
         </DialogActions>

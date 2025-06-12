@@ -25,6 +25,8 @@ export const CharacterSchema = z.object({
 
   isLoading: z.boolean().optional(),
   creator_uuid: z.string().optional(),
+
+  lorebook: z.string().optional()
 });
 
 export const DraftSchema = z.object({

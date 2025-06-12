@@ -17,7 +17,7 @@ export function MobileNav({
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const userUUID = useUserStore((state) => state.userUUID);
+  const isLogin = useUserStore((state) => state.is_login);
 
   const menuItems = [
     {
@@ -49,7 +49,7 @@ export function MobileNav({
         t('navigation.create'),
         t('navigation.chats'),
       ].includes(item.name) &&
-      !userUUID
+      !isLogin
     ) {
       setShowLoginModal(true);
     } else {

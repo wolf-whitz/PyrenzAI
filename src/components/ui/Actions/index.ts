@@ -1,6 +1,6 @@
 export * from './Buttons';
 export * from './CheckBox';
-export * from './ContextMenu/CustomContextMenu';
+export * from './ContextMenu';
 
 export * from './Dropdown';
 export * from './Dropzone/Dropzone';
