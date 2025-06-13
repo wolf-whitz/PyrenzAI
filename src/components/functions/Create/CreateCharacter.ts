@@ -19,6 +19,26 @@ function cleanTags(tags?: string): string[] | undefined {
   return cleanedTags;
 }
 
+async function insertTags(char_uuid: string, user_uuid: string, tags: string[]) {
+  if (!tags || tags.length === 0) return;
+
+  const tagEntries = tags.map(tag => ({
+    char_uuid,
+    user_uuid,
+    tag_name: tag,
+  }));
+
+  const { error } = await supabase
+    .from('tags')
+    .insert(tagEntries);
+
+  if (error) {
+    console.error('Error inserting tags:', error);
+    Sentry.captureException(error);
+    throw new Error(error.message);
+  }
+}
+
 export const createCharacter = async (
   Character: Character
 ): Promise<CreateCharacterResponse> => {
@@ -29,11 +49,11 @@ export const createCharacter = async (
     const characterUuid = uuidv4();
     if (!characterUuid) throw new Error('Failed to generate UUID.');
 
-    const { char_uuid, tags, ...rest } = Character;
+    const { char_uuid, tags, creator_uuid: user_uuid, ...rest } = Character;
     const cleanedTags = cleanTags(tags);
 
-    const insertData = { char_uuid: characterUuid, ...rest, tags: cleanedTags };
-    const { data, error } = await supabase
+    const insertData = { char_uuid: characterUuid, ...rest };
+    const { error } = await supabase
       .from('characters')
       .insert([insertData]);
 
@@ -42,6 +62,11 @@ export const createCharacter = async (
       Sentry.captureException(error);
       return { error: error.message };
     }
+
+    if (cleanedTags && user_uuid) {
+      await insertTags(characterUuid, user_uuid, cleanedTags);
+    }
+
     return { char_uuid: characterUuid };
   } catch (error) {
     console.error('Unexpected error:', error);
@@ -57,18 +82,15 @@ export const updateCharacter = async (
     if (!Character.creator || Character.creator.trim() === '')
       return { error: 'Creator is required.' };
 
-    const { char_uuid, tags, ...rest } = Character;
+    const { char_uuid, tags, creator_uuid: user_uuid, ...rest } = Character;
     if (!char_uuid)
       return { error: 'Character UUID is required for updating.' };
 
     const cleanedTags = cleanTags(tags);
 
-    const updateData = {
-      ...rest,
-      tags: cleanedTags,
-    };
+    const updateData = { ...rest };
 
-    const { data, error } = await supabase.rpc('update_character', {
+    const { error } = await supabase.rpc('update_character', {
       char_uuid_param: char_uuid,
       character_data: updateData,
     });
@@ -78,6 +100,16 @@ export const updateCharacter = async (
       Sentry.captureException(error);
       return { error: error.message };
     }
+
+    if (cleanedTags && user_uuid) {
+      await supabase
+        .from('tags')
+        .delete()
+        .eq('char_uuid', char_uuid);
+
+      await insertTags(char_uuid, user_uuid, cleanedTags);
+    }
+
     return { char_uuid };
   } catch (error) {
     console.error('Unexpected error:', error);

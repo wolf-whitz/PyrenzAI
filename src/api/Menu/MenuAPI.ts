@@ -8,6 +8,7 @@ interface ModelOption {
   label: string;
   name: string;
   description: string;
+  subscription_plan: string;
 }
 
 interface MenuAPIProps {
@@ -27,7 +28,7 @@ export const useMenuAPI = ({ char }: MenuAPIProps) => {
     try {
       const { data, error } = await supabase
         .from('model_identifiers')
-        .select('name, model_description');
+        .select('name, model_description, subscription_plan');
 
       if (error) throw error;
 
@@ -35,6 +36,7 @@ export const useMenuAPI = ({ char }: MenuAPIProps) => {
         label: item.name,
         name: item.name,
         description: item.model_description,
+        subscription_plan: item.subscription_plan,
       }));
     } catch (error) {
       console.error(error);
@@ -89,6 +91,7 @@ export const useMenuAPI = ({ char }: MenuAPIProps) => {
           label: 'Custom',
           name: 'Custom',
           description: 'Custom description',
+          subscription_plan: '',
         });
         setModelOptions(options);
       } catch (error) {

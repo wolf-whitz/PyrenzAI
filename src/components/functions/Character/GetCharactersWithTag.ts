@@ -12,17 +12,26 @@ export async function GetCharactersWithTags(
 
   const offset = (page - 1) * maxCharacter;
 
+  const { data: tagLinks, error: tagError } = await supabase
+    .from('tags')
+    .select('char_uuid')
+    .eq('tag_name', tag);
+
+  if (tagError) throw new Error(tagError.message);
+  if (!tagLinks || tagLinks.length === 0) return [];
+
+  const charUuids = tagLinks.map(t => t.char_uuid);
+
   let query = supabase
     .from('characters')
     .select('*')
+    .in('char_uuid', charUuids)
     .eq('is_nsfw', false)
     .order('chat_messages_count', { ascending: false })
     .range(offset, offset + maxCharacter - 1);
 
   if (gender === 'male' || gender === 'female') {
     query = query.eq('gender', gender);
-  } else {
-    query = query.filter('tags', 'cs', `{${tag}}`);
   }
 
   const { data, error } = await query;

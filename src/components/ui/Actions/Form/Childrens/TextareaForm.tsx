@@ -48,6 +48,7 @@ export function TextareaForm() {
 
   const handleTagsChange = (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     setTagsInput(e.target.value);
+    setCharacter({ tags: e.target.value });
   };
 
   return (

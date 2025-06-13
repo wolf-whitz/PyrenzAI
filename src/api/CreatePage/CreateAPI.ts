@@ -82,6 +82,7 @@ export const useCreateAPI = (
     if (characterState.profile_image) {
       URL.revokeObjectURL(characterState.profile_image);
     }
+    showAlert('Character cleared successfully!', 'success');
   };
 
   const handleDelete = async () => {
@@ -94,14 +95,16 @@ export const useCreateAPI = (
 
   const handleSelectDraft = (draft: Draft) => {
     setCharacter(draft);
+    showAlert('Draft selected successfully!', 'success');
   };
 
   const handleImportCharacter = (data: Character | null) => {
     if (!data) {
-      console.error('No data provided to import character.');
+      showAlert('No data provided to import character.', 'error');
       return;
     }
     setCharacter({ ...data });
+    showAlert('Character imported successfully!', 'success');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MenuItem, Select, Box, Popover, IconButton } from '@mui/material';
+import { MenuItem, Select, Box, Popover, IconButton, Typography } from '@mui/material';
 import { HelpCircle } from 'lucide-react';
 import {
   PyrenzFormControl,
@@ -10,7 +10,12 @@ import {
 interface ModelSelectionProps {
   preferredModel: string;
   setPreferredModel: (value: string) => void;
-  modelOptions: { value: string; label: string; description: string }[];
+  modelOptions: {
+    value: string;
+    label: string;
+    description: string;
+    subscription_plan: string;
+  }[];
 }
 
 export function ModelSelection({
@@ -58,7 +63,12 @@ export function ModelSelection({
                 justifyContent="space-between"
                 width="100%"
               >
-                {option.label}
+                <Box>
+                  <Typography>{option.label}</Typography>
+                  <Typography variant="caption" color="textSecondary">
+                    Plan: {option.subscription_plan}
+                  </Typography>
+                </Box>
                 <IconButton
                   onMouseEnter={(e) => handlePopoverOpen(e, option.description)}
                   onMouseLeave={handlePopoverClose}

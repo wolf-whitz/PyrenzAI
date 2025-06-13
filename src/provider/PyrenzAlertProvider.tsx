@@ -10,7 +10,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { motion, AnimatePresence } from 'framer-motion';
 
-type AlertMode = 'Success' | 'success' | 'Alert' | 'alert';
+type AlertMode = 'Success' | 'success' | 'Error' | 'error' | 'Alert' | 'alert';
 
 type AlertState = {
   mode: AlertMode;
@@ -25,8 +25,9 @@ const AlertContext = createContext<AlertContextType | undefined>(undefined);
 
 export const usePyrenzAlert = () => {
   const context = useContext(AlertContext);
-  if (!context)
-    throw new Error('PyrenzAlert must be used within an AlertProvider');
+  if (!context) {
+    throw new Error('usePyrenzAlert must be used within an AlertProvider');
+  }
   return context.showAlert;
 };
 
@@ -40,6 +41,15 @@ export const AlertProvider = ({ children }: { children: ReactNode }) => {
   const handleClose = () => {
     setAlertState(null);
   };
+
+  useEffect(() => {
+    if (alertState) {
+      const timer = setTimeout(() => {
+        handleClose();
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [alertState]);
 
   return (
     <AlertContext.Provider value={{ showAlert }}>
@@ -85,15 +95,12 @@ export const AlertProvider = ({ children }: { children: ReactNode }) => {
                   color="inherit"
                   size="small"
                   onClick={handleClose}
-                  tabIndex={-1}
                 />
               }
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-              }}
             >
-              <AlertTitle>{alertState.mode}</AlertTitle>
+              <AlertTitle>
+                {alertState.mode.charAt(0).toUpperCase() + alertState.mode.slice(1)}
+              </AlertTitle>
               {alertState.message}
             </Alert>
           </motion.div>
