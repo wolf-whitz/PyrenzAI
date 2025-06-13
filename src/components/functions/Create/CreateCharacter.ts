@@ -8,15 +8,15 @@ interface CreateCharacterResponse {
   error?: string;
 }
 
-function cleanTags(tags?: string): string[] | undefined {
+function cleanTags(tags?: string): string | undefined {
   if (!tags) return undefined;
 
   const tagsString = String(tags);
   const cleanedTags = tagsString.split(',')
-    .map(tag => tag.trim().toLowerCase())
+    .map(tag => tag.trim())
     .filter(tag => tag.length > 0);
 
-  return cleanedTags;
+  return JSON.stringify(cleanedTags);
 }
 
 async function insertTags(char_uuid: string, user_uuid: string, tags: string[]) {
@@ -40,19 +40,25 @@ async function insertTags(char_uuid: string, user_uuid: string, tags: string[]) 
 }
 
 export const createCharacter = async (
-  Character: Character
+  character: Character
 ): Promise<CreateCharacterResponse> => {
   try {
-    if (!Character.creator || Character.creator.trim() === '')
+    if (!character.creator || character.creator.trim() === '')
       return { error: 'Creator is required.' };
 
     const characterUuid = uuidv4();
     if (!characterUuid) throw new Error('Failed to generate UUID.');
 
-    const { char_uuid, tags, creator_uuid: user_uuid, ...rest } = Character;
+    const { char_uuid, tags, creator_uuid: user_uuid, ...rest } = character;
     const cleanedTags = cleanTags(tags);
 
-    const insertData = { char_uuid: characterUuid, ...rest };
+    const insertData = {
+      char_uuid: characterUuid,
+      tags: cleanedTags,
+      creator_uuid: user_uuid,
+      ...rest
+    };
+
     const { error } = await supabase
       .from('characters')
       .insert([insertData]);
@@ -64,7 +70,7 @@ export const createCharacter = async (
     }
 
     if (cleanedTags && user_uuid) {
-      await insertTags(characterUuid, user_uuid, cleanedTags);
+      await insertTags(characterUuid, user_uuid, JSON.parse(cleanedTags));
     }
 
     return { char_uuid: characterUuid };
@@ -76,19 +82,24 @@ export const createCharacter = async (
 };
 
 export const updateCharacter = async (
-  Character: Character
+  character: Character
 ): Promise<CreateCharacterResponse> => {
   try {
-    if (!Character.creator || Character.creator.trim() === '')
+    if (!character.creator || character.creator.trim() === '')
       return { error: 'Creator is required.' };
 
-    const { char_uuid, tags, creator_uuid: user_uuid, ...rest } = Character;
+    const { char_uuid, tags, creator_uuid: user_uuid, ...rest } = character;
     if (!char_uuid)
       return { error: 'Character UUID is required for updating.' };
 
     const cleanedTags = cleanTags(tags);
 
-    const updateData = { ...rest };
+    const updateData = {
+      ...rest,
+      tags: cleanedTags,
+      creator_uuid: user_uuid,
+      char_uuid: char_uuid,
+    };
 
     const { error } = await supabase.rpc('update_character', {
       char_uuid_param: char_uuid,
@@ -107,7 +118,7 @@ export const updateCharacter = async (
         .delete()
         .eq('char_uuid', char_uuid);
 
-      await insertTags(char_uuid, user_uuid, cleanedTags);
+      await insertTags(char_uuid, user_uuid, JSON.parse(cleanedTags));
     }
 
     return { char_uuid };
