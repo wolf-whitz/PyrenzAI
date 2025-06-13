@@ -16,11 +16,13 @@ interface CharacterState {
   gender: string;
   creator: string | null;
   profile_image: string | undefined;
+  tokenTotal: number;
 }
 
 interface CharacterActions {
   setCharacter: (data: Partial<CharacterState>) => void;
   setGender: (gender: string) => void;
+  setTokenTotal: (tokenTotal: number) => void;
 }
 
 export const useCharacterStore = create<CharacterState & CharacterActions>()(
@@ -40,6 +42,7 @@ export const useCharacterStore = create<CharacterState & CharacterActions>()(
     gender: '',
     creator: null,
     profile_image: undefined,
+    tokenTotal: 0,
 
     setCharacter: (data) =>
       set((state) => ({
@@ -48,5 +51,7 @@ export const useCharacterStore = create<CharacterState & CharacterActions>()(
       })),
 
     setGender: (gender) => set(() => ({ gender })),
+
+    setTokenTotal: (tokenTotal) => set(() => ({ tokenTotal })),
   })
 );

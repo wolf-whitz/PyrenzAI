@@ -16,7 +16,7 @@ export const fetchChatData = async (
   chat_uuid: string,
   avatar_url: string
 ): Promise<{
-  character: Character;
+  Character: Character;
   firstMessage: string;
 }> => {
   if (!chat_uuid) {
@@ -31,22 +31,6 @@ export const fetchChatData = async (
     }
 
     const tags = Array.isArray(Character.tags) ? JSON.stringify(Character.tags) : Character.tags;
-
-    const character: Character = {
-      char_uuid: Character.char_uuid || '',
-      name: Character.name || 'Anon',
-      persona: Character.persona || '',
-      scenario: Character.scenario || '',
-      gender: Character.gender || '',
-      description: Character.description || '',
-      first_message: Character.first_message || '',
-      tags: tags,
-      profile_image: Character.profile_image || '',
-      model_instructions: Character.model_instructions || '',
-      creator: Character.creator ?? null,
-      is_public: Character.is_public || false,
-      is_nsfw: Character.is_nsfw || false,
-    };
 
     const { data, error } = await supabase
       .from('chat_messages')
@@ -68,7 +52,7 @@ export const fetchChatData = async (
         if (msg.user_message) {
           messages.push({
             id: `${msg.id}`,
-            name: character.name || 'Anon',
+            name: Character.name || 'Anon',
             text: msg.user_message,
             profile_image: avatar_url || '',
             type: 'user',
@@ -79,12 +63,12 @@ export const fetchChatData = async (
         if (msg.char_message) {
           messages.push({
             id: `${msg.id}`,
-            name: character.name || 'Anon',
+            name: Character.name || 'Anon',
             text: msg.char_message,
-            profile_image: character.profile_image || '',
+            profile_image: Character.profile_image || '',
             type: 'assistant',
             chat_uuid,
-            gender: character.gender,
+            gender: Character.gender,
           });
         }
 
@@ -95,8 +79,8 @@ export const fetchChatData = async (
     useChatStore.getState().setMessages(formattedMessages);
 
     return {
-      character,
-      firstMessage: character.first_message,
+      Character,
+      firstMessage: Character.first_message,
     };
   } catch (error) {
     if (error instanceof Error) {

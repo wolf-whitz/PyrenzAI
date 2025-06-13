@@ -1,29 +1,29 @@
-import React, { useEffect, useState } from 'react'
-import llamaTokenizer from 'llama-tokenizer-js'
-import { useCharacterStore } from '~/store'
-import { motion } from 'framer-motion'
+import React, { useEffect, useState } from 'react';
+import llamaTokenizer from 'llama-tokenizer-js';
+import { useCharacterStore } from '~/store';
+import { motion } from 'framer-motion';
 import {
   TextField,
   Tooltip as MUITooltip,
   Typography,
   InputAdornment,
   Box,
-} from '@mui/material'
-import clsx from 'clsx'
-import { z } from 'zod'
+} from '@mui/material';
+import clsx from 'clsx';
+import { z } from 'zod';
 
 interface TextareaProps {
-  name?: string
-  value: string
-  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
-  label?: string
-  placeholder?: string
-  showTokenizer?: boolean
-  className?: string
-  maxLength?: number
-  require_link?: boolean
-  is_tag?: boolean
-  onTagPressed?: (event: React.MouseEvent<HTMLElement>) => void
+  name?: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  label?: string;
+  placeholder?: string;
+  showTokenizer?: boolean;
+  className?: string;
+  maxLength?: number;
+  require_link?: boolean;
+  is_tag?: boolean;
+  onTagPressed?: (event: React.MouseEvent<HTMLElement>) => void;
 }
 
 export function Textarea({
@@ -39,49 +39,33 @@ export function Textarea({
   is_tag = false,
   onTagPressed,
 }: TextareaProps) {
-  const [tokenCount, setTokenCount] = useState(0)
-  const [isLinkValid, setIsLinkValid] = useState(true)
-  const [characterCount, setCharacterCount] = useState(value.length)
-
-  const setCharacter = useCharacterStore((state) => state.setCharacter)
+  const [isLinkValid, setIsLinkValid] = useState(true);
+  const [characterCount, setCharacterCount] = useState(value.length);
+  const { setCharacter, setTokenTotal, tokenTotal } = useCharacterStore();
 
   useEffect(() => {
     if (showTokenizer) {
-      const tokens = llamaTokenizer.encode(value)
-      const tokenLength = tokens.length
-      setTokenCount(tokenLength)
-      setCharacter({
-        textarea_token: {
-          ...useCharacterStore.getState().textarea_token,
-          [name || 'default']: tokenLength,
-        },
-      })
-    } else {
-      setTokenCount(0)
-      setCharacter({
-        textarea_token: {
-          ...useCharacterStore.getState().textarea_token,
-          [name || 'default']: 0,
-        },
-      })
+      const tokens = llamaTokenizer.encode(value);
+      const tokenLength = tokens.length;
+      setTokenTotal(tokenLength);
     }
-  }, [value, showTokenizer, setCharacter, name])
+  }, [value, showTokenizer, setCharacter, name, setTokenTotal]);
 
   useEffect(() => {
-    setCharacterCount(value.length)
-  }, [value])
+    setCharacterCount(value.length);
+  }, [value]);
 
-  const urlSchema = z.string().url()
+  const urlSchema = z.string().url();
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newValue = e.target.value
+    const newValue = e.target.value;
     if (require_link) {
-      const validationResult = urlSchema.safeParse(newValue)
-      setIsLinkValid(validationResult.success)
-      if (!validationResult.success) return
+      const validationResult = urlSchema.safeParse(newValue);
+      setIsLinkValid(validationResult.success);
+      if (!validationResult.success) return;
     }
-    onChange(e)
-  }
+    onChange(e);
+  };
 
   return (
     <motion.div
@@ -158,7 +142,7 @@ export function Textarea({
                     </Typography>
                   </MUITooltip>
                   {showTokenizer && (
-                    <MUITooltip title={`Token Count: ${tokenCount}`} arrow>
+                    <MUITooltip title={`Token Count: ${tokenTotal}`} arrow>
                       <Typography
                         variant="caption"
                         sx={{
@@ -168,7 +152,7 @@ export function Textarea({
                           cursor: 'pointer',
                         }}
                       >
-                        Tokens: {tokenCount}
+                        Tokens: {tokenTotal}
                       </Typography>
                     </MUITooltip>
                   )}
@@ -185,5 +169,5 @@ export function Textarea({
         />
       </Box>
     </motion.div>
-  )
+  );
 }
