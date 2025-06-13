@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -7,11 +7,13 @@ import {
   Backdrop,
   Fade,
 } from '@mui/material';
-import { PlusCircle, Edit } from 'lucide-react';
+import { PlusCircle, Edit, Trash2 } from 'lucide-react';
 import { Textarea } from '@components';
 import { useDropzone } from 'react-dropzone';
 import { PyrenzBlueButton } from '~/theme';
 import { usePyrenzAlert } from '~/provider';
+import { supabase } from '~/Utility/supabaseClient';
+import { v4 as uuidv4 } from 'uuid';
 
 interface CreatePersonaModalProps {
   isModalOpen: boolean;
@@ -23,9 +25,10 @@ interface CreatePersonaModalProps {
   handleCreatePersona: () => void;
   creating: boolean;
   setCharacterCardImageModalOpen: (open: boolean) => void;
-  selectedImage: string;
-  setSelectedImage: (image: string) => void;
+  selectedImage: string | null;
+  setSelectedImage: (image: string | null) => void;
   isEditing: boolean;
+  onDelete?: () => void; 
 }
 
 export function CreatePersonaModal({
@@ -41,35 +44,66 @@ export function CreatePersonaModal({
   selectedImage,
   setSelectedImage,
   isEditing,
+  onDelete,  
 }: CreatePersonaModalProps) {
+  const [previewImage, setPreviewImage] = useState<string | null>(selectedImage);
   const showAlert = usePyrenzAlert();
 
-  const onDrop = (acceptedFiles: File[]) => {
+  useEffect(() => {
+    setPreviewImage(selectedImage);
+  }, [selectedImage]);
+
+  useEffect(() => {
+    return () => {
+      if (previewImage) {
+        URL.revokeObjectURL(previewImage);
+      }
+    };
+  }, [previewImage]);
+
+  const onDrop = async (acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
       const file = acceptedFiles[0];
-      const reader = new FileReader();
-      reader.onload = () => {
-        const imageUrl = reader.result as string;
-        setSelectedImage(imageUrl);
-      };
-      reader.readAsDataURL(file);
+
+      if (file.size > 1024 * 1024) {
+        showAlert('File is too large. Maximum size is 1MB.', 'alert');
+        return;
+      }
+
+      const previewUrl = URL.createObjectURL(file);
+      setPreviewImage(previewUrl);
+
+      const fileName = `persona-image-${uuidv4()}.png`;
+
+      const { error } = await supabase.storage
+        .from('persona-image')
+        .upload(fileName, file, {
+          contentType: 'image/png',
+        });
+
+      if (error) {
+        showAlert('Failed to upload image to Supabase Storage.', 'alert');
+        console.error('Error uploading image:', error);
+      } else {
+        setSelectedImage(previewUrl);
+      }
     }
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      'image/*': ['.jpeg', '.jpg', '.png', '.gif'],
+      'image/*': ['.jpeg', '.jpg', '.png'],
     },
     maxSize: 1024 * 1024,
     onDropRejected: (fileRejections) => {
-      fileRejections.forEach(({ file, errors }) => {
+      fileRejections.forEach(({ errors }) => {
         errors.forEach((error) => {
           if (error.code === 'file-too-large') {
             showAlert('File is too large. Maximum size is 1MB.', 'alert');
           }
           if (error.code === 'file-invalid-type') {
-            showAlert('Invalid file type. Only images are allowed.', 'alert');
+            showAlert('Invalid file type. Only JPEG, JPG, and PNG images are allowed.', 'alert');
           }
         });
       });
@@ -102,10 +136,10 @@ export function CreatePersonaModal({
             className="mb-4 p-4 border-2 border-dashed border-gray-500 rounded-lg text-center cursor-pointer relative"
           >
             <input {...getInputProps()} />
-            {selectedImage ? (
+            {previewImage ? (
               <img
-                src={selectedImage}
-                alt="Selected"
+                src={previewImage}
+                alt="Preview"
                 className="w-full h-auto max-h-60 object-cover rounded-lg"
               />
             ) : (
@@ -142,7 +176,7 @@ export function CreatePersonaModal({
             showTokenizer={true}
           />
 
-          <Box className="flex justify-center mt-8">
+          <Box className="flex justify-center mt-8 gap-4">
             <PyrenzBlueButton
               onClick={handleCreatePersona}
               disabled={creating}
@@ -157,6 +191,16 @@ export function CreatePersonaModal({
                 </>
               )}
             </PyrenzBlueButton>
+
+            {isEditing && onDelete && (
+              <PyrenzBlueButton
+                onClick={onDelete}
+                className="min-w-[120px] flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600"
+              >
+                <Trash2 size={18} />
+                <span>Delete</span>
+              </PyrenzBlueButton>
+            )}
           </Box>
         </Box>
       </Fade>

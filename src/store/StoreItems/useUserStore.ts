@@ -20,6 +20,7 @@ interface UserStore {
   userIcon: string | null;
   is_login: boolean;
   is_deleted: boolean;
+  is_admin: boolean;
   subscription_plan: string[] | null;
   imageURL: string | null;
   preferredModel: string;
@@ -31,6 +32,7 @@ interface UserStore {
   setUserIcon: (icon: string) => void;
   setIsLogin: (isLogin: boolean) => void;
   setIsDeleted: (isDeleted: boolean) => void;
+  setIsAdmin: (isAdmin: boolean) => void;
   setSubscriptionPlan: (plan: string[]) => void;
   setImageURL: (url: string | null) => void;
   setPreferredModel: (model: string) => void;
@@ -47,6 +49,7 @@ export const useUserStore = create<UserStore>()(
       userIcon: null,
       is_login: false,
       is_deleted: false,
+      is_admin: false,
       subscription_plan: null,
       imageURL: null,
       preferredModel: '',
@@ -64,6 +67,7 @@ export const useUserStore = create<UserStore>()(
       setUserIcon: (icon) => set({ userIcon: icon }),
       setIsLogin: (isLogin) => set({ is_login: isLogin }),
       setIsDeleted: (isDeleted) => set({ is_deleted: isDeleted }),
+      setIsAdmin: (isAdmin) => set({ is_admin: isAdmin }),
       setSubscriptionPlan: (plan) => set({ subscription_plan: plan }),
       setImageURL: (url) => set({ imageURL: url }),
       setPreferredModel: (model) => set({ preferredModel: model }),

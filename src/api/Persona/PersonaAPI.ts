@@ -1,13 +1,14 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '~/Utility/supabaseClient';
-import { GetUserUUID } from '@components';
+import { GetUserUUID, GetUserData } from '@components';
+import { usePyrenzAlert } from '~/provider';
 
 interface PersonaCard {
   id: string;
   persona_name: string;
   persona_description: string;
   is_selected?: boolean;
-  persona_profile?: string;
+  persona_profile?: string | null;
 }
 
 export const usePersonaAPI = () => {
@@ -17,10 +18,27 @@ export const usePersonaAPI = () => {
   const [creating, setCreating] = useState(false);
   const [userUuid, setUserUuid] = useState<string | null>(null);
 
+  const showAlert = usePyrenzAlert();
+
   const fetchUserUuid = useCallback(async () => {
-    const uuid = await GetUserUUID();
-    setUserUuid(uuid);
-  }, []);
+    try {
+      const uuid = await GetUserUUID();
+      if (!uuid) {
+        throw new Error('User UUID not found');
+      }
+      setUserUuid(uuid);
+
+      const userData = await GetUserData();
+      if ('error' in userData) {
+        throw new Error(userData.error);
+      }
+
+      setIsAdmin(userData.is_admin || false);
+    } catch (error) {
+      console.error('Failed to fetch user UUID or data', error);
+      showAlert('Failed to fetch user UUID or data.', 'alert');
+    }
+  }, [showAlert]);
 
   const fetchPersona = useCallback(async () => {
     if (!userUuid) return;
@@ -29,9 +47,7 @@ export const usePersonaAPI = () => {
     try {
       const { data, error } = await supabase
         .from('personas')
-        .select(
-          'id, persona_name, persona_description, persona_profile, is_selected'
-        )
+        .select('id, persona_name, persona_description, persona_profile, is_selected')
         .eq('user_uuid', userUuid);
 
       if (error) {
@@ -49,73 +65,26 @@ export const usePersonaAPI = () => {
       setPersonaData(mappedData);
     } catch (error) {
       console.error('Failed to fetch persona data', error);
+      showAlert('Failed to fetch persona data.', 'alert');
     } finally {
       setLoading(false);
     }
-  }, [userUuid]);
-
-  const checkAdminStatus = useCallback(async () => {
-    if (!userUuid) return;
-
-    try {
-      const { data, error } = await supabase
-        .from('admins')
-        .select('is_admin')
-        .eq('user_uuid', userUuid)
-        .single();
-
-      if (error) {
-        throw error;
-      }
-
-      setIsAdmin(data.is_admin);
-    } catch (error) {
-      console.error('Failed to check admin status', error);
-    }
-  }, [userUuid]);
-
-  const uploadImageToStorage = useCallback(async (imageData: string) => {
-    const fileName = `persona-image-${Date.now()}.png`;
-
-    const blob = await fetch(imageData).then((res) => res.blob());
-
-    const { data, error } = await supabase.storage
-      .from('persona-image')
-      .upload(fileName, blob, {
-        contentType: 'image/png',
-      });
-
-    if (error) throw error;
-
-    const { data: publicData } = supabase.storage
-      .from('persona-image')
-      .getPublicUrl(data.path);
-
-    return publicData.publicUrl;
-  }, []);
+  }, [userUuid, showAlert]);
 
   const handleCreatePersona = useCallback(
     async (
       newPersonaName: string,
       newPersonaDescription: string,
-      selectedImage: string,
+      selectedImage: string | null,
       setNewPersonaName: React.Dispatch<React.SetStateAction<string>>,
       setNewPersonaDescription: React.Dispatch<React.SetStateAction<string>>,
-      setSelectedImage: React.Dispatch<React.SetStateAction<string>>,
+      setSelectedImage: React.Dispatch<React.SetStateAction<string | null>>,
       setModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     ) => {
-      if (
-        !newPersonaName ||
-        !newPersonaDescription ||
-        !userUuid ||
-        !selectedImage
-      )
-        return;
+      if (!newPersonaName || !newPersonaDescription || !userUuid) return;
 
       setCreating(true);
       try {
-        const imageUrl = await uploadImageToStorage(selectedImage);
-
         const { data, error } = await supabase
           .from('personas')
           .insert([
@@ -123,7 +92,7 @@ export const usePersonaAPI = () => {
               persona_name: newPersonaName,
               persona_description: newPersonaDescription,
               user_uuid: userUuid,
-              persona_profile: imageUrl,
+              persona_profile: selectedImage,
             },
           ])
           .select();
@@ -143,16 +112,17 @@ export const usePersonaAPI = () => {
           setPersonaData((prevData) => [...prevData, newPersona]);
           setNewPersonaName('');
           setNewPersonaDescription('');
-          setSelectedImage('');
+          setSelectedImage(null);
           setModalOpen(false);
         }
       } catch (error) {
         console.error('Failed to create persona', error);
+        showAlert('Failed to create persona.', 'alert');
       } finally {
         setCreating(false);
       }
     },
-    [userUuid, uploadImageToStorage]
+    [userUuid, showAlert]
   );
 
   const handleSelectPersona = useCallback(
@@ -160,35 +130,29 @@ export const usePersonaAPI = () => {
       if (!userUuid) return;
 
       try {
-        await supabase
-          .from('personas')
-          .update({ is_selected: false })
-          .eq('user_uuid', userUuid);
-
-        await supabase
-          .from('personas')
-          .update({ is_selected: true })
-          .eq('id', id);
+        await supabase.from('personas').update({ is_selected: false }).eq('user_uuid', userUuid);
+        await supabase.from('personas').update({ is_selected: true }).eq('id', id);
 
         await fetchPersona();
       } catch (error) {
         console.error('Failed to update persona selection', error);
+        showAlert('Failed to update persona selection.', 'alert');
       }
     },
-    [userUuid, fetchPersona]
+    [userUuid, fetchPersona, showAlert]
   );
 
   const handleDeletePersona = useCallback(
     async (id: string) => {
       try {
         await supabase.from('personas').delete().eq('id', id);
-
         await fetchPersona();
       } catch (error) {
         console.error('Failed to delete persona', error);
+        showAlert('Failed to delete persona.', 'alert');
       }
     },
-    [fetchPersona]
+    [fetchPersona, showAlert]
   );
 
   const handleEditPersona = useCallback(
@@ -196,30 +160,23 @@ export const usePersonaAPI = () => {
       id: string,
       newPersonaName: string,
       newPersonaDescription: string,
-      selectedImage: string,
+      selectedImage: string | null,
       setNewPersonaName: React.Dispatch<React.SetStateAction<string>>,
       setNewPersonaDescription: React.Dispatch<React.SetStateAction<string>>,
-      setSelectedImage: React.Dispatch<React.SetStateAction<string>>,
+      setSelectedImage: React.Dispatch<React.SetStateAction<string | null>>,
       setModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
-      setEditingPersona: React.Dispatch<
-        React.SetStateAction<PersonaCard | null>
-      >
+      setEditingPersona: React.Dispatch<React.SetStateAction<PersonaCard | null>>
     ) => {
       if (!newPersonaName || !newPersonaDescription || !userUuid) return;
 
       setCreating(true);
       try {
-        let imageUrl = selectedImage;
-        if (selectedImage && !selectedImage.startsWith('http')) {
-          imageUrl = await uploadImageToStorage(selectedImage);
-        }
-
         const { error } = await supabase
           .from('personas')
           .update({
             persona_name: newPersonaName,
             persona_description: newPersonaDescription,
-            persona_profile: imageUrl,
+            persona_profile: selectedImage,
           })
           .eq('id', id);
 
@@ -230,16 +187,17 @@ export const usePersonaAPI = () => {
         await fetchPersona();
         setNewPersonaName('');
         setNewPersonaDescription('');
-        setSelectedImage('');
+        setSelectedImage(null);
         setModalOpen(false);
         setEditingPersona(null);
       } catch (error) {
         console.error('Failed to edit persona', error);
+        showAlert('Failed to edit persona.', 'alert');
       } finally {
         setCreating(false);
       }
     },
-    [userUuid, uploadImageToStorage, fetchPersona]
+    [userUuid, fetchPersona, showAlert]
   );
 
   return {
@@ -250,7 +208,6 @@ export const usePersonaAPI = () => {
     userUuid,
     fetchUserUuid,
     fetchPersona,
-    checkAdminStatus,
     handleCreatePersona,
     handleSelectPersona,
     handleDeletePersona,

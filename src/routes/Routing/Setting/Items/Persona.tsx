@@ -13,7 +13,7 @@ interface Persona {
   id: string;
   persona_name: string;
   persona_description: string;
-  persona_profile?: string;
+  persona_profile?: string | null;
 }
 
 export function Persona() {
@@ -25,7 +25,6 @@ export function Persona() {
     userUuid,
     fetchUserUuid,
     fetchPersona,
-    checkAdminStatus,
     handleCreatePersona,
     handleSelectPersona,
     handleDeletePersona,
@@ -35,13 +34,9 @@ export function Persona() {
   const [isModalOpen, setModalOpen] = useState(false);
   const [newPersonaName, setNewPersonaName] = useState('');
   const [newPersonaDescription, setNewPersonaDescription] = useState('');
-  const [
-    isCreateCharacterCardImageModalOpen,
-    setCreateCharacterCardImageModalOpen,
-  ] = useState(false);
-  const [isCharacterCardImageModalOpen, setCharacterCardImageModalOpen] =
-    useState(false);
-  const [selectedImage, setSelectedImage] = useState('');
+  const [isCreateCharacterCardImageModalOpen, setCreateCharacterCardImageModalOpen] = useState(false);
+  const [isCharacterCardImageModalOpen, setCharacterCardImageModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [editingPersona, setEditingPersona] = useState<Persona | null>(null);
 
   useEffect(() => {
@@ -51,26 +46,20 @@ export function Persona() {
   useEffect(() => {
     if (userUuid) {
       fetchPersona();
-      checkAdminStatus();
     }
-  }, [userUuid, fetchPersona, checkAdminStatus]);
+  }, [userUuid, fetchPersona]);
 
   const createPersona = useCallback(async () => {
     await handleCreatePersona(
       newPersonaName,
       newPersonaDescription,
-      selectedImage,
+      selectedImage || '',
       setNewPersonaName,
       setNewPersonaDescription,
       setSelectedImage,
       setModalOpen
     );
-  }, [
-    newPersonaName,
-    newPersonaDescription,
-    selectedImage,
-    handleCreatePersona,
-  ]);
+  }, [newPersonaName, newPersonaDescription, selectedImage, handleCreatePersona]);
 
   const editPersona = useCallback(async () => {
     if (!editingPersona) return;
@@ -78,20 +67,21 @@ export function Persona() {
       editingPersona.id,
       newPersonaName,
       newPersonaDescription,
-      selectedImage,
+      selectedImage || '',
       setNewPersonaName,
       setNewPersonaDescription,
       setSelectedImage,
       setModalOpen,
       setEditingPersona
     );
-  }, [
-    editingPersona,
-    newPersonaName,
-    newPersonaDescription,
-    selectedImage,
-    handleEditPersona,
-  ]);
+  }, [editingPersona, newPersonaName, newPersonaDescription, selectedImage, handleEditPersona]);
+
+  const handleDelete = useCallback(async () => {
+    if (!editingPersona) return;
+    await handleDeletePersona(editingPersona.id);
+    setModalOpen(false);
+    setEditingPersona(null);
+  }, [editingPersona, handleDeletePersona]);
 
   if (!userUuid) {
     return (
@@ -106,16 +96,23 @@ export function Persona() {
   const handleEdit = (id: string) => {
     const personaToEdit = personaData.find((persona) => persona.id === id);
     if (personaToEdit) {
-      setEditingPersona(personaToEdit);
-      setNewPersonaName(personaToEdit.persona_name);
-      setNewPersonaDescription(personaToEdit.persona_description);
-      setSelectedImage(personaToEdit.persona_profile || '');
+      const mappedPersona: Persona = {
+        id: personaToEdit.id,
+        persona_name: personaToEdit.persona_name,
+        persona_description: personaToEdit.persona_description,
+        persona_profile: personaToEdit.persona_profile || undefined,
+      };
+      setEditingPersona(mappedPersona);
+      setNewPersonaName(mappedPersona.persona_name);
+      setNewPersonaDescription(mappedPersona.persona_description);
+      setSelectedImage(mappedPersona.persona_profile || null);
       setModalOpen(true);
     }
   };
 
   const personaDataWithHandlers = personaData.map((persona) => ({
     ...persona,
+    persona_profile: persona.persona_profile || undefined,
     onSelect: () => handleSelectPersona(persona.id),
     onDelete: () => handleDeletePersona(persona.id),
     onEdit: () => handleEdit(persona.id),
@@ -173,6 +170,7 @@ export function Persona() {
         selectedImage={selectedImage}
         setSelectedImage={setSelectedImage}
         isEditing={!!editingPersona}
+        onDelete={editingPersona ? handleDelete : undefined}
       />
 
       {isCreateCharacterCardImageModalOpen && (

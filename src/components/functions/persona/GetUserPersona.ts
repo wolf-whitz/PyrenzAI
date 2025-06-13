@@ -1,6 +1,6 @@
 import { Utils } from '~/Utility/Utility';
 import { useUserStore } from '~/store';
-import { GetUserUUID } from '../General/GetUserUUID';
+import { GetUserUUID } from '@components';
 
 interface ApiResponse {
   username: string;
@@ -8,12 +8,17 @@ interface ApiResponse {
   ai_customization: any;
   custom_provider?: any;
   preferred_model?: string;
+  is_admin: boolean;
   subscription_data: {
     tier: string;
     max_token: number;
     model: string[];
     max_persona: string | number;
   };
+}
+
+function isApiResponse(response: any): response is ApiResponse {
+  return response && typeof response.username !== 'undefined';
 }
 
 export async function GetUserData(): Promise<ApiResponse | { error: string }> {
@@ -24,11 +29,9 @@ export async function GetUserData(): Promise<ApiResponse | { error: string }> {
       return { error: 'User UUID not found' };
     }
 
-    const response: ApiResponse = await Utils.post('/api/GetUserData', {
-      user_uuid,
-    });
+    const response = await Utils.post('/api/GetUserData', { user_uuid });
 
-    if (!response) {
+    if (!isApiResponse(response)) {
       return { error: 'Failed to fetch user data' };
     }
 
@@ -37,6 +40,7 @@ export async function GetUserData(): Promise<ApiResponse | { error: string }> {
     const aiCustomization = response.ai_customization || {};
     const customProvider = response.custom_provider || {};
     const preferredModel = response.preferred_model || 'Default Model';
+    const isAdmin = response.is_admin || false;
     const subscriptionPlan = response.subscription_data?.tier || 'MELON';
 
     const {
@@ -46,11 +50,13 @@ export async function GetUserData(): Promise<ApiResponse | { error: string }> {
       setSubscriptionPlan,
       setPreferredModel,
       setInferenceSettings,
+      setIsAdmin,
     } = useUserStore.getState();
 
     setUserUUID(user_uuid);
     setUsername(personaName);
     setUserIcon(avatarUrl);
+    setIsAdmin(isAdmin);
     setSubscriptionPlan([subscriptionPlan.trim()]);
     setPreferredModel(preferredModel);
 
@@ -105,6 +111,7 @@ export async function GetUserData(): Promise<ApiResponse | { error: string }> {
       ai_customization: aiCustomization,
       custom_provider: customProvider,
       preferred_model: preferredModel,
+      is_admin: isAdmin,
       subscription_data: subscriptionData,
     };
   } catch (error) {
