@@ -81,7 +81,7 @@ export function ChatPage() {
           const result = await fetchChatData(chat_uuid, userData.user_avatar);
 
           const updatedCharacter = {
-            ...result.character,
+            ...result.Character,
           };
 
           setChatData({
