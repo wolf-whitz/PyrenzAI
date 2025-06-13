@@ -17,12 +17,11 @@ const requiredCharacterFields: Array<keyof Character> = [
   'profile_image',
 ];
 
-const validateCharacterData = (
-  character: Character
-): { isValid: boolean; missingFields: string[] } => {
-  const missingFields = requiredCharacterFields.filter(
-    (field) => !character[field]
-  );
+const validateCharacterData = (character: Character) => {
+  const missingFields = requiredCharacterFields.filter((field) => {
+    const value = character[field];
+    return value === undefined || value === null || value === '';
+  });
 
   return {
     isValid: missingFields.length === 0,
@@ -54,7 +53,7 @@ export const handleClearCharacter = (setCharacter: any) => {
     scenario: '',
     description: '',
     first_message: '',
-    tags: [],
+    tags: '',
     gender: '',
     creator: '',
     is_public: false,
@@ -64,11 +63,11 @@ export const handleClearCharacter = (setCharacter: any) => {
 };
 
 export const handleDeleteCharacter = async (
-  Character: Character,
+  character: Character,
   setCharacter: any,
   showAlert: any
 ) => {
-  if (!Character.char_uuid) {
+  if (!character.char_uuid) {
     handleClearCharacter(setCharacter);
     showAlert('Character data cleared.', 'success');
   } else {
@@ -76,7 +75,7 @@ export const handleDeleteCharacter = async (
       const { error } = await supabase
         .from('characters')
         .delete()
-        .eq('char_uuid', Character.char_uuid);
+        .eq('char_uuid', character.char_uuid);
 
       if (error) {
         console.error('Error deleting character:', error);
@@ -158,7 +157,16 @@ export const handleSubmitCharacter = async (
       return;
     }
 
-    const validation = validateCharacterData(character);
+    const tagsString = Array.isArray(character.tags)
+      ? character.tags.join(', ')
+      : character.tags;
+
+    const characterWithTagsString = {
+      ...character,
+      tags: tagsString,
+    };
+
+    const validation = validateCharacterData(characterWithTagsString);
     if (!validation.isValid) {
       showAlert(
         `Missing or undefined fields: ${validation.missingFields.join(', ')}`,
@@ -170,9 +178,9 @@ export const handleSubmitCharacter = async (
 
     let response;
     if (character_update) {
-      response = await updateCharacter(character);
+      response = await updateCharacter(characterWithTagsString);
     } else {
-      response = await createCharacter(character);
+      response = await createCharacter(characterWithTagsString);
     }
 
     if (response.error) {

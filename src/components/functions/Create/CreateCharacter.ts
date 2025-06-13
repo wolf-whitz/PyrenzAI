@@ -8,26 +8,15 @@ interface CreateCharacterResponse {
   error?: string;
 }
 
-function cleanTags(tags?: string | string[]): string | undefined {
+function cleanTags(tags?: string): string[] | undefined {
   if (!tags) return undefined;
 
-  let tagsArray: string[] = [];
+  const tagsString = String(tags);
+  const cleanedTags = tagsString.split(',')
+    .map(tag => tag.trim().toLowerCase())
+    .filter(tag => tag.length > 0);
 
-  if (typeof tags === 'string') {
-    tagsArray = tags.split(',');
-  } else if (Array.isArray(tags)) {
-    if (tags.length === 1 && tags[0].includes(',')) {
-      tagsArray = tags[0].split(',');
-    } else {
-      tagsArray = tags;
-    }
-  }
-
-  const cleanedTags = tagsArray
-    .map((tag: string) => tag.trim().toLowerCase())
-    .filter((tag: string) => tag.length > 0);
-
-  return cleanedTags.length > 0 ? JSON.stringify(cleanedTags) : undefined;
+  return cleanedTags;
 }
 
 export const createCharacter = async (
@@ -67,6 +56,7 @@ export const updateCharacter = async (
   try {
     if (!Character.creator || Character.creator.trim() === '')
       return { error: 'Creator is required.' };
+
     const { char_uuid, tags, ...rest } = Character;
     if (!char_uuid)
       return { error: 'Character UUID is required for updating.' };
@@ -75,7 +65,7 @@ export const updateCharacter = async (
 
     const updateData = {
       ...rest,
-      tags: cleanedTags ?? null,
+      tags: cleanedTags,
     };
 
     const { data, error } = await supabase.rpc('update_character', {

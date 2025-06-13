@@ -8,15 +8,14 @@ interface CharacterState {
   scenario: string;
   description: string;
   first_message: string;
-  lorebook: string;  
+  lorebook: string;
   is_public: boolean;
   is_nsfw: boolean;
-  tags: string[];
+  hideDetails: boolean;
+  tags: string;
   gender: string;
   creator: string | null;
-  textarea_token: Record<string, number>;
-  token_total: number;
-  profile_image?: string;
+  profile_image: string | undefined;
 }
 
 interface CharacterActions {
@@ -24,45 +23,30 @@ interface CharacterActions {
   setGender: (gender: string) => void;
 }
 
-export const useCharacterStore = create<CharacterState & CharacterActions>(
+export const useCharacterStore = create<CharacterState & CharacterActions>()(
   (set) => ({
     char_uuid: '',
     persona: '',
     is_public: false,
     is_nsfw: false,
+    hideDetails: false,
     name: '',
     model_instructions: '',
     scenario: '',
     description: '',
     first_message: '',
-    lorebook: '', 
-    tags: [],
+    lorebook: '',
+    tags: '[]',
     gender: '',
     creator: null,
-    textarea_token: {},
-    token_total: 0,
     profile_image: undefined,
 
-    setCharacter: (data: Partial<CharacterState>) =>
-      set((state) => {
-        const newTextareaToken: Record<string, number> = {
-          ...state.textarea_token,
-          ...data.textarea_token,
-        };
+    setCharacter: (data) =>
+      set((state) => ({
+        ...state,
+        ...data,
+      })),
 
-        const newTokenTotal = Object.values(newTextareaToken).reduce(
-          (acc, val) => acc + val,
-          0
-        );
-
-        return {
-          ...state,
-          ...data,
-          textarea_token: newTextareaToken,
-          token_total: newTokenTotal,
-        };
-      }),
-
-    setGender: (gender: string) => set(() => ({ gender })),
+    setGender: (gender) => set(() => ({ gender })),
   })
 );

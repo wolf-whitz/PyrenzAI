@@ -15,7 +15,7 @@ export const CharacterSchema = z.object({
   first_message: z.string(),
   creator: z.string(),
 
-  tags: z.array(z.string()),
+  tags: z.string(),
   profile_image: z.string(),
   chat_messages_count: z.number().optional(),
 
@@ -26,7 +26,7 @@ export const CharacterSchema = z.object({
   isLoading: z.boolean().optional(),
   creator_uuid: z.string().optional(),
 
-  lorebook: z.string().optional()
+  lorebook: z.string()
 });
 
 export const DraftSchema = z.object({
@@ -38,7 +38,7 @@ export const DraftSchema = z.object({
   scenario: z.string(),
   description: z.string(),
   first_message: z.string(),
-  tags: z.array(z.string()),
+  tags: z.string(),
   gender: z.string(),
   creator: z.string().nullable(),
   is_public: z.boolean(),

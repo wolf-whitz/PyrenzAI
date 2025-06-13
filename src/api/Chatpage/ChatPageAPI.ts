@@ -30,6 +30,8 @@ export const fetchChatData = async (
       throw new Error(Character.error);
     }
 
+    const tags = Array.isArray(Character.tags) ? JSON.stringify(Character.tags) : Character.tags;
+
     const character: Character = {
       char_uuid: Character.char_uuid || '',
       name: Character.name || 'Anon',
@@ -38,7 +40,7 @@ export const fetchChatData = async (
       gender: Character.gender || '',
       description: Character.description || '',
       first_message: Character.first_message || '',
-      tags: Character.tags || [],
+      tags: tags,
       profile_image: Character.profile_image || '',
       model_instructions: Character.model_instructions || '',
       creator: Character.creator ?? null,

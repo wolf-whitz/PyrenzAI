@@ -6,6 +6,7 @@ export function GenderDropdown() {
   const setGender = useCharacterStore((state) => state.setGender);
 
   const genderOptions = [
+    { value: 'unspecified', label: 'Unspecified' },
     { value: 'male', label: 'Male' },
     { value: 'female', label: 'Female' },
   ];

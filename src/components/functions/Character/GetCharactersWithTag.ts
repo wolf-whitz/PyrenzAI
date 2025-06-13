@@ -22,7 +22,7 @@ export async function GetCharactersWithTags(
   if (gender === 'male' || gender === 'female') {
     query = query.eq('gender', gender);
   } else {
-    query = query.contains('tags', [tag]);
+    query = query.contains('tags', JSON.parse(JSON.stringify([tag])));
   }
 
   const { data, error } = await query;

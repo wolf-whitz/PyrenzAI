@@ -12,7 +12,6 @@ import { useCharacterStore } from '~/store';
 import { Character, Draft } from '@shared-types';
 import { usePyrenzAlert } from '~/provider';
 
-// Define a custom type for the character state with all properties optional
 type CharacterState = {
   [K in keyof Character]?: Character[K] | null;
 };
@@ -50,8 +49,8 @@ export const useCreateAPI = (
   const showAlert = usePyrenzAlert();
 
   const tags = Array.isArray(characterState.tags)
-    ? characterState.tags
-    : (characterState.tags as string).split(',').map((tag: string) => tag.trim());
+    ? characterState.tags.join(', ')
+    : characterState.tags || '';
 
   const handleImageSelect = (file: File | null) => {
     if (file) {
@@ -68,7 +67,7 @@ export const useCreateAPI = (
     description: characterState.description || '',
     first_message: characterState.first_message || '',
     lorebook: characterState.lorebook || '',
-    tags: tags,
+    tags,
     gender: characterState.gender || '',
     creator: creator || '',
     is_public: characterState.is_public || false,

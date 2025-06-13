@@ -1,14 +1,33 @@
-import React from 'react';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import { ImageUploader, Textarea, TagsMenu } from '@components';
 import { useTextareaFormAPI } from '@api';
 import { useCharacterStore } from '~/store';
+import { Character } from '@shared-types';
 
 const MemoizedTextarea = React.memo(Textarea);
 const MemoizedImageUploader = React.memo(ImageUploader);
 const MemoizedTagsMenu = React.memo(TagsMenu);
 
+function useDebounce(value: string, delay: number): string {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
+
 export function TextareaForm() {
-  const character = useCharacterStore((state) => state);
+  const character = useCharacterStore((state) => state) as Character;
+  const setCharacter = useCharacterStore((state) => state.setCharacter);
+
   const {
     anchorEl,
     imageBlobUrl,
@@ -18,6 +37,18 @@ export function TextareaForm() {
     handleChange,
     handleImageSelect,
   } = useTextareaFormAPI();
+
+  const [tagsInput, setTagsInput] = useState<string>(character.tags || '');
+
+  const debouncedTagsInput = useDebounce(tagsInput, 2000);
+
+  useEffect(() => {
+    setCharacter({ tags: debouncedTagsInput });
+  }, [debouncedTagsInput, setCharacter]);
+
+  const handleTagsChange = (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    setTagsInput(e.target.value);
+  };
 
   return (
     <>
@@ -83,7 +114,7 @@ export function TextareaForm() {
       />
       <MemoizedTextarea
         name="lorebook"
-        value={character.lorebook || ''}
+        value={character.lorebook}
         onChange={handleChange}
         label="Lorebook"
         aria-label="Lorebook"
@@ -92,8 +123,8 @@ export function TextareaForm() {
       />
       <MemoizedTextarea
         name="tags"
-        value={Array.isArray(character.tags) ? character.tags.join(', ') : ''}
-        onChange={handleChange}
+        value={tagsInput}
+        onChange={handleTagsChange}
         label="Tags"
         aria-label="Tags"
         placeholder="Add tags separated by commas e.g., hero, knight, adventure"

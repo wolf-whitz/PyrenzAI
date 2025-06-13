@@ -7,6 +7,7 @@ export function VisibilityCheckboxes() {
   const setCharacter = useCharacterStore((state) => state.setCharacter);
   const isPublic = useCharacterStore((state) => state.is_public);
   const isNSFW = useCharacterStore((state) => state.is_nsfw);
+  const hideDetails = useCharacterStore((state) => state.hideDetails);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
@@ -57,6 +58,23 @@ export function VisibilityCheckboxes() {
             />
           }
           label="NSFW"
+        />
+        <FormControlLabel
+          control={
+            <Checkbox
+              name="hideDetails"
+              checked={hideDetails}
+              onChange={handleChange}
+              inputProps={{ 'aria-label': 'Hide Details' }}
+              sx={{
+                color: '#fff',
+                '&.Mui-checked': {
+                  color: '#fff',
+                },
+              }}
+            />
+          }
+          label="Hide Details"
         />
       </div>
     </motion.div>

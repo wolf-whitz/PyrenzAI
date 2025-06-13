@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { supabase } from '~/Utility/supabaseClient';
-import { useCharacterStore } from '~/store'; 
+import { useCharacterStore } from '~/store';
 
 export const useTextareaFormAPI = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -26,8 +26,9 @@ export const useTextareaFormAPI = () => {
   }, []);
 
   const handleTagClick = useCallback((tag: string) => {
-    const newTags = character.tags ? [...character.tags, tag] : [tag];
-    setCharacter({ tags: newTags });
+    const tagsArray = character.tags ? JSON.parse(character.tags) : [];
+    const newTags = [...tagsArray, tag];
+    setCharacter({ tags: JSON.stringify(newTags) });
     handleCloseDropdown();
   }, [character.tags, setCharacter]);
 
@@ -38,7 +39,7 @@ export const useTextareaFormAPI = () => {
 
       if (name === 'tags') {
         const tagsArray = value.split(',').map((tag) => tag.trim());
-        setCharacter({ [name]: tagsArray });
+        setCharacter({ [name]: JSON.stringify(tagsArray) });
       } else {
         setCharacter({ [name]: type === 'checkbox' ? checked : value });
       }
