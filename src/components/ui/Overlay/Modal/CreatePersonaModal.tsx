@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Box,
   Typography,
@@ -89,7 +89,7 @@ export function CreatePersonaModal({
       }}
     >
       <Fade in={isModalOpen}>
-        <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md text-white shadow-xl rounded-xl p-6 bg-gray-800">
+        <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md text-white shadow-xl rounded-xl p-6 bg-gray-800 max-h-[90vh] overflow-y-auto">
           <Typography
             variant="h6"
             className="text-center text-lg font-semibold mb-6"
