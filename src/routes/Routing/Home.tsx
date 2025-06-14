@@ -38,6 +38,10 @@ export function Home() {
     setShowRegister(!showRegister);
   };
 
+  const onQuery = useCallback((query: string) => {
+    setSearch(query);
+  }, [setSearch]);
+
   return (
     <Box
       component="div"
@@ -122,6 +126,7 @@ export function Home() {
               </h2>
               <CustomButton
                 onButtonClick={handleButtonClick}
+                onQuery={onQuery}
                 aria-label={t('ariaLabels.customActionButton')}
               />
             </Box>

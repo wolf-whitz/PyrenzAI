@@ -2,7 +2,7 @@ import { PyrenzBlueButton } from '~/theme';
 import React, { useState, useRef, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { buttons, CustomButtonProps } from '@shared-types';
+import { buttons } from '@shared-types';
 
 const MoreButtonsModal = React.lazy(() =>
   import('~/components/ui/Overlay/Modal/MoreButtonsModal').then((module) => ({
@@ -10,24 +10,43 @@ const MoreButtonsModal = React.lazy(() =>
   }))
 );
 
-export function CustomButton({ onButtonClick }: CustomButtonProps) {
+interface CustomButtonProps {
+  onButtonClick: (
+    func: string,
+    type: string,
+    maxCharacter?: number,
+    page?: number,
+    tag?: string,
+    gender?: 'male' | 'female',
+    searchQuery?: string
+  ) => void;
+  onQuery: (query: string) => void;  
+}
+
+export function CustomButton({ onButtonClick, onQuery }: CustomButtonProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [visibleButtons, setVisibleButtons] = useState(buttons);
+  const [visibleButtons] = useState(buttons);
   const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [modalResults, setModalResults] = useState([]);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const { t } = useTranslation();
 
   const handleButtonClick = async (
-    func: any,
+    func: string,
     type: string,
-    maxCharacter: number,
-    page: number,
+    maxCharacter?: number,
+    page?: number,
     tag?: string,
     gender?: 'male' | 'female'
   ) => {
     setLoading(true);
-    onButtonClick(func, type, maxCharacter, page, tag, gender);
+    await onButtonClick(func, type, maxCharacter, page, tag, gender, searchQuery);
     setLoading(false);
+  };
+
+  const handleQuery = (query: string) => {
+    onQuery(query);  
   };
 
   return (
@@ -48,7 +67,7 @@ export function CustomButton({ onButtonClick }: CustomButtonProps) {
         <motion.div key={index}>
           <PyrenzBlueButton
             variant="contained"
-            startIcon={<btn.icon size={18} />}
+            startIcon={React.createElement(btn.icon, { size: 18 })}
             onClick={() =>
               handleButtonClick(
                 btn.Function,
@@ -77,12 +96,16 @@ export function CustomButton({ onButtonClick }: CustomButtonProps) {
       </motion.div>
 
       {isModalOpen && (
-        <Suspense>
+        <Suspense fallback={<div>Loading...</div>}>
           <MoreButtonsModal
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
-            onButtonClick={onButtonClick}
+            onButtonClick={handleButtonClick}
             buttons={buttons}
+            onQuery={handleQuery}
+            modalResults={modalResults}
+            loading={loading}
+            searchQuery={searchQuery}
           />
         </Suspense>
       )}

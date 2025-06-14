@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { useState, useEffect, useRef } from 'react';
 import {
   Button,
   CircularProgress,
@@ -8,16 +7,25 @@ import {
   Modal,
   Backdrop,
   Fade,
-  Typography
+  Typography,
+  TextField,
+  IconButton,
+  InputAdornment
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { GetCharactersWithTags, Textarea } from '@components';
-import {
-  ButtonType,
-  ModalResultType,
-  MoreButtonsModalProps,
-} from '@shared-types';
-import { Tag } from 'lucide-react';
+import { ButtonType, ModalResultType } from '@shared-types';
+import { Tag, Search } from 'lucide-react';
+
+interface MoreButtonsModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onButtonClick: (functionName: string, type: string, maxCharacter?: number, page?: number, tag?: string) => void;
+  buttons: ButtonType[];
+  onQuery: (query: string) => void;
+  modalResults: ModalResultType[];
+  loading: boolean;
+  searchQuery: string;
+}
 
 const LoadingSpinner = () => (
   <div className="flex justify-center items-center">
@@ -30,71 +38,40 @@ export function MoreButtonsModal({
   onClose,
   onButtonClick,
   buttons,
+  onQuery,
+  modalResults,
+  loading: propLoading,
+  searchQuery: propSearchQuery,
 }: MoreButtonsModalProps) {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [modalResults, setModalResults] = useState<ModalResultType[]>([]);
-  const [loading, setLoading] = useState(false);
-  const modalRef = useRef<HTMLDivElement | null>(null);
-  const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
+  const [searchQuery, setSearchQuery] = useState(propSearchQuery);
+  const [loading, setLoading] = useState(propLoading);
 
-  const handleSearch = async (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const query = event.target.value;
-    setSearchQuery(query);
+  React.useEffect(() => {
+    setSearchQuery(propSearchQuery);
+  }, [propSearchQuery]);
 
-    if (typingTimeout) clearTimeout(typingTimeout);
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
 
-    if (query.trim()) {
-      setLoading(true);
-      const timeout = setTimeout(async () => {
-        try {
-          const data = await GetCharactersWithTags(
-            10,
-            1,
-            'GetTaggedCharacters',
-            query
-          );
-          setModalResults(data || []);
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        } finally {
-          setLoading(false);
-        }
-      }, 500);
+  const handleSearchSubmit = () => {
+    setLoading(true);
+    onQuery(searchQuery);
+    setLoading(false);
+    onClose();
+  };
 
-      setTypingTimeout(timeout);
-    } else {
-      setModalResults([]);
+  const handleKeyPress = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      handleSearchSubmit();
     }
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        modalRef.current &&
-        !modalRef.current.contains(event.target as Node)
-      ) {
-        onClose();
-      }
-    };
+  const filteredModalButtons = modalResults.length > 0 ? modalResults : buttons;
 
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isOpen, onClose]);
-
-  const filteredModalButtons =
-    modalResults.length > 0
-      ? modalResults
-      : buttons.filter((btn) =>
-          t(btn.label).toLowerCase().includes(searchQuery.toLowerCase())
-        );
-
-  const handleButtonClick = async (btn: ModalResultType | ButtonType) => {
+  const handleButtonClick = (btn: ModalResultType | ButtonType) => {
     if ('Function' in btn && 'type' in btn) {
       onButtonClick(
         btn.Function,
@@ -104,17 +81,7 @@ export function MoreButtonsModal({
         btn.tag
       );
     } else {
-      try {
-        const data = await GetCharactersWithTags(
-          10,
-          1,
-          'GetTaggedCharacters',
-          btn.name
-        );
-        setModalResults(data || []);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
+      onQuery(btn.name);
     }
     onClose();
   };
@@ -153,11 +120,23 @@ export function MoreButtonsModal({
             animate={{ scale: 1 }}
             exit={{ scale: 0.5 }}
           >
-            <Textarea
-              placeholder={t('search.placeholder')}
+            <TextField
+              placeholder="Search for characters via tags, Male, Female, etc!"
               value={searchQuery}
               onChange={handleSearch}
-              className="mb-4"
+              onKeyPress={handleKeyPress}
+              fullWidth
+              margin="normal"
+              variant="outlined"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <IconButton onClick={handleSearchSubmit} edge="start">
+                      <Search />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
             <div className="flex flex-col gap-2">
               {loading ? (

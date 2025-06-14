@@ -31,6 +31,7 @@ const Subscription = lazyNamed(
 const Archive = lazyNamed(() => import('./Routing/Archive'), 'Archive');
 const Policy = lazyNamed(() => import('./Routing/Policy'), 'Policy');
 const ContentPolicy = lazyNamed(() => import('./Routing/ContentPolicy'), 'ContentPolicy');
+const DocPage = lazyNamed(() => import('./Routing/DocPage'), 'DocPage');
 
 export const AppRoutes = (
   <>
@@ -51,6 +52,9 @@ export const AppRoutes = (
 
     <Route path="/Settings" element={<Setting />} />
     <Route path="/ContentPolicy" element={<ContentPolicy />} />
+
+    <Route path="/docs/:doc_name" element={<DocPage />} />
+    <Route path="/docs" element={<DocPage />} />
 
     <Route path="*" element={<ErrorPage />} />
   </>

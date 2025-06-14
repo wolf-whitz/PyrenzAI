@@ -5,3 +5,4 @@ export * from './layout';
 export * from './functions';
 
 export * from './shared-types';
+export * from './docs'
