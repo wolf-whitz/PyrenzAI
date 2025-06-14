@@ -1,9 +1,41 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, ArrowRight, MoreVertical, Loader2 } from 'lucide-react';
+import { Send, ArrowRight, MoreVertical, Loader2, Mic } from 'lucide-react';
 import { Menu } from '@components';
 import { Character } from '@shared-types';
 import { usePyrenzAlert } from '~/provider';
+
+interface SpeechRecognitionEvent extends Event {
+  resultIndex: number;
+  results: {
+    isFinal: boolean;
+    [key: number]: {
+      transcript: string;
+    };
+  }[];
+}
+
+interface SpeechRecognitionErrorEvent extends Event {
+  error: string;
+}
+
+declare global {
+  interface Window {
+    SpeechRecognition: new () => SpeechRecognition;
+    webkitSpeechRecognition: new () => SpeechRecognition;
+  }
+}
+
+interface SpeechRecognition {
+  continuous: boolean;
+  interimResults: boolean;
+  onstart: () => void;
+  onerror: (event: SpeechRecognitionErrorEvent) => void;
+  onend: () => void;
+  onresult: (event: SpeechRecognitionEvent) => void;
+  start: () => void;
+  stop: () => void;
+}
 
 interface ChatInputProps {
   className?: string;
@@ -23,6 +55,8 @@ export function ChatInput({
 }: ChatInputProps) {
   const [message, setMessage] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
   const showAlert = usePyrenzAlert();
 
   const sendMessage = () => {
@@ -45,6 +79,54 @@ export function ChatInput({
     }
   };
 
+  const toggleListening = () => {
+    if (isListening && recognitionRef.current) {
+      recognitionRef.current.stop();
+    } else {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        showAlert('Speech recognition is not supported in your browser.', 'alert');
+        return;
+      }
+
+      const recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+
+      recognition.onstart = () => {
+        setIsListening(true);
+      };
+
+      recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+        console.error('Speech recognition error', event.error);
+        setIsListening(false);
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+      };
+
+      recognition.onresult = (event: SpeechRecognitionEvent) => {
+        let interimTranscript = '';
+        let finalTranscript = '';
+
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const transcript = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            finalTranscript += transcript;
+          } else {
+            interimTranscript += transcript;
+          }
+        }
+
+        setMessage(finalTranscript || interimTranscript);
+      };
+
+      recognition.start();
+      recognitionRef.current = recognition;
+    }
+  };
+
   return (
     <>
       <motion.div
@@ -53,9 +135,7 @@ export function ChatInput({
         transition={{ duration: 0.3, ease: 'easeOut' }}
         className={`relative mx-auto w-full max-w-full md:max-w-[500px] lg:max-w-[640px] p-4 ${className}`}
       >
-        <div
-          className={`relative flex bg-gray-700 rounded-2xl p-3 w-full ${className}`}
-        >
+        <div className={`relative flex bg-gray-700 rounded-2xl p-3 w-full ${className}`}>
           <motion.button
             className="mr-2 text-gray-400 hover:text-white transition duration-200 p-2 rounded-full flex-shrink-0"
             whileHover={{ scale: 1.1 }}
@@ -80,6 +160,18 @@ export function ChatInput({
             rows={1}
             disabled={isGenerating}
           />
+
+          <motion.button
+            onClick={toggleListening}
+            className={`mr-2 text-gray-400 hover:text-white transition duration-200 p-2 rounded-full flex-shrink-0 ${
+              isListening ? 'text-blue-500' : ''
+            }`}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            aria-label={isListening ? "Stop recording" : "Record voice"}
+          >
+            <Mic size={20} />
+          </motion.button>
 
           <motion.button
             onClick={sendMessage}
@@ -113,8 +205,8 @@ export function ChatInput({
                   isGenerating
                     ? 'Generating'
                     : message.trim()
-                      ? 'send'
-                      : 'continue'
+                    ? 'send'
+                    : 'continue'
                 }
                 initial={{ x: -10, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
@@ -149,9 +241,7 @@ export function ChatInput({
         </div>
       </motion.div>
 
-      {isMenuOpen && (
-        <Menu onClose={() => setIsMenuOpen(false)} char={char as Character} />
-      )}
+      {isMenuOpen && <Menu onClose={() => setIsMenuOpen(false)} char={char as Character} />}
     </>
   );
 }

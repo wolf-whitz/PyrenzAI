@@ -1,4 +1,3 @@
-import React from 'react';
 import { Card, CardContent, CardActions, Typography, Box } from '@mui/material';
 import { motion } from 'framer-motion';
 import { PyrenzBlueButton, PyrenzRibbon } from '~/theme';
@@ -48,7 +47,7 @@ const parseDescription = (description: string) => {
   return { title, content, color };
 };
 
-export const SubscriptionCard: React.FC<SubscriptionCardsProps> = ({
+export function SubscriptionCard({
   plan,
   isSubscribed,
   onSubscribe,
@@ -56,7 +55,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardsProps> = ({
   isHighlighted,
   onMouseEnter,
   onMouseLeave,
-}) => {
+}: SubscriptionCardsProps) {
   const price = isMonthly ? plan.price_count_monthly : plan.price_count_yearly;
   const ribbonText = getRibbonText(plan.plan_identifier);
 
@@ -109,22 +108,10 @@ export const SubscriptionCard: React.FC<SubscriptionCardsProps> = ({
           </PyrenzRibbon>
         )}
         <CardContent className="text-center flex-grow relative z-10 text-white p-6">
-          <MotionTypography
-            variant="h5"
-            sx={{ mb: 2 }}
-            initial={{ y: -20 }}
-            animate={{ y: 0 }}
-            transition={{ type: 'spring', stiffness: 300 }}
-          >
+          <MotionTypography variant="h5" sx={{ mb: 2 }} initial={{ y: -20 }} animate={{ y: 0 }} transition={{ type: 'spring', stiffness: 300 }}>
             {plan.title}
           </MotionTypography>
-          <MotionTypography
-            variant="h6"
-            sx={{ mb: 3 }}
-            initial={{ scale: 0.9 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.2 }}
-          >
+          <MotionTypography variant="h6" sx={{ mb: 3 }} initial={{ scale: 0.9 }} animate={{ scale: 1 }} transition={{ delay: 0.2 }}>
             {price}
           </MotionTypography>
           {plan.descriptions.map((description: string, i: number) => {
@@ -171,4 +158,4 @@ export const SubscriptionCard: React.FC<SubscriptionCardsProps> = ({
       </MotionCard>
     </Box>
   );
-};
+}
