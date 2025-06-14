@@ -1,12 +1,7 @@
 import React from 'react';
-import { TypingIndicator, CustomMarkdown } from '@components';
-import { Box, Avatar, IconButton, TextField } from '@mui/material';
+import { TypingIndicator, CustomMarkdown, MessageContextMenu } from '@components';
+import { Box, Avatar, TextField } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import RefreshIcon from '@mui/icons-material/Refresh';
-import DeleteIcon from '@mui/icons-material/Delete';
-import VolumeUpIcon from '@mui/icons-material/VolumeUp';
-import EditIcon from '@mui/icons-material/Edit';
-import FileCopyIcon from '@mui/icons-material/FileCopy';
 import { PyrenzMessageBox, PyrenzBlueButton } from '~/theme';
 
 import type { Message, User, Character } from '@shared-types';
@@ -41,7 +36,7 @@ interface MessageBoxProps {
   setEditedMessage: (message: string) => void;
 }
 
-export const MessageBox: React.FC<MessageBoxProps> = ({
+export const MessageBox = ({
   msg,
   index,
   isGenerating,
@@ -58,15 +53,13 @@ export const MessageBox: React.FC<MessageBoxProps> = ({
   onEditClick,
   onSaveEdit,
   onCancelEdit,
-  setEditedMessage,
-}) => {
+  setEditedMessage
+}: MessageBoxProps) => {
   const isUser = msg.type === 'user';
   const isAssistant = msg.type === 'assistant';
   const isFirstMessage = index === 0;
 
-  const displayName = isUser
-    ? msg.username || user.username
-    : msg.name || char.name;
+  const displayName = isUser ? msg.username || user.username : msg.name || char.name;
 
   const isEditingThisMessage =
     editingMessageId === msg.id &&
@@ -82,9 +75,9 @@ export const MessageBox: React.FC<MessageBoxProps> = ({
       display="flex"
       alignItems="start"
       justifyContent={isUser ? 'flex-end' : 'flex-start'}
-      className={`flex items-start ${isUser ? 'justify-end' : 'justify-start'}`}
+      sx={{ position: 'relative' }}
     >
-      {isAssistant && !msg.error && (
+      {!isUser && !isGenerating && !msg.error && (
         <Avatar
           alt={displayName}
           src={char.profile_image}
@@ -93,85 +86,82 @@ export const MessageBox: React.FC<MessageBoxProps> = ({
         />
       )}
 
-      {!isGenerating && isUser && !isFirstMessage && !msg.error && (
-        <Box display="flex" flexDirection="column" mr={1}>
-          <IconButton onClick={() => msg.id && onRemove(msg.id)} size="small">
-            <DeleteIcon />
-          </IconButton>
-          <IconButton onClick={handleCopy} size="small">
-            <FileCopyIcon />
-          </IconButton>
-          <IconButton
-            onClick={() =>
-              msg.id && onEditClick(msg.id, msg.text || '', 'user')
-            }
-            size="small"
-          >
-            <EditIcon />
-          </IconButton>
-        </Box>
-      )}
-
-      <PyrenzMessageBox
-        sx={{ marginLeft: isAssistant ? 2 : 0, marginRight: isUser ? 2 : 0 }}
-        className={isUser ? 'user' : 'other'}
-      >
-        {isGenerating && isAssistant && isLastMessage && !msg.text && (
-          <TypingIndicator />
-        )}
-        {isEditingThisMessage ? (
-          <Box display="flex" flexDirection="column">
-            <TextField
-              value={editedMessage}
-              onChange={(e) => setEditedMessage(e.target.value)}
-              autoFocus
-            />
-            <Box display="flex" justifyContent="space-between" mt={1}>
-              <PyrenzBlueButton
-                onClick={() =>
-                  msg.id && onSaveEdit(msg.id, isUser ? 'user' : 'char')
-                }
-                disabled={isLoading}
-              >
-                {isLoading ? 'Saving...' : 'Submit'}
-              </PyrenzBlueButton>
-              <PyrenzBlueButton onClick={onCancelEdit} disabled={isLoading}>
-                Cancel
-              </PyrenzBlueButton>
+      <Box display="flex" flexDirection="row" alignItems="flex-start">
+        <PyrenzMessageBox
+          sx={{
+            marginLeft: isAssistant ? 2 : 0,
+            marginRight: isUser ? 2 : 0,
+            position: 'relative',
+            width: '100%'
+          }}
+          className={isUser ? 'user' : 'other'}
+        >
+          {isGenerating && isAssistant && isLastMessage && !msg.text && (
+            <TypingIndicator />
+          )}
+          {isEditingThisMessage ? (
+            <Box display="flex" flexDirection="column">
+              <TextField
+                value={editedMessage}
+                onChange={(e) => setEditedMessage(e.target.value)}
+                autoFocus
+                multiline
+                fullWidth
+                minRows={2}
+                sx={{
+                  background: 'transparent',
+                  resize: 'vertical',
+                  width: '500px',
+                  maxWidth: '100%',
+                  '& .MuiOutlinedInput-root': {
+                    padding: '8px',
+                    '& fieldset': {
+                      border: 'none'
+                    }
+                  }
+                }}
+              />
+              <Box display="flex" justifyContent="space-between" mt={1}>
+                <PyrenzBlueButton
+                  onClick={() =>
+                    msg.id && onSaveEdit(msg.id, isUser ? 'user' : 'char')
+                  }
+                  disabled={isLoading}
+                  sx={{ backgroundColor: 'transparent' }}
+                >
+                  {isLoading ? 'Saving...' : 'Submit'}
+                </PyrenzBlueButton>
+                <PyrenzBlueButton
+                  onClick={onCancelEdit}
+                  disabled={isLoading}
+                  sx={{ backgroundColor: 'transparent' }}
+                >
+                  Cancel
+                </PyrenzBlueButton>
+              </Box>
             </Box>
-          </Box>
-        ) : (
-          <CustomMarkdown text={msg.text || ''} user={user} char={char} />
-        )}
-      </PyrenzMessageBox>
+          ) : (
+            <CustomMarkdown text={msg.text || ''} user={user} char={char} />
+          )}
+        </PyrenzMessageBox>
 
-      {!isGenerating && isAssistant && !isFirstMessage && !msg.error && (
-        <Box display="flex" flexDirection="column" ml={1}>
-          <IconButton
-            onClick={() => msg.id && onRegenerate(msg.id)}
-            size="small"
-          >
-            <RefreshIcon />
-          </IconButton>
-          <IconButton onClick={() => msg.id && onRemove(msg.id)} size="small">
-            <DeleteIcon />
-          </IconButton>
-          <IconButton onClick={() => handleSpeak(msg.text || '')} size="small">
-            <VolumeUpIcon />
-          </IconButton>
-          <IconButton onClick={handleCopy} size="small">
-            <FileCopyIcon />
-          </IconButton>
-          <IconButton
-            onClick={() =>
-              msg.id && onEditClick(msg.id, msg.text || '', 'char')
-            }
-            size="small"
-          >
-            <EditIcon />
-          </IconButton>
-        </Box>
-      )}
+        {!isFirstMessage && !isGenerating && !msg.error && (
+          <Box ml={1}>
+            <MessageContextMenu
+              isUser={isUser}
+              isAssistant={isAssistant}
+              isFirstMessage={isFirstMessage}
+              isGenerating={isGenerating}
+              msg={msg}
+              onRegenerate={onRegenerate}
+              onRemove={onRemove}
+              handleSpeak={handleSpeak}
+              onEditClick={onEditClick}
+              handleCopy={handleCopy}
+            />
+          </Box>
+        )}
+      </Box>
 
       {isUser && !msg.error && (
         <Avatar

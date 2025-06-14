@@ -28,7 +28,7 @@ interface CreatePersonaModalProps {
   selectedImage: string | null;
   setSelectedImage: (image: string | null) => void;
   isEditing: boolean;
-  onDelete?: () => void; 
+  onDelete?: () => void;
 }
 
 export function CreatePersonaModal({
@@ -44,7 +44,7 @@ export function CreatePersonaModal({
   selectedImage,
   setSelectedImage,
   isEditing,
-  onDelete,  
+  onDelete,
 }: CreatePersonaModalProps) {
   const [previewImage, setPreviewImage] = useState<string | null>(selectedImage);
   const showAlert = usePyrenzAlert();
@@ -55,7 +55,7 @@ export function CreatePersonaModal({
 
   useEffect(() => {
     return () => {
-      if (previewImage) {
+      if (previewImage && previewImage.startsWith('blob:')) {
         URL.revokeObjectURL(previewImage);
       }
     };
@@ -75,7 +75,7 @@ export function CreatePersonaModal({
 
       const fileName = `persona-image-${uuidv4()}.png`;
 
-      const { error } = await supabase.storage
+      const { data, error } = await supabase.storage
         .from('persona-image')
         .upload(fileName, file, {
           contentType: 'image/png',
@@ -85,7 +85,12 @@ export function CreatePersonaModal({
         showAlert('Failed to upload image to Supabase Storage.', 'alert');
         console.error('Error uploading image:', error);
       } else {
-        setSelectedImage(previewUrl);
+        const publicUrl = supabase.storage
+          .from('persona-image')
+          .getPublicUrl(fileName).data.publicUrl;
+
+        setSelectedImage(publicUrl);
+        setPreviewImage(publicUrl);
       }
     }
   };
