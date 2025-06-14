@@ -32,6 +32,20 @@ const truncateText = (text: string, maxLength: number) => {
   return text.substring(0, maxLength) + '...';
 };
 
+const ensureArray = (tags: string | string[] | null | undefined) => {
+  if (!tags) return [];
+  if (Array.isArray(tags)) return tags;
+  if (typeof tags === 'string') {
+    try {
+      return JSON.parse(tags);
+    } catch (e) {
+      console.error("Error parsing tags:", e);
+      return [];
+    }
+  }
+  return [];
+};
+
 export function CharacterCardModal({
   isOpen,
   onClose,
@@ -104,6 +118,8 @@ export function CharacterCardModal({
   };
 
   if (!character) return null;
+
+  const tags = ensureArray(character.tags);
 
   return (
     <Modal
@@ -217,22 +233,20 @@ export function CharacterCardModal({
                   )}
                 </motion.span>
               )}
-              {(Array.isArray(character.tags) ? character.tags : []).map(
-                (tag, index) => (
-                  <motion.span
-                    key={index}
-                    className="bg-black text-white text-xs font-semibold py-1 px-3 rounded-full"
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{
-                      opacity: 1,
-                      scale: 1,
-                      transition: { delay: (index + 1) * 0.05 },
-                    }}
-                  >
-                    {tag}
-                  </motion.span>
-                )
-              )}
+              {tags.map((tag: string, index: number) => (
+                <motion.span
+                  key={index}
+                  className="bg-black text-white text-xs font-semibold py-1 px-3 rounded-full"
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{
+                    opacity: 1,
+                    scale: 1,
+                    transition: { delay: (index + 1) * 0.05 },
+                  }}
+                >
+                  {tag}
+                </motion.span>
+              ))}
             </Box>
           </Box>
         </Box>
