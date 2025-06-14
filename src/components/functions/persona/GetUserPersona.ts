@@ -5,6 +5,7 @@ import { GetUserUUID } from '@components';
 interface ApiResponse {
   username: string;
   user_avatar: string;
+  user_uuid: string;
   ai_customization: any;
   custom_provider?: any;
   preferred_model?: string;
@@ -108,6 +109,7 @@ export async function GetUserData(): Promise<ApiResponse | { error: string }> {
     return {
       username: personaName,
       user_avatar: avatarUrl,
+      user_uuid: user_uuid,
       ai_customization: aiCustomization,
       custom_provider: customProvider,
       preferred_model: preferredModel,

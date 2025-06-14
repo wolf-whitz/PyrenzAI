@@ -1,14 +1,17 @@
-import { useUserStore } from '~/store';
+import { supabase } from '~/Utility/supabaseClient';
+import { GetUserUUID } from '@components';
 import React, { useEffect, useState, useRef } from 'react';
 import { saveImageToDB, getImageFromDB, openDB } from '~/Utility/IndexDB';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, Button, Stack } from '@mui/material';
 import { PyrenzBlueButton } from '~/theme';
+import { useUserStore } from '~/store';
 
 export function Cosmetic() {
   const [bgImage, setBgImage] = useState<string | null>(null);
   const [dragging, setDragging] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { setImageURL } = useUserStore();
+
+  const { imageURL, customization, setImageURL, setCustomization } = useUserStore();
 
   useEffect(() => {
     const loadImage = async () => {
@@ -20,9 +23,26 @@ export function Cosmetic() {
       }
     };
     loadImage();
+    loadCustomizations();
   }, [setImageURL]);
 
+  const loadCustomizations = async () => {
+    const userUUID = await GetUserUUID();
+    const { data, error } = await supabase
+      .from('user_data')
+      .select('customization')
+      .eq('user_uuid', userUUID)
+      .single();
+
+    if (data && !error) {
+      const loadedCustomization = data.customization;
+      setCustomization(loadedCustomization);
+    }
+  };
+
   const handleSave = async () => {
+    const userUUID = await GetUserUUID();
+
     if (bgImage) {
       const response = await fetch(bgImage);
       const blob = await response.blob();
@@ -34,6 +54,15 @@ export function Cosmetic() {
       const store = transaction.objectStore('images');
       store.delete('bgImage');
       setImageURL(null);
+    }
+
+    const { error } = await supabase
+      .from('user_data')
+      .update({ customization })
+      .eq('user_uuid', userUUID);
+
+    if (error) {
+      console.error('Error updating customizations:', error);
     }
   };
 
@@ -90,7 +119,7 @@ export function Cosmetic() {
             position: 'relative',
             overflow: 'hidden',
           }}
-          onDragOver={(e: React.DragEvent<HTMLDivElement>) => {
+          onDragOver={(e) => {
             e.preventDefault();
             setDragging(true);
           }}
@@ -132,6 +161,34 @@ export function Cosmetic() {
         style={{ display: 'none' }}
         onChange={handleFileChange}
       />
+      <Stack direction="column" spacing={2} sx={{ mt: 3 }}>
+        <Button
+          variant="contained"
+          onClick={() => setCustomization({ ...customization, transparency: !customization.transparency })}
+        >
+          {customization.transparency ? 'Disable Transparency' : 'Enable Transparency'}
+        </Button>
+        <Stack direction="row" spacing={2} alignItems="center">
+          <Typography variant="body1" color="text.secondary">
+            User Text Color:
+          </Typography>
+          <input
+            type="color"
+            value={customization.userTextColor}
+            onChange={(e) => setCustomization({ ...customization, userTextColor: e.target.value })}
+          />
+        </Stack>
+        <Stack direction="row" spacing={2} alignItems="center">
+          <Typography variant="body1" color="text.secondary">
+            Character Text Color:
+          </Typography>
+          <input
+            type="color"
+            value={customization.charTextColor}
+            onChange={(e) => setCustomization({ ...customization, charTextColor: e.target.value })}
+          />
+        </Stack>
+      </Stack>
       <PyrenzBlueButton
         onClick={handleSave}
         variant="contained"

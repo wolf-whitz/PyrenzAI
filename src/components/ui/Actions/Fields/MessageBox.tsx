@@ -1,9 +1,16 @@
-import React from 'react';
-import { TypingIndicator, CustomMarkdown, MessageContextMenu } from '@components';
-import { Box, Avatar, TextField } from '@mui/material';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  TypingIndicator,
+  CustomMarkdown,
+  MessageContextMenu,
+} from '@components';
+import {
+  Box,
+  Avatar,
+  TextField,
+  useTheme,
+} from '@mui/material';
 import { PyrenzMessageBox, PyrenzBlueButton } from '~/theme';
-
 import type { Message, User, Character } from '@shared-types';
 
 interface MessageBoxProps {
@@ -36,7 +43,7 @@ interface MessageBoxProps {
   setEditedMessage: (message: string) => void;
 }
 
-export const MessageBox = ({
+export function MessageBox({
   msg,
   index,
   isGenerating,
@@ -53,11 +60,10 @@ export const MessageBox = ({
   onEditClick,
   onSaveEdit,
   onCancelEdit,
-  setEditedMessage
-}: MessageBoxProps) => {
+  setEditedMessage,
+}: MessageBoxProps) {
   const isUser = msg.type === 'user';
   const isAssistant = msg.type === 'assistant';
-  const isFirstMessage = index === 0;
 
   const displayName = isUser ? msg.username || user.username : msg.name || char.name;
 
@@ -65,42 +71,92 @@ export const MessageBox = ({
     editingMessageId === msg.id &&
     editingMessageType === (isUser ? 'user' : 'char');
 
+  const [menuPosition, setMenuPosition] = useState<{ top: number; left: number } | null>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  const handleMessageBoxClick = (event: React.MouseEvent) => {
+    if (!isEditingThisMessage) {
+      setMenuPosition({ top: event.clientY, left: event.clientX });
+    }
+  };
+
+  const handleCloseMenu = () => {
+    setMenuPosition(null);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        handleCloseMenu();
+      }
+    };
+
+    if (menuPosition) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [menuPosition]);
+
+  const theme = useTheme();
+
   const handleCopy = () => {
     navigator.clipboard.writeText(msg.text || '');
+    handleCloseMenu();
   };
+
+  if (!msg.id && !isGenerating) return null;
 
   return (
     <Box
       key={msg.id ? `${msg.id}-${index}` : `temp-${index}`}
       display="flex"
-      alignItems="start"
+      alignItems="flex-start"
       justifyContent={isUser ? 'flex-end' : 'flex-start'}
-      sx={{ position: 'relative' }}
+      sx={{ position: 'relative', width: '100%', mb: 2 }}
     >
-      {!isUser && !isGenerating && !msg.error && (
+      {!isUser && !isGenerating && (
         <Avatar
           alt={displayName}
           src={char.profile_image}
-          sx={{ width: 32, height: 32 }}
+          sx={{ width: 32, height: 32, mr: 1 }}
           className="rounded-full"
         />
       )}
 
-      <Box display="flex" flexDirection="row" alignItems="flex-start">
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems={isUser ? 'flex-end' : 'flex-start'}
+        sx={{
+          maxWidth: '80%',
+          width: '100%',
+        }}
+      >
         <PyrenzMessageBox
+          onClick={handleMessageBoxClick}
           sx={{
-            marginLeft: isAssistant ? 2 : 0,
-            marginRight: isUser ? 2 : 0,
-            position: 'relative',
-            width: '100%'
+            p: 2,
+            borderRadius: '8px',
+            boxShadow: 1,
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word',
+            overflowWrap: 'anywhere',
+            width: '100%',
+            cursor: 'pointer',
           }}
           className={isUser ? 'user' : 'other'}
         >
           {isGenerating && isAssistant && isLastMessage && !msg.text && (
             <TypingIndicator />
           )}
+
           {isEditingThisMessage ? (
-            <Box display="flex" flexDirection="column">
+            <Box display="flex" flexDirection="column" width="100%">
               <TextField
                 value={editedMessage}
                 onChange={(e) => setEditedMessage(e.target.value)}
@@ -111,14 +167,13 @@ export const MessageBox = ({
                 sx={{
                   background: 'transparent',
                   resize: 'vertical',
-                  width: '500px',
-                  maxWidth: '100%',
+                  width: '100%',
                   '& .MuiOutlinedInput-root': {
                     padding: '8px',
                     '& fieldset': {
-                      border: 'none'
-                    }
-                  }
+                      border: 'none',
+                    },
+                  },
                 }}
               />
               <Box display="flex" justifyContent="space-between" mt={1}>
@@ -144,42 +199,41 @@ export const MessageBox = ({
             <CustomMarkdown text={msg.text || ''} user={user} char={char} />
           )}
         </PyrenzMessageBox>
-
-        {!isFirstMessage && !isGenerating && !msg.error && (
-          <Box ml={1}>
-            <MessageContextMenu
-              isUser={isUser}
-              isAssistant={isAssistant}
-              isFirstMessage={isFirstMessage}
-              isGenerating={isGenerating}
-              msg={msg}
-              onRegenerate={onRegenerate}
-              onRemove={onRemove}
-              handleSpeak={handleSpeak}
-              onEditClick={onEditClick}
-              handleCopy={handleCopy}
-            />
-          </Box>
-        )}
       </Box>
 
-      {isUser && !msg.error && (
+      {isUser && !isGenerating && (
         <Avatar
           alt={displayName}
           src={user.user_avatar}
-          sx={{ width: 32, height: 32 }}
+          sx={{ width: 32, height: 32, ml: 1 }}
           className="rounded-full"
         />
       )}
 
-      {!isGenerating && msg.error && (
-        <Box display="flex" alignItems="center" ml={1} mt={1}>
-          <ErrorOutlineIcon color="error" fontSize="small" />
-          <Box ml={1} color="error">
-            Error
-          </Box>
+      {menuPosition && !isEditingThisMessage && (
+        <Box
+          ref={menuRef}
+          sx={{
+            position: 'fixed',
+            top: `${menuPosition.top}px`,
+            left: `${menuPosition.left}px`,
+            zIndex: 1300,
+            backgroundColor: theme.palette.background.paper,
+            borderRadius: '8px',
+            boxShadow: 3,
+          }}
+        >
+          <MessageContextMenu
+            msg={msg}
+            onRegenerate={onRegenerate}
+            onRemove={onRemove}
+            handleSpeak={handleSpeak}
+            onEditClick={onEditClick}
+            handleCopy={handleCopy}
+            onClose={handleCloseMenu}
+          />
         </Box>
       )}
     </Box>
   );
-};
+}

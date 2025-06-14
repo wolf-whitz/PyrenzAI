@@ -3,6 +3,7 @@ import { ImageUploader, Textarea, TagsMenu } from '@components';
 import { useTextareaFormAPI } from '@api';
 import { useCharacterStore } from '~/store';
 import { Character } from '@shared-types';
+import llamaTokenizer from 'llama-tokenizer-js';
 
 const MemoizedTextarea = React.memo(Textarea);
 const MemoizedImageUploader = React.memo(ImageUploader);
@@ -27,6 +28,7 @@ function useDebounce(value: string, delay: number): string {
 export function TextareaForm() {
   const character = useCharacterStore((state) => state) as Character;
   const setCharacter = useCharacterStore((state) => state.setCharacter);
+  const setTokenTotal = useCharacterStore((state) => state.setTokenTotal);
 
   const {
     anchorEl,
@@ -50,6 +52,37 @@ export function TextareaForm() {
     setTagsInput(e.target.value);
     setCharacter({ tags: e.target.value });
   };
+
+  useEffect(() => {
+    const fieldsToCount = [
+      character.name,
+      character.description,
+      character.persona,
+      character.model_instructions,
+      character.scenario,
+      character.first_message,
+      character.lorebook,
+      character.tags,
+    ];
+
+    const totalTokens = fieldsToCount.reduce((sum, field) => {
+      if (!field) return sum;
+      const tokens = llamaTokenizer.encode(field);
+      return sum + tokens.length;
+    }, 0);
+
+    setTokenTotal(totalTokens);
+  }, [
+    character.name,
+    character.description,
+    character.persona,
+    character.model_instructions,
+    character.scenario,
+    character.first_message,
+    character.lorebook,
+    character.tags,
+    setTokenTotal,
+  ]);
 
   return (
     <>
@@ -77,6 +110,7 @@ export function TextareaForm() {
         placeholder="Describe the character e.g., A brave knight with a mysterious past"
         showTokenizer
       />
+
       <MemoizedTextarea
         name="persona"
         value={character.persona}
@@ -86,6 +120,7 @@ export function TextareaForm() {
         placeholder="Define the character's persona e.g., Adventurous and wise"
         showTokenizer
       />
+
       <MemoizedTextarea
         name="scenario"
         value={character.scenario}
@@ -95,6 +130,7 @@ export function TextareaForm() {
         placeholder="Describe a scenario involving the character e.g., Saving a village from a dragon"
         showTokenizer
       />
+
       <MemoizedTextarea
         name="model_instructions"
         value={character.model_instructions}
@@ -104,6 +140,7 @@ export function TextareaForm() {
         placeholder="Provide instructions for the model e.g., The character should always seek justice"
         showTokenizer
       />
+
       <MemoizedTextarea
         name="first_message"
         value={character.first_message}
@@ -113,6 +150,7 @@ export function TextareaForm() {
         placeholder="What is the first message the character says? e.g., Hello, traveler! What brings you here?"
         showTokenizer
       />
+
       <MemoizedTextarea
         name="lorebook"
         value={character.lorebook}
@@ -122,6 +160,7 @@ export function TextareaForm() {
         placeholder="Enter lorebook details for the character e.g., Background story, world details, etc."
         showTokenizer
       />
+
       <MemoizedTextarea
         name="tags"
         value={tagsInput}

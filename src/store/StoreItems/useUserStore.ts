@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-interface ModelIdentifier {
+ interface ModelIdentifier {
   name: string;
   model_description: string;
 }
@@ -12,6 +12,12 @@ interface InferenceSettings {
   topP: number;
   presencePenalty: number;
   frequencyPenalty: number;
+}
+
+interface Customization {
+  transparency: boolean;
+  userTextColor: string;
+  charTextColor: string;
 }
 
 interface UserStore {
@@ -27,6 +33,7 @@ interface UserStore {
   inferenceSettings: InferenceSettings;
   modelIdentifiers: ModelIdentifier[];
   maxTokenLimit: number;
+  customization: Customization;
   setUserUUID: (uuid: string) => void;
   setUsername: (name: string) => void;
   setUserIcon: (icon: string) => void;
@@ -39,6 +46,7 @@ interface UserStore {
   setInferenceSettings: (settings: InferenceSettings) => void;
   setModelIdentifiers: (models: ModelIdentifier[]) => void;
   setMaxTokenLimit: (limit: number) => void;
+  setCustomization: (customization: Customization) => void;
 }
 
 export const useUserStore = create<UserStore>()(
@@ -62,6 +70,11 @@ export const useUserStore = create<UserStore>()(
       },
       modelIdentifiers: [],
       maxTokenLimit: 200,
+      customization: {
+        transparency: false,
+        userTextColor: '#000000',
+        charTextColor: '#000000',
+      },
       setUserUUID: (uuid) => set({ userUUID: uuid }),
       setUsername: (name) => set({ username: name }),
       setUserIcon: (icon) => set({ userIcon: icon }),
@@ -74,9 +87,10 @@ export const useUserStore = create<UserStore>()(
       setInferenceSettings: (settings) => set({ inferenceSettings: settings }),
       setModelIdentifiers: (models) => set({ modelIdentifiers: models }),
       setMaxTokenLimit: (limit) => set({ maxTokenLimit: limit }),
+      setCustomization: (customization) => set({ customization }),
     }),
     {
-      name: 'user-storage',
+      name: 'user-storage',  
     }
   )
 );

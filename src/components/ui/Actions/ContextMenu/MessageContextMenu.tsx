@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { Box, IconButton, Popover, Typography } from '@mui/material';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import React from 'react';
+import { Box, Button } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import EditIcon from '@mui/icons-material/Edit';
@@ -8,13 +7,10 @@ import FileCopyIcon from '@mui/icons-material/FileCopy';
 import RefreshIcon from '@mui/icons-material/Refresh';
 
 interface MessageContextMenuProps {
-  isUser: boolean;
-  isAssistant: boolean;
-  isFirstMessage: boolean;
-  isGenerating: boolean;
   msg: {
     id?: string;
     text?: string;
+    type?: 'user' | 'assistant';
     error?: boolean;
   };
   onRegenerate: (messageId: string) => void;
@@ -22,267 +18,90 @@ interface MessageContextMenuProps {
   handleSpeak: (text: string) => void;
   onEditClick: (messageId: string, currentMessage: string, type: 'user' | 'char') => void;
   handleCopy: () => void;
+  onClose: () => void;
 }
 
-export const MessageContextMenu = ({
-  isUser,
-  isAssistant,
-  isFirstMessage,
-  isGenerating,
-  msg,
-  onRegenerate,
-  onRemove,
-  handleSpeak,
-  onEditClick,
-  handleCopy,
-}: MessageContextMenuProps) => {
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+const menuConfig = {
+  user: [
+    {
+      icon: <DeleteIcon />,
+      label: 'Delete',
+      action: (props: MessageContextMenuProps) => () => props.msg.id && props.onRemove(props.msg.id),
+    },
+    {
+      icon: <FileCopyIcon />,
+      label: 'Copy',
+      action: (props: MessageContextMenuProps) => () => props.handleCopy(),
+    },
+    {
+      icon: <EditIcon />,
+      label: 'Edit',
+      action: (props: MessageContextMenuProps) => () => props.msg.id && props.onEditClick(props.msg.id, props.msg.text || '', 'user'),
+    },
+  ],
+  assistant: [
+    {
+      icon: <RefreshIcon />,
+      label: 'Regenerate',
+      action: (props: MessageContextMenuProps) => () => props.msg.id && props.onRegenerate(props.msg.id),
+    },
+    {
+      icon: <DeleteIcon />,
+      label: 'Delete',
+      action: (props: MessageContextMenuProps) => () => props.msg.id && props.onRemove(props.msg.id),
+    },
+    {
+      icon: <VolumeUpIcon />,
+      label: 'Speak',
+      action: (props: MessageContextMenuProps) => () => props.handleSpeak(props.msg.text || ''),
+    },
+    {
+      icon: <FileCopyIcon />,
+      label: 'Copy',
+      action: (props: MessageContextMenuProps) => () => props.handleCopy(),
+    },
+    {
+      icon: <EditIcon />,
+      label: 'Edit',
+      action: (props: MessageContextMenuProps) => () => props.msg.id && props.onEditClick(props.msg.id, props.msg.text || '', 'char'),
+    },
+  ],
+};
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+export const MessageContextMenu = (props: MessageContextMenuProps) => {
+  const { msg, onClose } = props;
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const open = Boolean(anchorEl);
-  const id = open ? 'message-popover' : undefined;
-
-  if (isGenerating || msg.error || isFirstMessage) {
+  if (msg.error) {
     return null;
   }
 
+  const handleAction = (action: (props: MessageContextMenuProps) => () => void) => {
+    action(props)();
+    onClose();
+  };
+
+  const menuItems = menuConfig[msg.type || 'user'];
+
   return (
-    <Box>
-      <IconButton
-        aria-describedby={id}
-        onClick={handleClick}
-        size="small"
-      >
-        <MoreHorizIcon />
-      </IconButton>
-      <Popover
-        id={id}
-        open={open}
-        anchorEl={anchorEl}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: isUser ? 'right' : 'left',
-        }}
-      >
-        <Box p={1} display="flex" flexDirection="column">
-          {isUser && (
-            <>
-              <Box
-                display="flex"
-                alignItems="center"
-                sx={{
-                  p: 1,
-                  '&:hover': {
-                    backgroundColor: 'black',
-                    borderRadius: 2,
-                    '& .MuiTypography-root, & .MuiIconButton-root': {
-                      color: 'white',
-                    },
-                  },
-                }}
-              >
-                <IconButton
-                  onClick={() => {
-                    msg.id && onRemove(msg.id);
-                    handleClose();
-                  }}
-                  size="small"
-                >
-                  <DeleteIcon />
-                </IconButton>
-                <Typography>Delete</Typography>
-              </Box>
-              <Box
-                display="flex"
-                alignItems="center"
-                sx={{
-                  p: 1,
-                  '&:hover': {
-                    backgroundColor: 'black',
-                    borderRadius: 2,
-                    '& .MuiTypography-root, & .MuiIconButton-root': {
-                      color: 'white',
-                    },
-                  },
-                }}
-              >
-                <IconButton
-                  onClick={() => {
-                    handleCopy();
-                    handleClose();
-                  }}
-                  size="small"
-                >
-                  <FileCopyIcon />
-                </IconButton>
-                <Typography>Copy</Typography>
-              </Box>
-              <Box
-                display="flex"
-                alignItems="center"
-                sx={{
-                  p: 1,
-                  '&:hover': {
-                    backgroundColor: 'black',
-                    borderRadius: 2,
-                    '& .MuiTypography-root, & .MuiIconButton-root': {
-                      color: 'white',
-                    },
-                  },
-                }}
-              >
-                <IconButton
-                  onClick={() => {
-                    msg.id && onEditClick(msg.id, msg.text || '', 'user');
-                    handleClose();
-                  }}
-                  size="small"
-                >
-                  <EditIcon />
-                </IconButton>
-                <Typography>Edit</Typography>
-              </Box>
-            </>
-          )}
-          {isAssistant && (
-            <>
-              <Box
-                display="flex"
-                alignItems="center"
-                sx={{
-                  p: 1,
-                  '&:hover': {
-                    backgroundColor: 'black',
-                    borderRadius: 2,
-                    '& .MuiTypography-root, & .MuiIconButton-root': {
-                      color: 'white',
-                    },
-                  },
-                }}
-              >
-                <IconButton
-                  onClick={() => {
-                    msg.id && onRegenerate(msg.id);
-                    handleClose();
-                  }}
-                  size="small"
-                >
-                  <RefreshIcon />
-                </IconButton>
-                <Typography>Regenerate</Typography>
-              </Box>
-              <Box
-                display="flex"
-                alignItems="center"
-                sx={{
-                  p: 1,
-                  '&:hover': {
-                    backgroundColor: 'black',
-                    borderRadius: 2,
-                    '& .MuiTypography-root, & .MuiIconButton-root': {
-                      color: 'white',
-                    },
-                  },
-                }}
-              >
-                <IconButton
-                  onClick={() => {
-                    msg.id && onRemove(msg.id);
-                    handleClose();
-                  }}
-                  size="small"
-                >
-                  <DeleteIcon />
-                </IconButton>
-                <Typography>Delete</Typography>
-              </Box>
-              <Box
-                display="flex"
-                alignItems="center"
-                sx={{
-                  p: 1,
-                  '&:hover': {
-                    backgroundColor: 'black',
-                    borderRadius: 2,
-                    '& .MuiTypography-root, & .MuiIconButton-root': {
-                      color: 'white',
-                    },
-                  },
-                }}
-              >
-                <IconButton
-                  onClick={() => {
-                    handleSpeak(msg.text || '');
-                    handleClose();
-                  }}
-                  size="small"
-                >
-                  <VolumeUpIcon />
-                </IconButton>
-                <Typography>Speak</Typography>
-              </Box>
-              <Box
-                display="flex"
-                alignItems="center"
-                sx={{
-                  p: 1,
-                  '&:hover': {
-                    backgroundColor: 'black',
-                    borderRadius: 2,
-                    '& .MuiTypography-root, & .MuiIconButton-root': {
-                      color: 'white',
-                    },
-                  },
-                }}
-              >
-                <IconButton
-                  onClick={() => {
-                    handleCopy();
-                    handleClose();
-                  }}
-                  size="small"
-                >
-                  <FileCopyIcon />
-                </IconButton>
-                <Typography>Copy</Typography>
-              </Box>
-              <Box
-                display="flex"
-                alignItems="center"
-                sx={{
-                  p: 1,
-                  '&:hover': {
-                    backgroundColor: 'black',
-                    borderRadius: 2,
-                    '& .MuiTypography-root, & .MuiIconButton-root': {
-                      color: 'white',
-                    },
-                  },
-                }}
-              >
-                <IconButton
-                  onClick={() => {
-                    msg.id && onEditClick(msg.id, msg.text || '', 'char');
-                    handleClose();
-                  }}
-                  size="small"
-                >
-                  <EditIcon />
-                </IconButton>
-                <Typography>Edit</Typography>
-              </Box>
-            </>
-          )}
-        </Box>
-      </Popover>
+    <Box p={1} display="flex" flexDirection="column">
+      {menuItems.map((item, index) => (
+        <Button
+          key={index}
+          onClick={() => handleAction(item.action)}
+          startIcon={item.icon}
+          sx={{
+            justifyContent: 'flex-start',
+            color: 'inherit',
+            '&:hover': {
+              backgroundColor: 'black',
+              color: 'white',
+              borderRadius: 2,
+            },
+          }}
+        >
+          {item.label}
+        </Button>
+      ))}
     </Box>
   );
 };

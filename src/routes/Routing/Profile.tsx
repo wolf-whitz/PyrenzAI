@@ -2,7 +2,6 @@ import { GetUserUUID } from '@components';
 import { useParams } from 'react-router-dom';
 import {
   Sidebar,
-  SkeletonCard,
   CharacterCard,
   UserProfileHeader,
   GetUserCreatedCharacters,
@@ -14,7 +13,7 @@ import { useEffect, useState } from 'react';
 
 export function ProfilePage() {
   const { user_uuid } = useParams();
-  const [safeUserUuid, setSafeUserUuid] = useState<string | undefined>(undefined);
+  const [safeUserUuid, setSafeUserUuid] = useState<string | undefined>(user_uuid);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -29,8 +28,6 @@ export function ProfilePage() {
           console.error('Error fetching user UUID:', error);
           setSafeUserUuid(undefined);
         }
-      } else {
-        setSafeUserUuid(user_uuid);
       }
     };
 

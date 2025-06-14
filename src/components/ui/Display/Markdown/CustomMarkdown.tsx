@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Typography, Box } from '@mui/material';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 interface CustomMarkdownProps {
   text?: string;
@@ -17,12 +19,8 @@ export function CustomMarkdown({
   ai_message = '',
 }: CustomMarkdownProps) {
   const [replacedText, setReplacedText] = useState<string>(text);
-  const [userColor, setUserColor] = useState<string | undefined>('');
 
   useEffect(() => {
-    const savedUserColor = localStorage.getItem('userColor');
-    if (savedUserColor) setUserColor(savedUserColor);
-
     const replacePlaceholders = (content: string) =>
       content
         .replace(/{{char}}/g, char?.name || '')
@@ -55,23 +53,51 @@ export function CustomMarkdown({
             </Typography>
           ),
           p: ({ children }) => (
-            <Typography component="p">{children}</Typography>
-          ),
-          code: ({ children }) => (
-            <Typography
-              component="code"
-              sx={{
-                bgcolor: 'gray',
-                color: 'lightgray',
-                fontFamily: 'monospace',
-                px: 1,
-                py: 0.5,
-                borderRadius: 1,
-              }}
-            >
+            <Typography component="p" sx={{ whiteSpace: 'pre-wrap' }}>
               {children}
             </Typography>
           ),
+          code({ node, className, children, ...props }: any) {
+            const match = /language-(\w+)/.exec(className || '');
+            const isInline = !className;
+
+            if (!isInline) {
+              return (
+                <SyntaxHighlighter
+                  style={oneDark}
+                  language={match?.[1] || 'plaintext'}
+                  showLineNumbers
+                  PreTag="div"
+                  customStyle={{
+                    borderRadius: '8px',
+                    padding: '16px',
+                    fontSize: '0.9rem',
+                    overflowX: 'auto',
+                  }}
+                  {...props}
+                >
+                  {String(children).replace(/\n$/, '')}
+                </SyntaxHighlighter>
+              );
+            }
+
+            return (
+              <Typography
+                component="code"
+                sx={{
+                  bgcolor: 'rgba(255,255,255,0.1)',
+                  color: 'lightgray',
+                  fontFamily: 'monospace',
+                  px: 1,
+                  py: 0.5,
+                  borderRadius: 1,
+                }}
+              >
+                {children}
+              </Typography>
+            );
+          },
+          hr: () => null,
         }}
       >
         {replacedText}

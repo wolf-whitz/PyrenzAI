@@ -13,13 +13,12 @@ import {
 } from '@mui/material';
 import {
   Home as HomeIcon,
-  Explore as ExploreIcon,
   Chat as ChatIcon,
   Menu as MenuIcon,
   AutoAwesome as PyrenzPlusIcon,
   Login as LoginIcon,
   PersonAdd as PersonAddIcon,
-  Description as DescriptionIcon, // Import the icon for Documentation
+  Description as DescriptionIcon,
 } from '@mui/icons-material';
 import { FaDiscord } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
@@ -53,11 +52,6 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
 
   const menuItems = [
     { name: t('navigation.home'), icon: <HomeIcon />, link: '/Home' },
-    {
-      name: t('footer.links.explore'),
-      icon: <ExploreIcon />,
-      link: '/Explore',
-    },
     { name: t('navigation.chats'), icon: <ChatIcon />, link: '/Chats' },
     {
       name: 'Documentation',

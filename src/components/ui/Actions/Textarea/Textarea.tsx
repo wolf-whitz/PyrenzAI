@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import llamaTokenizer from 'llama-tokenizer-js';
-import { useCharacterStore } from '~/store';
 import { motion } from 'framer-motion';
 import {
   TextField,
@@ -41,19 +40,15 @@ export function Textarea({
 }: TextareaProps) {
   const [isLinkValid, setIsLinkValid] = useState(true);
   const [characterCount, setCharacterCount] = useState(value.length);
-  const { setCharacter, setTokenTotal, tokenTotal } = useCharacterStore();
-
-  useEffect(() => {
-    if (showTokenizer) {
-      const tokens = llamaTokenizer.encode(value);
-      const tokenLength = tokens.length;
-      setTokenTotal(tokenLength);
-    }
-  }, [value, showTokenizer, setCharacter, name, setTokenTotal]);
+  const [localTokenTotal, setLocalTokenTotal] = useState(0); 
 
   useEffect(() => {
     setCharacterCount(value.length);
-  }, [value]);
+    if (showTokenizer) {
+      const tokens = llamaTokenizer.encode(value);
+      setLocalTokenTotal(tokens.length);
+    }
+  }, [value, showTokenizer]);
 
   const urlSchema = z.string().url();
 
@@ -91,6 +86,12 @@ export function Textarea({
           fullWidth
           error={!isLinkValid}
           helperText={!isLinkValid ? 'Please enter a valid link.' : ' '}
+          inputProps={{
+            maxLength: maxLength,
+            style: {
+              paddingBottom: '40px',
+            },
+          }}
           InputProps={{
             className:
               'text-white bg-gray-800 border-none outline-none shadow-md transition-all duration-300 ease-in-out rounded-md',
@@ -142,7 +143,7 @@ export function Textarea({
                     </Typography>
                   </MUITooltip>
                   {showTokenizer && (
-                    <MUITooltip title={`Token Count: ${tokenTotal}`} arrow>
+                    <MUITooltip title={`Token Count: ${localTokenTotal}`} arrow>
                       <Typography
                         variant="caption"
                         sx={{
@@ -152,19 +153,13 @@ export function Textarea({
                           cursor: 'pointer',
                         }}
                       >
-                        Tokens: {tokenTotal}
+                        Tokens: {localTokenTotal}
                       </Typography>
                     </MUITooltip>
                   )}
                 </Box>
               </InputAdornment>
             ),
-          }}
-          inputProps={{
-            maxLength: maxLength,
-            style: {
-              paddingBottom: '40px',
-            },
           }}
         />
       </Box>
