@@ -133,8 +133,8 @@ export function MessageBox({
         flexDirection="column"
         alignItems={isUser ? 'flex-end' : 'flex-start'}
         sx={{
+          width: '100%',
           maxWidth: '80%',
-          width: 'fit-content',
           '@media (max-width: 600px)': {
             maxWidth: '90%',
           },
@@ -149,9 +149,9 @@ export function MessageBox({
             whiteSpace: 'pre-wrap',
             wordBreak: 'break-word',
             overflowWrap: 'anywhere',
-            width: 'fit-content',
-            maxWidth: '100%',
             cursor: 'pointer',
+            width: isEditingThisMessage ? '100%' : 'fit-content',
+            maxWidth: '100%',
           }}
           className={isUser ? 'user' : 'other'}
         >
@@ -167,24 +167,23 @@ export function MessageBox({
                 autoFocus
                 multiline
                 fullWidth
-                minRows={2}
+                minRows={3}
+                maxRows={20}
                 sx={{
-                  background: 'transparent',
-                  resize: 'vertical',
-                  width: '100%',
                   '& .MuiOutlinedInput-root': {
                     padding: '8px',
                     '& fieldset': {
                       border: 'none',
                     },
                   },
+                  '& textarea': {
+                    overflow: 'auto',
+                  },
                 }}
               />
-              <Box display="flex" justifyContent="space-between" mt={1}>
+              <Box display="flex" justifyContent="flex-end" gap={1} mt={1}>
                 <PyrenzBlueButton
-                  onClick={() =>
-                    msg.id && onSaveEdit(msg.id, isUser ? 'user' : 'char')
-                  }
+                  onClick={() => msg.id && onSaveEdit(msg.id, isUser ? 'user' : 'char')}
                   disabled={isLoading}
                   sx={{ backgroundColor: 'transparent' }}
                 >

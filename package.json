@@ -101,6 +101,7 @@
     "react-slick": "^0.30.3",
     "react-swipeable": "^7.0.2",
     "react-syntax-highlighter": "^15.6.1",
+    "react-textarea-autosize": "^8.5.9",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.1",
     "sanitize-html": "^2.14.0",
