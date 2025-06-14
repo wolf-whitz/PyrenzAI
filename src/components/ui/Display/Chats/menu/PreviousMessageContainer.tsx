@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { Avatar, CircularProgress, Typography, Box } from '@mui/material';
 import { usePreviousChatAPI } from '@api';
-import { CustomContextMenu } from '~/components/ui/Actions/ContextMenu/CustomContextMenu';
+import { CustomContextMenu } from '@components';
 
 export function PreviousChat() {
   const {

@@ -83,12 +83,14 @@ export function CreatePage() {
           <Sidebar />
         </Box>
 
-        <Box flex={1}>
-          <CharacterForm
-            character_update={characterUpdate}
-            user_uuid={user_uuid}
-            creator={creatorName}
-          />
+        <Box flex={1} display="flex" flexDirection="column">
+          <Box flex={1} overflow="auto">
+            <CharacterForm
+              character_update={characterUpdate}
+              user_uuid={user_uuid}
+              creator={creatorName}
+            />
+          </Box>
           <Box sx={{ display: { xs: 'block', sm: 'none' }, mt: 2 }}>
             <CommunityGuidelines />
           </Box>

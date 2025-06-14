@@ -20,13 +20,8 @@ interface ImageUploaderProps {
   initialImage?: string | null;
 }
 
-export function ImageUploader({
-  onImageSelect,
-  initialImage,
-}: ImageUploaderProps) {
-  const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(
-    initialImage || null
-  );
+export function ImageUploader({ onImageSelect, initialImage }: ImageUploaderProps) {
+  const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(initialImage || null);
   const [open, setOpen] = useState(false);
   const [textareaValue, setTextareaValue] = useState('');
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -84,9 +79,7 @@ export function ImageUploader({
       const blobUrl = URL.createObjectURL(blob);
       setImageUrl(blobUrl);
 
-      const file = new File([blob], 'generated-image.png', {
-        type: 'image/png',
-      });
+      const file = new File([blob], 'generated-image.png', { type: 'image/png' });
       onImageSelect(file);
       setBannerImagePreview(blobUrl);
     } catch (error) {
@@ -128,11 +121,14 @@ export function ImageUploader({
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            width: 400,
+            width: '90%',
+            maxWidth: 400,
+            maxHeight: '90vh',
             bgcolor: 'background.paper',
             border: '2px solid #000',
             boxShadow: 24,
             p: 4,
+            overflow: 'auto',
           }}
         >
           <Textarea
@@ -148,6 +144,8 @@ export function ImageUploader({
                 justifyContent: 'center',
                 alignItems: 'center',
                 height: 200,
+                maxHeight: 200,
+                overflow: 'hidden',
               }}
             >
               {isLoading ? (
@@ -158,6 +156,7 @@ export function ImageUploader({
                   height="200"
                   image={imageUrl}
                   alt="Generated"
+                  sx={{ objectFit: 'contain' }}
                 />
               ) : (
                 <Skeleton variant="rectangular" width="100%" height={200} />
