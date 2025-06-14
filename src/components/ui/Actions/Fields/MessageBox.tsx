@@ -119,7 +119,8 @@ export function MessageBox({
       justifyContent={isUser ? 'flex-end' : 'flex-start'}
       sx={{ position: 'relative', width: '100%', mb: 2 }}
     >
-      {!isUser && !isGenerating && (
+      {/* Avatar always renders for assistant/character */}
+      {!isUser && (
         <Avatar
           alt={displayName}
           src={char.profile_image}
@@ -134,7 +135,10 @@ export function MessageBox({
         alignItems={isUser ? 'flex-end' : 'flex-start'}
         sx={{
           maxWidth: '80%',
-          width: '100%',
+          width: 'fit-content',
+          '@media (max-width: 600px)': {
+            maxWidth: '90%',
+          },
         }}
       >
         <PyrenzMessageBox
@@ -146,7 +150,8 @@ export function MessageBox({
             whiteSpace: 'pre-wrap',
             wordBreak: 'break-word',
             overflowWrap: 'anywhere',
-            width: '100%',
+            width: 'fit-content',
+            maxWidth: '100%',
             cursor: 'pointer',
           }}
           className={isUser ? 'user' : 'other'}
@@ -201,6 +206,7 @@ export function MessageBox({
         </PyrenzMessageBox>
       </Box>
 
+      {/* User avatar */}
       {isUser && !isGenerating && (
         <Avatar
           alt={displayName}
@@ -210,6 +216,7 @@ export function MessageBox({
         />
       )}
 
+      {/* Context menu */}
       {menuPosition && !isEditingThisMessage && (
         <Box
           ref={menuRef}
