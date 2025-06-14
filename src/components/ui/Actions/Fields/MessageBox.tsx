@@ -119,7 +119,6 @@ export function MessageBox({
       justifyContent={isUser ? 'flex-end' : 'flex-start'}
       sx={{ position: 'relative', width: '100%', mb: 2 }}
     >
-      {/* Avatar always renders for assistant/character */}
       {!isUser && (
         <Avatar
           alt={displayName}
@@ -206,8 +205,7 @@ export function MessageBox({
         </PyrenzMessageBox>
       </Box>
 
-      {/* User avatar */}
-      {isUser && !isGenerating && (
+      {isUser && (
         <Avatar
           alt={displayName}
           src={user.user_avatar}
@@ -216,7 +214,6 @@ export function MessageBox({
         />
       )}
 
-      {/* Context menu */}
       {menuPosition && !isEditingThisMessage && (
         <Box
           ref={menuRef}
