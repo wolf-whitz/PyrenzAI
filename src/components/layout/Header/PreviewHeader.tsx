@@ -19,6 +19,7 @@ import {
   AutoAwesome as PyrenzPlusIcon,
   Login as LoginIcon,
   PersonAdd as PersonAddIcon,
+  Description as DescriptionIcon, // Import the icon for Documentation
 } from '@mui/icons-material';
 import { FaDiscord } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
@@ -58,6 +59,11 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
       link: '/Explore',
     },
     { name: t('navigation.chats'), icon: <ChatIcon />, link: '/Chats' },
+    {
+      name: 'Documentation',
+      icon: <DescriptionIcon />,
+      link: '/docs',
+    },
     {
       name: t('footer.links.discord'),
       icon: <FaDiscord />,
