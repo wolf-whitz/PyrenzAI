@@ -22,6 +22,7 @@ export const CharacterSchema = z.object({
   is_public: z.boolean(),
   is_nsfw: z.boolean().optional(),
   is_owner: z.boolean().optional(),
+  is_details_private: z.boolean().optional(),
 
   isLoading: z.boolean().optional(),
   creator_uuid: z.string().optional(),

@@ -119,7 +119,7 @@ export function CharacterCardModal({
 
   if (!character) return null;
 
-  const tags = ensureArray(character.tags);
+  const tags = ensureArray(character.tags).slice(0, 5); // Limit tags to 5
 
   return (
     <Modal

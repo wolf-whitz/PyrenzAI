@@ -169,6 +169,7 @@ export function TextareaForm() {
         aria-label="Tags"
         placeholder="Add tags separated by commas e.g., hero, knight, adventure"
         is_tag
+        maxLength={50}
         onTagPressed={handleOpenDropdown}
       />
 

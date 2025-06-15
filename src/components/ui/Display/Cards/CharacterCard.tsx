@@ -16,6 +16,7 @@ import {
   PyrenzCharacterCardTag,
   PyrenzCharacterCardImageImg,
   PyrenzAltTag,
+  PyrenzRibbon,
 } from '~/theme';
 
 interface CharacterCardProps {
@@ -49,17 +50,38 @@ export function CharacterCard({ character, isOwner = false }: CharacterCardProps
 
   if (character.isLoading) return null;
 
-  // Parse tags from JSON string to array
   const tagsArray = typeof character.tags === 'string' ? JSON.parse(character.tags) : character.tags;
 
   return (
     <>
       <Fade in={isLoaded} timeout={1500}>
         <PyrenzCharacterCard onClick={handleCardClick}>
-          <PyrenzCharacterCardImage>
+          <PyrenzCharacterCardImage style={{ position: 'relative' }}>
+            {character.is_nsfw && (
+              <PyrenzRibbon
+                color="red"
+                style={{
+                  position: 'absolute',
+                  top: '30px',
+                  right: '6px',
+                }}
+              >
+                NSFW
+              </PyrenzRibbon>
+            )}
             <PyrenzCharacterCardImageImg
               src={character.profile_image}
               alt={character.name}
+              style={{
+                filter: character.is_nsfw ? 'blur(4px)' : 'none',
+                transition: 'filter 0.3s ease',
+              }}
+              onMouseOver={(e: React.MouseEvent<HTMLElement>) =>
+                character.is_nsfw && (e.currentTarget.style.filter = 'none')
+              }
+              onMouseOut={(e: React.MouseEvent<HTMLElement>) =>
+                character.is_nsfw && (e.currentTarget.style.filter = 'blur(4px)')
+              }
             />
           </PyrenzCharacterCardImage>
           <PyrenzCharacterCardContent>
@@ -72,7 +94,7 @@ export function CharacterCard({ character, isOwner = false }: CharacterCardProps
                 {character.name}
               </PyrenzCharacterCardTitle>
               <Box
-                display={{ xs: 'none', sm: 'none', md: 'flex' }}
+                display={{ xs: 'none', md: 'flex' }}
                 alignItems="center"
                 gap={0.5}
               >
@@ -95,17 +117,6 @@ export function CharacterCard({ character, isOwner = false }: CharacterCardProps
               onClick={handleCreatorClick}
             >
               <PyrenzAltTag>@{character.creator}</PyrenzAltTag>
-
-              <Box
-                display={{ xs: 'flex', sm: 'flex', md: 'none' }}
-                alignItems="center"
-                gap={0.5}
-              >
-                <MessageIcon fontSize="small" sx={{ color: 'white' }} />
-                <Typography variant="caption" className="font-medium">
-                  {character.chat_messages_count}
-                </Typography>
-              </Box>
             </Box>
 
             <PyrenzCharacterCardDescription>

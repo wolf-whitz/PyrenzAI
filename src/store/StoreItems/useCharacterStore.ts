@@ -11,7 +11,7 @@ interface CharacterState {
   lorebook: string;
   is_public: boolean;
   is_nsfw: boolean;
-  hideDetails: boolean;
+  is_details_private: boolean; 
   tags: string;
   gender: string;
   creator: string | null;
@@ -31,7 +31,7 @@ export const useCharacterStore = create<CharacterState & CharacterActions>()(
     persona: '',
     is_public: false,
     is_nsfw: false,
-    hideDetails: false,
+    is_details_private: false,  
     name: '',
     model_instructions: '',
     scenario: '',
