@@ -38,7 +38,7 @@ interface MessageBoxProps {
     currentMessage: string,
     type: 'user' | 'char'
   ) => void;
-  onSaveEdit: (messageId: string, type: 'user' | 'char') => void;
+  onSaveEdit: (messageId: string, editedMessage: string, type: 'user' | 'char') => void;
   onCancelEdit: () => void;
   setEditedMessage: (message: string) => void;
 }
@@ -183,7 +183,7 @@ export function MessageBox({
               />
               <Box display="flex" justifyContent="flex-end" gap={1} mt={1}>
                 <PyrenzBlueButton
-                  onClick={() => msg.id && onSaveEdit(msg.id, isUser ? 'user' : 'char')}
+                  onClick={() => msg.id && onSaveEdit(msg.id, editedMessage, isUser ? 'user' : 'char')}
                   disabled={isLoading}
                   sx={{ backgroundColor: 'transparent' }}
                 >

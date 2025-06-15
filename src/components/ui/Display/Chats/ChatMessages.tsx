@@ -26,9 +26,7 @@ export function ChatMessages({
   firstMessage,
 }: ChatMessagesExtendedProps) {
   const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
-  const [editingMessageType, setEditingMessageType] = useState<
-    'user' | 'char' | null
-  >(null);
+  const [editingMessageType, setEditingMessageType] = useState<'user' | 'char' | null>(null);
   const [editedMessage, setEditedMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -53,7 +51,7 @@ export function ChatMessages({
     setEditedMessage(currentMessage);
   };
 
-  const handleSaveEdit = async (messageId: string, type: 'user' | 'char') => {
+  const handleSaveEdit = async (messageId: string, editedMessage: string, type: 'user' | 'char') => {
     if (onEditMessage) {
       setIsLoading(true);
       await onEditMessage(messageId, editedMessage, type);
