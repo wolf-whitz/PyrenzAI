@@ -75,7 +75,7 @@ export function MessageBox({
   const menuRef = useRef<HTMLDivElement>(null);
 
   const handleMessageBoxClick = (event: React.MouseEvent) => {
-    if (!isEditingThisMessage) {
+    if (!isEditingThisMessage && index !== 0) {
       setMenuPosition({ top: event.clientY, left: event.clientX });
     }
   };
@@ -213,7 +213,7 @@ export function MessageBox({
         />
       )}
 
-      {menuPosition && !isEditingThisMessage && (
+      {menuPosition && !isEditingThisMessage && index !== 0 && (
         <Box
           ref={menuRef}
           sx={{

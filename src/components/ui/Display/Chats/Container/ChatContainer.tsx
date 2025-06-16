@@ -1,30 +1,16 @@
 import { useEffect, useRef, useState, Suspense } from 'react';
 import { useChatStore, useUserStore } from '~/store';
-import { Message, ChatContainerProps, Character } from '@shared-types';
+import { Message, ChatContainerProps, Character, User } from '@shared-types';
 import { ChatPageSpinner, ChatMain } from '@components';
 import clsx from 'clsx';
 
-interface ChatContainerPropsExtended
-  extends Omit<ChatContainerProps, 'char' | 'firstMessage'> {
-  char?: Partial<Character>;
+interface ChatContainerPropsExtended extends Omit<ChatContainerProps, 'char' | 'firstMessage'> {
   className?: string;
   chat_uuid: string;
 }
 
-export function ChatContainer({
-  user,
-  char,
-  className = '',
-  chat_uuid,
-}: ChatContainerPropsExtended) {
-  const messageIdRef = useRef<{ charId: string | null; userId: string | null }>(
-    {
-      charId: null,
-      userId: null,
-    }
-  );
-
-  const { messages, setMessages, firstMessage } = useChatStore();
+export function ChatContainer({ className = '', chat_uuid }: ChatContainerPropsExtended) {
+  const { messages, setMessages, firstMessage, user, char } = useChatStore();
   const { imageURL } = useUserStore();
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [bgImage, setBgImage] = useState<string | null>(null);
@@ -36,7 +22,7 @@ export function ChatContainer({
       if (imageURL) {
         setBgImage(imageURL);
       } else if (char?.profile_image) {
-        setBgImage(char.profile_image);
+        setBgImage(char?.profile_image);
       }
       setIsLoading(false);
     };
@@ -64,13 +50,12 @@ export function ChatContainer({
         {isLoading && <ChatPageSpinner />}
         {!isLoading && (
           <ChatMain
-            user={user}
+            user={user as User }
             char={char as Character}
             firstMessage={firstMessage}
             previous_message={messages}
             isGenerating={isGenerating}
             setMessages={setMessages}
-            messageIdRef={messageIdRef}
             setIsGenerating={setIsGenerating}
             chat_uuid={chat_uuid}
           />

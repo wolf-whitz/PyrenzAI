@@ -6,11 +6,10 @@ interface ChatStore {
   setFirstMessage: (message: string) => void;
   messages: Message[];
   setMessages: (messages: Message[] | ((prev: Message[]) => Message[])) => void;
-  userData: UserData | null;
-  setUserData: (userData: UserData) => void;
-  character: Character | null;
-  setCharacter: (character: Character) => void;
-  clearData: () => void;
+  user: UserData | null;
+  setUser: (user: UserData) => void;
+  char: Character | null;
+  setChar: (char: Character) => void;
 }
 
 export const useChatStore = create<ChatStore>((set) => ({
@@ -24,12 +23,9 @@ export const useChatStore = create<ChatStore>((set) => ({
         typeof updater === 'function' ? updater(state.messages) : updater,
     })),
 
-  userData: null,
-  setUserData: (userData: UserData) => set({ userData }),
+  user: null,
+  setUser: (user: UserData) => set({ user }),
 
-  character: null,
-  setCharacter: (character: Character) => set({ character }),
-
-  clearData: () =>
-    set({ firstMessage: '', messages: [], userData: null, character: null }),
+  char: null,
+  setChar: (char: Character) => set({ char }),
 }));

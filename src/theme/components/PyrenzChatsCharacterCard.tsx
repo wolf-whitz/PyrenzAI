@@ -93,8 +93,7 @@ export const PyrenzChatsCharacterCard = ({
       style={style}
       sx={{
         display: 'flex',
-        width: '100%',
-        maxWidth: 400,
+        width: '400px',
         borderRadius: '16px',
         boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
         overflow: 'hidden',

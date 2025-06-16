@@ -4,19 +4,14 @@ import { CharacterSchema } from './CharacterProp';
 export const MessageSchema = z.object({
   id: z.string().optional(),
   name: z.string().optional(),
-
   text: z.string(),
   profile_image: z.string(),
-
   type: z.enum(['user', 'assistant']),
   username: z.string().optional(),
-
   isGenerate: z.boolean().optional(),
   isFirst: z.boolean().optional(),
-
   token: z.number().nullable().optional(),
   role: z.string().optional(),
-
   chat_uuid: z.string().optional(),
   error: z.boolean().optional(),
   gender: z.string().optional(),
@@ -29,8 +24,6 @@ export const UserSchema = z.object({
 });
 
 export const ChatContainerPropsSchema = z.object({
-  user: UserSchema,
-  char: CharacterSchema,
   firstMessage: z.string().nullable().optional(),
   previous_message: z.array(MessageSchema).optional(),
   isGenerating: z.boolean().optional(),
@@ -75,3 +68,4 @@ export type Message = z.infer<typeof MessageSchema>;
 export type User = z.infer<typeof UserSchema>;
 export type ChatContainerProps = z.infer<typeof ChatContainerPropsSchema>;
 export type Chat = z.infer<typeof ChatSchema>;
+export type Character = z.infer<typeof CharacterSchema>;

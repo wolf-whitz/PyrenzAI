@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { ChatContainerProps, Message, Character } from '@shared-types';
+import { ChatContainerProps, Message, Character, User } from '@shared-types';
 import {
   SettingsSidebar,
   AdModal,
@@ -17,11 +17,11 @@ interface MessageIdRef {
 
 interface ChatMainProps extends Omit<ChatContainerProps, 'messageIdRef'> {
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
-  messageIdRef: React.MutableRefObject<MessageIdRef>;
   setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>;
   chat_uuid: string;
   isGenerating: boolean;
   char: Character;
+  user: User;  
   firstMessage?: string;
 }
 
@@ -31,7 +31,6 @@ export function ChatMain({
   previous_message = [],
   isGenerating = false,
   setMessages,
-  messageIdRef,
   setIsGenerating,
   chat_uuid,
   firstMessage,
@@ -55,7 +54,6 @@ export function ChatMain({
     user,
     char,
     chat_uuid,
-    messageIdRef,
     setIsGenerating
   );
 

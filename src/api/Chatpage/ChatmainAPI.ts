@@ -10,10 +10,6 @@ export const useChatPageAPI = (
   user: any,
   char: any,
   chat_uuid: string,
-  messageIdRef: React.MutableRefObject<{
-    charId: string | null;
-    userId: string | null;
-  }>,
   setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);

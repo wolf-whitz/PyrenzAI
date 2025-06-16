@@ -18,7 +18,9 @@ import MessageIcon from '@mui/icons-material/Message';
 import PublicIcon from '@mui/icons-material/Public';
 import LockIcon from '@mui/icons-material/Lock';
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { ShimmerText } from 'react-shimmer-effects';
+import { supabase } from '~/Utility/supabaseClient'; 
 
 interface CharacterCardModalProps {
   isOpen: boolean;
@@ -117,9 +119,32 @@ export function CharacterCardModal({
     }
   };
 
+  const handleDeleteCharacter = async () => {
+    if (!character?.char_uuid) return;
+
+    setIsLoading(true);
+    try {
+      const { error } = await supabase
+        .from('characters')  
+        .delete()
+        .eq('char_uuid', character.char_uuid);
+
+      if (error) throw error;
+
+      showAlert('Character deleted successfully!', 'Success');
+      onClose(); 
+    } catch (error) {
+      console.error('Error deleting character:', error);
+      Sentry.captureException(error);
+      showAlert('Error deleting character.', 'Alert');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   if (!character) return null;
 
-  const tags = ensureArray(character.tags).slice(0, 5); // Limit tags to 5
+  const tags = ensureArray(character.tags).slice(0, 5);
 
   return (
     <Modal
@@ -151,18 +176,32 @@ export function CharacterCardModal({
                 {character.name}
               </Typography>
               {isOwner && (
-                <Button
-                  onClick={handleEditCharacter}
-                  aria-label="Edit character"
-                  startIcon={<EditIcon fontSize="small" />}
-                  sx={{
-                    color: 'white',
-                    marginLeft: '8px',
-                    textTransform: 'none',
-                  }}
-                >
-                  Edit Character
-                </Button>
+                <>
+                  <Button
+                    onClick={handleEditCharacter}
+                    aria-label="Edit character"
+                    startIcon={<EditIcon fontSize="small" />}
+                    sx={{
+                      color: 'white',
+                      marginLeft: '8px',
+                      textTransform: 'none',
+                    }}
+                  >
+                    Edit Character
+                  </Button>
+                  <Button
+                    onClick={handleDeleteCharacter}
+                    aria-label="Delete character"
+                    startIcon={<DeleteIcon fontSize="small" />}
+                    sx={{
+                      color: 'white',
+                      marginLeft: '8px',
+                      textTransform: 'none',
+                    }}
+                  >
+                    Delete Character
+                  </Button>
+                </>
               )}
             </Box>
             <Typography

@@ -11,36 +11,38 @@ import {
   GetUserData,
 } from '@components';
 import { Box, CircularProgress, Typography } from '@mui/material';
-import { Character } from '@shared-types';
-
-interface PersonaResponse {
-  user_uuid: string;
-  username: string;
-  user_avatar: string;
-}
-
-interface ChatData {
-  character: Character;
-  firstMessage?: string;
-}
 
 export function ChatPage() {
   const { chat_uuid } = useParams<{ chat_uuid: string }>();
   const navigate = useNavigate();
 
-  const [chatData, setChatData] = useState<ChatData | null>(null);
+  const {
+    setFirstMessage,
+    setMessages,
+    setUser,
+    setChar,
+    user,
+    char,
+  } = useChatStore();
+
   const [loading, setLoading] = useState(true);
-  const [userData, setUserData] = useState<PersonaResponse | null>(null);
   const [userUuid, setUserUuid] = useState<string | null>(null);
   const [fetchError, setFetchError] = useState(false);
   const [userDataError, setUserDataError] = useState(false);
 
-  const { setFirstMessage, setMessages, clearData, messages } = useChatStore();
-
   useEffect(() => {
     const fetchUserUuid = async () => {
-      const uuid = await GetUserUUID();
-      setUserUuid(uuid);
+      try {
+        const uuid = await GetUserUUID();
+        if (uuid) {
+          setUserUuid(uuid);
+        } else {
+          throw new Error('UUID is null');
+        }
+      } catch (error) {
+        console.error('Failed to fetch user UUID:', error);
+        setUserDataError(true);
+      }
     };
     fetchUserUuid();
   }, []);
@@ -63,7 +65,7 @@ export function ChatPage() {
           user_avatar: response.user_avatar || '',
         };
 
-        setUserData(updatedUserData);
+        setUser(updatedUserData);
       } catch (error) {
         console.error('Error fetching user data:', error);
         setUserDataError(true);
@@ -71,49 +73,44 @@ export function ChatPage() {
     };
 
     fetchUserData();
-  }, [userUuid]);
+  }, [userUuid, setUser]);
 
   useEffect(() => {
     const getChatData = async () => {
-      if (chat_uuid && userUuid && userData) {
-        try {
-          clearData();
-          const result = await fetchChatData(chat_uuid, userData.user_avatar);
+      if (!chat_uuid || !userUuid || !user) return;
 
-          const updatedCharacter = {
-            ...result.Character,
-          };
+      try {
+        const result = await fetchChatData(chat_uuid, user.user_avatar || '');
 
-          setChatData({
-            character: updatedCharacter,
-            firstMessage: result.firstMessage,
-          });
-
-          setFirstMessage(
-            result.firstMessage ?? updatedCharacter.first_message
-          );
-
-          setLoading(false);
-          setFetchError(false);
-        } catch (error) {
-          console.error('Error fetching chat data:', error);
-          setFetchError(true);
-          setLoading(false);
+        if (!result?.Character) {
+          throw new Error('Character data missing');
         }
+
+        const updatedChar = {
+          ...result.Character,
+        };
+
+        setChar(updatedChar);
+        setFirstMessage(result.firstMessage ?? updatedChar.first_message);
+        setFetchError(false);
+      } catch (error) {
+        console.error('Error fetching chat data:', error);
+        setFetchError(true);
+      } finally {
+        setLoading(false);
       }
     };
 
     getChatData();
-  }, [chat_uuid, userUuid, userData, setFirstMessage, clearData]);
+  }, [chat_uuid, userUuid, user, setChar, setFirstMessage]);
 
   if (
     loading ||
-    !userData ||
-    !chatData ||
-    !chatData.character ||
-    !chatData.character.char_uuid ||
-    !chatData.character.profile_image ||
-    !chatData.character.name
+    !user ||
+    !char ||
+    !char.char_uuid ||
+    !char.profile_image ||
+    !char.name
   ) {
     return (
       <Box
@@ -192,11 +189,7 @@ export function ChatPage() {
         </Box>
 
         <Box flex={1} overflow="auto" component="main">
-          <ChatContainer
-            user={userData}
-            char={chatData.character}
-            chat_uuid={chat_uuid}
-          />
+          <ChatContainer chat_uuid={chat_uuid} />
         </Box>
 
         <Box position="absolute" top="0" right="0">
