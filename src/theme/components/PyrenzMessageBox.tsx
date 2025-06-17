@@ -13,6 +13,8 @@ interface PyrenzMessageBoxProps {
 const StyledPyrenzMessageBox = styled(Box)(({ theme }) => {
   const { customization } = useUserStore.getState();
 
+  const { transparency = true } = customization || {};
+
   return {
     display: 'flex',
     flexDirection: 'column',
@@ -27,21 +29,11 @@ const StyledPyrenzMessageBox = styled(Box)(({ theme }) => {
     position: 'relative',
     cursor: 'pointer',
     transition: 'transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease',
-    ...(customization.transparency
-      ? {
-          '&:hover': {
-            backgroundColor: 'rgba(55, 65, 81, 0.6)',  
-            transform: 'translateY(-2px)',
-            boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
-          },
-        }
-      : {
-          '&:hover': {
-            backgroundColor: 'rgba(55, 65, 81, 0.8)',
-            transform: 'translateY(-2px)',
-            boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
-          },
-        }),
+    '&:hover': {
+      backgroundColor: transparency ? 'rgba(55, 65, 81, 0.6)' : 'rgba(55, 65, 81, 0.8)',
+      transform: 'translateY(-2px)',
+      boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
+    },
   };
 });
 
