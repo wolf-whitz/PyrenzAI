@@ -71,9 +71,9 @@ export const useUserStore = create<UserStore>()(
       modelIdentifiers: [],
       maxTokenLimit: 200,
       customization: {
-        transparency: false,
-        userTextColor: null,
-        charTextColor: null,
+        transparency: true,
+        userTextColor: '#FFFFFF',
+        charTextColor: '#FFFFFF',
       },
       setUserUUID: (uuid) => set({ userUUID: uuid }),
       setUsername: (name) => set({ username: name }),

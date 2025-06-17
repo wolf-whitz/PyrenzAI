@@ -37,13 +37,7 @@ export function Cosmetic() {
     if (data && !error) {
       const loadedCustomization = data.customization;
       setCustomization(loadedCustomization);
-    } else {
-      setCustomization({
-        transparency: true,
-        userTextColor: '#FFFFFF',
-        charTextColor: '#FFFFFF',
-      });
-    }
+    } 
   };
 
   const handleSave = async () => {
