@@ -95,10 +95,8 @@ export function ImportCharacterModal({
   onImport,
 }: ImportCharacterModalProps) {
   const [link, setLink] = useState('');
-  const [selectedAI, setSelectedAI] = useState('Character AI');
-  const [placeholder, setPlaceholder] = useState(
-    'Link Example: https://character.ai/chat/smtV3Vyez6ODkwS8BErmBAdgGNj-1XWU73wIFVOY1hQ'
-  );
+  const [selectedAI, setSelectedAI] = useState(aiOptions[2].Website);
+  const [placeholder, setPlaceholder] = useState(aiOptions[2].Placeholder);
   const [loading, setLoading] = useState(false);
   const showAlert = usePyrenzAlert();
 
@@ -111,7 +109,7 @@ export function ImportCharacterModal({
       (option) => option.Website === event.target.value
     );
     if (selectedOption) {
-      setSelectedAI(event.target.value);
+      setSelectedAI(selectedOption.Website);
       setPlaceholder(selectedOption.Placeholder);
     }
   };
@@ -142,15 +140,18 @@ export function ImportCharacterModal({
           throw new Error('Invalid response data');
         }
 
-        const extractedData = {
-          first_message: data.first_message,
-          tags: data.tags ? [{ name: data.tags }] : [],
-          persona: data.persona,
-          scenario: data.scenario,
-          name: data.name,
-          description: data.description,
-        };
+        const extractedData = Object.fromEntries(
+          Object.entries({
+            first_message: data.first_message,
+            persona: data.persona,
+            scenario: data.scenario,
+            name: data.name,
+            description: data.description,
+            tags: data.tags,
+          }).filter(([_, value]) => value !== undefined && value !== null && value !== '')
+        );
 
+        console.log(extractedData);
         onImport(extractedData);
         showAlert('Character imported successfully!', 'Success');
         onClose();

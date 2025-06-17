@@ -104,7 +104,9 @@ export const useCreateAPI = (
       showAlert('No data provided to import character.', 'error');
       return;
     }
-    setCharacter({ ...data });
+    setCharacter({
+      ...data,
+    });
     showAlert('Character imported successfully!', 'success');
   };
 

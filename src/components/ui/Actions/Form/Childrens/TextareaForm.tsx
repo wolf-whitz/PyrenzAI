@@ -2,7 +2,7 @@ import React, { useState, useEffect, ChangeEvent } from 'react';
 import { ImageUploader, Textarea, TagsMenu } from '@components';
 import { useTextareaFormAPI } from '@api';
 import { useCharacterStore } from '~/store';
-import { Character } from '@shared-types';
+import { Character } from '@shared-types'; // Ensure this path is correct
 import llamaTokenizer from 'llama-tokenizer-js';
 import { Box, Typography } from '@mui/material';
 
@@ -41,6 +41,7 @@ export function TextareaForm() {
     handleImageSelect,
   } = useTextareaFormAPI();
 
+  // Initialize tagsInput directly as a string
   const [tagsInput, setTagsInput] = useState<string>(character.tags || '');
 
   const debouncedTagsInput = useDebounce(tagsInput, 2000);
@@ -49,7 +50,9 @@ export function TextareaForm() {
     setCharacter({ tags: debouncedTagsInput });
   }, [debouncedTagsInput, setCharacter]);
 
-  const handleTagsChange = (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+  const handleTagsChange = (
+    e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  ) => {
     setTagsInput(e.target.value);
     setCharacter({ tags: e.target.value });
   };
@@ -63,11 +66,10 @@ export function TextareaForm() {
       character.scenario,
       character.first_message,
       character.lorebook,
-      character.tags,
     ];
 
     const totalTokens = fieldsToCount.reduce((sum, field) => {
-      if (!field) return sum;
+      if (!field || typeof field !== 'string') return sum;
       const tokens = llamaTokenizer.encode(field);
       return sum + tokens.length;
     }, 0);
@@ -81,7 +83,6 @@ export function TextareaForm() {
     character.scenario,
     character.first_message,
     character.lorebook,
-    character.tags,
     setTokenTotal,
   ]);
 
