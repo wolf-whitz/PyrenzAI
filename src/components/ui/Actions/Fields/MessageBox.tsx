@@ -76,6 +76,8 @@ export function MessageBox({
   const theme = useTheme();
   const { customization } = useUserStore();
 
+  const { userTextColor = '#FFFFFF', charTextColor = '#FFFFFF' } = customization || {};
+
   const handleCopy = () => {
     navigator.clipboard.writeText(msg.text || '');
     handleCloseMenu();
@@ -124,7 +126,7 @@ export function MessageBox({
             cursor: 'pointer',
             width: isEditingThisMessage ? '100%' : 'fit-content',
             maxWidth: '100%',
-            color: isUser ? customization.userTextColor : customization.charTextColor,
+            color: isUser ? userTextColor : charTextColor,
           }}
           className={isUser ? 'user' : 'other'}
         >
