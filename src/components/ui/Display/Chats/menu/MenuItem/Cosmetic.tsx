@@ -35,9 +35,9 @@ export function Cosmetic() {
       .single();
 
     if (data && !error) {
-      const loadedCustomization = data.customization;
+      const { transparency, ...loadedCustomization } = data.customization;
       setCustomization(loadedCustomization);
-    } 
+    }
   };
 
   const handleSave = async () => {
@@ -162,12 +162,6 @@ export function Cosmetic() {
         onChange={handleFileChange}
       />
       <Stack direction="column" spacing={2} sx={{ mt: 3 }}>
-        <Button
-          variant="contained"
-          onClick={() => setCustomization({ ...customization, transparency: !customization.transparency })}
-        >
-          {customization.transparency ? 'Disable Transparency' : 'Enable Transparency'}
-        </Button>
         <Stack direction="row" spacing={2} alignItems="center">
           <Typography variant="body1" color="text.secondary">
             User Text Color:
