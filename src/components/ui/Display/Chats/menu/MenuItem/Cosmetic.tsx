@@ -11,7 +11,7 @@ export function Cosmetic() {
   const [dragging, setDragging] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { imageURL, customization, setImageURL, setCustomization } = useUserStore();
+  const { customization, setImageURL, setCustomization } = useUserStore();
 
   useEffect(() => {
     const loadImage = async () => {
@@ -37,6 +37,12 @@ export function Cosmetic() {
     if (data && !error) {
       const loadedCustomization = data.customization;
       setCustomization(loadedCustomization);
+    } else {
+      setCustomization({
+        transparency: true,
+        userTextColor: '#FFFFFF',
+        charTextColor: '#FFFFFF',
+      });
     }
   };
 
@@ -55,8 +61,6 @@ export function Cosmetic() {
       store.delete('bgImage');
       setImageURL(null);
     }
-
-    setCustomization({ ...customization });
 
     const { error } = await supabase
       .from('user_data')
@@ -176,7 +180,7 @@ export function Cosmetic() {
           </Typography>
           <input
             type="color"
-            value={customization.userTextColor || '#000000'}
+            value={customization.userTextColor || '#FFFFFF'}
             onChange={(e) => setCustomization({ ...customization, userTextColor: e.target.value })}
           />
         </Stack>
@@ -186,7 +190,7 @@ export function Cosmetic() {
           </Typography>
           <input
             type="color"
-            value={customization.charTextColor || '#000000'}
+            value={customization.charTextColor || '#FFFFFF'}
             onChange={(e) => setCustomization({ ...customization, charTextColor: e.target.value })}
           />
         </Stack>

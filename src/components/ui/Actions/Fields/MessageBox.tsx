@@ -14,8 +14,6 @@ import { PyrenzMessageBox, PyrenzBlueButton } from '~/theme';
 import type { MessageBoxProps } from '@shared-types';
 import { useUserStore } from '~/store';
 
- 
-
 export function MessageBox({
   msg,
   index,
@@ -37,13 +35,15 @@ export function MessageBox({
 }: MessageBoxProps) {
   const isUser = msg.type === 'user';
   const isAssistant = msg.type === 'assistant';
+
   const displayName = isUser ? msg.username || user.username : msg.name || char.name;
-  const isEditingThisMessage = editingMessageId === msg.id && editingMessageType === (isUser ? 'user' : 'char');
+
+  const isEditingThisMessage =
+    editingMessageId === msg.id &&
+    editingMessageType === (isUser ? 'user' : 'char');
 
   const [menuPosition, setMenuPosition] = useState<{ top: number; left: number } | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
-
-  const { customization } = useUserStore();
 
   const handleMessageBoxClick = (event: React.MouseEvent) => {
     if (!isEditingThisMessage && index !== 0) {
@@ -74,6 +74,7 @@ export function MessageBox({
   }, [menuPosition]);
 
   const theme = useTheme();
+  const { customization } = useUserStore();
 
   const handleCopy = () => {
     navigator.clipboard.writeText(msg.text || '');
@@ -123,8 +124,7 @@ export function MessageBox({
             cursor: 'pointer',
             width: isEditingThisMessage ? '100%' : 'fit-content',
             maxWidth: '100%',
-            backgroundColor: isUser ? (customization.transparency ? 'transparent' : theme.palette.primary.main) : theme.palette.background.paper,
-            color: isUser ? customization.userTextColor || theme.palette.text.primary : customization.charTextColor || theme.palette.text.secondary,
+            color: isUser ? customization.userTextColor : customization.charTextColor,
           }}
           className={isUser ? 'user' : 'other'}
         >
