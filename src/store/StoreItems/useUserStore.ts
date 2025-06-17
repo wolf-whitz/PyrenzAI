@@ -15,7 +15,6 @@ interface InferenceSettings {
 }
 
 interface Customization {
-  transparency: boolean;
   userTextColor: string | null;
   charTextColor: string | null;
 }
@@ -71,7 +70,6 @@ export const useUserStore = create<UserStore>()(
       modelIdentifiers: [],
       maxTokenLimit: 200,
       customization: {
-        transparency: true,
         userTextColor: '#FFFFFF',
         charTextColor: '#FFFFFF',
       },

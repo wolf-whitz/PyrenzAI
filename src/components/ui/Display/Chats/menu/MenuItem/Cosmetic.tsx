@@ -2,7 +2,7 @@ import { supabase } from '~/Utility/supabaseClient';
 import { GetUserUUID } from '@components';
 import React, { useEffect, useState, useRef } from 'react';
 import { saveImageToDB, getImageFromDB, openDB } from '~/Utility/IndexDB';
-import { Box, Typography, Button, Stack } from '@mui/material';
+import { Box, Typography, Stack } from '@mui/material';
 import { PyrenzBlueButton } from '~/theme';
 import { useUserStore } from '~/store';
 
@@ -12,6 +12,9 @@ export function Cosmetic() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { customization, setImageURL, setCustomization } = useUserStore();
+
+  // Provide default values for customization
+  const { userTextColor = '#FFFFFF', charTextColor = '#FFFFFF' } = customization || {};
 
   useEffect(() => {
     const loadImage = async () => {
@@ -35,8 +38,16 @@ export function Cosmetic() {
       .single();
 
     if (data && !error) {
-      const { transparency, ...loadedCustomization } = data.customization;
-      setCustomization(loadedCustomization);
+      const loadedCustomization = data.customization || {};
+      setCustomization({
+        userTextColor: loadedCustomization.userTextColor || '#FFFFFF',
+        charTextColor: loadedCustomization.charTextColor || '#FFFFFF',
+      });
+    } else {
+      setCustomization({
+        userTextColor: '#FFFFFF',
+        charTextColor: '#FFFFFF',
+      });
     }
   };
 
@@ -58,7 +69,7 @@ export function Cosmetic() {
 
     const { error } = await supabase
       .from('user_data')
-      .update({ customization })
+      .update({ customization: { userTextColor, charTextColor } })
       .eq('user_uuid', userUUID);
 
     if (error) {
@@ -168,8 +179,13 @@ export function Cosmetic() {
           </Typography>
           <input
             type="color"
-            value={customization.userTextColor || '#FFFFFF'}
-            onChange={(e) => setCustomization({ ...customization, userTextColor: e.target.value })}
+            value={userTextColor || '#FFFFFF'}
+            onChange={(e) =>
+              setCustomization({
+                ...customization,
+                userTextColor: e.target.value,
+              })
+            }
           />
         </Stack>
         <Stack direction="row" spacing={2} alignItems="center">
@@ -178,8 +194,13 @@ export function Cosmetic() {
           </Typography>
           <input
             type="color"
-            value={customization.charTextColor || '#FFFFFF'}
-            onChange={(e) => setCustomization({ ...customization, charTextColor: e.target.value })}
+            value={charTextColor || '#FFFFFF'}
+            onChange={(e) =>
+              setCustomization({
+                ...customization,
+                charTextColor: e.target.value,
+              })
+            }
           />
         </Stack>
       </Stack>
