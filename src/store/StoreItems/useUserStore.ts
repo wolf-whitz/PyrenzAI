@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
- interface ModelIdentifier {
+interface ModelIdentifier {
   name: string;
   model_description: string;
 }
@@ -16,8 +16,8 @@ interface InferenceSettings {
 
 interface Customization {
   transparency: boolean;
-  userTextColor: string;
-  charTextColor: string;
+  userTextColor: string | null;
+  charTextColor: string | null;
 }
 
 interface UserStore {
@@ -72,8 +72,8 @@ export const useUserStore = create<UserStore>()(
       maxTokenLimit: 200,
       customization: {
         transparency: false,
-        userTextColor: '#000000',
-        charTextColor: '#000000',
+        userTextColor: null,
+        charTextColor: null,
       },
       setUserUUID: (uuid) => set({ userUUID: uuid }),
       setUsername: (name) => set({ username: name }),
@@ -90,7 +90,7 @@ export const useUserStore = create<UserStore>()(
       setCustomization: (customization) => set({ customization }),
     }),
     {
-      name: 'user-storage',  
+      name: 'user-storage',
     }
   )
 );

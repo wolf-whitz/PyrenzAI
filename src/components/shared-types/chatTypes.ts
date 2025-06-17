@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { CharacterSchema } from './CharacterProp';
 
 export const MessageSchema = z.object({
   id: z.string().optional(),
@@ -68,4 +67,3 @@ export type Message = z.infer<typeof MessageSchema>;
 export type User = z.infer<typeof UserSchema>;
 export type ChatContainerProps = z.infer<typeof ChatContainerPropsSchema>;
 export type Chat = z.infer<typeof ChatSchema>;
-export type Character = z.infer<typeof CharacterSchema>;

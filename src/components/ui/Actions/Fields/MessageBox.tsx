@@ -11,37 +11,10 @@ import {
   useTheme,
 } from '@mui/material';
 import { PyrenzMessageBox, PyrenzBlueButton } from '~/theme';
-import type { Message, User, Character } from '@shared-types';
+import type { MessageBoxProps } from '@shared-types';
+import { useUserStore } from '~/store';
 
-interface MessageBoxProps {
-  msg: Message;
-  index: number;
-  isGenerating: boolean;
-  isLastMessage: boolean;
-  user: User;
-  char: Character;
-  onRegenerate: (messageId: string) => void;
-  onRemove: (messageId: string) => void;
-  onEditMessage: (
-    messageId: string,
-    editedMessage: string,
-    type: 'user' | 'char'
-  ) => void;
-  handleSpeak: (text: string) => void;
-  setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>;
-  editingMessageId: string | null;
-  editingMessageType: 'user' | 'char' | null;
-  editedMessage: string;
-  isLoading: boolean;
-  onEditClick: (
-    messageId: string,
-    currentMessage: string,
-    type: 'user' | 'char'
-  ) => void;
-  onSaveEdit: (messageId: string, editedMessage: string, type: 'user' | 'char') => void;
-  onCancelEdit: () => void;
-  setEditedMessage: (message: string) => void;
-}
+ 
 
 export function MessageBox({
   msg,
@@ -64,15 +37,13 @@ export function MessageBox({
 }: MessageBoxProps) {
   const isUser = msg.type === 'user';
   const isAssistant = msg.type === 'assistant';
-
   const displayName = isUser ? msg.username || user.username : msg.name || char.name;
-
-  const isEditingThisMessage =
-    editingMessageId === msg.id &&
-    editingMessageType === (isUser ? 'user' : 'char');
+  const isEditingThisMessage = editingMessageId === msg.id && editingMessageType === (isUser ? 'user' : 'char');
 
   const [menuPosition, setMenuPosition] = useState<{ top: number; left: number } | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  const { customization } = useUserStore();
 
   const handleMessageBoxClick = (event: React.MouseEvent) => {
     if (!isEditingThisMessage && index !== 0) {
@@ -152,6 +123,8 @@ export function MessageBox({
             cursor: 'pointer',
             width: isEditingThisMessage ? '100%' : 'fit-content',
             maxWidth: '100%',
+            backgroundColor: isUser ? (customization.transparency ? 'transparent' : theme.palette.primary.main) : theme.palette.background.paper,
+            color: isUser ? customization.userTextColor || theme.palette.text.primary : customization.charTextColor || theme.palette.text.secondary,
           }}
           className={isUser ? 'user' : 'other'}
         >

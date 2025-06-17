@@ -6,3 +6,5 @@ export * from './TagTypes';
 
 export * from './chatTypes';
 export * from './DocsTypes';
+
+export * from './MessageBoxType';

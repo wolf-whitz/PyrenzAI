@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, Suspense } from 'react';
 import { useChatStore, useUserStore } from '~/store';
-import { Message, ChatContainerProps, Character, User } from '@shared-types';
+import {  ChatContainerProps, Character, User } from '@shared-types';
 import { ChatPageSpinner, ChatMain } from '@components';
 import clsx from 'clsx';
 

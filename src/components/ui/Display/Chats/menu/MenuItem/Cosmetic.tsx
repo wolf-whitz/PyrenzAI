@@ -56,6 +56,8 @@ export function Cosmetic() {
       setImageURL(null);
     }
 
+    setCustomization({ ...customization });
+
     const { error } = await supabase
       .from('user_data')
       .update({ customization })
@@ -174,7 +176,7 @@ export function Cosmetic() {
           </Typography>
           <input
             type="color"
-            value={customization.userTextColor}
+            value={customization.userTextColor || '#000000'}
             onChange={(e) => setCustomization({ ...customization, userTextColor: e.target.value })}
           />
         </Stack>
@@ -184,7 +186,7 @@ export function Cosmetic() {
           </Typography>
           <input
             type="color"
-            value={customization.charTextColor}
+            value={customization.charTextColor || '#000000'}
             onChange={(e) => setCustomization({ ...customization, charTextColor: e.target.value })}
           />
         </Stack>

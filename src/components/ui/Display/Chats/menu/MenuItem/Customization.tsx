@@ -14,7 +14,7 @@ interface ModelOption {
   label: string;
   name: string;
   description: string;
-  subscription_plan: string; // Add subscription_plan to the interface
+  subscription_plan: string;  
 }
 
 interface CustomizationProps {
