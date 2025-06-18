@@ -5,6 +5,7 @@ import {
   Add as PlusIcon,
   Settings as SettingsIcon,
   Chat as MessageSquareIcon,
+  AccountCircle as AccountCircleIcon,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '~/store';
@@ -33,7 +34,7 @@ export function Sidebar({ className }: { className?: string }) {
   const user_uuid = useUserStore((state) => state.userUUID);
   const username = useUserStore((state) => state.username);
   const user_avatar = useUserStore((state) => state.userIcon);
-  const is_login = useUserStore((state) => state.is_login);  
+  const is_login = useUserStore((state) => state.is_login);
 
   const menuItems = [
     {
@@ -50,6 +51,11 @@ export function Sidebar({ className }: { className?: string }) {
       name: t('navigation.chats'),
       icon: <MessageSquareIcon fontSize="small" />,
       path: '/Archive',
+    },
+    {
+      name: t('navigation.profile'),
+      icon: <AccountCircleIcon fontSize="small" />,
+      path: '/Profile',
     },
     {
       name: t('navigation.settings'),
@@ -151,6 +157,7 @@ function SidebarItem({
         t('navigation.settings'),
         t('navigation.create'),
         t('navigation.chats'),
+        t('navigation.profile'),
       ].includes(item.name) &&
       !user
     ) {
