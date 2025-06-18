@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box } from '@mui/material';
-import { ChatMessagesProps, Message } from '@shared-types';
+import { ChatMessagesProps, Message, User } from '@shared-types';
 import { speakMessage } from '@api';
 import { MessageBox, Character } from '@components';
 
@@ -99,7 +99,7 @@ export function ChatMessages({
             index={index}
             isGenerating={isGenerating}
             isLastMessage={isLastMessage}
-            user={user}
+            user={user as User}
             char={char as Character}
             onRegenerate={onRegenerate || defaultOnRegenerate}
             onRemove={onRemove || defaultOnRemove}

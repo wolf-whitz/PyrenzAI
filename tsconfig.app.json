@@ -21,14 +21,13 @@
     "paths": {
       "~/*": ["src/*"],
       "@public/*": ["public/*"],
-
       "@components": ["src/components"],
       "@api": ["src/api"],
       "@shared-types": ["src/components"],
-
       "@libs/*": ["src/lib/*"],
-      "@components/*": ["src/components/*"],
+      "@components/*": ["src/components/*"]
     }
   },
-  "include": ["src/**/*", "electron"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "build", ".next", ".turbo", "**/*.test.ts"]
 }
