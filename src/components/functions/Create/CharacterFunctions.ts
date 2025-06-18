@@ -157,16 +157,7 @@ export const handleSubmitCharacter = async (
       return;
     }
 
-    const tagsString = Array.isArray(character.tags)
-      ? character.tags.join(', ')
-      : character.tags;
-
-    const characterWithTagsString = {
-      ...character,
-      tags: tagsString,
-    };
-
-    const validation = validateCharacterData(characterWithTagsString);
+    const validation = validateCharacterData(character);
     if (!validation.isValid) {
       showAlert(
         `Missing or undefined fields: ${validation.missingFields.join(', ')}`,
@@ -178,9 +169,9 @@ export const handleSubmitCharacter = async (
 
     let response;
     if (character_update) {
-      response = await updateCharacter(characterWithTagsString);
+      response = await updateCharacter(character);
     } else {
-      response = await createCharacter(characterWithTagsString);
+      response = await createCharacter(character);
     }
 
     if (response.error) {

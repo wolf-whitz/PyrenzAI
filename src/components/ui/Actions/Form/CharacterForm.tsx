@@ -37,6 +37,9 @@ export function CharacterForm({
         onSubmit={handleSubmit}
         className="bg-black p-8 rounded-lg shadow-lg w-full flex flex-col space-y-6"
       >
+        <h2 className="text-white text-xl font-bold">
+          {character_update ? 'Update Mode' : 'Create Mode'}
+        </h2>
         <TextareaForm />
         <GenderDropdown />
         <VisibilityCheckboxes />

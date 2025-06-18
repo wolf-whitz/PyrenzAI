@@ -37,7 +37,6 @@ export function CharacterCardModal({
 }: CharacterCardModalProps) {
   const {
     isLoading,
-    userUUID,
     handleCreatorClick,
     handleChatNow,
     handleEditCharacter,

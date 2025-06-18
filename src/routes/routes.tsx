@@ -45,7 +45,7 @@ export const AppRoutes = (
     <Route path="/Archive" element={<Archive />} />
 
     <Route path="/Create/:char_uuid" element={<Create />} />
-    <Route path="/Profile/:user_uuid" element={<Profile />} />
+    <Route path="/Profile/:creator_uuid" element={<Profile />} />
 
     <Route path="/Profile" element={<Profile />} />
     <Route path="/Chat/:chat_uuid" element={<Chat />} />

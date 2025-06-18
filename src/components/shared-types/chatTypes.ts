@@ -19,7 +19,8 @@ export const MessageSchema = z.object({
 export const UserSchema = z.object({
   username: z.string(),
   user_avatar: z.string(),
-  user_uuid: z.string().optional(),
+  user_uuid: z.string(),
+  isOwner: z.boolean().optional()
 });
 
 export const ChatContainerPropsSchema = z.object({

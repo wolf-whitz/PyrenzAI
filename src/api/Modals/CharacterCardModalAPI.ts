@@ -4,8 +4,7 @@ import { usePyrenzAlert } from '~/provider';
 import { GetUserUUID, CreateNewChat } from '@components';
 import * as Sentry from '@sentry/react';
 import { supabase } from '~/Utility/supabaseClient';
-import { Character } from '@shared-types'
-
+import { Character } from '@shared-types';
 
 interface UseCharacterModalApiProps {
   character: Character | null;
@@ -13,7 +12,7 @@ interface UseCharacterModalApiProps {
   onClose: () => void;
 }
 
-export const useCharacterModalApi = ({ character, isOwner, onClose }: UseCharacterModalApiProps) => {
+export const useCharacterModalApi = ({ character: initialCharacter, isOwner, onClose }: UseCharacterModalApiProps) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [userUUID, setUserUUID] = useState<string | null>(null);
@@ -33,18 +32,53 @@ export const useCharacterModalApi = ({ character, isOwner, onClose }: UseCharact
     fetchUserUUID();
   }, []);
 
+  const fetchCharacter = async (charUuid: string) => {
+    try {
+      const { data: publicCharacter, error: publicError } = await supabase
+        .from('public_characters')
+        .select('*')
+        .eq('char_uuid', charUuid)
+        .single();
+
+      if (publicError && publicError.code !== 'PGRST116') {
+        throw publicError;
+      }
+
+      if (publicCharacter) {
+        return publicCharacter;
+      }
+
+      const { data: privateCharacter, error: privateError } = await supabase
+        .from('private_characters')
+        .select('*')
+        .eq('char_uuid', charUuid)
+        .single();
+
+      if (privateError) {
+        throw privateError;
+      }
+
+      return privateCharacter;
+    } catch (error) {
+      console.error('Error fetching character:', error);
+      Sentry.captureException(error);
+      showAlert('Error fetching character details.', 'Alert');
+      return null;
+    }
+  };
+
   const handleCreatorClick = useCallback(
     (e: React.MouseEvent<HTMLElement>) => {
       e.stopPropagation();
-      if (character?.creator_uuid) {
-        navigate(`/profile/${character.creator_uuid}`);
+      if (initialCharacter?.creator_uuid) {
+        navigate(`/profile/${initialCharacter.creator_uuid}`);
       }
     },
-    [character?.creator_uuid, navigate]
+    [initialCharacter?.creator_uuid, navigate]
   );
 
   const handleChatNow = async () => {
-    if (isLoading || !character?.char_uuid) return;
+    if (isLoading || !initialCharacter?.char_uuid) return;
 
     if (!userUUID) {
       showAlert('You need to be logged in to chat with a bot.', 'Alert');
@@ -54,6 +88,12 @@ export const useCharacterModalApi = ({ character, isOwner, onClose }: UseCharact
     setIsLoading(true);
 
     try {
+      const character = await fetchCharacter(initialCharacter.char_uuid);
+      if (!character) {
+        showAlert('Character not found.', 'Alert');
+        return;
+      }
+
       const response = await CreateNewChat(character.char_uuid, userUUID);
 
       if (response?.chat_uuid) {
@@ -71,7 +111,10 @@ export const useCharacterModalApi = ({ character, isOwner, onClose }: UseCharact
     }
   };
 
-  const handleEditCharacter = () => {
+  const handleEditCharacter = async () => {
+    if (!initialCharacter?.char_uuid) return;
+
+    const character = await fetchCharacter(initialCharacter.char_uuid);
     if (character) {
       navigate(`/create/${character.char_uuid}`, {
         state: { character, isOwner },
@@ -80,16 +123,33 @@ export const useCharacterModalApi = ({ character, isOwner, onClose }: UseCharact
   };
 
   const handleDeleteCharacter = async () => {
-    if (!character?.char_uuid) return;
+    if (!initialCharacter?.char_uuid) return;
 
     setIsLoading(true);
     try {
-      const { error } = await supabase
-        .from('characters')
+      const { error: publicDeleteError } = await supabase
+        .from('public_characters')
         .delete()
-        .eq('char_uuid', character.char_uuid);
+        .eq('char_uuid', initialCharacter.char_uuid);
 
-      if (error) throw error;
+      if (publicDeleteError && publicDeleteError.code !== 'PGRST116') {
+        throw publicDeleteError;
+      }
+
+      if (!publicDeleteError) {
+        showAlert('Character deleted successfully!', 'Success');
+        onClose();
+        return;
+      }
+
+      const { error: privateDeleteError } = await supabase
+        .from('private_characters')
+        .delete()
+        .eq('char_uuid', initialCharacter.char_uuid);
+
+      if (privateDeleteError) {
+        throw privateDeleteError;
+      }
 
       showAlert('Character deleted successfully!', 'Success');
       onClose();
@@ -102,7 +162,7 @@ export const useCharacterModalApi = ({ character, isOwner, onClose }: UseCharact
     }
   };
 
-  const tags = character ? ensureArray(character.tags).slice(0, 5) : [];
+  const tags = initialCharacter ? ensureArray(initialCharacter.tags).slice(0, 5) : [];
 
   return {
     isLoading,

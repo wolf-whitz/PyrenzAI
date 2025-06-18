@@ -13,7 +13,7 @@ import { z } from 'zod';
 
 interface TextareaProps {
   name?: string;
-  value: string;
+  value: string | string[];
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   label?: string;
   placeholder?: string;
@@ -39,13 +39,16 @@ export function Textarea({
   onTagPressed,
 }: TextareaProps) {
   const [isLinkValid, setIsLinkValid] = useState(true);
-  const [characterCount, setCharacterCount] = useState(value.length);
-  const [localTokenTotal, setLocalTokenTotal] = useState(0); 
+  const [characterCount, setCharacterCount] = useState(
+    Array.isArray(value) ? value.join(', ').length : value.length
+  );
+  const [localTokenTotal, setLocalTokenTotal] = useState(0);
 
   useEffect(() => {
-    setCharacterCount(value.length);
+    const currentValue = Array.isArray(value) ? value.join(', ') : value;
+    setCharacterCount(currentValue.length);
     if (showTokenizer) {
-      const tokens = llamaTokenizer.encode(value);
+      const tokens = llamaTokenizer.encode(currentValue);
       setLocalTokenTotal(tokens.length);
     }
   }, [value, showTokenizer]);
@@ -62,6 +65,8 @@ export function Textarea({
     onChange(e);
   };
 
+  const displayValue = Array.isArray(value) ? value.join(', ') : value;
+
   return (
     <motion.div
       className={clsx('w-full mb-4', className)}
@@ -77,7 +82,7 @@ export function Textarea({
       <Box className="relative w-full">
         <TextField
           name={name}
-          value={value}
+          value={displayValue}
           onChange={handleChange}
           placeholder={placeholder}
           multiline

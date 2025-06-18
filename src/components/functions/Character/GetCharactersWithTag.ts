@@ -30,7 +30,7 @@ export async function GetCharactersWithTags(
   const charUuids = tagLinks.map(t => t.char_uuid);
 
   let query = supabase
-    .from('characters')
+    .from('public_characters')
     .select('*')
     .in('char_uuid', charUuids)
     .eq('is_nsfw', false)

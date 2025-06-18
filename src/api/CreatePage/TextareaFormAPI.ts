@@ -25,12 +25,19 @@ export const useTextareaFormAPI = () => {
     setAnchorEl(null);
   }, []);
 
-  const handleTagClick = useCallback((tag: string) => {
-    const tagsArray = character.tags ? JSON.parse(character.tags) : [];
-    const newTags = [...tagsArray, tag];
-    setCharacter({ tags: JSON.stringify(newTags) });
-    handleCloseDropdown();
-  }, [character.tags, setCharacter]);
+  const handleTagClick = useCallback(
+    (tag: string) => {
+      try {
+        const tagsArray = Array.isArray(character.tags) ? character.tags : [];
+        const newTags = [...tagsArray, tag];
+        setCharacter({ tags: newTags });
+      } catch (error) {
+        console.error('Error handling tag click:', error);
+      }
+      handleCloseDropdown();
+    },
+    [character.tags, setCharacter]
+  );
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
@@ -39,7 +46,7 @@ export const useTextareaFormAPI = () => {
 
       if (name === 'tags') {
         const tagsArray = value.split(',').map((tag) => tag.trim());
-        setCharacter({ [name]: JSON.stringify(tagsArray) });
+        setCharacter({ [name]: tagsArray });
       } else {
         setCharacter({ [name]: type === 'checkbox' ? checked : value });
       }
@@ -47,16 +54,16 @@ export const useTextareaFormAPI = () => {
     [setCharacter]
   );
 
-  const handleImageSelect = useCallback(async (file: File | null) => {
-    if (file) {
+  const handleImageSelect = useCallback(
+    async (file: File | null) => {
+      if (!file) return;
+
       const blobUrl = URL.createObjectURL(file);
       setImageBlobUrl(blobUrl);
       isUploading.current = true;
 
       const fileName = `character-image/${uuidv4()}-${file.name}`;
-      const { error } = await supabase.storage
-        .from('character-image')
-        .upload(fileName, file);
+      const { error } = await supabase.storage.from('character-image').upload(fileName, file);
 
       if (error) {
         console.error('Error uploading image:', error);
@@ -64,16 +71,15 @@ export const useTextareaFormAPI = () => {
         return;
       }
 
-      const { data: publicUrlData } = supabase.storage
-        .from('character-image')
-        .getPublicUrl(fileName);
+      const { data: publicUrlData } = supabase.storage.from('character-image').getPublicUrl(fileName);
 
       if (publicUrlData) {
         setCharacter({ profile_image: publicUrlData.publicUrl });
       }
       isUploading.current = false;
-    }
-  }, [setCharacter]);
+    },
+    [setCharacter]
+  );
 
   return {
     anchorEl,

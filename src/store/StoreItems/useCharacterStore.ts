@@ -12,7 +12,7 @@ interface CharacterState {
   is_public: boolean;
   is_nsfw: boolean;
   is_details_private: boolean; 
-  tags: string;
+  tags: string[];
   gender: string;
   creator: string | null;
   profile_image: string | undefined;
@@ -38,7 +38,7 @@ export const useCharacterStore = create<CharacterState & CharacterActions>()(
     description: '',
     first_message: '',
     lorebook: '',
-    tags: '[]',
+    tags: [],
     gender: '',
     creator: null,
     profile_image: undefined,

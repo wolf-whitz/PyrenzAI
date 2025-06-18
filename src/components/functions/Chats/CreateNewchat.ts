@@ -21,18 +21,29 @@ export async function CreateNewChat(
   const chatUuid = uuidv4();
 
   try {
-    const { data: Character, error: fetchError } = await supabase
-      .from('characters')
+    let character;
+    const { data: publicCharacter, error: publicFetchError } = await supabase
+      .from('public_characters')
       .select('*')
       .eq('char_uuid', characterUuid)
       .single<Character>();
 
-    if (fetchError) {
-      throw fetchError;
+    if (!publicFetchError && publicCharacter) {
+      character = publicCharacter;
+    } else {
+      const { data: privateCharacter, error: privateFetchError } = await supabase
+        .from('private_characters')
+        .select('*')
+        .eq('char_uuid', characterUuid)
+        .single<Character>();
+
+      if (privateFetchError || !privateCharacter) {
+        throw privateFetchError || new Error('Character not found');
+      }
+      character = privateCharacter;
     }
 
-    const { model_instructions, name, persona, description, profile_image, lorebook } =
-      Character;
+    const { model_instructions, name, persona, description, profile_image, lorebook } = character;
 
     const { error: insertError } = await supabase.from('chats').insert([
       {

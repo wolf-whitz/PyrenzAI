@@ -8,7 +8,7 @@ export async function GetLatestCharacters(
 ): Promise<Character[]> {
   if (type === 'GetLatestCharacter') {
     const { data, error } = await supabase
-      .from('characters')
+      .from('public_characters')
       .select('*')
       .eq('is_nsfw', false)
       .order('created_at', { ascending: false })

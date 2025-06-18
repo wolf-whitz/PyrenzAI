@@ -1,35 +1,36 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '~/Utility/supabaseClient';
-import { Character } from '@shared-types';
+import { GetUserUUID } from '@components';
+import { Character, User } from '@shared-types';
 
-type UserData = {
-  username: string;
-  avatar_url: string;
-  user_uuid: string;
-};
-
-export const GetUserCreatedCharacters = (uuid?: string) => {
+export const GetUserCreatedCharacters = (creatorUuid?: string) => {
   const [characters, setCharacters] = useState<Character[]>([]);
-  const [userData, setUserData] = useState<UserData | null>(null);
+  const [userData, setUserData] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isOwner, setIsOwner] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = async (uuid: string) => {
       try {
-        const userUuidToUse = uuid || (await getUserUuid());
-        if (!userUuidToUse) {
+        const userData = await fetchUserDataByUuid(uuid);
+        if (!userData || !userData.user_uuid) {
           setLoading(false);
           return;
         }
 
-        const [userData, characters] = await Promise.all([
-          fetchUserData(userUuidToUse),
-          fetchCharacters(userUuidToUse),
-        ]);
+        const currentUserUuid = await GetUserUUID();
+        if (!currentUserUuid) {
+          setLoading(false);
+          return;
+        }
+
+        const ownerStatus = userData.user_uuid === currentUserUuid;
+        setIsOwner(ownerStatus);
+
+        const characters = await fetchCharacters(userData.user_uuid);
 
         if (userData) {
-          setUserData(userData);
-          updateMetaAndTitle(userData.username, userData.avatar_url);
+          setUserData({ ...userData, isOwner: ownerStatus });
         }
 
         if (characters) {
@@ -42,59 +43,77 @@ export const GetUserCreatedCharacters = (uuid?: string) => {
       }
     };
 
-    const getUserUuid = async (): Promise<string | null> => {
-      const {
-        data: { user },
-        error,
-      } = await supabase.auth.getUser();
+    const getCreatorUuid = async (): Promise<string | null> => {
+      const { data: { user }, error } = await supabase.auth.getUser();
 
       if (error || !user) {
         console.error('Error fetching user:', error);
         return null;
       }
+
       return user.id;
     };
 
-    const fetchUserData = async (
-      userUuid: string
-    ): Promise<UserData | null> => {
+    const fetchUserDataByUuid = async (uuid: string): Promise<User | null> => {
       const { data, error } = await supabase
         .from('user_data')
         .select('username, avatar_url, user_uuid')
-        .eq('user_uuid', userUuid)
+        .eq('user_uuid', uuid)
         .maybeSingle();
 
       if (error || !data) {
         console.error('Error fetching user data:', error);
         return null;
       }
-      return data as UserData;
+      return {
+        username: data.username,
+        user_avatar: data.avatar_url,
+        user_uuid: data.user_uuid
+      };
     };
 
-    const fetchCharacters = async (
-      creatorUuid: string
-    ): Promise<Character[] | null> => {
-      const { data, error } = await supabase
-        .from('characters')
+    const fetchCharacters = async (creatorUuid: string): Promise<Character[] | null> => {
+      const fetchPublicCharacters = supabase
+        .from('public_characters')
         .select('*')
         .eq('creator_uuid', creatorUuid);
 
-      if (error) {
-        console.error('Error fetching characters:', error);
+      const fetchPrivateCharacters = supabase
+        .from('private_characters')
+        .select('*')
+        .eq('creator_uuid', creatorUuid);
+
+      const [publicResponse, privateResponse] = await Promise.all([
+        fetchPublicCharacters,
+        fetchPrivateCharacters,
+      ]);
+
+      if (publicResponse.error || privateResponse.error) {
+        console.error('Error fetching characters:', publicResponse.error || privateResponse.error);
         return null;
       }
 
-      return data;
+      const publicCharacters = publicResponse.data || [];
+      const privateCharacters = privateResponse.data || [];
+
+      return [...publicCharacters, ...privateCharacters];
     };
 
-    const updateMetaAndTitle = (username: string, avatarUrl: string) => {
-      document.title = username;
-      const ogImages = document.querySelectorAll('meta[property="og:image"]');
-      ogImages.forEach((meta) => meta.setAttribute('content', avatarUrl));
+    const resolveUuid = async () => {
+      if (creatorUuid) {
+        await fetchData(creatorUuid);
+      } else {
+        const uuid = await getCreatorUuid();
+        if (uuid) {
+          await fetchData(uuid);
+        } else {
+          setLoading(false);
+        }
+      }
     };
 
-    fetchData();
-  }, [uuid]);
+    resolveUuid();
+  }, [creatorUuid]);
 
-  return { characters, userData, loading };
+  return { characters, userData, loading, isOwner };
 };

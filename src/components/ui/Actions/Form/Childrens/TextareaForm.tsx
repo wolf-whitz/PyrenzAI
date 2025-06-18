@@ -2,29 +2,13 @@ import React, { useState, useEffect, ChangeEvent } from 'react';
 import { ImageUploader, Textarea, TagsMenu } from '@components';
 import { useTextareaFormAPI } from '@api';
 import { useCharacterStore } from '~/store';
-import { Character } from '@shared-types'; // Ensure this path is correct
+import { Character } from '@shared-types';
 import llamaTokenizer from 'llama-tokenizer-js';
 import { Box, Typography } from '@mui/material';
 
 const MemoizedTextarea = React.memo(Textarea);
 const MemoizedImageUploader = React.memo(ImageUploader);
 const MemoizedTagsMenu = React.memo(TagsMenu);
-
-function useDebounce(value: string, delay: number): string {
-  const [debouncedValue, setDebouncedValue] = useState(value);
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
-
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [value, delay]);
-
-  return debouncedValue;
-}
 
 export function TextareaForm() {
   const character = useCharacterStore((state) => state) as Character;
@@ -41,20 +25,26 @@ export function TextareaForm() {
     handleImageSelect,
   } = useTextareaFormAPI();
 
-  // Initialize tagsInput directly as a string
-  const [tagsInput, setTagsInput] = useState<string>(character.tags || '');
+  const initialTags = Array.isArray(character.tags)
+    ? character.tags.join(', ')
+    : typeof character.tags === 'string'
+      ? character.tags
+      : '';
 
-  const debouncedTagsInput = useDebounce(tagsInput, 2000);
-
-  useEffect(() => {
-    setCharacter({ tags: debouncedTagsInput });
-  }, [debouncedTagsInput, setCharacter]);
+  const [tagsInput, setTagsInput] = useState<string>(initialTags);
 
   const handleTagsChange = (
     e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => {
-    setTagsInput(e.target.value);
-    setCharacter({ tags: e.target.value });
+    const value = e.target.value;
+    setTagsInput(value);
+
+    const tagsArray = value
+      .split(',')
+      .map(tag => tag.trim())
+      .filter(tag => tag.length > 0);
+
+    setCharacter({ tags: tagsArray });
   };
 
   useEffect(() => {
@@ -185,7 +175,7 @@ export function TextareaForm() {
           aria-label="Tags"
           placeholder="Add tags separated by commas e.g., hero, knight, adventure"
           is_tag
-          maxLength={50}
+          maxLength={150}
           onTagPressed={handleOpenDropdown}
         />
       </Box>
@@ -198,3 +188,4 @@ export function TextareaForm() {
     </>
   );
 }
+``

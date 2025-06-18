@@ -8,7 +8,7 @@ export async function GetRandomCharacters(
 ): Promise<Character[]> {
   if (type === 'GetRandomCharacter') {
     const { data, error } = await supabase
-      .from('characters')
+      .from('public_characters')
       .select('*')
       .eq('is_nsfw', false)
       .limit(maxCharacter * 10);

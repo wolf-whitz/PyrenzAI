@@ -8,7 +8,7 @@ export async function GetHotCharacters(
 ): Promise<Character[]> {
   if (type === 'GetHotCharacter') {
     const { data, error } = await supabase
-      .from('characters')
+      .from('public_characters')
       .select('*')
       .eq('is_nsfw', false)
       .order('chat_messages_count', { ascending: false })

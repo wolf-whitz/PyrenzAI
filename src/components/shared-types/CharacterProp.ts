@@ -15,7 +15,7 @@ export const CharacterSchema = z.object({
   first_message: z.string(),
   creator: z.string(),
 
-  tags: z.string(),
+  tags: z.array(z.string()),
   profile_image: z.string(),
   chat_messages_count: z.number().optional(),
 

@@ -1,7 +1,20 @@
 import React, { useState, useMemo } from 'react';
-import { Menu, MenuItem, Typography, TextField } from '@mui/material';
+import {
+  Menu,
+  MenuItem,
+  Typography,
+  TextField,
+  Box
+} from '@mui/material';
 import { supabase } from '~/Utility/supabaseClient';
-import { Tag } from '@shared-types';
+
+interface Tag {
+  id: number;
+  tag_name: string;
+  user_uuid: string;
+  created_at: string;
+  char_uuid: string;
+}
 
 interface TagsMenuProps {
   anchorEl: HTMLElement | null;
@@ -18,9 +31,9 @@ export function TagsMenu({ anchorEl, onClose, onTagClick }: TagsMenuProps) {
   };
 
   const filteredTags = useMemo(() => {
-    return tags.filter((tag) =>
-      tag.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    return tags.filter((tag) => {
+      return tag.tag_name && typeof tag.tag_name === 'string' && tag.tag_name.toLowerCase().includes(searchQuery.toLowerCase());
+    });
   }, [tags, searchQuery]);
 
   const fetchTags = async () => {
@@ -51,28 +64,41 @@ export function TagsMenu({ anchorEl, onClose, onTagClick }: TagsMenuProps) {
         },
       }}
     >
-      <div className="p-2">
+      <Box sx={{ p: 2 }}>
         <TextField
           label="Search Tags"
           variant="outlined"
           fullWidth
           value={searchQuery}
           onChange={handleSearchChange}
-          className="mb-2"
-          placeholder="Search for tags e.g., fantasy"
+          sx={{ mb: 2 }}
+          placeholder="Search for tags e.g., Fantasy"
         />
-        <div className="max-h-96 overflow-y-auto">
+        <Box
+          style={{
+            maxHeight: 300,
+            overflow: 'auto',
+            scrollbarWidth: 'none', // For Firefox
+            msOverflowStyle: 'none', // For Internet Explorer and Edge
+          }}
+        >
           {filteredTags.map((tag) => (
             <MenuItem
               key={tag.id}
-              onClick={() => onTagClick(tag.name)}
-              className="rounded-md hover:bg-blue-500 hover:text-white"
+              onClick={() => onTagClick(tag.tag_name)}
+              sx={{
+                borderRadius: '4px',
+                '&:hover': {
+                  backgroundColor: 'blue',
+                  color: 'white',
+                },
+              }}
             >
-              <Typography variant="body1">{tag.name}</Typography>
+              <Typography variant="body1">{tag.tag_name}</Typography>
             </MenuItem>
           ))}
-        </div>
-      </div>
+        </Box>
+      </Box>
     </Menu>
   );
 }

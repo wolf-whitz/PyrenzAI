@@ -37,16 +37,32 @@ export function CreatePage() {
 
       if (char_uuid) {
         try {
-          const { data, error } = await supabase
-            .from('characters')
+          let { data, error } = await supabase
+            .from('public_characters')
             .select('*')
             .eq('char_uuid', char_uuid)
-            .eq('creator_uuid', user_uuid)
             .single();
 
           if (error) {
-            console.error('Error fetching character data:', error);
-          } else if (data) {
+            const privateResponse = await supabase
+              .from('private_characters')
+              .select('*')
+              .eq('char_uuid', char_uuid)
+              .eq('creator_uuid', user_uuid)
+              .single();
+
+            if (privateResponse.error) {
+              console.error('Error fetching character data:', privateResponse.error);
+            } else if (privateResponse.data) {
+              data = privateResponse.data;
+            }
+          }
+
+          if (data) {
+            if (data.tags && !Array.isArray(data.tags)) {
+              data.tags = data.tags.split(',').map((tag: string) => tag.trim());
+            }
+
             setCharacter(data as Character);
             setCharacterUpdate(true);
           }

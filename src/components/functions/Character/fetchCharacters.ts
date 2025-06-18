@@ -20,7 +20,7 @@ export async function fetchCharacters(
   const fromIndex = (page - 1) * itemsPerPage;
   const toIndex = page * itemsPerPage - 1;
 
-  let query = supabase.from('characters').select('*', { count: 'exact' });
+  let query = supabase.from('public_characters').select('*', { count: 'exact' });
 
   if (search?.trim()) {
     query = query.ilike('name', `%${search.trim()}%`);

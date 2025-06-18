@@ -48,10 +48,14 @@ export const useCreateAPI = (
   const setCharacter = useCharacterStore((state) => state.setCharacter);
   const showAlert = usePyrenzAlert();
 
-  const tags = Array.isArray(characterState.tags)
-    ? characterState.tags.join(', ')
-    : characterState.tags || '';
+  const rawTags = characterState.tags as string[] | string | undefined;
 
+  const tags = Array.isArray(rawTags)
+    ? rawTags
+    : typeof rawTags === 'string'
+      ? rawTags.split(',').map((tag: string) => tag.trim())
+      : [];
+  
   const handleImageSelect = (file: File | null) => {
     if (file) {
       const blobUrl = URL.createObjectURL(file);
@@ -95,7 +99,7 @@ export const useCreateAPI = (
   };
 
   const handleSelectDraft = (draft: Draft) => {
-    setCharacter(draft);
+    setCharacter({ ...draft, tags: tags });
     showAlert('Draft selected successfully!', 'success');
   };
 
@@ -106,6 +110,7 @@ export const useCreateAPI = (
     }
     setCharacter({
       ...data,
+      tags: tags,
     });
     showAlert('Character imported successfully!', 'success');
   };
