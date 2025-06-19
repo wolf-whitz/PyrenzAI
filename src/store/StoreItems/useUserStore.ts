@@ -33,6 +33,8 @@ interface UserStore {
   modelIdentifiers: ModelIdentifier[];
   maxTokenLimit: number;
   customization: Customization;
+  show_nsfw: boolean;
+  blocked_tags: string[];
   setUserUUID: (uuid: string) => void;
   setUsername: (name: string) => void;
   setUserIcon: (icon: string) => void;
@@ -46,6 +48,8 @@ interface UserStore {
   setModelIdentifiers: (models: ModelIdentifier[]) => void;
   setMaxTokenLimit: (limit: number) => void;
   setCustomization: (customization: Customization) => void;
+  toggleShowNSFW: () => void;
+  setBlockedTags: (tags: string[]) => void;
 }
 
 export const useUserStore = create<UserStore>()(
@@ -73,6 +77,8 @@ export const useUserStore = create<UserStore>()(
         userTextColor: '#FFFFFF',
         charTextColor: '#FFFFFF',
       },
+      show_nsfw: false,
+      blocked_tags: [],
       setUserUUID: (uuid) => set({ userUUID: uuid }),
       setUsername: (name) => set({ username: name }),
       setUserIcon: (icon) => set({ userIcon: icon }),
@@ -86,6 +92,8 @@ export const useUserStore = create<UserStore>()(
       setModelIdentifiers: (models) => set({ modelIdentifiers: models }),
       setMaxTokenLimit: (limit) => set({ maxTokenLimit: limit }),
       setCustomization: (customization) => set({ customization }),
+      toggleShowNSFW: () => set((state) => ({ show_nsfw: !state.show_nsfw })),
+      setBlockedTags: (tags) => set({ blocked_tags: tags }),
     }),
     {
       name: 'user-storage',

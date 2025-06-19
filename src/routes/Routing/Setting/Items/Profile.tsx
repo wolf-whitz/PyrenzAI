@@ -1,11 +1,12 @@
 import React, { useState, DragEvent, useEffect } from 'react';
 import { TextField, Typography, Box, Avatar } from '@mui/material';
 import { supabase } from '~/Utility/supabaseClient';
-import { GetUserUUID } from '@components';
+import { GetUserUUID, Textarea } from '@components';
 import { PyrenzBlueButton, PyrenzFormControl } from '~/theme';
 import { usePyrenzAlert } from '~/provider';
 import { useNavigate } from 'react-router-dom';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { useUserStore } from '~/store';
 
 export function Profile() {
   const [username, setUsername] = useState('');
@@ -13,8 +14,10 @@ export function Profile() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [userUUID, setUserUUID] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [tagsInput, setTagsInput] = useState('');
   const showAlert = usePyrenzAlert();
   const navigate = useNavigate();
+  const { setBlockedTags } = useUserStore();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -24,7 +27,7 @@ export function Profile() {
       if (uuid) {
         const { data, error } = await supabase
           .from('user_data')
-          .select('username, avatar_url')
+          .select('username, avatar_url, blocked_tags')
           .eq('user_uuid', uuid)
           .single();
 
@@ -34,6 +37,9 @@ export function Profile() {
           setUsername(data.username || '');
           if (data.avatar_url) {
             setImagePreview(data.avatar_url);
+          }
+          if (data.blocked_tags) {
+            setTagsInput(data.blocked_tags.join(', '));
           }
         }
       }
@@ -64,10 +70,7 @@ export function Profile() {
 
       img.onload = () => {
         if (img.width !== 400 || img.height !== 400) {
-          showAlert(
-            'Profile image dimensions should be 400x400 pixels',
-            'alert'
-          );
+          showAlert('Profile image dimensions should be 400x400 pixels', 'alert');
           URL.revokeObjectURL(objectURL);
           return;
         }
@@ -103,6 +106,9 @@ export function Profile() {
     try {
       const updateData: any = { username };
 
+      const tagsArray = tagsInput.split(',').map(tag => tag.trim()).filter(tag => tag);
+      updateData.blocked_tags = tagsArray;
+
       if (profileImage) {
         const filePath = `user-profile/${userUUID}`;
 
@@ -111,10 +117,7 @@ export function Profile() {
           .upload(filePath, profileImage);
 
         if (uploadError) {
-          showAlert(
-            `Error uploading profile image: ${uploadError.message}`,
-            'alert'
-          );
+          showAlert(`Error uploading profile image: ${uploadError.message}`, 'alert');
           setIsLoading(false);
           return;
         }
@@ -134,14 +137,12 @@ export function Profile() {
       if (error) {
         showAlert(`Error updating profile: ${error.message}`, 'alert');
       } else {
-        showAlert('Profile updated successfully', 'success');
+        setBlockedTags(tagsArray);
+        showAlert('Profile and tags updated successfully', 'success');
         navigate('/Profile');
       }
     } catch (error) {
-      showAlert(
-        `Error during submission: ${error instanceof Error ? error.message : String(error)}`,
-        'alert'
-      );
+      showAlert(`Error during submission: ${error instanceof Error ? error.message : String(error)}`, 'alert');
     } finally {
       setIsLoading(false);
     }
@@ -150,10 +151,7 @@ export function Profile() {
   return (
     <Box sx={{ padding: '20px', maxWidth: '400px', margin: '0 auto' }}>
       <Box sx={{ marginBottom: '20px' }}>
-        <Typography
-          variant="subtitle1"
-          sx={{ fontWeight: 'bold', marginBottom: '8px' }}
-        >
+        <Typography variant="subtitle1" sx={{ fontWeight: 'bold', marginBottom: '8px' }}>
           Profile Image
         </Typography>
         <PyrenzFormControl>
@@ -189,10 +187,7 @@ export function Profile() {
       </Box>
 
       <Box sx={{ marginBottom: '20px' }}>
-        <Typography
-          variant="subtitle1"
-          sx={{ fontWeight: 'bold', marginBottom: '8px' }}
-        >
+        <Typography variant="subtitle1" sx={{ fontWeight: 'bold', marginBottom: '8px' }}>
           Username
         </Typography>
         <TextField
@@ -203,6 +198,18 @@ export function Profile() {
           onChange={(e) => setUsername(e.target.value)}
         />
       </Box>
+
+      <Box sx={{ marginBottom: '20px' }}>
+        <Typography variant="subtitle1" sx={{ fontWeight: 'bold', marginBottom: '8px' }}>
+          Blocked Tags
+        </Typography>
+        <Textarea
+          placeholder="Enter tags separated by commas"
+          value={tagsInput}
+          onChange={(e) => setTagsInput(e.target.value)}
+        />
+      </Box>
+
       <PyrenzBlueButton
         sx={{
           backgroundColor: '#add8e6',

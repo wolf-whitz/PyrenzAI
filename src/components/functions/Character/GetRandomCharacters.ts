@@ -1,5 +1,6 @@
 import { supabase } from '~/Utility/supabaseClient';
 import { Character } from '@shared-types';
+import { useUserStore } from '~/store';
 
 export async function GetRandomCharacters(
   type: string,
@@ -7,11 +8,18 @@ export async function GetRandomCharacters(
   page: number
 ): Promise<Character[]> {
   if (type === 'GetRandomCharacter') {
-    const { data, error } = await supabase
+    const { show_nsfw } = useUserStore.getState();
+
+    let query = supabase
       .from('public_characters')
       .select('*')
-      .eq('is_nsfw', false)
       .limit(maxCharacter * 10);
+
+    if (!show_nsfw) {
+      query = query.eq('is_nsfw', false);
+    }
+
+    const { data, error } = await query;
 
     if (error) {
       throw new Error(error.message);

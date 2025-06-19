@@ -1,5 +1,6 @@
 import { supabase } from '~/Utility/supabaseClient';
 import { Character } from '@shared-types';
+import { useUserStore } from '~/store';
 
 interface FetchCharactersResponse {
   character: Character | null;
@@ -17,36 +18,28 @@ export async function fetchCharacters(
     throw new Error(`Invalid request_type: ${requestType}`);
   }
 
-  const fromIndex = (page - 1) * itemsPerPage;
-  const toIndex = page * itemsPerPage - 1;
+  const { show_nsfw, blocked_tags } = useUserStore.getState();
 
-  let query = supabase.from('public_characters').select('*', { count: 'exact' });
-
-  if (search?.trim()) {
-    query = query.ilike('name', `%${search.trim()}%`);
-  }
-
-  query = query
-    .order('chat_messages_count', { ascending: false })
-    .range(fromIndex, toIndex);
-
-  const { data, error, count } = await query;
-
-  if (error) throw new Error(`error: ${error.message}`);
-
-  const uniqueMap = new Map<string, Character>();
-  data.forEach((char: Character) => {
-    char.id = String(char.id);
-    if (!uniqueMap.has(char.id)) {
-      uniqueMap.set(char.id, char);
-    }
+  const { data, error } = await supabase.rpc('get_filtered_characters', {
+    page,
+    items_per_page: itemsPerPage,
+    search: search ?? null,
+    show_nsfw,
+    blocked_tags,
   });
 
-  const characters = Array.from(uniqueMap.values());
-  const maxPage = Math.ceil((count ?? 0) / itemsPerPage);
+  if (error) {
+    throw new Error(`Supabase RPC error: ${error.message}`);
+  }
 
-  if (setMaxPage) {
-    setMaxPage(maxPage);
+  const rawCharacters = data.characters ?? [];
+  const characters: Character[] = rawCharacters.map((char: any) => ({
+    ...char,
+    id: String(char.id),
+  }));
+
+  if (setMaxPage && data.max_page) {
+    setMaxPage(data.max_page);
   }
 
   let selectedCharacter: Character | null = null;

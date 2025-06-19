@@ -1,14 +1,9 @@
-import { PyrenzBlueButton } from '~/theme';
-import React, { useState, useRef, Suspense } from 'react';
+import { PyrenzBlueButton, NSFWSwitch } from '~/theme';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { buttons } from '@shared-types';
-
-const MoreButtonsModal = React.lazy(() =>
-  import('~/components/ui/Overlay/Modal/MoreButtonsModal').then((module) => ({
-    default: module.MoreButtonsModal,
-  }))
-);
+import { MoreButtonsModal } from '@components';
 
 interface CustomButtonProps {
   onButtonClick: (
@@ -20,7 +15,7 @@ interface CustomButtonProps {
     gender?: 'male' | 'female',
     searchQuery?: string
   ) => void;
-  onQuery: (query: string) => void;  
+  onQuery: (query: string) => void;
 }
 
 export function CustomButton({ onButtonClick, onQuery }: CustomButtonProps) {
@@ -46,7 +41,7 @@ export function CustomButton({ onButtonClick, onQuery }: CustomButtonProps) {
   };
 
   const handleQuery = (query: string) => {
-    onQuery(query);  
+    onQuery(query);
   };
 
   return (
@@ -94,20 +89,19 @@ export function CustomButton({ onButtonClick, onQuery }: CustomButtonProps) {
           {t('HomePageMoreButtons.btn.more')}
         </PyrenzBlueButton>
       </motion.div>
+      <NSFWSwitch />
 
       {isModalOpen && (
-        <Suspense fallback={<div>Loading...</div>}>
-          <MoreButtonsModal
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            onButtonClick={handleButtonClick}
-            buttons={buttons}
-            onQuery={handleQuery}
-            modalResults={modalResults}
-            loading={loading}
-            searchQuery={searchQuery}
-          />
-        </Suspense>
+        <MoreButtonsModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onButtonClick={handleButtonClick}
+          buttons={buttons}
+          onQuery={handleQuery}
+          modalResults={modalResults}
+          loading={loading}
+          searchQuery={searchQuery}
+        />
       )}
     </motion.div>
   );

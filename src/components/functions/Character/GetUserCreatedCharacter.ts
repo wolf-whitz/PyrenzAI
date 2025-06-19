@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '~/Utility/supabaseClient';
 import { GetUserUUID } from '@components';
 import { Character, User } from '@shared-types';
+import { useUserStore } from '~/store';
 
 export const GetUserCreatedCharacters = (creatorUuid?: string) => {
   const [characters, setCharacters] = useState<Character[]>([]);
@@ -73,15 +74,22 @@ export const GetUserCreatedCharacters = (creatorUuid?: string) => {
     };
 
     const fetchCharacters = async (creatorUuid: string): Promise<Character[] | null> => {
-      const fetchPublicCharacters = supabase
+      const { show_nsfw } = useUserStore.getState();
+
+      let fetchPublicCharacters = supabase
         .from('public_characters')
         .select('*')
         .eq('creator_uuid', creatorUuid);
 
-      const fetchPrivateCharacters = supabase
+      let fetchPrivateCharacters = supabase
         .from('private_characters')
         .select('*')
         .eq('creator_uuid', creatorUuid);
+
+      if (!show_nsfw) {
+        fetchPublicCharacters = fetchPublicCharacters.eq('is_nsfw', false);
+        fetchPrivateCharacters = fetchPrivateCharacters.eq('is_nsfw', false);
+      }
 
       const [publicResponse, privateResponse] = await Promise.all([
         fetchPublicCharacters,

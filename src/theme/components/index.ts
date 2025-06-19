@@ -9,3 +9,5 @@ export * from './PyrenzCharacteCard';
 
 export * from './PyrenzChatsCharacterCard';
 export * from './PyrenzRibbon';
+
+export * from './NsfwSwitch';

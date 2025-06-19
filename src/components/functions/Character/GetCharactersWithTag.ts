@@ -1,5 +1,6 @@
 import { supabase } from '~/Utility/supabaseClient';
 import { Character } from '@shared-types';
+import { useUserStore } from '~/store';
 
 export async function GetCharactersWithTags(
   maxCharacter: number,
@@ -9,42 +10,22 @@ export async function GetCharactersWithTags(
   gender?: string,
   searchQuery?: string
 ): Promise<Character[]> {
-  if (type !== 'GetTaggedCharacters') throw new Error('Invalid type');
-
-  const offset = (page - 1) * maxCharacter;
-
-  let tagQuery = supabase
-    .from('tags')
-    .select('char_uuid')
-    .eq('tag_name', tag);
-
-  if (searchQuery) {
-    tagQuery = tagQuery.eq('tag_name', searchQuery);
+  if (type !== 'GetTaggedCharacters') {
+    throw new Error('Invalid type');
   }
 
-  const { data: tagLinks, error: tagError } = await tagQuery;
+  const { show_nsfw, blocked_tags } = useUserStore.getState();
 
-  if (tagError) throw new Error(tagError.message);
-  if (!tagLinks || tagLinks.length === 0) return [];
-
-  const charUuids = tagLinks.map(t => t.char_uuid);
-
-  let query = supabase
-    .from('public_characters')
-    .select('*')
-    .in('char_uuid', charUuids)
-    .eq('is_nsfw', false)
-    .order('chat_messages_count', { ascending: false })
-    .range(offset, offset + maxCharacter - 1);
-
-  if (gender === 'male' || gender === 'female') {
-    query = query.eq('gender', gender);
-  }
-
-  const { data, error } = await query;
+  const { data, error } = await supabase.rpc('get_filtered_characters', {
+    page,
+    items_per_page: maxCharacter,
+    search: searchQuery || null,
+    show_nsfw,
+    blocked_tags,
+    gender: gender || null,
+    tag: tag || null
+  });
 
   if (error) throw new Error(error.message);
-  console.log(data);
-
-  return data as Character[];
+  return data?.characters ?? [];
 }
