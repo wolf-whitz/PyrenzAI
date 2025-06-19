@@ -87,8 +87,7 @@ export function CustomButton({ onButtonClick, onQuery }: CustomButtonProps) {
                   : undefined
               )
             }
-            data-state={loading ? 'loading' : undefined}
-          >
+           >
             {t(btn.label)}
           </PyrenzBlueButton>
         </motion.div>

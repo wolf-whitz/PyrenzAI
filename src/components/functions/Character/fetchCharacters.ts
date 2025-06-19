@@ -24,10 +24,11 @@ export async function fetchCharacters(
   const { data, error } = await supabase.rpc('get_filtered_characters', {
     page,
     items_per_page: itemsPerPage,
-    search: search ?? null,
+    search: search && search.trim() !== '' ? search : undefined,
     show_nsfw,
     blocked_tags,
   });
+  
 
   if (error) {
     throw new Error(`Supabase RPC error: ${error.message}`);
