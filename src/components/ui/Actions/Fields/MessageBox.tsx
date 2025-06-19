@@ -14,7 +14,7 @@ import { PyrenzMessageBox, PyrenzBlueButton } from '~/theme';
 import type { MessageBoxProps } from '@shared-types';
 import { useUserStore } from '~/store';
 
-export function MessageBox({
+export const MessageBox = React.memo(function MessageBox({
   msg,
   index,
   isGenerating,
@@ -26,21 +26,41 @@ export function MessageBox({
   handleSpeak,
   editingMessageId,
   editingMessageType,
-  editedMessage,
+  editedMessage: _,
   isLoading,
   onEditClick,
   onSaveEdit,
   onCancelEdit,
-  setEditedMessage,
 }: MessageBoxProps) {
   const isUser = msg.type === 'user';
   const ischar = msg.type === 'char';
-
   const displayName = isUser ? msg.username || user.username : msg.name || char.name;
-
   const isEditingThisMessage =
     editingMessageId === msg.id &&
     editingMessageType === (isUser ? 'user' : 'char');
+
+  const [localEditedMessage, setLocalEditedMessage] = useState(msg.text || '');
+  const [debouncedValue, setDebouncedValue] = useState(localEditedMessage);
+
+  useEffect(() => {
+    setLocalEditedMessage(msg.text || '');
+  }, [msg.text]);
+
+  useEffect(() => {
+    if (!isEditingThisMessage) return;
+
+    const handler = setTimeout(() => {
+      setDebouncedValue(localEditedMessage);
+    }, 500);  
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [localEditedMessage, isEditingThisMessage]);
+
+  const theme = useTheme();
+  const { customization } = useUserStore();
+  const { userTextColor = '#FFFFFF', charTextColor = '#FFFFFF' } = customization || {};
 
   const [menuPosition, setMenuPosition] = useState<{ top: number; left: number } | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -72,11 +92,6 @@ export function MessageBox({
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [menuPosition]);
-
-  const theme = useTheme();
-  const { customization } = useUserStore();
-
-  const { userTextColor = '#FFFFFF', charTextColor = '#FFFFFF' } = customization || {};
 
   const handleCopy = () => {
     navigator.clipboard.writeText(msg.text || '');
@@ -129,15 +144,13 @@ export function MessageBox({
             color: isUser ? userTextColor : charTextColor,
           }}
         >
-          {isGenerating && ischar && isLastMessage && !msg.text && (
-            <TypingIndicator />
-          )}
+          {isGenerating && ischar && isLastMessage && !msg.text && <TypingIndicator />}
 
           {isEditingThisMessage ? (
             <Box display="flex" flexDirection="column" width="100%">
               <TextField
-                value={editedMessage}
-                onChange={(e) => setEditedMessage(e.target.value)}
+                value={localEditedMessage}
+                onChange={(e) => setLocalEditedMessage(e.target.value)}
                 autoFocus
                 multiline
                 fullWidth
@@ -159,7 +172,7 @@ export function MessageBox({
                 <PyrenzBlueButton
                   onClick={() => {
                     if (msg.id) {
-                      onSaveEdit(msg.id, editedMessage, isUser ? 'user' : 'char');
+                      onSaveEdit(msg.id, debouncedValue, isUser ? 'user' : 'char');
                     }
                   }}
                   disabled={isLoading}
@@ -217,4 +230,4 @@ export function MessageBox({
       )}
     </Box>
   );
-}
+});
