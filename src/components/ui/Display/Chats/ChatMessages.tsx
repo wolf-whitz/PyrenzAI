@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Box } from '@mui/material';
 import { ChatMessagesProps, Message, User } from '@shared-types';
 import { speakMessage } from '@api';
@@ -25,6 +25,12 @@ export function ChatMessages({
   const [editingMessageType, setEditingMessageType] = useState<'user' | 'char' | null>(null);
   const [editedMessage, setEditedMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [previous_message, firstMessage]);
 
   const handleSpeak = async (text: string) => {
     setIsGenerating(true);
@@ -101,6 +107,7 @@ export function ChatMessages({
           />
         );
       })}
+      <div ref={bottomRef} />
     </Box>
   );
 }

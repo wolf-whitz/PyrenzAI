@@ -26,8 +26,6 @@ export function ChatMain({
   setIsGenerating,
   chat_uuid,
 }: ChatMainProps) {
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
   const { messages, firstMessage } = useChatStore();
 
   const {
@@ -41,7 +39,6 @@ export function ChatMain({
     handleRegenerateMessage,
     handleEditMessage,
   } = useChatPageAPI(
-    messagesEndRef,
     messages,
     user,
     char,
@@ -72,7 +69,6 @@ export function ChatMain({
             onEditMessage={handleEditMessage}
             setIsGenerating={setIsGenerating}
           />
-          <div ref={messagesEndRef}></div>
         </Box>
 
         <Slide direction="up" in={true} timeout={500}>

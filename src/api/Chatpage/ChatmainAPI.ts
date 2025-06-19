@@ -18,7 +18,6 @@ interface ChatPageAPI {
 }
 
 export const useChatPageAPI = (
-  messagesEndRef: React.RefObject<HTMLDivElement>,
   previous_message: Message[],
   user: User,
   char: Character,
