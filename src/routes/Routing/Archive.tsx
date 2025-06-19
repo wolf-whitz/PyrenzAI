@@ -25,8 +25,18 @@ export function Archive() {
     setItemsToShow((prevItemsToShow) => prevItemsToShow + 5);
   };
 
-  const { chats, characters, isLoading, handleCardClick, handleDeleteChat } =
-    useArchiveChatPageAPI(open, handleClose);
+  const {
+    chats,
+    characters,
+    isLoading,
+    handleCardClick,
+    handleDeleteChat,
+    handlePinChat,
+  } = useArchiveChatPageAPI(open, handleClose);
+
+  const handlePinClick = async (chatUuid: string) => {
+    await handlePinChat(chatUuid);
+  };
 
   return (
     <Box
@@ -66,7 +76,7 @@ export function Archive() {
             <>
               <Box display="flex" flexWrap="wrap" justifyContent="center">
                 {chats.slice(0, itemsToShow).map((chat) => (
-                  <Box key={chat.chat_uuid} mx={2} mb={4}>
+                  <Box key={chat.chat_uuid} mx={2} mb={4} position="relative">
                     <PyrenzChatsCharacterCard
                       sx={{
                         transition:
@@ -80,6 +90,8 @@ export function Archive() {
                       characterName={characters[chat.char_uuid]}
                       onCardClick={() => handleCardClick(chat.chat_uuid)}
                       onDeleteClick={() => handleDeleteChat(chat.chat_uuid)}
+                      onPinClick={() => handlePinClick(chat.chat_uuid)}
+                      isPinned={chat.is_pinned}
                     >
                       <Typography variant="body2" color="text.secondary">
                         {chat.preview_message}

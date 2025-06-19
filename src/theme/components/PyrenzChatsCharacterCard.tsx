@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Card,
   CardContent,
   Typography,
   IconButton,
-  Popover,
   SxProps,
   Theme,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
+import PushPinIcon from '@mui/icons-material/PushPin';
+import { PyrenzRibbon } from '~/theme'; 
+
 
 const StyledCardImage = styled('div')({
   width: '120px',
@@ -60,8 +62,10 @@ interface PyrenzChatsCharacterCardProps {
   onCardClick?: () => void;
   onContextMenu?: (event: React.MouseEvent) => void;
   onDeleteClick?: () => void;
+  onPinClick?: () => void;
   style?: React.CSSProperties;
   sx?: SxProps<Theme>;
+  isPinned?: boolean;
 }
 
 export const PyrenzChatsCharacterCard = ({
@@ -71,21 +75,11 @@ export const PyrenzChatsCharacterCard = ({
   onCardClick,
   onContextMenu,
   onDeleteClick,
+  onPinClick,
   style,
   sx,
+  isPinned = false,
 }: PyrenzChatsCharacterCardProps) => {
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-
-  const handlePopoverOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handlePopoverClose = () => {
-    setAnchorEl(null);
-  };
-
-  const open = Boolean(anchorEl);
-
   return (
     <Card
       onClick={onCardClick}
@@ -111,6 +105,7 @@ export const PyrenzChatsCharacterCard = ({
     >
       <StyledCardImage>
         <StyledImage src={imageSrc} alt="Preview" />
+        {isPinned && <PyrenzRibbon color="red">Pinned</PyrenzRibbon>}
       </StyledCardImage>
       <StyledCardContent>
         <StyledCardName>{characterName}</StyledCardName>
@@ -118,36 +113,25 @@ export const PyrenzChatsCharacterCard = ({
       </StyledCardContent>
       <ActionIconsContainer>
         <IconButton
+          aria-label="pin"
+          title="Pin this chat"
+          onClick={(e) => {
+            e.stopPropagation();
+            onPinClick && onPinClick();
+          }}
+        >
+          <PushPinIcon style={{ color: '#f8f9fa' }} />
+        </IconButton>
+        <IconButton
           aria-label="delete"
+          title="Delete this chat"
           onClick={(e) => {
             e.stopPropagation();
             onDeleteClick && onDeleteClick();
           }}
-          onMouseEnter={handlePopoverOpen}
-          onMouseLeave={handlePopoverClose}
         >
           <DeleteIcon style={{ color: '#f8f9fa' }} />
         </IconButton>
-        <Popover
-          id="mouse-over-popover"
-          sx={{
-            pointerEvents: 'none',
-          }}
-          open={open}
-          anchorEl={anchorEl}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'left',
-          }}
-          onClose={handlePopoverClose}
-          disableRestoreFocus
-        >
-          <Typography sx={{ p: 1 }}>Delete this item</Typography>
-        </Popover>
       </ActionIconsContainer>
     </Card>
   );

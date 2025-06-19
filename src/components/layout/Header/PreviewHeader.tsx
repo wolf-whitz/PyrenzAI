@@ -52,7 +52,7 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
 
   const menuItems = [
     { name: t('navigation.home'), icon: <HomeIcon />, link: '/Home' },
-    { name: t('navigation.chats'), icon: <ChatIcon />, link: '/Chats' },
+    { name: t('navigation.chats'), icon: <ChatIcon />, link: '/Archive' },
     {
       name: 'Documentation',
       icon: <DescriptionIcon />,
