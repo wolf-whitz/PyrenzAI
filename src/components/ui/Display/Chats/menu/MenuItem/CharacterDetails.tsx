@@ -16,21 +16,26 @@ export function CharacterDetails({ char, onSubmit }: CharacterDetailsProps) {
 
   useEffect(() => {
     const fetchCharacterDetails = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('characters')
-          .select('is_details_private')
-          .eq('char_uuid', char.char_uuid)
-          .single();
+      const tables = ['public_characters', 'private_characters'];
+      for (const table of tables) {
+        try {
+          const { data, error } = await supabase
+            .from(table)
+            .select('is_details_private')
+            .eq('char_uuid', char.char_uuid)
+            .single();
 
-        if (error) {
-          throw error;
+          if (!error) {
+            setShowDetails(!data.is_details_private);
+            return;
+          } else {
+            throw error;
+          }
+        } catch (error) {
+          console.error(`Error fetching character details from ${table}:`, error);
         }
-
-        setShowDetails(!data.is_details_private);
-      } catch (error) {
-        console.error('Error fetching character details:', error);
       }
+      setShowDetails(false);
     };
 
     fetchCharacterDetails();

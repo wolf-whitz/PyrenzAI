@@ -7,8 +7,8 @@ import { useUserStore } from '~/store';
 export const GetUserCreatedCharacters = (creatorUuid?: string) => {
   const [characters, setCharacters] = useState<Character[]>([]);
   const [userData, setUserData] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [isOwner, setIsOwner] = useState(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [isOwner, setIsOwner] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async (uuid: string) => {
@@ -76,35 +76,26 @@ export const GetUserCreatedCharacters = (creatorUuid?: string) => {
     const fetchCharacters = async (creatorUuid: string): Promise<Character[] | null> => {
       const { show_nsfw } = useUserStore.getState();
 
-      let fetchPublicCharacters = supabase
-        .from('public_characters')
-        .select('*')
-        .eq('creator_uuid', creatorUuid);
+      const tables = ['public_characters', 'private_characters'];
 
-      let fetchPrivateCharacters = supabase
-        .from('private_characters')
-        .select('*')
-        .eq('creator_uuid', creatorUuid);
+      const fetchPromises = tables.map(table =>
+        supabase
+          .from(table)
+          .select('*')
+          .eq('creator_uuid', creatorUuid)
+          .eq('is_nsfw', show_nsfw)
+      );
 
-      if (!show_nsfw) {
-        fetchPublicCharacters = fetchPublicCharacters.eq('is_nsfw', false);
-        fetchPrivateCharacters = fetchPrivateCharacters.eq('is_nsfw', false);
-      }
+      const responses = await Promise.all(fetchPromises);
 
-      const [publicResponse, privateResponse] = await Promise.all([
-        fetchPublicCharacters,
-        fetchPrivateCharacters,
-      ]);
+      const characters = responses.reduce<Character[]>((acc, response) => {
+        if (response.error) {
+          return acc;
+        }
+        return [...acc, ...(response.data || [])];
+      }, []);
 
-      if (publicResponse.error || privateResponse.error) {
-        console.error('Error fetching characters:', publicResponse.error || privateResponse.error);
-        return null;
-      }
-
-      const publicCharacters = publicResponse.data || [];
-      const privateCharacters = privateResponse.data || [];
-
-      return [...publicCharacters, ...privateCharacters];
+      return characters;
     };
 
     const resolveUuid = async () => {
