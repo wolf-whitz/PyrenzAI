@@ -1,6 +1,6 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, ArrowRight, MoreVertical, Loader2, Mic } from 'lucide-react';
+import { Send, MoreVertical, Loader2, Mic } from 'lucide-react';
 import { Menu } from '@components';
 import { Character } from '@shared-types';
 import { usePyrenzAlert } from '~/provider';
@@ -46,6 +46,7 @@ interface ChatInputProps {
 }
 
 const MAX_CHAR_LIMIT = 1500;
+const MAX_TEXT_AREA_HEIGHT = 200;
 
 export function ChatInput({
   className,
@@ -57,27 +58,27 @@ export function ChatInput({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const showAlert = usePyrenzAlert();
 
   const sendMessage = () => {
     const trimmedMessage = message.trim();
-    if (!trimmedMessage || trimmedMessage.length > MAX_CHAR_LIMIT) return;
+    if (!trimmedMessage) return;
 
     handleSend(trimmedMessage);
     setMessage('');
   };
 
   const handleMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newMessage = e.target.value;
-    if (newMessage.length <= MAX_CHAR_LIMIT) {
-      setMessage(newMessage);
-    } else {
-      showAlert(
-        `Exceeded ${MAX_CHAR_LIMIT} characters, please shorten your message.`,
-        'alert'
-      );
-    }
+    setMessage(e.target.value);
   };
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, MAX_TEXT_AREA_HEIGHT)}px`;
+    }
+  }, [message]);
 
   const toggleListening = () => {
     if (isListening && recognitionRef.current) {
@@ -135,7 +136,7 @@ export function ChatInput({
         transition={{ duration: 0.3, ease: 'easeOut' }}
         className={`relative mx-auto w-full max-w-full md:max-w-[500px] lg:max-w-[640px] p-4 ${className}`}
       >
-        <div className={`relative flex bg-gray-700 rounded-2xl p-3 w-full ${className}`}>
+        <div className={`relative flex bg-gray-700 rounded-lg p-3 w-full ${className}`}>
           <motion.button
             className="mr-2 text-gray-400 hover:text-white transition duration-200 p-2 rounded-full flex-shrink-0"
             whileHover={{ scale: 1.1 }}
@@ -147,6 +148,7 @@ export function ChatInput({
           </motion.button>
 
           <textarea
+            ref={textareaRef}
             value={message}
             onChange={handleMessageChange}
             onKeyDown={(e) => {
@@ -156,9 +158,11 @@ export function ChatInput({
               }
             }}
             placeholder={`Chat with ${char.name}`}
-            className="flex-1 w-full bg-transparent outline-none text-white px-4 py-2 rounded-full focus:ring-0 resize-none overflow-hidden min-w-0"
+            className="flex-1 w-full bg-transparent outline-none text-white px-4 py-2 rounded-lg focus:ring-0 resize-none overflow-auto min-w-0"
             rows={1}
+            maxLength={MAX_CHAR_LIMIT}
             disabled={isGenerating}
+            style={{ maxHeight: `${MAX_TEXT_AREA_HEIGHT}px` }}
           />
 
           <motion.button
@@ -175,66 +179,29 @@ export function ChatInput({
 
           <motion.button
             onClick={sendMessage}
-            className={`ml-2 flex items-center gap-1 text-gray-400 transition duration-200 px-4 py-2 rounded-full flex-shrink-0 ${
-              !message.trim() || message.length > MAX_CHAR_LIMIT || isGenerating
+            className={`ml-2 flex items-center gap-1 text-gray-400 transition duration-200 p-2 rounded-full flex-shrink-0 ${
+              !message.trim() || isGenerating
                 ? 'cursor-not-allowed opacity-50'
                 : 'hover:text-white'
             }`}
             whileHover={
-              message.length <= MAX_CHAR_LIMIT &&
-              !isGenerating &&
-              message.trim()
+              !isGenerating && message.trim()
                 ? { scale: 1.05 }
                 : {}
             }
             whileTap={
-              message.length <= MAX_CHAR_LIMIT &&
-              !isGenerating &&
-              message.trim()
+              !isGenerating && message.trim()
                 ? { scale: 0.95 }
                 : {}
             }
             aria-label="Send message"
-            disabled={
-              !message.trim() || message.length > MAX_CHAR_LIMIT || isGenerating
-            }
+            disabled={!message.trim() || isGenerating}
           >
             <AnimatePresence mode="wait">
-              <motion.div
-                key={
-                  isGenerating
-                    ? 'Generating'
-                    : message.trim()
-                    ? 'send'
-                    : 'continue'
-                }
-                initial={{ x: -10, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                exit={{ x: 10, opacity: 0 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-              >
-                {isGenerating ? (
-                  <Loader2 className="animate-spin" size={20} />
-                ) : message.trim().length > 0 ? (
-                  <Send size={20} />
-                ) : (
-                  <ArrowRight size={20} />
-                )}
-              </motion.div>
-            </AnimatePresence>
-
-            <AnimatePresence mode="wait">
-              {message.trim().length > 0 && (
-                <motion.span
-                  key={isGenerating ? 'Generating' : 'Send'}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="text-sm font-medium"
-                >
-                  {isGenerating ? 'Generating...' : 'Send'}
-                </motion.span>
+              {isGenerating ? (
+                <Loader2 className="animate-spin" size={20} />
+              ) : (
+                <Send size={20} />
               )}
             </AnimatePresence>
           </motion.button>
