@@ -76,7 +76,7 @@ export async function GetUserData(): Promise<ApiResponse | { error: string }> {
         case 'MELON':
           return {
             tier: 'MELON',
-            max_token: 200,
+            max_token: 300,
             model: models,
             max_persona: 3,
           };
