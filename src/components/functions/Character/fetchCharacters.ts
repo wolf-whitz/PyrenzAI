@@ -12,13 +12,14 @@ export async function fetchCharacters(
   page: number = 1,
   itemsPerPage: number = 10,
   search?: string,
-  setMaxPage?: (maxPage: number) => void
+  setMaxPage?: (maxPage: number) => void,
+  show_nsfw?: boolean
 ): Promise<FetchCharactersResponse> {
   if (requestType !== 'character') {
     throw new Error(`Invalid request_type: ${requestType}`);
   }
 
-  const { show_nsfw, blocked_tags } = useUserStore.getState();
+  const { blocked_tags } = useUserStore.getState();
 
   const { data, error } = await supabase.rpc('get_filtered_characters', {
     page,

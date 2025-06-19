@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useHomeStore } from '~/store';
+import { useHomeStore, useUserStore } from '~/store';
 import { useTranslation } from 'react-i18next';
 import {
   GetHotCharacters,
@@ -29,11 +29,14 @@ export const useHomepageAPI = () => {
   const itemsPerPage = 20;
   const showAlert = usePyrenzAlert();
 
+  const showNSFW = useUserStore((state) => state.show_nsfw);
+
   const { characters } = useFetchCharacters({
     currentPage,
     search,
     itemsPerPage,
     t,
+    show_nsfw: showNSFW,
   });
 
   const handleButtonClick = async (

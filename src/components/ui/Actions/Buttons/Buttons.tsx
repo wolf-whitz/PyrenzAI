@@ -1,9 +1,10 @@
-import { PyrenzBlueButton, NSFWSwitch } from '~/theme';
-import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
+import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { buttons } from '@shared-types';
 import { MoreButtonsModal } from '@components';
+import { PyrenzBlueButton, NSFWSwitch } from '~/theme'; 
+import { useUserStore } from '~/store';
 
 interface CustomButtonProps {
   onButtonClick: (
@@ -27,6 +28,8 @@ export function CustomButton({ onButtonClick, onQuery }: CustomButtonProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const { t } = useTranslation();
 
+  const showNSFW = useUserStore((state) => state.show_nsfw);
+
   const handleButtonClick = async (
     func: string,
     type: string,
@@ -43,6 +46,15 @@ export function CustomButton({ onButtonClick, onQuery }: CustomButtonProps) {
   const handleQuery = (query: string) => {
     onQuery(query);
   };
+
+  useEffect(() => {
+    const reloadCharacters = async () => {
+      //Reload mechanism
+      setLoading(true);
+    };
+
+    reloadCharacters();
+  }, [showNSFW]);
 
   return (
     <motion.div
@@ -90,7 +102,6 @@ export function CustomButton({ onButtonClick, onQuery }: CustomButtonProps) {
         </PyrenzBlueButton>
       </motion.div>
       <NSFWSwitch />
-
       {isModalOpen && (
         <MoreButtonsModal
           isOpen={isModalOpen}

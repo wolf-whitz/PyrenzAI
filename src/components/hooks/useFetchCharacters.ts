@@ -9,6 +9,7 @@ interface UseFetchCharactersProps {
   search: string;
   itemsPerPage: number;
   t: (key: string) => string;
+  show_nsfw: boolean;
 }
 
 export function useFetchCharacters({
@@ -16,6 +17,7 @@ export function useFetchCharacters({
   search,
   itemsPerPage,
   t,
+  show_nsfw,
 }: UseFetchCharactersProps) {
   const showAlert = usePyrenzAlert();
   const {
@@ -35,7 +37,8 @@ export function useFetchCharacters({
         currentPage,
         itemsPerPage,
         search || ' ',
-        setMaxPage
+        setMaxPage,
+        show_nsfw
       );
 
       const safeCharacters = response.characters.map((char: Character) => char);
@@ -56,6 +59,7 @@ export function useFetchCharacters({
     setLoading,
     setCharacters,
     setMaxPage,
+    show_nsfw,
   ]);
 
   useEffect(() => {
