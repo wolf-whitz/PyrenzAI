@@ -34,7 +34,7 @@ export function MessageBox({
   setEditedMessage,
 }: MessageBoxProps) {
   const isUser = msg.type === 'user';
-  const isAssistant = msg.type === 'assistant';
+  const ischar = msg.type === 'char';
 
   const displayName = isUser ? msg.username || user.username : msg.name || char.name;
 
@@ -128,9 +128,8 @@ export function MessageBox({
             maxWidth: '100%',
             color: isUser ? userTextColor : charTextColor,
           }}
-          className={isUser ? 'user' : 'other'}
         >
-          {isGenerating && isAssistant && isLastMessage && !msg.text && (
+          {isGenerating && ischar && isLastMessage && !msg.text && (
             <TypingIndicator />
           )}
 
@@ -158,7 +157,11 @@ export function MessageBox({
               />
               <Box display="flex" justifyContent="flex-end" gap={1} mt={1}>
                 <PyrenzBlueButton
-                  onClick={() => msg.id && onSaveEdit(msg.id, editedMessage, isUser ? 'user' : 'char')}
+                  onClick={() => {
+                    if (msg.id) {
+                      onSaveEdit(msg.id, editedMessage, isUser ? 'user' : 'char');
+                    }
+                  }}
                   disabled={isLoading}
                   sx={{ backgroundColor: 'transparent' }}
                 >

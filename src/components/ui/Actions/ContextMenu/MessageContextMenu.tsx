@@ -10,7 +10,7 @@ interface MessageContextMenuProps {
   msg: {
     id?: string;
     text?: string;
-    type?: 'user' | 'assistant';
+    type?: 'user' | 'char';
     error?: boolean;
   };
   onRegenerate: (messageId: string) => void;
@@ -39,7 +39,7 @@ const menuConfig = {
       action: (props: MessageContextMenuProps) => () => props.msg.id && props.onEditClick(props.msg.id, props.msg.text || '', 'user'),
     },
   ],
-  assistant: [
+  char: [
     {
       icon: <RefreshIcon />,
       label: 'Regenerate',
@@ -80,7 +80,7 @@ export const MessageContextMenu = (props: MessageContextMenuProps) => {
     onClose();
   };
 
-  const menuItems = menuConfig[msg.type || 'user'];
+  const menuItems = menuConfig[msg.type || 'user'] || [];
 
   return (
     <Box p={1} display="flex" flexDirection="column">

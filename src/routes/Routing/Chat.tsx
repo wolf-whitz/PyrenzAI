@@ -18,7 +18,6 @@ export function ChatPage() {
 
   const {
     setFirstMessage,
-    setMessages,
     setUser,
     setChar,
     user,

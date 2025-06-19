@@ -42,19 +42,19 @@ export const useGenerateMessage = () => {
         type: 'user',
       };
 
-      const assistantMessage: Message = {
+      const charMessage: Message = {
         id: undefined,
         name: char.character_name,
         text: '',
         profile_image: char.user_avatar,
-        type: 'assistant',
+        type: 'char',
         isGenerate: true,
       };
 
       setMessages((prevMessages) => [
         ...prevMessages,
         userMessage,
-        assistantMessage,
+        charMessage,
       ]);
 
       try {

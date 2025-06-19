@@ -5,7 +5,7 @@ export const MessageSchema = z.object({
   name: z.string().optional(),
   text: z.string(),
   profile_image: z.string(),
-  type: z.enum(['user', 'assistant']),
+  type: z.enum(['user', 'char']),
   username: z.string().optional(),
   isGenerate: z.boolean().optional(),
   isFirst: z.boolean().optional(),

@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState, Suspense } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useChatStore, useUserStore } from '~/store';
-import {  ChatContainerProps, Character, User } from '@shared-types';
+import { ChatContainerProps, Character, User } from '@shared-types';
 import { ChatPageSpinner, ChatMain } from '@components';
 import clsx from 'clsx';
 
@@ -10,7 +10,7 @@ interface ChatContainerPropsExtended extends Omit<ChatContainerProps, 'char' | '
 }
 
 export function ChatContainer({ className = '', chat_uuid }: ChatContainerPropsExtended) {
-  const { messages, setMessages, firstMessage, user, char } = useChatStore();
+  const { user, char } = useChatStore();
   const { imageURL } = useUserStore();
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [bgImage, setBgImage] = useState<string | null>(null);
@@ -50,12 +50,9 @@ export function ChatContainer({ className = '', chat_uuid }: ChatContainerPropsE
         {isLoading && <ChatPageSpinner />}
         {!isLoading && (
           <ChatMain
-            user={user as User }
+            user={user as User}
             char={char as Character}
-            firstMessage={firstMessage}
-            previous_message={messages}
             isGenerating={isGenerating}
-            setMessages={setMessages}
             setIsGenerating={setIsGenerating}
             chat_uuid={chat_uuid}
           />

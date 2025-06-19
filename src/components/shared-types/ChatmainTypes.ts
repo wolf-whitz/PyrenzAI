@@ -15,8 +15,8 @@ export const ChatMessagesPropsSchema = z.object({
     gender: z.string().optional(),
     profile_image: z.string(),
   }),
-  onRegenerate: z.function().args(z.string()).returns(z.void()).optional(),
-  onRemove: z.function().args(z.string()).returns(z.void()).optional(),
+  onRegenerate: z.function().args(z.string()).returns(z.void()),
+  onRemove: z.function().args(z.string()).returns(z.void()),
 });
 
 export type ChatMessagesProps = z.infer<typeof ChatMessagesPropsSchema>;

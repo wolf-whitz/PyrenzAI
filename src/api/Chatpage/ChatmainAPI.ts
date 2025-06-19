@@ -1,39 +1,41 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '~/Utility/supabaseClient';
 import { useGenerateMessage } from '@api';
+import { useChatStore } from '~/store';
+import { Message, User, Character } from '@shared-types';
+
+interface ChatPageAPI {
+  isSettingsOpen: boolean;
+  isAdModalOpen: boolean;
+  setIsAdModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  toggleSettings: () => void;
+  handleSend: (message: string) => Promise<void>;
+  handleGoHome: () => void;
+  handleRemoveMessage: (messageId: string) => Promise<void>;
+  handleRegenerateMessage: (messageId: string) => Promise<void>;
+  handleEditMessage: (messageId: string, editedMessage: string, type: 'user' | 'char') => Promise<void>;
+}
 
 export const useChatPageAPI = (
   messagesEndRef: React.RefObject<HTMLDivElement>,
-  previous_message: any[],
-  setMessages: React.Dispatch<React.SetStateAction<any[]>>,
-  user: any,
-  char: any,
+  previous_message: Message[],
+  user: User,
+  char: Character,
   chat_uuid: string,
   setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>
-) => {
+): ChatPageAPI => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isAdModalOpen, setIsAdModalOpen] = useState(false);
   const generateMessage = useGenerateMessage();
   const navigate = useNavigate();
+  const { setMessages } = useChatStore();
 
-  useEffect(() => {
-    const scrollWithDelay = () => {
-      if (messagesEndRef?.current) {
-        setTimeout(() => {
-          messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-        }, 300);
-      }
-    };
-
-    scrollWithDelay();
-  }, [previous_message, messagesEndRef]);
-
-  const toggleSettings = () => {
+  const toggleSettings = (): void => {
     setIsSettingsOpen((prev) => !prev);
   };
 
-  const handleSend = async (message: string) => {
+  const handleSend = async (message: string): Promise<void> => {
     const trimmedMessage = message.trim();
     if (!trimmedMessage) return;
 
@@ -59,11 +61,11 @@ export const useChatPageAPI = (
     }
   };
 
-  const handleGoHome = () => {
+  const handleGoHome = (): void => {
     navigate('/home');
   };
 
-  const handleRemoveMessage = async (messageId: string) => {
+  const handleRemoveMessage = async (messageId: string): Promise<void> => {
     if (!messageId) return;
 
     try {
@@ -84,7 +86,7 @@ export const useChatPageAPI = (
     }
   };
 
-  const handleRegenerateMessage = async (messageId: string) => {
+  const handleRegenerateMessage = async (messageId: string): Promise<void> => {
     if (!messageId) return;
     try {
       const userMessage = previous_message.find(
@@ -105,7 +107,7 @@ export const useChatPageAPI = (
     messageId: string,
     editedMessage: string,
     type: 'user' | 'char'
-  ) => {
+  ): Promise<void> => {
     if (!messageId || !editedMessage) return;
 
     try {
@@ -124,7 +126,13 @@ export const useChatPageAPI = (
         setMessages((prevMessages) =>
           prevMessages.map((msg) =>
             msg.id === messageId && msg.type === type
-              ? { ...msg, text: editedMessage }
+              ? {
+                  ...msg,
+                  text: editedMessage,
+                  ...(type === 'user'
+                    ? { user_message: editedMessage }
+                    : { char_message: editedMessage }),
+                }
               : msg
           )
         );

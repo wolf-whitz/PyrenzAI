@@ -1,5 +1,5 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { ChatContainerProps, Message, Character, User } from '@shared-types';
+import React, { useRef } from 'react';
+import { ChatContainerProps, Character, User } from '@shared-types';
 import {
   SettingsSidebar,
   AdModal,
@@ -9,33 +9,26 @@ import {
 } from '@components';
 import { useChatPageAPI } from '@api';
 import { Fade, Slide, Box } from '@mui/material';
-
-interface MessageIdRef {
-  charId: string | null;
-  userId: string | null;
-}
+import { useChatStore } from '~/store'; 
 
 interface ChatMainProps extends Omit<ChatContainerProps, 'messageIdRef'> {
-  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
   setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>;
   chat_uuid: string;
   isGenerating: boolean;
   char: Character;
-  user: User;  
-  firstMessage?: string;
+  user: User;
 }
 
 export function ChatMain({
   user,
   char,
-  previous_message = [],
   isGenerating = false,
-  setMessages,
   setIsGenerating,
   chat_uuid,
-  firstMessage,
 }: ChatMainProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const { messages, firstMessage } = useChatStore();
 
   const {
     isSettingsOpen,
@@ -49,8 +42,7 @@ export function ChatMain({
     handleEditMessage,
   } = useChatPageAPI(
     messagesEndRef,
-    previous_message,
-    setMessages,
+    messages,
     user,
     char,
     chat_uuid,
@@ -71,7 +63,7 @@ export function ChatMain({
         <Box className="flex-1 w-full max-w-6xl mx-auto overflow-y-auto pb-16 lg:pb-20 xl:pb-20 pl-0 lg:pl-12">
           <ChatMessages
             firstMessage={firstMessage}
-            previous_message={previous_message.map((msg) => msg)}
+            previous_message={messages.map((msg) => msg)}
             user={user}
             char={char}
             isGenerating={isGenerating}

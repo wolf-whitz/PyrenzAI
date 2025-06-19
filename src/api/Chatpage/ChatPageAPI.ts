@@ -66,7 +66,7 @@ export const fetchChatData = async (
             name: Character.name || 'Anon',
             text: msg.char_message,
             profile_image: Character.profile_image || '',
-            type: 'assistant',
+            type: 'char',
             chat_uuid,
             gender: Character.gender,
           });

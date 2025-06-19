@@ -6,12 +6,8 @@ import { MessageBox, Character } from '@components';
 
 interface ChatMessagesExtendedProps extends ChatMessagesProps {
   setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>;
-  onEditMessage?: (
-    messageId: string,
-    editedMessage: string,
-    type: 'user' | 'char'
-  ) => void;
-  firstMessage?: string;
+  onEditMessage: (messageId: string, editedMessage: string, type: 'user' | 'char') => void;
+  firstMessage: string;
 }
 
 export function ChatMessages({
@@ -41,11 +37,7 @@ export function ChatMessages({
     }
   };
 
-  const handleEditClick = (
-    messageId: string,
-    currentMessage: string,
-    type: 'user' | 'char'
-  ) => {
+  const handleEditClick = (messageId: string, currentMessage: string, type: 'user' | 'char') => {
     setEditingMessageId(messageId);
     setEditingMessageType(type);
     setEditedMessage(currentMessage);
@@ -66,19 +58,11 @@ export function ChatMessages({
     setEditingMessageType(null);
   };
 
-  const defaultOnRegenerate = (messageId: string) => {};
-  const defaultOnRemove = (messageId: string) => {};
-  const defaultOnEditMessage = (
-    messageId: string,
-    editedMessage: string,
-    type: 'user' | 'char'
-  ) => {};
-
   const messages = firstMessage
     ? [
         {
           id: 'first-message',
-          type: 'assistant',
+          type: 'char',
           text: firstMessage,
           name: char.name,
           profile_image: char.profile_image,
@@ -101,9 +85,9 @@ export function ChatMessages({
             isLastMessage={isLastMessage}
             user={user as User}
             char={char as Character}
-            onRegenerate={onRegenerate || defaultOnRegenerate}
-            onRemove={onRemove || defaultOnRemove}
-            onEditMessage={onEditMessage || defaultOnEditMessage}
+            onRegenerate={onRegenerate}
+            onRemove={onRemove}
+            onEditMessage={onEditMessage}
             handleSpeak={handleSpeak}
             setIsGenerating={setIsGenerating}
             editingMessageId={editingMessageId}
