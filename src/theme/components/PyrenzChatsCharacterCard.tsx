@@ -10,8 +10,7 @@ import {
 import { styled } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PushPinIcon from '@mui/icons-material/PushPin';
-import { PyrenzRibbon } from '~/theme'; 
-
+import { PyrenzRibbon } from '~/theme';
 
 const StyledCardImage = styled('div')({
   width: '120px',
@@ -47,13 +46,16 @@ const StyledImage = styled('img')({
   objectFit: 'cover',
 });
 
-const ActionIconsContainer = styled('div')({
+const ActionIconsContainer = styled('div')(({ theme }) => ({
   position: 'absolute',
   top: '8px',
   right: '8px',
   display: 'flex',
   gap: '8px',
-});
+  [theme.breakpoints.down('sm')]: {
+    display: 'none',  
+  },
+}));
 
 interface PyrenzChatsCharacterCardProps {
   imageSrc: string;

@@ -8,6 +8,7 @@ import UploadFileIcon from '@mui/icons-material/UploadFile';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Character, Draft } from '@shared-types';
 import { PyrenzBlueButton } from '~/theme';
+import { useNavigate } from 'react-router-dom';
 
 interface FormActionsProps {
   onClear: () => void;
@@ -33,6 +34,7 @@ export function FormActions({
   const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
   const [isImportCharacterModalOpen, setIsImportCharacterModalOpen] =
     useState(false);
+  const navigate = useNavigate();
 
   const handleOpenDraftModal = () => {
     setIsDraftModalOpen(true);
@@ -51,7 +53,7 @@ export function FormActions({
   };
 
   const handleGuideClick = () => {
-    window.open('https://pyrenz-ai.gitbook.io/pyrenz-ai', '_blank');
+    navigate('/Docs');
   };
 
   return (
