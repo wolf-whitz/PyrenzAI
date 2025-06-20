@@ -19,7 +19,7 @@ async function insertTags(char_uuid: string, user_uuid: string, tags: string[]) 
 
   const { error } = await supabase
     .from('tags')
-    .insert(tagEntries);
+    .upsert(tagEntries, { onConflict: 'tag_name, char_uuid' });
 
   if (error) {
     console.error('Error inserting tags:', error);

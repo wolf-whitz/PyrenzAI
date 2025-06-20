@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   Menu,
   MenuItem,
@@ -24,17 +24,7 @@ interface TagsMenuProps {
 
 export function TagsMenu({ anchorEl, onClose, onTagClick }: TagsMenuProps) {
   const [tags, setTags] = useState<Tag[]>([]);
-  const [searchQuery, setSearchQuery] = useState<string>('');
-
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
-  };
-
-  const filteredTags = useMemo(() => {
-    return tags.filter((tag) => {
-      return tag.tag_name && typeof tag.tag_name === 'string' && tag.tag_name.toLowerCase().includes(searchQuery.toLowerCase());
-    });
-  }, [tags, searchQuery]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const fetchTags = async () => {
     const { data, error } = await supabase.from('tags').select('*');
@@ -46,11 +36,30 @@ export function TagsMenu({ anchorEl, onClose, onTagClick }: TagsMenuProps) {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (anchorEl) {
       fetchTags();
     }
   }, [anchorEl]);
+
+  const filteredTags = useMemo(() => {
+    return tags.filter((tag) =>
+      tag.tag_name && typeof tag.tag_name === 'string' && tag.tag_name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [tags, searchQuery]);
+
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+    }, 500);
+
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [searchQuery]);
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
 
   return (
     <Menu
@@ -78,8 +87,8 @@ export function TagsMenu({ anchorEl, onClose, onTagClick }: TagsMenuProps) {
           style={{
             maxHeight: 300,
             overflow: 'auto',
-            scrollbarWidth: 'none', // For Firefox
-            msOverflowStyle: 'none', // For Internet Explorer and Edge
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
           }}
         >
           {filteredTags.map((tag) => (
