@@ -68,43 +68,24 @@ export const useArchiveChatPageAPI = (
         ...new Set(chatsData.map((chat: Chat) => chat.char_uuid)),
       ];
 
-      const { data: publicCharactersData, error: publicCharactersError } =
-        await supabase
-          .from('public_characters')
+      const characterTables = ['public_characters', 'private_characters'];
+      let allCharactersData: Character[] = [];
+
+      for (const table of characterTables) {
+        const { data: charactersData, error: charactersError } = await supabase
+          .from(table)
           .select('char_uuid, name')
           .in('char_uuid', charUuids);
 
-      if (publicCharactersError) {
-        console.error(
-          'Error fetching public characters:',
-          publicCharactersError
-        );
+        if (charactersError) {
+          console.error(`Error fetching ${table}:`, charactersError);
+          continue;
+        }
+
+        if (charactersData) {
+          allCharactersData = [...allCharactersData, ...charactersData];
+        }
       }
-
-      const publicCharacterUuids: string[] = publicCharactersData
-        ? publicCharactersData.map((char) => char.char_uuid)
-        : [];
-      const remainingCharUuids: string[] = charUuids.filter(
-        (uuid) => !publicCharacterUuids.includes(uuid)
-      );
-
-      const { data: privateCharactersData, error: privateCharactersError } =
-        await supabase
-          .from('private_characters')
-          .select('char_uuid, name')
-          .in('char_uuid', remainingCharUuids);
-
-      if (privateCharactersError) {
-        console.error(
-          'Error fetching private characters:',
-          privateCharactersError
-        );
-      }
-
-      const allCharactersData: Character[] = [
-        ...(publicCharactersData || []),
-        ...(privateCharactersData || []),
-      ];
 
       const charactersMap: Record<string, string> = allCharactersData.reduce(
         (acc: Record<string, string>, character: Character) => {
@@ -172,7 +153,7 @@ export const useArchiveChatPageAPI = (
   };
 
   return {
-    chats,
+    chats: chats.slice(currentPage * chatsPerPage, (currentPage + 1) * chatsPerPage),
     characters,
     isLoading,
     handleCardClick,

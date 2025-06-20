@@ -1,20 +1,17 @@
-import { supabase } from '~/Utility/supabaseClient';
-import { GetUserUUID } from '@components';
 import React, { useEffect, useState, useRef } from 'react';
 import { saveImageToDB, getImageFromDB, openDB } from '~/Utility/IndexDB';
-import { Box, Typography, Stack } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { PyrenzBlueButton } from '~/theme';
 import { useUserStore } from '~/store';
+import { MessageCustomizationModal } from '@components'; 
 
 export function Cosmetic() {
   const [bgImage, setBgImage] = useState<string | null>(null);
   const [dragging, setDragging] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { customization, setImageURL, setCustomization } = useUserStore();
-
-  // Provide default values for customization
-  const { userTextColor = '#FFFFFF', charTextColor = '#FFFFFF' } = customization || {};
+  const { setImageURL } = useUserStore();
 
   useEffect(() => {
     const loadImage = async () => {
@@ -26,34 +23,9 @@ export function Cosmetic() {
       }
     };
     loadImage();
-    loadCustomizations();
   }, [setImageURL]);
 
-  const loadCustomizations = async () => {
-    const userUUID = await GetUserUUID();
-    const { data, error } = await supabase
-      .from('user_data')
-      .select('customization')
-      .eq('user_uuid', userUUID)
-      .single();
-
-    if (data && !error) {
-      const loadedCustomization = data.customization || {};
-      setCustomization({
-        userTextColor: loadedCustomization.userTextColor || '#FFFFFF',
-        charTextColor: loadedCustomization.charTextColor || '#FFFFFF',
-      });
-    } else {
-      setCustomization({
-        userTextColor: '#FFFFFF',
-        charTextColor: '#FFFFFF',
-      });
-    }
-  };
-
   const handleSave = async () => {
-    const userUUID = await GetUserUUID();
-
     if (bgImage) {
       const response = await fetch(bgImage);
       const blob = await response.blob();
@@ -65,15 +37,6 @@ export function Cosmetic() {
       const store = transaction.objectStore('images');
       store.delete('bgImage');
       setImageURL(null);
-    }
-
-    const { error } = await supabase
-      .from('user_data')
-      .update({ customization: { userTextColor, charTextColor } })
-      .eq('user_uuid', userUUID);
-
-    if (error) {
-      console.error('Error updating customizations:', error);
     }
   };
 
@@ -172,47 +135,28 @@ export function Cosmetic() {
         style={{ display: 'none' }}
         onChange={handleFileChange}
       />
-      <Stack direction="column" spacing={2} sx={{ mt: 3 }}>
-        <Stack direction="row" spacing={2} alignItems="center">
-          <Typography variant="body1" color="text.secondary">
-            User Text Color:
-          </Typography>
-          <input
-            type="color"
-            value={userTextColor || '#FFFFFF'}
-            onChange={(e) =>
-              setCustomization({
-                ...customization,
-                userTextColor: e.target.value,
-              })
-            }
-          />
-        </Stack>
-        <Stack direction="row" spacing={2} alignItems="center">
-          <Typography variant="body1" color="text.secondary">
-            Character Text Color:
-          </Typography>
-          <input
-            type="color"
-            value={charTextColor || '#FFFFFF'}
-            onChange={(e) =>
-              setCustomization({
-                ...customization,
-                charTextColor: e.target.value,
-              })
-            }
-          />
-        </Stack>
-      </Stack>
+      <PyrenzBlueButton
+        onClick={() => setIsModalOpen(true)}
+        variant="contained"
+        color="primary"
+        fullWidth
+        sx={{ mt: 2 }}
+      >
+        Message Customization
+      </PyrenzBlueButton>
       <PyrenzBlueButton
         onClick={handleSave}
         variant="contained"
         color="primary"
         fullWidth
-        sx={{ mt: 4 }}
+        sx={{ mt: 2 }}
       >
         Save Changes
       </PyrenzBlueButton>
+      <MessageCustomizationModal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </Box>
   );
 }

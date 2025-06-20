@@ -19,3 +19,4 @@ export * from './ImportCharacterModal';
 export * from './CreateProviderModal';
 
 export * from './PaymentModal';
+export * from './MessageCustomizationModal';

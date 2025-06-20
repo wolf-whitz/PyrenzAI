@@ -1,41 +1,8 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, MoreVertical, Loader2, Mic } from 'lucide-react';
+import { Send, MoreVertical, Loader2 } from 'lucide-react';
 import { Menu } from '@components';
 import { Character } from '@shared-types';
-import { usePyrenzAlert } from '~/provider';
-
-interface SpeechRecognitionEvent extends Event {
-  resultIndex: number;
-  results: {
-    isFinal: boolean;
-    [key: number]: {
-      transcript: string;
-    };
-  }[];
-}
-
-interface SpeechRecognitionErrorEvent extends Event {
-  error: string;
-}
-
-declare global {
-  interface Window {
-    SpeechRecognition: new () => SpeechRecognition;
-    webkitSpeechRecognition: new () => SpeechRecognition;
-  }
-}
-
-interface SpeechRecognition {
-  continuous: boolean;
-  interimResults: boolean;
-  onstart: () => void;
-  onerror: (event: SpeechRecognitionErrorEvent) => void;
-  onend: () => void;
-  onresult: (event: SpeechRecognitionEvent) => void;
-  start: () => void;
-  stop: () => void;
-}
 
 interface ChatInputProps {
   className?: string;
@@ -48,30 +15,21 @@ interface ChatInputProps {
 const MAX_CHAR_LIMIT = 1500;
 const MAX_TEXT_AREA_HEIGHT = 200;
 
-export function ChatInput({
-  className,
-  handleSend,
-  char,
-  isGenerating,
-}: ChatInputProps) {
+export function ChatInput({ className, handleSend, char, isGenerating }: ChatInputProps) {
   const [message, setMessage] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isListening, setIsListening] = useState(false);
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const showAlert = usePyrenzAlert();
 
-  const sendMessage = () => {
+  const sendMessage = useCallback(() => {
     const trimmedMessage = message.trim();
     if (!trimmedMessage) return;
-
     handleSend(trimmedMessage);
     setMessage('');
-  };
+  }, [message, handleSend]);
 
-  const handleMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleMessageChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(e.target.value);
-  };
+  }, []);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -79,54 +37,6 @@ export function ChatInput({
       textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, MAX_TEXT_AREA_HEIGHT)}px`;
     }
   }, [message]);
-
-  const toggleListening = () => {
-    if (isListening && recognitionRef.current) {
-      recognitionRef.current.stop();
-    } else {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SpeechRecognition) {
-        showAlert('Speech recognition is not supported in your browser.', 'alert');
-        return;
-      }
-
-      const recognition = new SpeechRecognition();
-      recognition.continuous = true;
-      recognition.interimResults = true;
-
-      recognition.onstart = () => {
-        setIsListening(true);
-      };
-
-      recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
-        console.error('Speech recognition error', event.error);
-        setIsListening(false);
-      };
-
-      recognition.onend = () => {
-        setIsListening(false);
-      };
-
-      recognition.onresult = (event: SpeechRecognitionEvent) => {
-        let interimTranscript = '';
-        let finalTranscript = '';
-
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-          const transcript = event.results[i][0].transcript;
-          if (event.results[i].isFinal) {
-            finalTranscript += transcript;
-          } else {
-            interimTranscript += transcript;
-          }
-        }
-
-        setMessage(finalTranscript || interimTranscript);
-      };
-
-      recognition.start();
-      recognitionRef.current = recognition;
-    }
-  };
 
   return (
     <>
@@ -146,7 +56,6 @@ export function ChatInput({
           >
             <MoreVertical size={20} />
           </motion.button>
-
           <textarea
             ref={textareaRef}
             value={message}
@@ -164,19 +73,6 @@ export function ChatInput({
             disabled={isGenerating}
             style={{ maxHeight: `${MAX_TEXT_AREA_HEIGHT}px` }}
           />
-
-          <motion.button
-            onClick={toggleListening}
-            className={`mr-2 text-gray-400 hover:text-white transition duration-200 p-2 rounded-full flex-shrink-0 ${
-              isListening ? 'text-blue-500' : ''
-            }`}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            aria-label={isListening ? "Stop recording" : "Record voice"}
-          >
-            <Mic size={20} />
-          </motion.button>
-
           <motion.button
             onClick={sendMessage}
             className={`ml-2 flex items-center gap-1 text-gray-400 transition duration-200 p-2 rounded-full flex-shrink-0 ${
@@ -207,7 +103,6 @@ export function ChatInput({
           </motion.button>
         </div>
       </motion.div>
-
       {isMenuOpen && <Menu onClose={() => setIsMenuOpen(false)} char={char as Character} />}
     </>
   );

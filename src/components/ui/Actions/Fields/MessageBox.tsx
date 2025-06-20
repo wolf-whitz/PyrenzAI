@@ -6,13 +6,10 @@ import {
 } from '@components';
 import {
   Box,
-  Avatar,
-  TextField,
   useTheme,
 } from '@mui/material';
-import { PyrenzMessageBox, PyrenzBlueButton } from '~/theme';
+import { PyrenzMessageBox } from '~/theme';
 import type { MessageBoxProps } from '@shared-types';
-import { useUserStore } from '~/store';
 
 export const MessageBox = React.memo(function MessageBox({
   msg,
@@ -26,14 +23,13 @@ export const MessageBox = React.memo(function MessageBox({
   handleSpeak,
   editingMessageId,
   editingMessageType,
-  editedMessage: _,
   isLoading,
   onEditClick,
   onSaveEdit,
   onCancelEdit,
 }: MessageBoxProps) {
   const isUser = msg.type === 'user';
-  const ischar = msg.type === 'char';
+  const isChar = msg.type === 'char';
   const displayName = isUser ? msg.username || user.username : msg.name || char.name;
   const isEditingThisMessage =
     editingMessageId === msg.id &&
@@ -51,7 +47,7 @@ export const MessageBox = React.memo(function MessageBox({
 
     const handler = setTimeout(() => {
       setDebouncedValue(localEditedMessage);
-    }, 500);  
+    }, 500);
 
     return () => {
       clearTimeout(handler);
@@ -59,9 +55,6 @@ export const MessageBox = React.memo(function MessageBox({
   }, [localEditedMessage, isEditingThisMessage]);
 
   const theme = useTheme();
-  const { customization } = useUserStore();
-  const { userTextColor = '#FFFFFF', charTextColor = '#FFFFFF' } = customization || {};
-
   const [menuPosition, setMenuPosition] = useState<{ top: number; left: number } | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -98,6 +91,12 @@ export const MessageBox = React.memo(function MessageBox({
     handleCloseMenu();
   };
 
+  const handleSaveEdit = () => {
+    if (msg.id) {
+      onSaveEdit(msg.id, debouncedValue, isUser ? 'user' : 'char');
+    }
+  };
+
   if (!msg.id && !isGenerating) return null;
 
   return (
@@ -108,15 +107,6 @@ export const MessageBox = React.memo(function MessageBox({
       justifyContent={isUser ? 'flex-end' : 'flex-start'}
       sx={{ position: 'relative', width: '100%', mb: 2 }}
     >
-      {!isUser && (
-        <Avatar
-          alt={displayName}
-          src={char.profile_image}
-          sx={{ width: 32, height: 32, mr: 1 }}
-          className="rounded-full"
-        />
-      )}
-
       <Box
         display="flex"
         flexDirection="column"
@@ -131,6 +121,16 @@ export const MessageBox = React.memo(function MessageBox({
       >
         <PyrenzMessageBox
           onClick={handleMessageBoxClick}
+          isUser={isUser}
+          displayName={displayName}
+          userAvatar={user.user_avatar}
+          charAvatar={char.profile_image}
+          isEditing={isEditingThisMessage}
+          localEditedMessage={localEditedMessage}
+          onChange={(e) => setLocalEditedMessage(e.target.value)}
+          onSaveEdit={handleSaveEdit}
+          onCancelEdit={onCancelEdit}
+          isLoading={isLoading}
           sx={{
             p: 2,
             borderRadius: '8px',
@@ -141,68 +141,20 @@ export const MessageBox = React.memo(function MessageBox({
             cursor: 'pointer',
             width: isEditingThisMessage ? '100%' : 'fit-content',
             maxWidth: '100%',
-            color: isUser ? userTextColor : charTextColor,
           }}
         >
-          {isGenerating && ischar && isLastMessage && !msg.text && <TypingIndicator />}
-
-          {isEditingThisMessage ? (
-            <Box display="flex" flexDirection="column" width="100%">
-              <TextField
-                value={localEditedMessage}
-                onChange={(e) => setLocalEditedMessage(e.target.value)}
-                autoFocus
-                multiline
-                fullWidth
-                minRows={3}
-                maxRows={20}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    padding: '8px',
-                    '& fieldset': {
-                      border: 'none',
-                    },
-                  },
-                  '& textarea': {
-                    overflow: 'auto',
-                  },
-                }}
-              />
-              <Box display="flex" justifyContent="flex-end" gap={1} mt={1}>
-                <PyrenzBlueButton
-                  onClick={() => {
-                    if (msg.id) {
-                      onSaveEdit(msg.id, debouncedValue, isUser ? 'user' : 'char');
-                    }
-                  }}
-                  disabled={isLoading}
-                  sx={{ backgroundColor: 'transparent' }}
-                >
-                  {isLoading ? 'Saving...' : 'Submit'}
-                </PyrenzBlueButton>
-                <PyrenzBlueButton
-                  onClick={onCancelEdit}
-                  disabled={isLoading}
-                  sx={{ backgroundColor: 'transparent' }}
-                >
-                  Cancel
-                </PyrenzBlueButton>
-              </Box>
-            </Box>
+          {isGenerating && isChar && isLastMessage && !msg.text ? (
+            <TypingIndicator />
           ) : (
-            <CustomMarkdown text={msg.text || ''} user={user} char={char} />
+            <CustomMarkdown
+              text={msg.text || ''}
+              user={user}
+              char={char}
+              dataState={isUser ? 'user' : 'char'}
+            />
           )}
         </PyrenzMessageBox>
       </Box>
-
-      {isUser && (
-        <Avatar
-          alt={displayName}
-          src={user.user_avatar}
-          sx={{ width: 32, height: 32, ml: 1 }}
-          className="rounded-full"
-        />
-      )}
 
       {menuPosition && !isEditingThisMessage && index !== 0 && (
         <Box

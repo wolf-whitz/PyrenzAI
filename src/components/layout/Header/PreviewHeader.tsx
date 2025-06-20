@@ -24,6 +24,7 @@ import { FaDiscord } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '~/Utility/supabaseClient';
 import { PyrenzStyledDrawer, PyrenzBlueButton } from '~/theme';
+import { useUserStore } from '~/store';
 
 interface HeaderProps {
   setShowLogin: (value: boolean) => void;
@@ -36,6 +37,7 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
   const { t } = useTranslation();
   const theme = useTheme();
   const isMediumOrSmaller = useMediaQuery(theme.breakpoints.down('md'));
+  const subscriptionPlan = useUserStore((state) => state.subscription_plan);
 
   useEffect(() => {
     const checkUserSession = async () => {
@@ -64,20 +66,22 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
       link: 'https://discord.com',
       external: true,
     },
-    {
+  ];
+
+  if (subscriptionPlan && subscriptionPlan.includes('MELON')) {
+    menuItems.push({
       name: 'Pyrenz+',
       icon: <PyrenzPlusIcon />,
       link: '/Subscription',
-    },
-  ];
+    });
+  }
 
   return (
-    <AppBar
-      position="static"
-      elevation={0}
-      sx={{ backgroundColor: 'gray.900' }}
-    >
-      <Toolbar className="flex justify-between items-center w-full max-w-screen-2xl mx-auto px-6">
+    <AppBar position="static" elevation={0} sx={{ backgroundColor: 'gray.900' }}>
+      <Toolbar
+        className="flex justify-between items-center w-full max-w-screen-2xl mx-auto px-6"
+        sx={{ overflowX: 'hidden' }}
+      >
         <div
           className="flex items-center space-x-4 cursor-pointer lg:ml-[60px]"
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
@@ -99,7 +103,7 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
                 key={name}
                 startIcon={icon}
                 sx={{ backgroundColor: 'transparent' }}
-                className="font-pyrenzfont hover:text-blue-600"
+                className="font-pyrenzfont hover:text-blue-600 whitespace-nowrap"
                 onClick={() =>
                   external
                     ? window.open(link, '_blank')
@@ -114,7 +118,7 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
                 <PyrenzBlueButton
                   startIcon={<LoginIcon />}
                   sx={{ backgroundColor: 'transparent' }}
-                  className="font-pyrenzfont hover:text-blue-600"
+                  className="font-pyrenzfont hover:text-blue-600 whitespace-nowrap"
                   onClick={() => setShowLogin(true)}
                 >
                   {t('buttons.login')}
@@ -123,7 +127,7 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
                   startIcon={<PersonAddIcon />}
                   variant="contained"
                   sx={{ backgroundColor: 'transparent' }}
-                  className="bg-[#E03201] font-pyrenzfont hover:bg-blue-600"
+                  className="bg-[#E03201] font-pyrenzfont hover:bg-blue-600 whitespace-nowrap"
                   onClick={() => setShowRegister(true)}
                 >
                   {t('buttons.signUp')}

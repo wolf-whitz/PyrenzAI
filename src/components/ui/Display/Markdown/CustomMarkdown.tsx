@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Typography, Box } from '@mui/material';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { useUserStore } from '~/store';
 
 interface CustomMarkdownProps {
   text?: string;
   char?: { name: string };
   user?: { username: string };
   ai_message?: string;
+  dataState?: 'user' | 'char';
 }
 
 export function CustomMarkdown({
@@ -17,8 +17,11 @@ export function CustomMarkdown({
   char,
   user,
   ai_message = '',
+  dataState,
 }: CustomMarkdownProps) {
   const [replacedText, setReplacedText] = useState<string>(text);
+
+  const { customization } = useUserStore();
 
   useEffect(() => {
     const replacePlaceholders = (content: string) =>
@@ -31,6 +34,28 @@ export function CustomMarkdown({
     setReplacedText(replacePlaceholders(text));
   }, [text, char, user, ai_message]);
 
+  const getColor = (
+    type: 'text' | 'italic' | 'quote',
+    state?: 'user' | 'char'
+  ): string => {
+    if (!customization || !state) return 'inherit';
+
+    const colorMap = {
+      user: {
+        text: customization.userTextColor,
+        italic: customization.userItalicColor,
+        quote: customization.userQuotedColor,
+      },
+      char: {
+        text: customization.charTextColor,
+        italic: customization.charItalicColor,
+        quote: customization.charQuotedColor,
+      },
+    };
+
+    return colorMap[state]?.[type] || 'inherit';
+  };
+
   return (
     <Box className="text-styles">
       <ReactMarkdown
@@ -39,7 +64,10 @@ export function CustomMarkdown({
           em: ({ children }) => (
             <Typography
               component="span"
-              sx={{ color: 'gray', fontStyle: 'italic', fontWeight: 'bold' }}
+              sx={{
+                color: getColor('italic', dataState),
+                fontStyle: 'italic',
+              }}
             >
               {children}
             </Typography>
@@ -47,56 +75,41 @@ export function CustomMarkdown({
           strong: ({ children }) => (
             <Typography
               component="span"
-              sx={{ color: 'gray', fontStyle: 'italic', fontWeight: 'bold' }}
+              sx={{
+                color: getColor('text', dataState),
+                fontWeight: 'bold',
+              }}
             >
               {children}
             </Typography>
           ),
           p: ({ children }) => (
-            <Typography component="p" sx={{ whiteSpace: 'pre-wrap' }}>
+            <Typography
+              component="p"
+              data-state={dataState}
+              sx={{
+                whiteSpace: 'pre-wrap',
+                color: getColor('text', dataState),
+              }}
+            >
               {children}
             </Typography>
           ),
-          code({ node, className, children, ...props }: any) {
-            const match = /language-(\w+)/.exec(className || '');
-            const isInline = !className;
-
-            if (!isInline) {
-              return (
-                <SyntaxHighlighter
-                  style={oneDark}
-                  language={match?.[1] || 'plaintext'}
-                  showLineNumbers
-                  PreTag="div"
-                  customStyle={{
-                    borderRadius: '8px',
-                    padding: '16px',
-                    fontSize: '0.9rem',
-                    overflowX: 'auto',
-                  }}
-                  {...props}
-                >
-                  {String(children).replace(/\n$/, '')}
-                </SyntaxHighlighter>
-              );
-            }
-
-            return (
-              <Typography
-                component="code"
-                sx={{
-                  bgcolor: 'rgba(255,255,255,0.1)',
-                  color: 'lightgray',
-                  fontFamily: 'monospace',
-                  px: 1,
-                  py: 0.5,
-                  borderRadius: 1,
-                }}
-              >
-                {children}
-              </Typography>
-            );
-          },
+          blockquote: ({ children }) => (
+            <Typography
+              component="blockquote"
+              data-state={dataState}
+              sx={{
+                color: getColor('quote', dataState),
+                borderLeft: '2px solid #ccc',
+                paddingLeft: 2,
+                marginLeft: 0,
+                fontStyle: 'italic',
+              }}
+            >
+              {children}
+            </Typography>
+          ),
           hr: () => null,
         }}
       >

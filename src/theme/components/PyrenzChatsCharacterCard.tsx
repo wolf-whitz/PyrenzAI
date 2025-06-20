@@ -6,6 +6,8 @@ import {
   IconButton,
   SxProps,
   Theme,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -46,31 +48,20 @@ const StyledImage = styled('img')({
   objectFit: 'cover',
 });
 
-const ActionIconsContainer = styled('div')(({ theme }) => ({
-  position: 'absolute',
-  top: '8px',
-  right: '8px',
-  display: 'flex',
-  gap: '8px',
-  [theme.breakpoints.down('sm')]: {
-    display: 'none',  
-  },
-}));
-
 interface PyrenzChatsCharacterCardProps {
   imageSrc: string;
   characterName: string;
   children?: React.ReactNode;
-  onCardClick?: () => void;
-  onContextMenu?: (event: React.MouseEvent) => void;
-  onDeleteClick?: () => void;
-  onPinClick?: () => void;
+  onCardClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
+  onContextMenu?: (event: React.MouseEvent<HTMLDivElement>) => void;
+  onDeleteClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  onPinClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   style?: React.CSSProperties;
   sx?: SxProps<Theme>;
   isPinned?: boolean;
 }
 
-export const PyrenzChatsCharacterCard = ({
+export const PyrenzChatsCharacterCard: React.FC<PyrenzChatsCharacterCardProps> = ({
   imageSrc,
   characterName,
   children,
@@ -81,7 +72,10 @@ export const PyrenzChatsCharacterCard = ({
   style,
   sx,
   isPinned = false,
-}: PyrenzChatsCharacterCardProps) => {
+}) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
   return (
     <Card
       onClick={onCardClick}
@@ -89,7 +83,8 @@ export const PyrenzChatsCharacterCard = ({
       style={style}
       sx={{
         display: 'flex',
-        width: '400px',
+        width: '100%', // Let the card take the full width of its container
+        maxWidth: '400px', // Set a maximum width for larger screens
         borderRadius: '16px',
         boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
         overflow: 'hidden',
@@ -113,28 +108,36 @@ export const PyrenzChatsCharacterCard = ({
         <StyledCardName>{characterName}</StyledCardName>
         {children}
       </StyledCardContent>
-      <ActionIconsContainer>
-        <IconButton
-          aria-label="pin"
-          title="Pin this chat"
-          onClick={(e) => {
-            e.stopPropagation();
-            onPinClick && onPinClick();
-          }}
-        >
-          <PushPinIcon style={{ color: '#f8f9fa' }} />
-        </IconButton>
-        <IconButton
-          aria-label="delete"
-          title="Delete this chat"
-          onClick={(e) => {
-            e.stopPropagation();
-            onDeleteClick && onDeleteClick();
-          }}
-        >
-          <DeleteIcon style={{ color: '#f8f9fa' }} />
-        </IconButton>
-      </ActionIconsContainer>
+      {!isMobile && (
+        <div style={{
+          position: 'absolute',
+          top: '8px',
+          right: '8px',
+          display: 'flex',
+          gap: '8px',
+        }}>
+          <IconButton
+            aria-label="pin"
+            title="Pin this chat"
+            onClick={(e) => {
+              e.stopPropagation();
+              onPinClick && onPinClick(e);
+            }}
+          >
+            <PushPinIcon style={{ color: '#f8f9fa' }} />
+          </IconButton>
+          <IconButton
+            aria-label="delete"
+            title="Delete this chat"
+            onClick={(e) => {
+              e.stopPropagation();
+              onDeleteClick && onDeleteClick(e);
+            }}
+          >
+            <DeleteIcon style={{ color: '#f8f9fa' }} />
+          </IconButton>
+        </div>
+      )}
     </Card>
   );
 };

@@ -15,8 +15,12 @@ interface InferenceSettings {
 }
 
 interface Customization {
-  userTextColor: string | null;
-  charTextColor: string | null;
+  userTextColor: string;
+  charTextColor: string;
+  userItalicColor: string;
+  charItalicColor: string;
+  userQuotedColor: string;
+  charQuotedColor: string;
 }
 
 interface UserStore {
@@ -76,6 +80,10 @@ export const useUserStore = create<UserStore>()(
       customization: {
         userTextColor: '#FFFFFF',
         charTextColor: '#FFFFFF',
+        userItalicColor: '#999999',
+        charItalicColor: '#999999',
+        userQuotedColor: '#AAAAAA',
+        charQuotedColor: '#93BEE6',
       },
       show_nsfw: false,
       blocked_tags: [],

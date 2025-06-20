@@ -79,11 +79,15 @@ export function SearchBar({
               </InputAdornment>
             ),
             sx: {
-              borderRadius: '9999px',
+              borderRadius: '10px',
               backgroundColor: '#1F2937',
               color: 'white',
               '& fieldset': { border: 'none' },
               '&:hover fieldset': { border: 'none' },
+              '& input': {
+                backgroundColor: 'transparent',  
+                color: 'white',  
+              },
             },
           }}
           sx={{

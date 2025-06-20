@@ -17,13 +17,14 @@ export const PyrenzBlueButton = styled(Button)<{
   color: 'white',
   backgroundColor: 'black',
   transition: 'all 0.3s ease',
-  borderRadius: '50px',
+  borderRadius: 6,  
   justifyContent: 'center',
   '&:hover': {
     animation: `${zoomIn} 0.3s ease forwards`,
     boxShadow: 'none',
     backgroundColor: '#add8e6',
     color: 'black',
+    borderRadius: 6,  
   },
   '&[data-state="loading"]': {
     opacity: 0.6,
@@ -31,17 +32,15 @@ export const PyrenzBlueButton = styled(Button)<{
     userSelect: 'none',
     position: 'relative',
   },
-  ...({ dataState }: { dataState?: string }) => ({
-    ...(dataState === 'loading' && {
-      '&::after': {
-        content: '""',
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-      },
-    }),
-  }),
+  ...({ dataState }: { dataState?: string }) => (dataState === 'loading' ? {
+    '&::after': {
+      content: '""',
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+    },
+  } : {}),
 });
 
 export const PyrenzBlueButtonWithLoading = ({

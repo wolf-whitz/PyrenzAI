@@ -1,12 +1,23 @@
 import React from 'react';
-import { Box, styled } from '@mui/material';
+import { Box, Avatar, TextField, styled } from '@mui/material';
 import { SxProps } from '@mui/system';
+import { PyrenzBlueButton } from '~/theme';
 
 interface PyrenzMessageBoxProps {
   children: React.ReactNode;
   onClick?: (event: React.MouseEvent) => void;
   sx?: SxProps;
   className?: string;
+  isUser?: boolean;
+  displayName?: string;
+  userAvatar?: string;
+  charAvatar?: string;
+  isEditing?: boolean;
+  localEditedMessage?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onSaveEdit?: () => void;
+  onCancelEdit?: () => void;
+  isLoading?: boolean;
 }
 
 const StyledPyrenzMessageBox = styled(Box)({
@@ -35,6 +46,16 @@ export const PyrenzMessageBox = ({
   onClick,
   sx,
   className,
+  isUser,
+  displayName,
+  userAvatar,
+  charAvatar,
+  isEditing,
+  localEditedMessage,
+  onChange,
+  onSaveEdit,
+  onCancelEdit,
+  isLoading,
 }: PyrenzMessageBoxProps) => {
   const handleClick = (event: React.MouseEvent) => {
     if (onClick) {
@@ -43,8 +64,78 @@ export const PyrenzMessageBox = ({
   };
 
   return (
-    <StyledPyrenzMessageBox onClick={handleClick} sx={sx} className={className}>
-      {children}
-    </StyledPyrenzMessageBox>
+    <Box
+      display="flex"
+      alignItems="flex-start"
+      justifyContent={isUser ? 'flex-end' : 'flex-start'}
+      sx={{ width: '100%' }}
+    >
+      {!isUser && charAvatar && (
+        <Avatar
+          alt={displayName}
+          src={charAvatar}
+          sx={{ width: 32, height: 32, mr: 1 }}
+          className="rounded-full"
+        />
+      )}
+      <StyledPyrenzMessageBox
+        onClick={handleClick}
+        sx={sx}
+        className={className}
+      >
+        {isEditing ? (
+          <Box display="flex" flexDirection="column" width="100%">
+            <TextField
+              value={localEditedMessage}
+              onChange={onChange}
+              autoFocus
+              multiline
+              fullWidth
+              minRows={3}
+              maxRows={20}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  padding: '8px',
+                  '& fieldset': {
+                    border: 'none',
+                  },
+                },
+                '& textarea': {
+                  overflow: 'auto',
+                },
+              }}
+            />
+            <Box display="flex" justifyContent="flex-end" gap={1} mt={1}>
+              <PyrenzBlueButton
+                onClick={onSaveEdit}
+                disabled={isLoading}
+                sx={{ backgroundColor: 'transparent' }}
+              >
+                {isLoading ? 'Saving...' : 'Submit'}
+              </PyrenzBlueButton>
+              <PyrenzBlueButton
+                onClick={onCancelEdit}
+                disabled={isLoading}
+                sx={{ backgroundColor: 'transparent' }}
+              >
+                Cancel
+              </PyrenzBlueButton>
+            </Box>
+          </Box>
+        ) : (
+          <Box>
+            {children}
+          </Box>
+        )}
+      </StyledPyrenzMessageBox>
+      {isUser && userAvatar && (
+        <Avatar
+          alt={displayName}
+          src={userAvatar}
+          sx={{ width: 32, height: 32, ml: 1 }}
+          className="rounded-full"
+        />
+      )}
+    </Box>
   );
 };
