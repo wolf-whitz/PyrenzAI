@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import { useArchiveChatPageAPI } from '@api';
 import { PyrenzChatsCharacterCard, PyrenzBlueButton } from '~/theme';
-import { Sidebar, MobileNav, CustomContextMenu } from '~/components';
+import { Sidebar, MobileNav } from '~/components';
 
 interface Chat {
   chat_uuid: string;
@@ -22,8 +22,6 @@ export function Archive() {
   const [open, setOpen] = useState<boolean>(true);
   const [showLoginModal, setShowLoginModal] = useState<boolean>(false);
   const [itemsToShow, setItemsToShow] = useState<number>(5);
-  const [anchorPosition, setAnchorPosition] = useState<{ top: number; left: number } | null>(null);
-  const [selectedChatUuid, setSelectedChatUuid] = useState<string | null>(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -40,7 +38,7 @@ export function Archive() {
     chats,
     characters,
     isLoading,
-    handleCardClick,
+    handleCardClick: handleChatSend,
     handleDeleteChat,
     handlePinChat,
   } = useArchiveChatPageAPI(open, handleClose);
@@ -48,47 +46,6 @@ export function Archive() {
   const truncateMessage = (message: string, length: number) => {
     return message.length > length ? `${message.substring(0, length)}...` : message;
   };
-
-  const handleCardPress = (event: React.MouseEvent<HTMLDivElement>, chatUuid: string) => {
-    if (isMobile) {
-      setAnchorPosition({ top: event.clientY, left: event.clientX });
-      setSelectedChatUuid(chatUuid);
-    } else {
-      handleCardClick(chatUuid);
-    }
-  };
-
-  const handleMenuClose = () => {
-    setAnchorPosition(null);
-    setSelectedChatUuid(null);
-  };
-
-  const handlePinClick = async () => {
-    if (selectedChatUuid) {
-      await handlePinChat(selectedChatUuid);
-      handleMenuClose();
-    }
-  };
-
-  const handleDeleteClick = async () => {
-    if (selectedChatUuid) {
-      await handleDeleteChat(selectedChatUuid);
-      handleMenuClose();
-    }
-  };
-
-  const handleChatClick = () => {
-    if (selectedChatUuid) {
-      handleCardClick(selectedChatUuid);
-      handleMenuClose();
-    }
-  };
-
-  const menuItems = [
-    { label: 'Chat', action: handleChatClick },
-    { label: 'Pin', action: handlePinClick },
-    { label: 'Delete', action: handleDeleteClick },
-  ];
 
   return (
     <Box
@@ -130,8 +87,7 @@ export function Archive() {
                   <Box key={chat.chat_uuid} mx={2} mb={4} position="relative">
                     <PyrenzChatsCharacterCard
                       sx={{
-                        transition:
-                          'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
+                        transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
                         '&:hover': {
                           transform: 'scale(1.05)',
                           boxShadow: 6,
@@ -139,7 +95,9 @@ export function Archive() {
                       }}
                       imageSrc={chat.preview_image}
                       characterName={characters[chat.char_uuid]}
-                      onCardClick={(e: React.MouseEvent<HTMLDivElement>) => handleCardPress(e, chat.chat_uuid)}
+                      ChatSend={() => handleChatSend(chat.chat_uuid)}
+                      onPinClick={() => handlePinChat(chat.chat_uuid)}
+                      onDeleteClick={() => handleDeleteChat(chat.chat_uuid)}
                       isPinned={chat.is_pinned}
                     >
                       <Typography variant="body2" color="text.secondary">
@@ -157,13 +115,6 @@ export function Archive() {
                 </Box>
               )}
             </>
-          )}
-          {anchorPosition && (
-            <CustomContextMenu
-              items={menuItems}
-              onClose={handleMenuClose}
-              anchorPosition={anchorPosition}
-            />
           )}
         </Box>
       </Box>

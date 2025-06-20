@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Avatar, TextField, styled } from '@mui/material';
 import { SxProps } from '@mui/system';
 import { PyrenzBlueButton } from '~/theme';
+import { useUserStore } from '~/store';
 
 interface PyrenzMessageBoxProps {
   children: React.ReactNode;
@@ -31,8 +32,8 @@ const StyledPyrenzMessageBox = styled(Box, {
   margin: '10px',
   backgroundColor:
     dataState === 'user'
-      ? 'rgba(255, 255, 255, 0.2)'  
-      : 'rgba(20, 24, 28, 0.6)',  
+      ? 'rgba(255, 255, 255, 0.2)'
+      : 'rgba(20, 24, 28, 0.6)',
   backgroundImage:
     dataState === 'char'
       ? 'linear-gradient(135deg, rgba(173, 216, 230, 0.1), rgba(0, 0, 0, 0.2))'
@@ -55,7 +56,6 @@ const StyledPyrenzMessageBox = styled(Box, {
     transform: 'translateY(-2px)',
   },
 }));
-
 
 export const PyrenzMessageBox = ({
   children,

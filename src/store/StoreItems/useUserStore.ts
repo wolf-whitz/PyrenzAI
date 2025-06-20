@@ -51,7 +51,7 @@ interface UserStore {
   setInferenceSettings: (settings: InferenceSettings) => void;
   setModelIdentifiers: (models: ModelIdentifier[]) => void;
   setMaxTokenLimit: (limit: number) => void;
-  setCustomization: (customization: Customization) => void;
+  setCustomization: (customization: Partial<Customization>) => void;
   toggleShowNSFW: () => void;
   setBlockedTags: (tags: string[]) => void;
 }
@@ -99,7 +99,10 @@ export const useUserStore = create<UserStore>()(
       setInferenceSettings: (settings) => set({ inferenceSettings: settings }),
       setModelIdentifiers: (models) => set({ modelIdentifiers: models }),
       setMaxTokenLimit: (limit) => set({ maxTokenLimit: limit }),
-      setCustomization: (customization) => set({ customization }),
+      setCustomization: (customization) =>
+        set((state) => ({
+          customization: { ...state.customization, ...customization },
+        })),
       toggleShowNSFW: () => set((state) => ({ show_nsfw: !state.show_nsfw })),
       setBlockedTags: (tags) => set({ blocked_tags: tags }),
     }),

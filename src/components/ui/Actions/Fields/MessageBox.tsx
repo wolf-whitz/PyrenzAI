@@ -28,7 +28,7 @@ export const MessageBox = React.memo(function MessageBox({
   onSaveEdit,
   onCancelEdit,
 }: MessageBoxProps) {
-  const dataState = msg.type;  
+  const dataState = msg.type;
   const displayName = dataState === 'user' ? msg.username || user.username : msg.name || char.name;
   const isEditingThisMessage = editingMessageId === msg.id && editingMessageType === dataState;
 

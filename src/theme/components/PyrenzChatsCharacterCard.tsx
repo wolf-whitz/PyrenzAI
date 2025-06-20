@@ -1,17 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Card,
   CardContent,
   Typography,
+  Button,
   IconButton,
+  Menu,
+  MenuItem,
   SxProps,
   Theme,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import DeleteIcon from '@mui/icons-material/Delete';
-import PushPinIcon from '@mui/icons-material/PushPin';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { PyrenzRibbon } from '~/theme';
 
 const StyledCardImage = styled('div')({
@@ -52,8 +54,7 @@ interface PyrenzChatsCharacterCardProps {
   imageSrc: string;
   characterName: string;
   children?: React.ReactNode;
-  onCardClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
-  onContextMenu?: (event: React.MouseEvent<HTMLDivElement>) => void;
+  ChatSend?: (event: React.MouseEvent<HTMLDivElement>) => void;
   onDeleteClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   onPinClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   style?: React.CSSProperties;
@@ -65,8 +66,7 @@ export const PyrenzChatsCharacterCard: React.FC<PyrenzChatsCharacterCardProps> =
   imageSrc,
   characterName,
   children,
-  onCardClick,
-  onContextMenu,
+  ChatSend,
   onDeleteClick,
   onPinClick,
   style,
@@ -75,22 +75,28 @@ export const PyrenzChatsCharacterCard: React.FC<PyrenzChatsCharacterCardProps> =
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
     <Card
-      onClick={onCardClick}
-      onContextMenu={onContextMenu}
       style={style}
       sx={{
         display: 'flex',
-        width: '100%', // Let the card take the full width of its container
-        maxWidth: '400px', // Set a maximum width for larger screens
+        width: '100%',
+        maxWidth: '400px',
         borderRadius: '16px',
         boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
         overflow: 'hidden',
         backgroundColor: '#111827',
         color: '#f8f9fa',
-        cursor: 'pointer',
         position: 'relative',
         transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
         '&:hover': {
@@ -106,38 +112,61 @@ export const PyrenzChatsCharacterCard: React.FC<PyrenzChatsCharacterCardProps> =
       </StyledCardImage>
       <StyledCardContent>
         <StyledCardName>{characterName}</StyledCardName>
-        {children}
+        <Typography variant="body2" color="text.secondary">
+          {children}
+        </Typography>
       </StyledCardContent>
-      {!isMobile && (
-        <div style={{
+      <IconButton
+        aria-label="more"
+        aria-controls="long-menu"
+        aria-haspopup="true"
+        onClick={handleMenuClick}
+        sx={{
           position: 'absolute',
-          top: '8px',
-          right: '8px',
-          display: 'flex',
-          gap: '8px',
+          top: 8,
+          right: 8,
+          color: 'inherit',
+        }}
+      >
+        <MoreVertIcon />
+      </IconButton>
+      <Menu
+        id="long-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+        PaperProps={{
+          style: {
+            width: '20ch',
+          },
+        }}
+      >
+        <MenuItem onClick={(e) => {
+          handleClose();
+          if (ChatSend) {
+            ChatSend(e as unknown as React.MouseEvent<HTMLDivElement>);
+          }
         }}>
-          <IconButton
-            aria-label="pin"
-            title="Pin this chat"
-            onClick={(e) => {
-              e.stopPropagation();
-              onPinClick && onPinClick(e);
-            }}
-          >
-            <PushPinIcon style={{ color: '#f8f9fa' }} />
-          </IconButton>
-          <IconButton
-            aria-label="delete"
-            title="Delete this chat"
-            onClick={(e) => {
-              e.stopPropagation();
-              onDeleteClick && onDeleteClick(e);
-            }}
-          >
-            <DeleteIcon style={{ color: '#f8f9fa' }} />
-          </IconButton>
-        </div>
-      )}
+          Chat Now
+        </MenuItem>
+        <MenuItem onClick={(e) => {
+          handleClose();
+          if (onPinClick) {
+            onPinClick(e as unknown as React.MouseEvent<HTMLButtonElement>);
+          }
+        }}>
+          Pin Chat
+        </MenuItem>
+        <MenuItem onClick={(e) => {
+          handleClose();
+          if (onDeleteClick) {
+            onDeleteClick(e as unknown as React.MouseEvent<HTMLButtonElement>);
+          }
+        }}>
+          Delete Chat
+        </MenuItem>
+      </Menu>
     </Card>
   );
 };
