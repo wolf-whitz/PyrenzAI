@@ -16,6 +16,36 @@ export function Memory() {
   const tokenizer = useMemo(() => new LlamaTokenizer(), []);
 
   useEffect(() => {
+    const fetchMemory = async () => {
+      if (!chat_uuid) {
+        showAlert('Unknown Chat', 'alert');
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from('chats')
+          .select('characters_memories')
+          .eq('chat_uuid', chat_uuid)
+          .single();
+
+        if (error) {
+          throw error;
+        }
+
+        if (data) {
+          setTextValue(data.characters_memories || '');
+        }
+      } catch (error) {
+        console.error('Error fetching memory:', error);
+        showAlert('Failed to fetch memory. Please try again.', 'alert');
+      }
+    };
+
+    fetchMemory();
+  }, [chat_uuid, showAlert]);
+
+  useEffect(() => {
     setTokenCount(null);
     const timeout = setTimeout(() => {
       const tokens = tokenizer.encode(textValue);
@@ -46,7 +76,6 @@ export function Memory() {
       }
 
       showAlert('Memory updated successfully!', 'success');
-      setTextValue('');
     } catch (error) {
       console.error('Error updating memory:', error);
       showAlert('Failed to update memory. Please try again.', 'alert');

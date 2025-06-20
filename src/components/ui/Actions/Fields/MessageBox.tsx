@@ -28,12 +28,9 @@ export const MessageBox = React.memo(function MessageBox({
   onSaveEdit,
   onCancelEdit,
 }: MessageBoxProps) {
-  const isUser = msg.type === 'user';
-  const isChar = msg.type === 'char';
-  const displayName = isUser ? msg.username || user.username : msg.name || char.name;
-  const isEditingThisMessage =
-    editingMessageId === msg.id &&
-    editingMessageType === (isUser ? 'user' : 'char');
+  const dataState = msg.type;  
+  const displayName = dataState === 'user' ? msg.username || user.username : msg.name || char.name;
+  const isEditingThisMessage = editingMessageId === msg.id && editingMessageType === dataState;
 
   const [localEditedMessage, setLocalEditedMessage] = useState(msg.text || '');
   const [debouncedValue, setDebouncedValue] = useState(localEditedMessage);
@@ -93,7 +90,7 @@ export const MessageBox = React.memo(function MessageBox({
 
   const handleSaveEdit = () => {
     if (msg.id) {
-      onSaveEdit(msg.id, debouncedValue, isUser ? 'user' : 'char');
+      onSaveEdit(msg.id, debouncedValue, dataState);
     }
   };
 
@@ -104,13 +101,13 @@ export const MessageBox = React.memo(function MessageBox({
       key={msg.id ? `${msg.id}-${index}` : `temp-${index}`}
       display="flex"
       alignItems="flex-start"
-      justifyContent={isUser ? 'flex-end' : 'flex-start'}
+      justifyContent={dataState === 'user' ? 'flex-end' : 'flex-start'}
       sx={{ position: 'relative', width: '100%', mb: 2 }}
     >
       <Box
         display="flex"
         flexDirection="column"
-        alignItems={isUser ? 'flex-end' : 'flex-start'}
+        alignItems={dataState === 'user' ? 'flex-end' : 'flex-start'}
         sx={{
           width: '100%',
           maxWidth: '80%',
@@ -121,7 +118,7 @@ export const MessageBox = React.memo(function MessageBox({
       >
         <PyrenzMessageBox
           onClick={handleMessageBoxClick}
-          isUser={isUser}
+          dataState={dataState}
           displayName={displayName}
           userAvatar={user.user_avatar}
           charAvatar={char.profile_image}
@@ -143,14 +140,14 @@ export const MessageBox = React.memo(function MessageBox({
             maxWidth: '100%',
           }}
         >
-          {isGenerating && isChar && isLastMessage && !msg.text ? (
+          {isGenerating && dataState === 'char' && isLastMessage && !msg.text ? (
             <TypingIndicator />
           ) : (
             <CustomMarkdown
               text={msg.text || ''}
               user={user}
               char={char}
-              dataState={isUser ? 'user' : 'char'}
+              dataState={dataState}
             />
           )}
         </PyrenzMessageBox>

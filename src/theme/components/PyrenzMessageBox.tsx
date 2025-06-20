@@ -8,7 +8,7 @@ interface PyrenzMessageBoxProps {
   onClick?: (event: React.MouseEvent) => void;
   sx?: SxProps;
   className?: string;
-  isUser?: boolean;
+  dataState: 'user' | 'char';
   displayName?: string;
   userAvatar?: string;
   charAvatar?: string;
@@ -20,14 +20,26 @@ interface PyrenzMessageBoxProps {
   isLoading?: boolean;
 }
 
-const StyledPyrenzMessageBox = styled(Box)({
+const StyledPyrenzMessageBox = styled(Box, {
+  shouldForwardProp: (prop) => prop !== 'dataState',
+})<{ dataState: 'user' | 'char' }>(({ dataState }) => ({
   display: 'flex',
   flexDirection: 'column',
   maxWidth: '60%',
   padding: '10px 15px',
   borderRadius: '18px',
   margin: '10px',
-  backgroundColor: '#374151',
+  backgroundColor:
+    dataState === 'user'
+      ? 'rgba(255, 255, 255, 0.2)'  
+      : 'rgba(20, 24, 28, 0.6)',  
+  backgroundImage:
+    dataState === 'char'
+      ? 'linear-gradient(135deg, rgba(173, 216, 230, 0.1), rgba(0, 0, 0, 0.2))'
+      : 'none',
+  backdropFilter: 'blur(14px)',
+  WebkitBackdropFilter: 'blur(14px)',
+  border: '1px solid rgba(255, 255, 255, 0.08)',
   color: '#fff',
   boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.1)',
   wordWrap: 'break-word',
@@ -35,18 +47,22 @@ const StyledPyrenzMessageBox = styled(Box)({
   cursor: 'pointer',
   transition: 'transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease',
   '&:hover': {
-    backgroundColor: 'rgba(55, 65, 81, 0.8)',
-    transform: 'translateY(-2px)',
+    backgroundColor:
+      dataState === 'user'
+        ? 'rgba(255, 255, 255, 0.15)'
+        : 'rgba(20, 24, 28, 0.5)',
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
+    transform: 'translateY(-2px)',
   },
-});
+}));
+
 
 export const PyrenzMessageBox = ({
   children,
   onClick,
   sx,
   className,
-  isUser,
+  dataState,
   displayName,
   userAvatar,
   charAvatar,
@@ -67,10 +83,10 @@ export const PyrenzMessageBox = ({
     <Box
       display="flex"
       alignItems="flex-start"
-      justifyContent={isUser ? 'flex-end' : 'flex-start'}
+      justifyContent={dataState === 'user' ? 'flex-end' : 'flex-start'}
       sx={{ width: '100%' }}
     >
-      {!isUser && charAvatar && (
+      {dataState !== 'user' && charAvatar && (
         <Avatar
           alt={displayName}
           src={charAvatar}
@@ -82,6 +98,7 @@ export const PyrenzMessageBox = ({
         onClick={handleClick}
         sx={sx}
         className={className}
+        dataState={dataState}
       >
         {isEditing ? (
           <Box display="flex" flexDirection="column" width="100%">
@@ -128,7 +145,7 @@ export const PyrenzMessageBox = ({
           </Box>
         )}
       </StyledPyrenzMessageBox>
-      {isUser && userAvatar && (
+      {dataState === 'user' && userAvatar && (
         <Avatar
           alt={displayName}
           src={userAvatar}
