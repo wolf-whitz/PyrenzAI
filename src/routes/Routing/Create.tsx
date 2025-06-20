@@ -12,14 +12,14 @@ import { supabase } from '~/Utility/supabaseClient';
 import { useParams } from 'react-router-dom';
 import { useCharacterStore, useUserStore } from '~/store';
 import { Character } from '@shared-types';
-import { User } from '@supabase/supabase-js'; // Make sure to import the User type from Supabase
+import { User } from '@supabase/supabase-js';  
 
 export function CreatePage() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
   const [characterUpdate, setCharacterUpdate] = useState(false);
   const [creatorName, setCreatorName] = useState<string | null>(null);
-  const [user, setUser] = useState<User | null>(null); // Explicitly define the type
+  const [user, setUser] = useState<User | null>(null); 
 
   const setCharacter = useCharacterStore((state) => state.setCharacter);
   const user_uuid = useUserStore((state) => state.userUUID);

@@ -1,88 +1,71 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   Button,
-  CircularProgress,
   Box,
   Modal,
   Backdrop,
   Fade,
-  Typography,
   TextField,
   IconButton,
-  InputAdornment
+  InputAdornment,
+  CircularProgress
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { ButtonType, ModalResultType } from '@shared-types';
-import { Tag, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
+import { supabase } from '~/Utility/supabaseClient';
 
 interface MoreButtonsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onButtonClick: (functionName: string, type: string, maxCharacter?: number, page?: number, tag?: string) => void;
-  buttons: ButtonType[];
-  onQuery: (query: string) => void;
-  modalResults: ModalResultType[];
-  loading: boolean;
-  searchQuery: string;
+  onButtonTagClicked: (tag: string) => void;
 }
-
-const LoadingSpinner = () => (
-  <div className="flex justify-center items-center">
-    <CircularProgress />
-  </div>
-);
 
 export function MoreButtonsModal({
   isOpen,
   onClose,
-  onButtonClick,
-  buttons,
-  onQuery,
-  modalResults,
-  loading: propLoading,
-  searchQuery: propSearchQuery,
+  onButtonTagClicked,
 }: MoreButtonsModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
-  const [searchQuery, setSearchQuery] = useState(propSearchQuery);
-  const [loading, setLoading] = useState(propLoading);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [tags, setTags] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  React.useEffect(() => {
-    setSearchQuery(propSearchQuery);
-  }, [propSearchQuery]);
+  useEffect(() => {
+    const fetchTags = async () => {
+      setIsLoading(true);
+      let query = supabase
+        .from('tags')
+        .select('tag_name');
+
+      if (searchQuery) {
+        query = query.ilike('tag_name', `%${searchQuery}%`);
+      }
+
+      const { data, error } = await query.limit(10);
+
+      if (error) {
+        console.error('Error fetching tags:', error);
+      } else {
+        setTags(data.map(tag => tag.tag_name));
+      }
+      setIsLoading(false);
+    };
+
+    const timer = setTimeout(() => {
+      fetchTags();
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
   };
 
-  const handleSearchSubmit = () => {
-    setLoading(true);
-    onQuery(searchQuery);
-    setLoading(false);
-    onClose();
-  };
-
-  const handleKeyPress = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter') {
-      handleSearchSubmit();
-    }
-  };
-
-  const filteredModalButtons = modalResults.length > 0 ? modalResults : buttons;
-
-  const handleButtonClick = (btn: ModalResultType | ButtonType) => {
-    if ('Function' in btn && 'type' in btn) {
-      onButtonClick(
-        btn.Function,
-        btn.type,
-        btn.max_character || 10,
-        btn.page || 1,
-        btn.tag
-      );
-    } else {
-      onQuery(btn.name);
-    }
+  const handleTagClick = (tag: string) => {
+    onButtonTagClicked(tag);
     onClose();
   };
 
@@ -124,59 +107,36 @@ export function MoreButtonsModal({
               placeholder="Search for characters via tags, Male, Female, etc!"
               value={searchQuery}
               onChange={handleSearch}
-              onKeyPress={handleKeyPress}
               fullWidth
               margin="normal"
               variant="outlined"
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <IconButton onClick={handleSearchSubmit} edge="start">
-                      <Search />
+                    <IconButton edge="start">
+                      {isLoading ? <CircularProgress size={24} /> : <Search />}
                     </IconButton>
                   </InputAdornment>
                 ),
               }}
             />
-            <div className="flex flex-col gap-2">
-              {loading ? (
-                <LoadingSpinner />
-              ) : filteredModalButtons.length > 0 ? (
-                filteredModalButtons.map((btn, index) => (
-                  <motion.div
-                    key={index}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <Button
-                      variant="outlined"
-                      startIcon={
-                        'icon' in btn && btn.icon ? (
-                          React.createElement(btn.icon, { size: 24 })
-                        ) : (
-                          <Tag size={24} />
-                        )
-                      }
-                      onClick={() => handleButtonClick(btn)}
-                      fullWidth
-                      className="justify-start normal-case text-base"
-                      sx={{
-                        borderColor: '#add8e6',
-                        color: '#fff',
-                        '&:hover': {
-                          borderColor: '#add8e6',
-                        },
-                      }}
-                    >
-                      {'icon' in btn ? t(btn.label) : btn.name}
-                    </Button>
-                  </motion.div>
-                ))
-              ) : (
-                <Typography variant="body1" align="center">
-                  No tags found
-                </Typography>
-              )}
+            <div className="flex flex-wrap gap-2 mb-4">
+              {tags.map((tag, index) => (
+                <Button
+                  key={index}
+                  variant="outlined"
+                  onClick={() => handleTagClick(tag)}
+                  sx={{
+                    borderColor: '#add8e6',
+                    color: '#fff',
+                    '&:hover': {
+                      borderColor: '#add8e6',
+                    },
+                  }}
+                >
+                  {tag}
+                </Button>
+              ))}
             </div>
           </motion.div>
         </Box>

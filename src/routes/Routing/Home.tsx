@@ -31,16 +31,13 @@ export function Home() {
     t,
     itemsPerPage,
     handleButtonClick,
+    onButtonTagClicked,  
   } = useHomepageAPI();
 
   const toggleMode = () => {
     setShowLogin(!showLogin);
     setShowRegister(!showRegister);
   };
-
-  const onQuery = useCallback((query: string) => {
-    setSearch(query);
-  }, [setSearch]);
 
   return (
     <Box
@@ -126,7 +123,7 @@ export function Home() {
               </h2>
               <CustomButton
                 onButtonClick={handleButtonClick}
-                onQuery={onQuery}
+                onButtonTagClicked={onButtonTagClicked}
                 aria-label={t('ariaLabels.customActionButton')}
               />
             </Box>

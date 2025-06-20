@@ -7,7 +7,7 @@ export async function GetLatestCharacters(
   maxCharacter: number,
   page: number
 ): Promise<Character[]> {
-  if (type === 'GetLatestCharacter') {
+  if (type === 'latest') {
     const { show_nsfw } = useUserStore.getState();
 
     let query = supabase

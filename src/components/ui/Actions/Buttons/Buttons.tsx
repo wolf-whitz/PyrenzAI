@@ -1,14 +1,12 @@
 import { motion } from 'framer-motion';
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { buttons } from '@shared-types';
 import { MoreButtonsModal } from '@components';
-import { PyrenzBlueButton, NSFWSwitch } from '~/theme'; 
-import { useUserStore } from '~/store';
+import { PyrenzBlueButton, NSFWSwitch } from '~/theme';
 
 interface CustomButtonProps {
   onButtonClick: (
-    func: string,
     type: string,
     maxCharacter?: number,
     page?: number,
@@ -16,22 +14,18 @@ interface CustomButtonProps {
     gender?: 'male' | 'female',
     searchQuery?: string
   ) => void;
-  onQuery: (query: string) => void;
+  onButtonTagClicked: (tag: string) => void;
 }
 
-export function CustomButton({ onButtonClick, onQuery }: CustomButtonProps) {
+export function CustomButton({ onButtonClick, onButtonTagClicked }: CustomButtonProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [visibleButtons] = useState(buttons);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [modalResults, setModalResults] = useState([]);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const { t } = useTranslation();
 
-  const showNSFW = useUserStore((state) => state.show_nsfw);
-
   const handleButtonClick = async (
-    func: string,
     type: string,
     maxCharacter?: number,
     page?: number,
@@ -39,22 +33,10 @@ export function CustomButton({ onButtonClick, onQuery }: CustomButtonProps) {
     gender?: 'male' | 'female'
   ) => {
     setLoading(true);
-    await onButtonClick(func, type, maxCharacter, page, tag, gender, searchQuery);
+    await onButtonClick(type, maxCharacter, page, tag, gender, searchQuery);
+    console.log(type )
     setLoading(false);
   };
-
-  const handleQuery = (query: string) => {
-    onQuery(query);
-  };
-
-  useEffect(() => {
-    const reloadCharacters = async () => {
-      //Reload mechanism
-      setLoading(true);
-    };
-
-    reloadCharacters();
-  }, [showNSFW]);
 
   return (
     <motion.div
@@ -77,7 +59,6 @@ export function CustomButton({ onButtonClick, onQuery }: CustomButtonProps) {
             startIcon={React.createElement(btn.icon, { size: 18 })}
             onClick={() =>
               handleButtonClick(
-                btn.Function,
                 btn.type,
                 btn.max_character,
                 btn.page,
@@ -87,7 +68,7 @@ export function CustomButton({ onButtonClick, onQuery }: CustomButtonProps) {
                   : undefined
               )
             }
-           >
+          >
             {t(btn.label)}
           </PyrenzBlueButton>
         </motion.div>
@@ -105,12 +86,7 @@ export function CustomButton({ onButtonClick, onQuery }: CustomButtonProps) {
         <MoreButtonsModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          onButtonClick={handleButtonClick}
-          buttons={buttons}
-          onQuery={handleQuery}
-          modalResults={modalResults}
-          loading={loading}
-          searchQuery={searchQuery}
+          onButtonTagClicked={onButtonTagClicked}
         />
       )}
     </motion.div>

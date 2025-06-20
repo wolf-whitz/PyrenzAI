@@ -7,7 +7,7 @@ export async function GetRandomCharacters(
   maxCharacter: number,
   page: number
 ): Promise<Character[]> {
-  if (type === 'GetRandomCharacter') {
+  if (type === 'random') {
     const { show_nsfw } = useUserStore.getState();
 
     let query = supabase

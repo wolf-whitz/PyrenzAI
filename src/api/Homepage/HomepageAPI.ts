@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useHomeStore, useUserStore } from '~/store';
 import { useTranslation } from 'react-i18next';
@@ -40,7 +39,6 @@ export const useHomepageAPI = () => {
   });
 
   const handleButtonClick = async (
-    functionName: string,
     type: string,
     maxCharacter?: number,
     page?: number,
@@ -53,26 +51,26 @@ export const useHomepageAPI = () => {
     try {
       let rawCharacters: any[] = [];
 
-      switch (functionName) {
-        case 'GetHotCharacters':
+      switch (type) {
+        case 'hot':
           if (maxCharacter === undefined || page === undefined) {
             throw new Error('maxCharacter and page are required');
           }
           rawCharacters = await GetHotCharacters(type, maxCharacter, page);
           break;
-        case 'GetLatestCharacters':
+        case 'latest':
           if (maxCharacter === undefined || page === undefined) {
             throw new Error('maxCharacter and page are required');
           }
           rawCharacters = await GetLatestCharacters(type, maxCharacter, page);
           break;
-        case 'GetRandomCharacters':
+        case 'random':
           if (maxCharacter === undefined || page === undefined) {
             throw new Error('maxCharacter and page are required');
           }
           rawCharacters = await GetRandomCharacters(type, maxCharacter, page);
           break;
-        case 'GetCharactersWithTags':
+        case 'tags':
           if (tag === undefined) {
             throw new Error('Tag is required for GetCharactersWithTags');
           }
@@ -89,7 +87,7 @@ export const useHomepageAPI = () => {
           );
           break;
         default:
-          throw new Error('Invalid function name');
+          throw new Error('Invalid type');
       }
 
       if (rawCharacters.length === 0) {
@@ -99,7 +97,6 @@ export const useHomepageAPI = () => {
 
       const safeCharacters = rawCharacters.map((char) => char);
 
-      console.log(rawCharacters, safeCharacters);
       setCharacters(safeCharacters);
       return safeCharacters;
     } catch (error) {
@@ -115,6 +112,10 @@ export const useHomepageAPI = () => {
     }
   };
 
+  const onButtonTagClicked = async (tag: string) => {
+    await handleButtonClick('tags', itemsPerPage, currentPage, tag);
+  };
+
   return {
     navigate,
     search,
@@ -128,5 +129,6 @@ export const useHomepageAPI = () => {
     userUUID,
     itemsPerPage,
     handleButtonClick,
+    onButtonTagClicked,
   };
 };

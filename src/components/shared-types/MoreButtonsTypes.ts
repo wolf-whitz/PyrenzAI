@@ -8,7 +8,6 @@ import {
 export type ButtonType = {
   icon: React.ElementType;
   label: string;
-  Function: string;
   type: string;
   max_character: number;
   page: number;
@@ -18,7 +17,6 @@ export type ButtonType = {
 
 export type CustomButtonProps = {
   onButtonClick: (
-    Function: string,
     type: string,
     max_character: number,
     page: number,
@@ -35,7 +33,6 @@ export type MoreButtonsModalProps = {
   isOpen: boolean;
   onClose: () => void;
   onButtonClick: (
-    Function: string,
     type: string,
     max_character: number,
     page: number,
@@ -48,24 +45,21 @@ export const buttons: ButtonType[] = [
   {
     icon: Sparkles,
     label: 'HomePageMoreButtons.btn.latest',
-    Function: 'GetLatestCharacters',
-    type: 'GetLatestCharacter',
+    type: 'latest',
     max_character: 10,
     page: 1,
   },
   {
     icon: RefreshCw,
     label: 'HomePageMoreButtons.btn.random',
-    Function: 'GetRandomCharacters',
-    type: 'GetRandomCharacter',
+    type: 'random',
     max_character: 10,
     page: 1,
   },
   {
     icon: Flame,
     label: 'HomePageMoreButtons.btn.hot',
-    Function: 'GetHotCharacters',
-    type: 'GetHotCharacter',
+    type: 'hot',
     max_character: 10,
     page: 1,
   },
@@ -73,8 +67,7 @@ export const buttons: ButtonType[] = [
     icon: Tag,
     label: 'HomePageMoreButtons.btn.male',
     gender: 'male',
-    Function: 'GetCharactersWithTags',
-    type: 'GetTaggedCharacters',
+    type: 'tags',
     max_character: 10,
     page: 1,
     tag: 'male',

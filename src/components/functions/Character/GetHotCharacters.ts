@@ -7,7 +7,7 @@ export async function GetHotCharacters(
   maxCharacter: number,
   page: number
 ): Promise<Character[]> {
-  if (type === 'GetHotCharacter') {
+  if (type === 'hot') {
     const { show_nsfw } = useUserStore.getState();
 
     let query = supabase

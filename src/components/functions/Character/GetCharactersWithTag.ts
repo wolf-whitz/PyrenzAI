@@ -10,7 +10,7 @@ export async function GetCharactersWithTags(
   gender?: string,
   searchQuery?: string
 ): Promise<Character[]> {
-  if (type !== 'GetTaggedCharacters') {
+  if (type !== 'tags') {
     throw new Error('Invalid type');
   }
 
