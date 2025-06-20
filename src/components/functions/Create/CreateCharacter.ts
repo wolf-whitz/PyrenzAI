@@ -11,20 +11,22 @@ interface CreateCharacterResponse {
 async function insertTags(char_uuid: string, user_uuid: string, tags: string[]) {
   if (!tags || tags.length === 0) return;
 
-  const tagEntries = tags.map(tag => ({
-    char_uuid,
-    user_uuid,
-    tag_name: tag,
-  }));
+  for (const tag of tags) {
+    const tagEntry = {
+      char_uuid,
+      user_uuid,
+      tag_name: tag,
+    };
 
-  const { error } = await supabase
-    .from('tags')
-    .upsert(tagEntries, { onConflict: 'tag_name, char_uuid' });
+    const { error } = await supabase
+      .from('tags')
+      .insert([tagEntry])
+      .select();
 
-  if (error) {
-    console.error('Error inserting tags:', error);
-    Sentry.captureException(error);
-    throw new Error(error.message);
+    if (error) {
+      console.error(`Error inserting tag "${tag}":`, error.message);
+      Sentry.captureException(error);
+    }
   }
 }
 
