@@ -7,28 +7,24 @@ export async function GetHotCharacters(
   maxCharacter: number,
   page: number
 ): Promise<Character[]> {
-  if (type === 'hot') {
-    const { show_nsfw } = useUserStore.getState();
-
-    let query = supabase
-      .from('public_characters')
-      .select('*')
-      .order('chat_messages_count', { ascending: false })
-      .limit(maxCharacter)
-      .range((page - 1) * maxCharacter, page * maxCharacter - 1);
-
-    if (!show_nsfw) {
-      query = query.eq('is_nsfw', false);
-    }
-
-    const { data, error } = await query;
-
-    if (error) {
-      throw new Error(error.message);
-    }
-
-    return data as Character[];
-  } else {
+  if (type !== 'hot') {
     throw new Error('Invalid type');
   }
+
+  const { show_nsfw, blocked_tags } = useUserStore.getState();
+
+  const { data, error } = await supabase.rpc('get_filtered_characters', {
+    page,
+    items_per_page: maxCharacter,
+    show_nsfw,
+    blocked_tags: blocked_tags || [],
+    gender_filter: null,
+    search: null,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data?.characters || [];
 }

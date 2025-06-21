@@ -6,16 +6,31 @@ import {
   GetUserCreatedCharacters,
   MobileNav,
 } from '@components';
-import { Box, Typography, useMediaQuery, useTheme, CircularProgress } from '@mui/material';
+import { Box, Typography, useMediaQuery, useTheme, CircularProgress, IconButton } from '@mui/material';
 import { useState } from 'react';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 export function ProfilePage() {
   const { creator_uuid } = useParams<{ creator_uuid: string }>();
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [page, setPage] = useState(1);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  const { characters, userData, loading, isOwner } = GetUserCreatedCharacters(creator_uuid);
+  const { characters, userData, loading, isOwner, maxPage } = GetUserCreatedCharacters(creator_uuid, page);
+
+  const handlePreviousPage = () => {
+    if (page > 1) {
+      setPage(page - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (page < maxPage) {
+      setPage(page + 1);
+    }
+  };
 
   if (loading) {
     return (
@@ -80,6 +95,19 @@ export function ProfilePage() {
               </Typography>
             )}
           </Box>
+          {characters.length > 0 && maxPage > 1 && (
+            <Box display="flex" justifyContent="center" alignItems="center" mt={2}>
+              <IconButton onClick={handlePreviousPage} disabled={page === 1}>
+                <ChevronLeftIcon />
+              </IconButton>
+              <Typography variant="body1" sx={{ mx: 2 }}>
+                Page {page} of {maxPage}
+              </Typography>
+              <IconButton onClick={handleNextPage} disabled={page === maxPage}>
+                <ChevronRightIcon />
+              </IconButton>
+            </Box>
+          )}
         </Box>
       </Box>
       {isMobile && <MobileNav setShowLoginModal={setShowLoginModal} />}

@@ -3,6 +3,7 @@ import { supabase } from '~/Utility/supabaseClient';
 import { GetUserUUID } from '@components';
 import { Character, User } from '@shared-types';
 import { useUserStore } from '~/store';
+import { Utils } from '~/Utility/Utility';
 
 interface FilteredCharactersResponse {
   characters: Character[];
@@ -10,11 +11,24 @@ interface FilteredCharactersResponse {
   max_page: number;
 }
 
-export const GetUserCreatedCharacters = (creatorUuid?: string) => {
+interface UseUserCreatedCharactersResponse {
+  characters: Character[];
+  userData: User | null;
+  loading: boolean;
+  isOwner: boolean;
+  maxPage: number;
+}
+
+export const GetUserCreatedCharacters = (
+  creatorUUID?: string,
+  page: number = 1,
+  itemsPerPage: number = 20
+): UseUserCreatedCharactersResponse => {
   const [characters, setCharacters] = useState<Character[]>([]);
   const [userData, setUserData] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [isOwner, setIsOwner] = useState<boolean>(false);
+  const [maxPage, setMaxPage] = useState<number>(1);
 
   useEffect(() => {
     const fetchData = async (uuid: string) => {
@@ -34,7 +48,7 @@ export const GetUserCreatedCharacters = (creatorUuid?: string) => {
         const ownerStatus = userData.user_uuid === currentUserUuid;
         setIsOwner(ownerStatus);
 
-        const characters = await fetchCharacters(userData.user_uuid);
+        const { characters, max_page } = await fetchCharacters(userData.user_uuid, page, itemsPerPage);
 
         if (userData) {
           setUserData({ ...userData, isOwner: ownerStatus });
@@ -42,6 +56,7 @@ export const GetUserCreatedCharacters = (creatorUuid?: string) => {
 
         if (characters) {
           setCharacters(characters);
+          setMaxPage(max_page);
         }
       } catch (error) {
         console.error('Error:', error);
@@ -79,40 +94,39 @@ export const GetUserCreatedCharacters = (creatorUuid?: string) => {
       };
     };
 
-    const fetchCharacters = async (creatorUuid: string): Promise<Character[] | null> => {
+    const fetchCharacters = async (creatorUUID: string, page: number, itemsPerPage: number) => {
       const { show_nsfw } = useUserStore.getState();
 
       const { data, error } = await supabase.rpc('get_filtered_characters', {
         search: null,
         show_nsfw: show_nsfw,
         blocked_tags: [],
-        gender: null,
-        tag: null,
+        gender_filter: null,
+        tag: [],
+        creatoruuid: creatorUUID,
+        items_per_page: itemsPerPage,
+        page: page,
       }).single<FilteredCharactersResponse>();
 
       if (error || !data) {
         console.error('Error fetching characters:', error);
-        return null;
+        return { characters: null, max_page: 1 };
       }
 
-      return data.characters;
+      return { characters: data.characters, max_page: data.max_page };
     };
 
     const resolveUuid = async () => {
-      if (creatorUuid) {
-        await fetchData(creatorUuid);
+      const uuid = creatorUUID || await getCreatorUuid();
+      if (uuid) {
+        await fetchData(uuid);
       } else {
-        const uuid = await getCreatorUuid();
-        if (uuid) {
-          await fetchData(uuid);
-        } else {
-          setLoading(false);
-        }
+        setLoading(false);
       }
     };
 
     resolveUuid();
-  }, [creatorUuid]);
+  }, [creatorUUID, page, itemsPerPage]);
 
-  return { characters, userData, loading, isOwner };
+  return { characters, userData, loading, isOwner, maxPage };
 };

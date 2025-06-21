@@ -13,7 +13,9 @@ export async function fetchCharacters(
   itemsPerPage: number = 10,
   search?: string,
   setMaxPage?: (maxPage: number) => void,
-  show_nsfw?: boolean
+  showNsfw?: boolean,
+  genderFilter?: string,
+  tags?: string[]
 ): Promise<FetchCharactersResponse> {
   if (requestType !== 'character') {
     throw new Error(`Invalid request_type: ${requestType}`);
@@ -24,11 +26,12 @@ export async function fetchCharacters(
   const { data, error } = await supabase.rpc('get_filtered_characters', {
     page,
     items_per_page: itemsPerPage,
-    search: search && search.trim() !== '' ? search : undefined,
-    show_nsfw,
-    blocked_tags,
+    search: search && search.trim() !== '' ? search : null,
+    show_nsfw: showNsfw,
+    blocked_tags: blocked_tags.length > 0 ? blocked_tags : [],
+    gender_filter: genderFilter,
+    tag: tags && tags.length > 0 ? tags : [],
   });
-  
 
   if (error) {
     throw new Error(`Supabase RPC error: ${error.message}`);

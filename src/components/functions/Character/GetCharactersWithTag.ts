@@ -21,11 +21,11 @@ export async function GetCharactersWithTags(
     items_per_page: maxCharacter,
     search: searchQuery || null,
     show_nsfw,
-    blocked_tags,
-    gender: gender || null,
-    tag: tag || null
+    blocked_tags: blocked_tags || [],
+    gender_filter: gender || null,
+    tag: tag ? [tag] : [],
   });
 
   if (error) throw new Error(error.message);
-  return data?.characters ?? [];
+  return data?.characters || [];
 }
