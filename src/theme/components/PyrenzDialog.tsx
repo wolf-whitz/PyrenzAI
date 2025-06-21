@@ -1,0 +1,117 @@
+import React from 'react';
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button,
+  Fade,
+  useTheme,
+  useMediaQuery,
+} from '@mui/material';
+
+interface PyrenzDialogProps {
+  open: boolean;
+  onClose: () => void;
+  title: string;
+  content: string;
+  onConfirm: () => void;
+}
+
+export const PyrenzDialog = ({
+  open,
+  onClose,
+  title,
+  content,
+  onConfirm,
+}: PyrenzDialogProps) => {
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
+  return (
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullScreen={fullScreen}
+      aria-labelledby="pyrenz-dialog-title"
+      aria-describedby="pyrenz-dialog-description"
+      TransitionComponent={Fade}
+      sx={{
+        '& .MuiDialog-paper': {
+          background: 'rgba(255, 255, 255, 0.05)',
+          backdropFilter: 'blur(15px)',
+          WebkitBackdropFilter: 'blur(15px)',
+          borderRadius: '20px',
+          border: '1px solid rgba(255, 255, 255, 0.2)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+          color: '#fff',
+        },
+      }}
+    >
+      <DialogTitle
+        id="pyrenz-dialog-title"
+        sx={{ fontWeight: 600, fontSize: '1.3rem', color: '#fff' }}
+      >
+        {title}
+      </DialogTitle>
+
+      <DialogContent>
+        <DialogContentText
+          id="pyrenz-dialog-description"
+          sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
+        >
+          {content}
+        </DialogContentText>
+      </DialogContent>
+
+      <DialogActions sx={{ padding: '16px' }}>
+        <Button
+          onClick={onClose}
+          variant="outlined"
+          disableRipple
+          disableFocusRipple
+          sx={{
+            color: '#fff',
+            borderColor: 'rgba(255, 255, 255, 0.2)',
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            borderRadius: '10px',
+            px: 3,
+            '&:hover': {
+              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+              borderColor: 'rgba(255, 255, 255, 0.3)',
+              borderRadius: '10px',
+            },
+            '&:focus': {
+              borderRadius: '10px',
+            },
+          }}
+        >
+          Cancel
+        </Button>
+        <Button
+          onClick={onConfirm}
+          autoFocus
+          variant="contained"
+          disableRipple
+          disableFocusRipple
+          sx={{
+            color: '#111',
+            backgroundColor: 'rgba(255, 255, 255, 0.85)',
+            borderRadius: '10px',
+            px: 3,
+            '&:hover': {
+              backgroundColor: 'rgba(255, 255, 255, 1)',
+              borderRadius: '10px',
+            },
+            '&:focus': {
+              borderRadius: '10px',
+            },
+          }}
+        >
+          Confirm
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};

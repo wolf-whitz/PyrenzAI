@@ -8,7 +8,7 @@ import {
   Box,
   useTheme,
 } from '@mui/material';
-import { PyrenzMessageBox } from '~/theme';
+import { PyrenzMessageBox, PyrenzDialog } from '~/theme';
 import type { MessageBoxProps } from '@shared-types';
 
 export const MessageBox = React.memo(function MessageBox({
@@ -34,6 +34,7 @@ export const MessageBox = React.memo(function MessageBox({
 
   const [localEditedMessage, setLocalEditedMessage] = useState(msg.text || '');
   const [debouncedValue, setDebouncedValue] = useState(localEditedMessage);
+  const [openDialog, setOpenDialog] = useState(false);
 
   useEffect(() => {
     setLocalEditedMessage(msg.text || '');
@@ -92,6 +93,22 @@ export const MessageBox = React.memo(function MessageBox({
     if (msg.id) {
       onSaveEdit(msg.id, debouncedValue, dataState);
     }
+  };
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+    handleCloseMenu();
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
+  const handleConfirmDelete = () => {
+    if (msg.id) {
+      onRemove(msg.id);
+    }
+    setOpenDialog(false);
   };
 
   if (!msg.id && !isGenerating) return null;
@@ -169,7 +186,7 @@ export const MessageBox = React.memo(function MessageBox({
           <MessageContextMenu
             msg={msg}
             onRegenerate={onRegenerate}
-            onRemove={onRemove}
+            onRemove={handleOpenDialog}
             handleSpeak={handleSpeak}
             onEditClick={onEditClick}
             handleCopy={handleCopy}
@@ -177,6 +194,14 @@ export const MessageBox = React.memo(function MessageBox({
           />
         </Box>
       )}
+
+      <PyrenzDialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        title="Confirm Deletion"
+        content="Are you sure you want to delete this message?"
+        onConfirm={handleConfirmDelete}
+      />
     </Box>
   );
 });

@@ -2,7 +2,6 @@ import React from 'react';
 import { Box, Avatar, TextField, styled } from '@mui/material';
 import { SxProps } from '@mui/system';
 import { PyrenzBlueButton } from '~/theme';
-import { useUserStore } from '~/store';
 
 interface PyrenzMessageBoxProps {
   children: React.ReactNode;

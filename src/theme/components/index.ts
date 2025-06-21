@@ -11,3 +11,4 @@ export * from './PyrenzChatsCharacterCard';
 export * from './PyrenzRibbon';
 
 export * from './NsfwSwitch';
+export * from './PyrenzDialog';

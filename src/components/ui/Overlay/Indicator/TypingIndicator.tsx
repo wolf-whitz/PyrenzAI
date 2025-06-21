@@ -5,14 +5,12 @@ const Dot = styled('span')<{ delay: number }>(({ delay }) => ({
   height: '8px',
   borderRadius: '50%',
   backgroundColor: '#333',
-  animation: `bounceColor 1.5s ease-in-out ${delay}s infinite`,
-  '@keyframes bounceColor': {
+  animation: `fadeColor 1.5s ease-in-out ${delay}s infinite`,
+  '@keyframes fadeColor': {
     '0%, 100%': {
-      transform: 'translateY(-50%)',
       backgroundColor: '#333',
     },
     '50%': {
-      transform: 'translateY(0)',
       backgroundColor: '#fff',
     },
   },

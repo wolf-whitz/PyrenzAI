@@ -6,26 +6,45 @@ import {
   Button,
   Typography,
   Box,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
 } from '@mui/material';
 import { useAccountAPI } from '@api';
+import { PyrenzDialog } from '~/theme';
+import { useState } from 'react';
 
 export function Account() {
   const {
     languages,
     isModalOpen,
     user,
-    openDialog,
     toggleModal,
     handleLogOut,
     handleDeleteAccount,
     confirmDeleteAccount,
-    setOpenDialog,
   } = useAccountAPI();
+
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
+
+  const handleOpenDeleteDialog = () => {
+    setOpenDeleteDialog(true);
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false);
+  };
+
+  const handleOpenLogoutDialog = () => {
+    setOpenLogoutDialog(true);
+  };
+
+  const handleCloseLogoutDialog = () => {
+    setOpenLogoutDialog(false);
+  };
+
+  const handleConfirmLogout = () => {
+    handleLogOut();
+    setOpenLogoutDialog(false);
+  };
 
   return (
     <motion.div
@@ -105,7 +124,7 @@ export function Account() {
         <Typography variant="body1">Log Out</Typography>
         <motion.div whileHover={{ scaleX: -1 }} transition={{ duration: 0.3 }}>
           <Button
-            onClick={handleLogOut}
+            onClick={handleOpenLogoutDialog}
             style={{ color: '#fff', minWidth: 0 }}
             startIcon={<ChevronLeft className="chevron-icon" />}
             sx={{
@@ -133,7 +152,7 @@ export function Account() {
         <Typography variant="body1">Delete Account</Typography>
         <motion.div whileHover={{ scaleX: -1 }} transition={{ duration: 0.3 }}>
           <Button
-            onClick={handleDeleteAccount}
+            onClick={handleOpenDeleteDialog}
             style={{ color: '#fff', minWidth: 0 }}
             startIcon={<ChevronLeft className="chevron-icon" />}
             sx={{
@@ -148,29 +167,21 @@ export function Account() {
         </motion.div>
       </Box>
 
-      <Dialog
-        open={openDialog}
-        onClose={() => setOpenDialog(false)}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {'Confirm Account Deletion'}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Are you sure you want to delete your account? This action cannot be undone.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenDialog(false)} style={{ color: 'white' }}>
-            Cancel
-          </Button>
-          <Button onClick={confirmDeleteAccount} style={{ color: 'white' }} autoFocus>
-            Confirm
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <PyrenzDialog
+        open={openLogoutDialog}
+        onClose={handleCloseLogoutDialog}
+        title="Confirm Logout"
+        content="Are you sure you want to log out?"
+        onConfirm={handleConfirmLogout}
+      />
+
+      <PyrenzDialog
+        open={openDeleteDialog}
+        onClose={handleCloseDeleteDialog}
+        title="Confirm Account Deletion"
+        content="Are you sure you want to delete your account? This action cannot be undone."
+        onConfirm={confirmDeleteAccount}
+      />
 
       <LanguageModal
         languages={languages}
