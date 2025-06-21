@@ -4,6 +4,12 @@ import { GetUserUUID } from '@components';
 import { Character, User } from '@shared-types';
 import { useUserStore } from '~/store';
 
+interface FilteredCharactersResponse {
+  characters: Character[];
+  character_count: number;
+  max_page: number;
+}
+
 export const GetUserCreatedCharacters = (creatorUuid?: string) => {
   const [characters, setCharacters] = useState<Character[]>([]);
   const [userData, setUserData] = useState<User | null>(null);
@@ -76,26 +82,20 @@ export const GetUserCreatedCharacters = (creatorUuid?: string) => {
     const fetchCharacters = async (creatorUuid: string): Promise<Character[] | null> => {
       const { show_nsfw } = useUserStore.getState();
 
-      const tables = ['public_characters', 'private_characters'];
+      const { data, error } = await supabase.rpc('get_filtered_characters', {
+        search: null,
+        show_nsfw: show_nsfw,
+        blocked_tags: [],
+        gender: null,
+        tag: null,
+      }).single<FilteredCharactersResponse>();
 
-      const fetchPromises = tables.map(table =>
-        supabase
-          .from(table)
-          .select('*')
-          .eq('creator_uuid', creatorUuid)
-          .eq('is_nsfw', show_nsfw)
-      );
+      if (error || !data) {
+        console.error('Error fetching characters:', error);
+        return null;
+      }
 
-      const responses = await Promise.all(fetchPromises);
-
-      const characters = responses.reduce<Character[]>((acc, response) => {
-        if (response.error) {
-          return acc;
-        }
-        return [...acc, ...(response.data || [])];
-      }, []);
-
-      return characters;
+      return data.characters;
     };
 
     const resolveUuid = async () => {

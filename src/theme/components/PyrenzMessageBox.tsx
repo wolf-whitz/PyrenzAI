@@ -32,7 +32,7 @@ const StyledPyrenzMessageBox = styled(Box, {
   margin: '10px',
   backgroundColor:
     dataState === 'user'
-      ? 'rgba(255, 255, 255, 0.2)'
+      ? '#555555'
       : 'rgba(20, 24, 28, 0.6)',
   backgroundImage:
     dataState === 'char'
@@ -41,7 +41,7 @@ const StyledPyrenzMessageBox = styled(Box, {
   backdropFilter: 'blur(14px)',
   WebkitBackdropFilter: 'blur(14px)',
   border: '1px solid rgba(255, 255, 255, 0.08)',
-  color: '#fff',
+  color: dataState === 'user' ? '#f1f1f1' : '#fff',
   boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.1)',
   wordWrap: 'break-word',
   position: 'relative',
@@ -50,12 +50,19 @@ const StyledPyrenzMessageBox = styled(Box, {
   '&:hover': {
     backgroundColor:
       dataState === 'user'
-        ? 'rgba(255, 255, 255, 0.15)'
+        ? '#444444'
         : 'rgba(20, 24, 28, 0.5)',
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
     transform: 'translateY(-2px)',
   },
 }));
+
+const HoverableAvatar = styled(Avatar)({
+  transition: 'transform 0.2s ease',
+  '&:hover': {
+    transform: 'scale(1.2)',
+  },
+});
 
 export const PyrenzMessageBox = ({
   children,
@@ -87,7 +94,7 @@ export const PyrenzMessageBox = ({
       sx={{ width: '100%' }}
     >
       {dataState !== 'user' && charAvatar && (
-        <Avatar
+        <HoverableAvatar
           alt={displayName}
           src={charAvatar}
           sx={{ width: 32, height: 32, mr: 1 }}
@@ -140,13 +147,11 @@ export const PyrenzMessageBox = ({
             </Box>
           </Box>
         ) : (
-          <Box>
-            {children}
-          </Box>
+          <Box>{children}</Box>
         )}
       </StyledPyrenzMessageBox>
       {dataState === 'user' && userAvatar && (
-        <Avatar
+        <HoverableAvatar
           alt={displayName}
           src={userAvatar}
           sx={{ width: 32, height: 32, ml: 1 }}

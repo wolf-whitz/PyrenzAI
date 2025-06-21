@@ -6,6 +6,8 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { useArchiveChatPageAPI } from '@api';
 import { PyrenzChatsCharacterCard, PyrenzBlueButton } from '~/theme';
 import { Sidebar, MobileNav } from '~/components';
@@ -21,17 +23,13 @@ interface Chat {
 export function Archive() {
   const [open, setOpen] = useState<boolean>(true);
   const [showLoginModal, setShowLoginModal] = useState<boolean>(false);
-  const [itemsToShow, setItemsToShow] = useState<number>(5);
+  const [itemsToShow, setItemsToShow] = useState<number>(30);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleClose = () => {
     setOpen(false);
-  };
-
-  const loadMore = () => {
-    setItemsToShow((prevItemsToShow) => prevItemsToShow + 10);
   };
 
   const {
@@ -41,7 +39,11 @@ export function Archive() {
     handleCardClick: handleChatSend,
     handleDeleteChat,
     handlePinChat,
-  } = useArchiveChatPageAPI(open, handleClose);
+    totalPages,
+    currentPage,
+    goToNextPage,
+    goToPreviousPage,
+  } = useArchiveChatPageAPI(open, handleClose, itemsToShow);
 
   const truncateMessage = (message: string, length: number) => {
     return message.length > length ? `${message.substring(0, length)}...` : message;
@@ -83,7 +85,7 @@ export function Archive() {
           ) : (
             <>
               <Box display="flex" flexWrap="wrap" justifyContent="center">
-                {chats.slice(0, itemsToShow).map((chat: Chat) => (
+                {chats.map((chat: Chat) => (
                   <Box key={chat.chat_uuid} mx={2} mb={4} position="relative">
                     <PyrenzChatsCharacterCard
                       sx={{
@@ -107,13 +109,27 @@ export function Archive() {
                   </Box>
                 ))}
               </Box>
-              {itemsToShow < chats.length && (
-                <Box display="flex" justifyContent="center" mt={2}>
-                  <PyrenzBlueButton onClick={loadMore}>
-                    Load More
-                  </PyrenzBlueButton>
+              <Box display="flex" justifyContent="center" mt={2} alignItems="center">
+                <PyrenzBlueButton
+                  onClick={goToPreviousPage}
+                  disabled={currentPage === 0}
+                  sx={{ backgroundColor: 'transparent' }}
+                >
+                  <NavigateBeforeIcon />
+                </PyrenzBlueButton>
+                <Box mx={2}>
+                  <Typography variant="body1">
+                    Page {currentPage + 1} of {totalPages}
+                  </Typography>
                 </Box>
-              )}
+                <PyrenzBlueButton
+                  onClick={goToNextPage}
+                  disabled={currentPage >= totalPages - 1}
+                  sx={{ backgroundColor: 'transparent' }}
+                >
+                  <NavigateNextIcon />
+                </PyrenzBlueButton>
+              </Box>
             </>
           )}
         </Box>

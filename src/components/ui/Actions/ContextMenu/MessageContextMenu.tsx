@@ -71,9 +71,7 @@ const menuConfig = {
 export const MessageContextMenu = (props: MessageContextMenuProps) => {
   const { msg, onClose } = props;
 
-  if (msg.error) {
-    return null;
-  }
+  if (msg.error) return null;
 
   const handleAction = (action: (props: MessageContextMenuProps) => () => void) => {
     action(props)();
@@ -83,7 +81,21 @@ export const MessageContextMenu = (props: MessageContextMenuProps) => {
   const menuItems = menuConfig[msg.type || 'user'] || [];
 
   return (
-    <Box p={1} display="flex" flexDirection="column">
+    <Box
+      sx={{
+        p: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        backgroundColor: 'rgba(40, 40, 40, 0.35)',
+        backgroundImage: 'linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,0,0,0.05))',
+        borderRadius: '12px',
+        border: '1px solid rgba(255, 255, 255, 0.15)',
+        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.2)',
+        minWidth: '160px',
+      }}
+    >
       {menuItems.map((item, index) => (
         <Button
           key={index}
@@ -91,11 +103,16 @@ export const MessageContextMenu = (props: MessageContextMenuProps) => {
           startIcon={item.icon}
           sx={{
             justifyContent: 'flex-start',
-            color: 'inherit',
+            color: '#f0f0f0',
+            fontWeight: 500,
+            textTransform: 'none',
+            borderRadius: 2,
+            px: 2,
+            py: 1,
+            transition: 'background-color 0.2s ease',
             '&:hover': {
-              backgroundColor: 'black',
-              color: 'white',
-              borderRadius: 2,
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              color: '#fff',
             },
           }}
         >

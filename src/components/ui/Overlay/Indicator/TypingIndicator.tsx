@@ -1,17 +1,19 @@
 import { Box, styled } from '@mui/material';
 
-const Dot = styled('span')<{ delay: number }>(({ theme, delay }) => ({
+const Dot = styled('span')<{ delay: number }>(({ delay }) => ({
   width: '8px',
   height: '8px',
   borderRadius: '50%',
-  backgroundColor: 'white',
-  animation: `bounce 1.5s ease-in-out ${delay}s infinite`,
-  '@keyframes bounce': {
+  backgroundColor: '#333',
+  animation: `bounceColor 1.5s ease-in-out ${delay}s infinite`,
+  '@keyframes bounceColor': {
     '0%, 100%': {
       transform: 'translateY(-50%)',
+      backgroundColor: '#333',
     },
     '50%': {
       transform: 'translateY(0)',
+      backgroundColor: '#fff',
     },
   },
 }));
