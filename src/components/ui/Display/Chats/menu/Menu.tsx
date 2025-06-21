@@ -39,7 +39,9 @@ export function Menu({ onClose, char }: MenuProps) {
         sx={{
           position: 'fixed',
           inset: 0,
-          background: 'rgba(0, 0, 0, 0.5)',
+          backgroundColor: 'rgba(10, 15, 25, 0.3)',
+          backdropFilter: 'blur(10px)',
+          WebkitBackdropFilter: 'blur(10px)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -49,11 +51,14 @@ export function Menu({ onClose, char }: MenuProps) {
         <Grow in={true} onClick={(e) => e.stopPropagation()}>
           <Box
             sx={{
-              background: '#2d3748',
+              backgroundColor: 'rgba(40, 45, 55, 0.3)',
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
               color: '#fff',
               padding: '24px',
-              borderRadius: '8px',
-              boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.25)',
+              borderRadius: '12px',
+              border: '1px solid rgba(255,255,255,0.08)',
+              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
               width: '100%',
               maxWidth: '400px',
               height: '80vh',
@@ -79,8 +84,8 @@ export function Menu({ onClose, char }: MenuProps) {
                     fullWidth
                     endIcon={isDropdownOpen ? <ExpandLess /> : <ExpandMore />}
                     sx={{
-                      backgroundColor: '#4a5568',
-                      '&:hover': { backgroundColor: '#718096' },
+                      backgroundColor: 'rgba(74, 85, 104, 0.7)',
+                      '&:hover': { backgroundColor: 'rgba(113, 128, 150, 0.8)' },
                       justifyContent: 'space-between',
                     }}
                   >
@@ -90,45 +95,32 @@ export function Menu({ onClose, char }: MenuProps) {
                   <Collapse in={isDropdownOpen}>
                     <Paper
                       elevation={3}
-                      sx={{ mt: 2, borderRadius: '8px', overflow: 'hidden' }}
+                      sx={{
+                        mt: 2,
+                        borderRadius: '8px',
+                        overflow: 'hidden',
+                        backgroundColor: 'rgba(255,255,255,0.05)',
+                        backdropFilter: 'blur(10px)',
+                      }}
                     >
                       <MenuList>
-                        <MenuItem
-                          onClick={() => {
-                            setSelectedOption('Cosmetic');
-                            setIsDropdownOpen(false);
-                          }}
-                          sx={{ '&:hover': { backgroundColor: '#718096' } }}
-                        >
-                          Cosmetic
-                        </MenuItem>
-                        <MenuItem
-                          onClick={() => {
-                            setSelectedOption('AI Customization');
-                            setIsDropdownOpen(false);
-                          }}
-                          sx={{ '&:hover': { backgroundColor: '#718096' } }}
-                        >
-                          AI Customization
-                        </MenuItem>
-                        <MenuItem
-                          onClick={() => {
-                            setSelectedOption('Character Details');
-                            setIsDropdownOpen(false);
-                          }}
-                          sx={{ '&:hover': { backgroundColor: '#718096' } }}
-                        >
-                          Character Details
-                        </MenuItem>
-                        <MenuItem
-                          onClick={() => {
-                            setSelectedOption('Memory');
-                            setIsDropdownOpen(false);
-                          }}
-                          sx={{ '&:hover': { backgroundColor: '#718096' } }}
-                        >
-                          Memory
-                        </MenuItem>
+                        {['Cosmetic', 'AI Customization', 'Character Details', 'Memory'].map(option => (
+                          <MenuItem
+                            key={option}
+                            onClick={() => {
+                              setSelectedOption(option);
+                              setIsDropdownOpen(false);
+                            }}
+                            sx={{
+                              color: '#fff',
+                              '&:hover': {
+                                backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                              },
+                            }}
+                          >
+                            {option}
+                          </MenuItem>
+                        ))}
                       </MenuList>
                     </Paper>
                   </Collapse>

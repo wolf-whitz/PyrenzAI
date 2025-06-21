@@ -14,13 +14,11 @@ import { Character } from '@shared-types';
 
 interface ChatHeaderProps {
   char: Character;
-  handleGoHome: () => void;
   toggleSettings: () => void;
 }
 
 export function ChatHeader({
   char,
-  handleGoHome,
   toggleSettings,
 }: ChatHeaderProps) {
   const theme = useTheme();
@@ -58,9 +56,8 @@ export function ChatHeader({
               </IconButton>
             )}
             <IconButton
-              onClick={handleGoHome}
               sx={{ color: 'grey', '&:hover': { color: 'white' } }}
-              aria-label="Go home"
+              aria-label="Character profile"
             >
               <Avatar
                 alt={char.name || 'Anon'}

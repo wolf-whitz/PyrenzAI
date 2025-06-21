@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Send, MoreVertical, Loader2 } from 'lucide-react';
 import { Menu } from '@components';
 import { Character } from '@shared-types';
+import { Box } from '@mui/material';
 
 interface ChatInputProps {
   className?: string;
@@ -40,22 +41,23 @@ export function ChatInput({ className, handleSend, char, isGenerating }: ChatInp
 
   return (
     <>
-      <motion.div
+      <Box
+        component={motion.div}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, ease: 'easeOut' }}
         className={`relative mx-auto w-full max-w-full md:max-w-[500px] lg:max-w-[640px] p-4 ${className}`}
       >
-        <div className={`relative flex bg-gray-700 rounded-lg p-3 w-full ${className}`}>
-          <motion.button
-            className="mr-2 text-gray-400 hover:text-white transition duration-200 p-2 rounded-full flex-shrink-0"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={() => setIsMenuOpen(true)}
-            aria-label="More options"
-          >
-            <MoreVertical size={20} />
-          </motion.button>
+        <Box className={`relative flex bg-gray-700 rounded-lg p-3 w-full ${className}`}>
+          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+            <button
+              className="mr-2 text-gray-400 hover:text-white transition duration-200 p-2 rounded-full flex-shrink-0"
+              onClick={() => setIsMenuOpen(true)}
+              aria-label="More options"
+            >
+              <MoreVertical size={20} />
+            </button>
+          </motion.div>
           <textarea
             ref={textareaRef}
             value={message}
@@ -73,36 +75,31 @@ export function ChatInput({ className, handleSend, char, isGenerating }: ChatInp
             disabled={isGenerating}
             style={{ maxHeight: `${MAX_TEXT_AREA_HEIGHT}px` }}
           />
-          <motion.button
-            onClick={sendMessage}
-            className={`ml-2 flex items-center gap-1 text-gray-400 transition duration-200 p-2 rounded-full flex-shrink-0 ${
-              !message.trim() || isGenerating
-                ? 'cursor-not-allowed opacity-50'
-                : 'hover:text-white'
-            }`}
-            whileHover={
-              !isGenerating && message.trim()
-                ? { scale: 1.05 }
-                : {}
-            }
-            whileTap={
-              !isGenerating && message.trim()
-                ? { scale: 0.95 }
-                : {}
-            }
-            aria-label="Send message"
-            disabled={!message.trim() || isGenerating}
+          <motion.div
+            whileHover={!isGenerating && message.trim() ? { scale: 1.05 } : {}}
+            whileTap={!isGenerating && message.trim() ? { scale: 0.95 } : {}}
           >
-            <AnimatePresence mode="wait">
-              {isGenerating ? (
-                <Loader2 className="animate-spin" size={20} />
-              ) : (
-                <Send size={20} />
-              )}
-            </AnimatePresence>
-          </motion.button>
-        </div>
-      </motion.div>
+            <button
+              onClick={sendMessage}
+              className={`ml-2 flex items-center gap-1 text-gray-400 transition duration-200 p-2 rounded-full flex-shrink-0 ${
+                !message.trim() || isGenerating
+                  ? 'cursor-not-allowed opacity-50'
+                  : 'hover:text-white'
+              }`}
+              aria-label="Send message"
+              disabled={!message.trim() || isGenerating}
+            >
+              <AnimatePresence mode="wait">
+                {isGenerating ? (
+                  <Loader2 className="animate-spin" size={20} />
+                ) : (
+                  <Send size={20} />
+                )}
+              </AnimatePresence>
+            </button>
+          </motion.div>
+        </Box>
+      </Box>
       {isMenuOpen && <Menu onClose={() => setIsMenuOpen(false)} char={char as Character} />}
     </>
   );

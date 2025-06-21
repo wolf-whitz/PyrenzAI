@@ -11,7 +11,6 @@ interface ChatPageAPI {
   setIsAdModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   toggleSettings: () => void;
   handleSend: (message: string) => Promise<void>;
-  handleGoHome: () => void;
   handleRemoveMessage: (messageId: string) => Promise<void>;
   handleRegenerateMessage: (messageId: string) => Promise<void>;
   handleEditMessage: (messageId: string, editedMessage: string, type: 'user' | 'char') => Promise<void>;
@@ -147,7 +146,6 @@ export const useChatPageAPI = (
     setIsAdModalOpen,
     toggleSettings,
     handleSend,
-    handleGoHome,
     handleRemoveMessage,
     handleRegenerateMessage,
     handleEditMessage,

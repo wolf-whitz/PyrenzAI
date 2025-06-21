@@ -34,7 +34,6 @@ export function ChatMain({
     setIsAdModalOpen,
     toggleSettings,
     handleSend,
-    handleGoHome,
     handleRemoveMessage,
     handleRegenerateMessage,
     handleEditMessage,
@@ -52,7 +51,6 @@ export function ChatMain({
         <Box className="w-full max-w-6xl mx-auto pt-4">
           <ChatHeader
             char={char}
-            handleGoHome={handleGoHome}
             toggleSettings={toggleSettings}
           />
         </Box>

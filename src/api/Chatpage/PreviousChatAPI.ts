@@ -7,7 +7,6 @@ interface Chat {
   id: string;
   chat_uuid: string;
   preview_message: string;
-  created_at: string;
   preview_image: string;
 }
 
@@ -22,56 +21,54 @@ export const usePreviousChatAPI = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [contextMenu, setContextMenu] = useState<ContextMenu | null>(null);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
 
   const navigate = useNavigate();
   const longPressTimer = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
-    const fetchPreviousChats = async () => {
-      try {
-        const userUUID = await GetUserUUID();
+  const fetchPreviousChats = async (pageNumber: number) => {
+    try {
+      const userUUID = await GetUserUUID();
 
-        if (!userUUID) {
-          setError('User information is missing.');
-          setLoading(false);
-          return;
-        }
-
-        const { data, error } = await supabase
-          .from('chats')
-          .select('id, chat_uuid, preview_message, created_at, preview_image')
-          .eq('user_uuid', userUUID)
-          .order('created_at', { ascending: false })
-          .limit(5);
-
-        if (error) throw error;
-
-        if (data && data.length > 0) {
-          setChats(data as Chat[]);
-        } else {
-          setChats([]);
-        }
-      } catch (err: any) {
-        console.error('Failed to fetch previous chats:', err);
-        setError('Failed to load previous chats. Please try again later.');
-      } finally {
+      if (!userUUID) {
+        setError('User information is missing.');
         setLoading(false);
+        return;
       }
-    };
 
-    fetchPreviousChats();
-  }, []);
+      const { data, error } = await supabase
+        .rpc('get_chats', {
+          page: pageNumber,
+          per_page: 5,
+        });
 
-  const truncateMessage = (text: string, maxLength = 50) => {
-    return text?.length > maxLength
-      ? text.slice(0, maxLength) + '...'
-      : text || '';
+      if (error) throw error;
+
+      if (data && data.Characters) {
+        const formattedChats = Object.entries(data.Characters).map(([chat_uuid, chatData]: [string, any]) => ({
+          id: chatData.char_uuid,
+          chat_uuid,
+          preview_message: chatData.preview_message,
+          preview_image: chatData.preview_image,
+        }));
+
+        setChats(prevChats => pageNumber === 0 ? formattedChats : [...prevChats, ...formattedChats]);
+        setHasMore(formattedChats.length > 0);
+      } else {
+        setHasMore(false);
+      }
+    } catch (err: any) {
+      console.error('Failed to fetch previous chats:', err);
+      setError('Failed to load previous chats. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleMessageClick = (chatUuid: string) => {
-    navigate(`/chat/${chatUuid}`);
-    window.location.reload();
-  };
+  useEffect(() => {
+    fetchPreviousChats(page);
+  }, [page]);
 
   const handleContextMenu = (event: React.MouseEvent, chatId: string) => {
     event.preventDefault();
@@ -107,23 +104,6 @@ export const usePreviousChatAPI = () => {
     }
   };
 
-  const handleExport = (chatId: string | null | undefined) => {
-    if (!chatId) return;
-    const chatToExport = chats.find((chat) => chat.id === chatId);
-    if (chatToExport) {
-      const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(
-        JSON.stringify(chatToExport)
-      )}`;
-      const downloadAnchorNode = document.createElement('a');
-      downloadAnchorNode.setAttribute('href', dataStr);
-      downloadAnchorNode.setAttribute('download', `chat_${chatId}.json`);
-      document.body.appendChild(downloadAnchorNode);
-      downloadAnchorNode.click();
-      downloadAnchorNode.remove();
-    }
-    handleClose();
-  };
-
   const handleMouseDown = (event: React.MouseEvent, chatId: string) => {
     longPressTimer.current = setTimeout(() => {
       handleContextMenu(event, chatId);
@@ -137,18 +117,29 @@ export const usePreviousChatAPI = () => {
     }
   };
 
+  const loadMore = () => {
+    setPage(prevPage => prevPage + 1);
+  };
+
+  const isInitialLoading = page === 0 && loading;
+
   return {
     chats,
+    isInitialLoading,
     loading,
     error,
     contextMenu,
-    handleMessageClick,
+    handleMessageClick: (chatUuid: string) => {
+      navigate(`/chat/${chatUuid}`);
+      window.location.reload();
+    },
     handleContextMenu,
     handleClose,
     handleDelete,
-    handleExport,
     handleMouseDown,
     handleMouseUp,
-    truncateMessage,
+    truncateMessage: (text: string, maxLength = 50) => text?.length > maxLength ? text.slice(0, maxLength) + '...' : text || '',
+    loadMore,
+    hasMore,
   };
 };

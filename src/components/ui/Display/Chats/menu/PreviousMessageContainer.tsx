@@ -1,12 +1,13 @@
 import React, { Suspense } from 'react';
 import { motion } from 'framer-motion';
-import { Avatar, CircularProgress, Typography, Box } from '@mui/material';
+import { Avatar, CircularProgress, Typography, Box, Button } from '@mui/material';
 import { usePreviousChatAPI } from '@api';
 import { CustomContextMenu } from '@components';
 
 export function PreviousChat() {
   const {
     chats,
+    isInitialLoading,
     loading,
     error,
     contextMenu,
@@ -14,65 +15,38 @@ export function PreviousChat() {
     handleContextMenu,
     handleClose,
     handleDelete,
-    handleExport,
     handleMouseDown,
     handleMouseUp,
     truncateMessage,
+    loadMore,
+    hasMore,
   } = usePreviousChatAPI();
 
   return (
-    <Box
-      component="aside"
-      sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}
-    >
-      <Box
-        sx={{
-          display: { xs: 'none', lg: 'flex' },
-          flex: 1,
-          padding: '16px',
-          width: '256px',
-        }}
-      >
-        <Box
-          sx={{
-            borderRadius: '12px',
-            backgroundColor: 'background.paper',
-            display: 'flex',
-            flexDirection: 'column',
-            overflow: 'auto',
-            minHeight: '500px',
-            maxHeight: '700px',
-          }}
-        >
-          {loading ? (
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '16px',
-                gap: '16px',
-                flex: 1,
-              }}
-            >
+    <Box component="aside" sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <Box sx={{ display: { xs: 'none', lg: 'flex' }, flex: 1, padding: '16px', width: '256px' }}>
+        <Box sx={{
+          borderRadius: '12px',
+          backgroundColor: 'rgba(30, 30, 40, 0.4)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'auto',
+          minHeight: '500px',
+          maxHeight: '700px',
+        }}>
+          {isInitialLoading ? (
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '16px', gap: '16px', flex: 1 }}>
               <CircularProgress />
               <Typography variant="body2" color="textSecondary">
                 Loading previous chats...
               </Typography>
             </Box>
           ) : error ? (
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '16px',
-                gap: '16px',
-                flex: 1,
-              }}
-            >
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '16px', gap: '16px', flex: 1 }}>
               <motion.img
                 src="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MascotCrying.avif"
                 alt="Crying Mascot"
@@ -85,17 +59,7 @@ export function PreviousChat() {
               </Typography>
             </Box>
           ) : chats.length === 0 ? (
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '16px',
-                gap: '16px',
-                flex: 1,
-              }}
-            >
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '16px', gap: '16px', flex: 1 }}>
               <motion.img
                 src="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MascotCrying.avif"
                 alt="Crying Mascot"
@@ -121,7 +85,7 @@ export function PreviousChat() {
                     alignItems: 'flex-start',
                     gap: '16px',
                     padding: '16px',
-                    borderBottom: '1px solid rgba(255, 255, 255, 0.12)',
+                    borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
                     cursor: 'pointer',
                   }}
                   onClick={() => handleMessageClick(chat.chat_uuid)}
@@ -130,45 +94,35 @@ export function PreviousChat() {
                   onMouseUp={handleMouseUp}
                   onMouseLeave={handleMouseUp}
                 >
-                  <Avatar
-                    src={chat.preview_image}
-                    alt="Chat preview"
-                    sx={{ width: '48px', height: '48px' }}
-                  />
+                  <Avatar src={chat.preview_image} alt="Chat preview" sx={{ width: '48px', height: '48px' }} />
                   <Box sx={{ flexGrow: 1 }}>
-                    <Typography
-                      variant="body2"
-                      color="textSecondary"
-                      sx={{ wordBreak: 'break-word' }}
-                    >
+                    <Typography variant="body2" color="textSecondary" sx={{ wordBreak: 'break-word' }}>
                       {truncateMessage(chat.preview_message)}
-                    </Typography>
-                    <Typography variant="caption" color="textSecondary">
-                      {new Date(chat.created_at).toLocaleString()}
                     </Typography>
                   </Box>
                 </motion.div>
               ))}
+              {hasMore && (
+                <Button
+                  onClick={loadMore}
+                  disabled={loading}
+                  sx={{
+                    margin: '16px',
+                    alignSelf: 'center',
+                    color: 'white'
+                  }}
+                >
+                  {loading ? <CircularProgress size={24} /> : 'Load More'}
+                </Button>
+              )}
             </Box>
           )}
           {contextMenu && (
             <Suspense>
               <CustomContextMenu
-                items={[
-                  {
-                    label: 'Export',
-                    action: () => handleExport(contextMenu.chatId),
-                  },
-                  {
-                    label: 'Delete',
-                    action: () => handleDelete(contextMenu.chatId),
-                  },
-                ]}
+                items={[{ label: 'Delete', action: () => handleDelete(contextMenu.chatId) }]}
                 onClose={handleClose}
-                anchorPosition={{
-                  top: contextMenu.mouseY,
-                  left: contextMenu.mouseX,
-                }}
+                anchorPosition={{ top: contextMenu.mouseY, left: contextMenu.mouseX }}
               />
             </Suspense>
           )}
