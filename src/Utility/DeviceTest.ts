@@ -1,8 +1,24 @@
 import Bowser from 'bowser';
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
 
-interface ComponentWithValue {
+interface FingerprintJSComponent {
   value: any;
+  error?: unknown;
+  duration?: number;
+}
+
+interface FingerprintJSResult {
+  visitorId: string;
+  components: {
+    [key: string]: FingerprintJSComponent | undefined;
+    screenResolution: FingerprintJSComponent;
+    fonts: FingerprintJSComponent;
+    timezone: FingerprintJSComponent;
+    languages: FingerprintJSComponent;
+    plugins: FingerprintJSComponent;
+    userAgent?: FingerprintJSComponent;
+    touchSupport: FingerprintJSComponent;
+  };
 }
 
 export const DeviceTest = async () => {
@@ -11,145 +27,115 @@ export const DeviceTest = async () => {
       navigator.serviceWorker
         .register('/sw.js')
         .then(async (registration) => {
-          console.log(
-            '✅ Service Worker registered with scope:',
-            registration.scope
-          );
-
           const syncReg = registration as ServiceWorkerRegistration & {
-            sync: {
-              register: (tag: string) => Promise<void>;
-            };
+            sync: { register: (tag: string) => Promise<void> };
           };
-
           if ('sync' in syncReg) {
             try {
               await syncReg.sync.register('retry-post');
-              console.log('🔁 Background sync "retry-post" registered');
-            } catch (err) {
-              console.warn('⚠️ Background sync registration failed:', err);
+            } catch (error) {
+              console.error('Sync registration failed:', error);
             }
-          } else {
-            console.warn('🚫 Background sync not supported in this browser');
           }
         })
         .catch((error) => {
-          console.error('❌ Service Worker registration failed:', error);
+          console.error('ServiceWorker registration failed:', error);
         });
     });
   }
-  try {
-    const isOldBrowser = (): boolean => {
-      switch (true) {
-        case typeof Promise === 'undefined':
-        case typeof fetch !== 'function':
-        case typeof Object.assign !== 'function':
-        case typeof Array.prototype.includes !== 'function':
-          console.log('Old browser detected: missing modern JS features');
-          return true;
-        default:
-          return false;
-      }
-    };
 
-    if (isOldBrowser()) {
-      return false;
+  const isOldBrowser = (): boolean => {
+    switch (true) {
+      case typeof Promise === 'undefined':
+      case typeof fetch !== 'function':
+      case typeof Object.assign !== 'function':
+      case typeof Array.prototype.includes !== 'function':
+        return true;
+      default:
+        return false;
     }
+  };
 
-    const fpPromise = FingerprintJS.load();
-    const fp = await fpPromise;
-    const { visitorId, components } = await fp.get();
+  if (isOldBrowser()) {
+    return false;
+  }
 
+  try {
+    const fp = await FingerprintJS.load().then((fp) => fp.get());
+    const { visitorId, components } = fp as FingerprintJSResult;
     localStorage.setItem('visitorId', visitorId);
 
-    const screenResolution = components.screenResolution as ComponentWithValue;
-    const fonts = components.fonts as ComponentWithValue;
-    const timezone = components.timezone as ComponentWithValue;
-    const languages = components.languages as ComponentWithValue;
-    const plugins = components.plugins as ComponentWithValue;
-    const userAgent =
-      'userAgent' in components
-        ? (components.userAgent as ComponentWithValue)
-        : null;
-    const touchSupport = components.touchSupport as ComponentWithValue;
+    const userAgentValue = components.userAgent?.value || navigator.userAgent;
+    const browser = Bowser.getParser(userAgentValue).getResult();
 
-    const logAll = () => {
-      const reasons: string[] = [];
-      let capable: boolean = true;
+    const resp = await fetch('https://ipapi.co/json/');
+    const ipData = await resp.json();
 
-      switch (true) {
-        case (navigator as any).deviceMemory < 8:
-          capable = false;
-          reasons.push(
-            `Not enough RAM (${(navigator as any).deviceMemory}GB < 8GB)`
-          );
-          break;
-      }
-
-      if (capable) {
-        reasons.push('Device looks capable of running LLM locally');
-      }
-
-      const browser = Bowser.getParser(userAgent?.value || navigator.userAgent);
-      const browserInfo = browser.getResult();
-
-      const detailedInfo = {
-        visitorId: visitorId,
-        screenResolution: screenResolution.value,
-        fonts: fonts.value,
-        timezone: timezone.value,
-        languages: languages.value,
-        plugins: plugins.value,
-        userAgent: userAgent?.value,
-        touchSupport: touchSupport.value,
-        isOldBrowser: isOldBrowser(),
-        llmCapable: capable,
-        llmDetails: reasons,
-        browserInfo: browserInfo,
-        navigatorInfo: {
-          cookieEnabled: navigator.cookieEnabled,
-          javaEnabled: navigator.javaEnabled(),
-          language: navigator.language,
-          languages: navigator.languages,
-          onLine: navigator.onLine,
-          platform: navigator.platform,
-          userAgent: navigator.userAgent,
-          doNotTrack: navigator.doNotTrack,
-          maxTouchPoints: navigator.maxTouchPoints,
-          deviceMemory: (navigator as any).deviceMemory,
-          hardwareConcurrency: navigator.hardwareConcurrency,
-        },
-        screenInfo: {
-          width: screen.width,
-          height: screen.height,
-          colorDepth: screen.colorDepth,
-          pixelDepth: screen.pixelDepth,
-          availWidth: screen.availWidth,
-          availHeight: screen.availHeight,
-        },
-        locationInfo: {
-          href: location.href,
-          protocol: location.protocol,
-          hostname: location.hostname,
-          port: location.port,
-          pathname: location.pathname,
-          search: location.search,
-          hash: location.hash,
-        },
-        performanceInfo: {
-          memory: (performance as any).memory,
-          timing: performance.timing,
-        },
-      };
-
-      console.log(detailedInfo);
+    const detailedInfo = {
+      visitorId,
+      components: {
+        screenResolution: components.screenResolution.value,
+        fonts: components.fonts.value,
+        timezone: components.timezone.value,
+        languages: components.languages.value,
+        plugins: components.plugins.value,
+        userAgent: userAgentValue,
+        touchSupport: components.touchSupport.value,
+      },
+      isOldBrowser: isOldBrowser(),
+      browserInfo: browser,
+      navigatorInfo: {
+        cookieEnabled: navigator.cookieEnabled,
+        javaEnabled: (navigator as any).javaEnabled(),
+        language: navigator.language,
+        languages: navigator.languages,
+        onLine: navigator.onLine,
+        platform: navigator.platform,
+        userAgent: navigator.userAgent,
+        doNotTrack: navigator.doNotTrack,
+        maxTouchPoints: navigator.maxTouchPoints,
+        deviceMemory: (navigator as any).deviceMemory,
+        hardwareConcurrency: navigator.hardwareConcurrency,
+      },
+      screenInfo: {
+        width: screen.width,
+        height: screen.height,
+        colorDepth: screen.colorDepth,
+        pixelDepth: screen.pixelDepth,
+        availWidth: screen.availWidth,
+        availHeight: screen.availHeight,
+      },
+      performanceInfo: {
+        memory: (performance as any).memory,
+        timing: (performance as any).timing,
+      },
+      ipLocation: {
+        ip: ipData.ip,
+        city: ipData.city,
+        region: ipData.region,
+        country: ipData.country_name,
+        latitude: ipData.latitude,
+        longitude: ipData.longitude,
+        timezone: ipData.timezone,
+        network: ipData.network,
+        country_code: ipData.country_code,
+        country_capital: ipData.country_capital,
+        postal: ipData.postal,
+        utc_offset: ipData.utc_offset,
+        country_calling_code: ipData.country_calling_code,
+        currency: ipData.currency,
+        languages: ipData.languages,
+        country_area: ipData.country_area,
+        country_population: ipData.country_population,
+        asn: ipData.asn,
+        org: ipData.org,
+      },
     };
 
-    logAll();
-
+    console.log(detailedInfo);
     return true;
   } catch (e) {
-    console.log('Error in DeviceTest:', e);
+    console.error('Error in DeviceTest:', e);
     return false;
   }
 };

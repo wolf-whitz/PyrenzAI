@@ -1,5 +1,5 @@
 import { useCharacterModalApi } from '@api';
-import { Character } from '@shared-types'
+import { Character } from '@shared-types';
 import {
   Modal,
   Backdrop,
@@ -7,9 +7,9 @@ import {
   Button,
   Typography,
   CircularProgress,
+  Box,
 } from '@mui/material';
 import { motion } from 'framer-motion';
-import { Box } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MessageIcon from '@mui/icons-material/Message';
@@ -59,105 +59,117 @@ export function CharacterCardModal({
       }}
     >
       <Fade in={isOpen}>
-        <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-900 text-white p-6 rounded-2xl shadow-2xl flex flex-col sm:flex-row items-start sm:items-center">
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            backgroundColor: 'rgba(40, 45, 55, 0.5)',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
+            borderRadius: '16px',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.6)',
+            color: 'white',
+            p: 4,
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            alignItems: { xs: 'flex-start', sm: 'center' },
+            width: '90%',
+            maxWidth: '600px',
+          }}
+        >
           <motion.img
             src={character.profile_image}
             alt={character.name}
-            className="w-24 h-32 object-cover rounded-lg border-2 border-gray-700 shadow-lg sm:mr-4"
-            initial={{ scale: 0.8 }}
-            animate={{
-              scale: 1,
-              transition: { delay: 0.1, duration: 0.3, ease: 'easeOut' },
+            style={{
+              width: '96px',
+              height: '128px',
+              objectFit: 'cover',
+              borderRadius: '12px',
+              border: '2px solid rgba(255, 255, 255, 0.2)',
+              marginRight: '16px',
+              boxShadow: '0 0 8px rgba(0,0,0,0.4)',
             }}
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1, transition: { delay: 0.1, duration: 0.3 } }}
           />
-          <Box className="flex flex-col items-start sm:items-start flex-1">
-            <Box className="flex items-center">
-              <Typography variant="h6" className="mt-3 font-bold">
+
+          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Typography variant="h6" sx={{ mt: 1, fontWeight: 'bold' }}>
                 {character.name}
               </Typography>
+
               {isOwner && (
                 <>
                   <Button
                     onClick={handleEditCharacter}
-                    aria-label="Edit character"
                     startIcon={<EditIcon fontSize="small" />}
-                    sx={{
-                      color: 'white',
-                      marginLeft: '8px',
-                      textTransform: 'none',
-                    }}
+                    sx={{ color: 'white', ml: 1, textTransform: 'none' }}
                   >
-                    Edit Character
+                    Edit
                   </Button>
                   <Button
                     onClick={handleDeleteCharacter}
-                    aria-label="Delete character"
                     startIcon={<DeleteIcon fontSize="small" />}
-                    sx={{
-                      color: 'white',
-                      marginLeft: '8px',
-                      textTransform: 'none',
-                    }}
+                    sx={{ color: 'white', ml: 1, textTransform: 'none' }}
                   >
-                    Delete Character
+                    Delete
                   </Button>
                 </>
               )}
             </Box>
+
             <Typography
               variant="caption"
-              color="textSecondary"
+              color="white"
+              sx={{ mt: 0.5, cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
               onClick={handleCreatorClick}
-              className="cursor-pointer hover:underline"
             >
               @{character.creator}
             </Typography>
 
             <Typography
               variant="body2"
-              color="textSecondary"
-              className="mt-4 px-2"
+              color="white"
+              sx={{ mt: 2, opacity: 0.9 }}
             >
-              {truncateText(
-                character.description || 'No description available.',
-                100
-              )}
+              {truncateText(character.description || 'No description available.', 100)}
             </Typography>
 
-            <Box className="flex items-center mt-4 w-full">
+            <Box sx={{ display: 'flex', alignItems: 'center', mt: 3 }}>
               <Button
                 variant="contained"
-                sx={{
-                  backgroundColor: '#3B82F6',
-                  '&:hover': {
-                    backgroundColor: '#3B82F6',
-                  },
-                }}
-                className="flex-1"
                 onClick={handleChatNow}
                 disabled={isLoading}
-                startIcon={isLoading ? <CircularProgress size={24} /> : null}
+                sx={{
+                  flex: 1,
+                  backgroundColor: '#3B82F6',
+                  '&:hover': { backgroundColor: '#2563EB' },
+                }}
+                startIcon={isLoading ? <CircularProgress size={20} /> : null}
               >
                 {isLoading ? <ShimmerText line={1} gap={10} /> : 'Chat Now'}
               </Button>
-              <Box className="flex items-center gap-1 ml-4">
-                <MessageIcon fontSize="small" className="text-white" />
-                <Typography variant="caption">
+              <Box sx={{ display: 'flex', alignItems: 'center', ml: 2 }}>
+                <MessageIcon fontSize="small" sx={{ color: 'white' }} />
+                <Typography variant="caption" sx={{ ml: 0.5 }}>
                   {character.chat_messages_count}
                 </Typography>
               </Box>
             </Box>
 
-            <Box className="mt-3 flex flex-wrap justify-start gap-2 w-full">
+            <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
               {character.is_public !== undefined && (
                 <motion.span
-                  className="bg-black text-white text-xs font-semibold py-1 px-3 rounded-full flex items-center gap-1"
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{
-                    opacity: 1,
-                    scale: 1,
-                    transition: { delay: 0 },
+                  className="text-xs font-semibold py-1 px-3 rounded-full flex items-center gap-1"
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    color: 'white',
                   }}
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 1, scale: 1 }}
                 >
                   {character.is_public ? (
                     <>
@@ -175,7 +187,11 @@ export function CharacterCardModal({
               {tags.map((tag: string, index: number) => (
                 <motion.span
                   key={index}
-                  className="bg-black text-white text-xs font-semibold py-1 px-3 rounded-full"
+                  className="text-xs font-semibold py-1 px-3 rounded-full"
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    color: 'white',
+                  }}
                   initial={{ opacity: 0, scale: 0.5 }}
                   animate={{
                     opacity: 1,
