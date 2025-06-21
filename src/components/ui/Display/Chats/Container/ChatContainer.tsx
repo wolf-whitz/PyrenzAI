@@ -4,12 +4,16 @@ import { ChatContainerProps, Character, User } from '@shared-types';
 import { ChatPageSpinner, ChatMain } from '@components';
 import clsx from 'clsx';
 
-interface ChatContainerPropsExtended extends Omit<ChatContainerProps, 'char' | 'firstMessage'> {
+interface ChatContainerPropsExtended
+  extends Omit<ChatContainerProps, 'char' | 'firstMessage'> {
   className?: string;
   chat_uuid: string;
 }
 
-export function ChatContainer({ className = '', chat_uuid }: ChatContainerPropsExtended) {
+export function ChatContainer({
+  className = '',
+  chat_uuid,
+}: ChatContainerPropsExtended) {
   const { user, char } = useChatStore();
   const { imageURL } = useUserStore();
   const [isGenerating, setIsGenerating] = useState<boolean>(false);

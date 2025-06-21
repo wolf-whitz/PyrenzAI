@@ -31,11 +31,12 @@ export async function CreateNewChat(
     if (!publicFetchError && publicCharacter) {
       character = publicCharacter;
     } else {
-      const { data: privateCharacter, error: privateFetchError } = await supabase
-        .from('private_characters')
-        .select('*')
-        .eq('char_uuid', characterUuid)
-        .single<Character>();
+      const { data: privateCharacter, error: privateFetchError } =
+        await supabase
+          .from('private_characters')
+          .select('*')
+          .eq('char_uuid', characterUuid)
+          .single<Character>();
 
       if (privateFetchError || !privateCharacter) {
         throw privateFetchError || new Error('Character not found');
@@ -43,7 +44,14 @@ export async function CreateNewChat(
       character = privateCharacter;
     }
 
-    const { model_instructions, name, persona, description, profile_image, lorebook } = character;
+    const {
+      model_instructions,
+      name,
+      persona,
+      description,
+      profile_image,
+      lorebook,
+    } = character;
 
     const { error: insertError } = await supabase.from('chats').insert([
       {

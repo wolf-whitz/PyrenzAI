@@ -46,7 +46,9 @@ export function Archive() {
   } = useArchiveChatPageAPI(open, handleClose, itemsToShow);
 
   const truncateMessage = (message: string, length: number) => {
-    return message.length > length ? `${message.substring(0, length)}...` : message;
+    return message.length > length
+      ? `${message.substring(0, length)}...`
+      : message;
   };
 
   return (
@@ -89,7 +91,8 @@ export function Archive() {
                   <Box key={chat.chat_uuid} mx={2} mb={4} position="relative">
                     <PyrenzChatsCharacterCard
                       sx={{
-                        transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
+                        transition:
+                          'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
                         '&:hover': {
                           transform: 'scale(1.05)',
                           boxShadow: 6,
@@ -103,13 +106,20 @@ export function Archive() {
                       isPinned={chat.is_pinned}
                     >
                       <Typography variant="body2" color="text.secondary">
-                        {isSmallScreen ? truncateMessage(chat.preview_message, 50) : chat.preview_message}
+                        {isSmallScreen
+                          ? truncateMessage(chat.preview_message, 50)
+                          : chat.preview_message}
                       </Typography>
                     </PyrenzChatsCharacterCard>
                   </Box>
                 ))}
               </Box>
-              <Box display="flex" justifyContent="center" mt={2} alignItems="center">
+              <Box
+                display="flex"
+                justifyContent="center"
+                mt={2}
+                alignItems="center"
+              >
                 <PyrenzBlueButton
                   onClick={goToPreviousPage}
                   disabled={currentPage === 0}

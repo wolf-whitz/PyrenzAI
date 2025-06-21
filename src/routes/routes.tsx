@@ -1,7 +1,18 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
-import { Home, CreatePage, ProfilePage, ChatPage, Setting, ErrorPage, Subscription,  Archive, ContentPolicy, DocPage, Policy } from './Routing';
-
+import {
+  Home,
+  CreatePage,
+  ProfilePage,
+  ChatPage,
+  Setting,
+  ErrorPage,
+  Subscription,
+  Archive,
+  ContentPolicy,
+  DocPage,
+  Policy,
+} from './Routing';
 
 export const AppRoutes = (
   <>

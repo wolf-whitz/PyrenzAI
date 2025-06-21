@@ -13,7 +13,11 @@ interface ChatPageAPI {
   handleSend: (message: string) => Promise<void>;
   handleRemoveMessage: (messageId: string) => Promise<void>;
   handleRegenerateMessage: (messageId: string) => Promise<void>;
-  handleEditMessage: (messageId: string, editedMessage: string, type: 'user' | 'char') => Promise<void>;
+  handleEditMessage: (
+    messageId: string,
+    editedMessage: string,
+    type: 'user' | 'char'
+  ) => Promise<void>;
 }
 
 export const useChatPageAPI = (

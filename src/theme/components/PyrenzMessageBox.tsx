@@ -29,10 +29,7 @@ const StyledPyrenzMessageBox = styled(Box, {
   padding: '10px 15px',
   borderRadius: '18px',
   margin: '10px',
-  backgroundColor:
-    dataState === 'user'
-      ? '#555555'
-      : 'rgba(20, 24, 28, 0.6)',
+  backgroundColor: dataState === 'user' ? '#555555' : 'rgba(20, 24, 28, 0.6)',
   backgroundImage:
     dataState === 'char'
       ? 'linear-gradient(135deg, rgba(173, 216, 230, 0.1), rgba(0, 0, 0, 0.2))'
@@ -45,12 +42,10 @@ const StyledPyrenzMessageBox = styled(Box, {
   wordWrap: 'break-word',
   position: 'relative',
   cursor: 'pointer',
-  transition: 'transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease',
+  transition:
+    'transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease',
   '&:hover': {
-    backgroundColor:
-      dataState === 'user'
-        ? '#444444'
-        : 'rgba(20, 24, 28, 0.5)',
+    backgroundColor: dataState === 'user' ? '#444444' : 'rgba(20, 24, 28, 0.5)',
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
     transform: 'translateY(-2px)',
   },

@@ -148,7 +148,10 @@ export function ImportCharacterModal({
             name: data.name,
             description: data.description,
             tags: data.tags,
-          }).filter(([_, value]) => value !== undefined && value !== null && value !== '')
+          }).filter(
+            ([_, value]) =>
+              value !== undefined && value !== null && value !== ''
+          )
         );
 
         console.log(extractedData);

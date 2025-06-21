@@ -46,7 +46,9 @@ export function CreatePersonaModal({
   isEditing,
   onDelete,
 }: CreatePersonaModalProps) {
-  const [previewImage, setPreviewImage] = useState<string | null>(selectedImage);
+  const [previewImage, setPreviewImage] = useState<string | null>(
+    selectedImage
+  );
   const showAlert = usePyrenzAlert();
 
   useEffect(() => {
@@ -108,7 +110,10 @@ export function CreatePersonaModal({
             showAlert('File is too large. Maximum size is 1MB.', 'alert');
           }
           if (error.code === 'file-invalid-type') {
-            showAlert('Invalid file type. Only JPEG, JPG, and PNG images are allowed.', 'alert');
+            showAlert(
+              'Invalid file type. Only JPEG, JPG, and PNG images are allowed.',
+              'alert'
+            );
           }
         });
       });

@@ -99,7 +99,8 @@ export const AlertProvider = ({ children }: { children: ReactNode }) => {
               }
             >
               <AlertTitle>
-                {alertState.mode.charAt(0).toUpperCase() + alertState.mode.slice(1)}
+                {alertState.mode.charAt(0).toUpperCase() +
+                  alertState.mode.slice(1)}
               </AlertTitle>
               {alertState.message}
             </Alert>

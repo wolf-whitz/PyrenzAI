@@ -65,7 +65,9 @@ const subscriptionPlans: Plan[] = [
 ];
 
 export function Subscription() {
-  const [selectedPlanTitle, setSelectedPlanTitle] = useState<string | null>(null);
+  const [selectedPlanTitle, setSelectedPlanTitle] = useState<string | null>(
+    null
+  );
   const [isMonthly, setIsMonthly] = useState<boolean>(true);
   const [hoveredPlanTitle, setHoveredPlanTitle] = useState<string | null>(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -98,29 +100,62 @@ export function Subscription() {
   });
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: 'background.default' }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100vh',
+        backgroundColor: 'background.default',
+      }}
+    >
       <Box sx={{ display: 'flex', flex: 1 }}>
         {!isMobile && <Sidebar />}
         <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
           {isMobile && <MobileNav setShowLoginModal={setShowLoginModal} />}
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', p: isMobile ? 2 : 5, flex: 1 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              p: isMobile ? 2 : 5,
+              flex: 1,
+            }}
+          >
             <Box display="flex" gap={4} mb={5}>
-              <PyrenzBlueButton onClick={() => setIsMonthly(true)} sx={getButtonStyle(isMonthly)}>
+              <PyrenzBlueButton
+                onClick={() => setIsMonthly(true)}
+                sx={getButtonStyle(isMonthly)}
+              >
                 Monthly
               </PyrenzBlueButton>
-              <PyrenzBlueButton onClick={() => setIsMonthly(false)} sx={getButtonStyle(!isMonthly)}>
+              <PyrenzBlueButton
+                onClick={() => setIsMonthly(false)}
+                sx={getButtonStyle(!isMonthly)}
+              >
                 Yearly
               </PyrenzBlueButton>
             </Box>
-            <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', justifyContent: 'center', width: '100%' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: isMobile ? 'column' : 'row',
+                justifyContent: 'center',
+                width: '100%',
+              }}
+            >
               {subscriptionPlans.map((plan) => {
                 const isSubscribed = userSubscriptionPlan
-                  ? userSubscriptionPlan.map(planId => planId.toLowerCase()).includes(plan.plan_identifier.toLowerCase())
+                  ? userSubscriptionPlan
+                      .map((planId) => planId.toLowerCase())
+                      .includes(plan.plan_identifier.toLowerCase())
                   : false;
 
-                const isHighlighted = hoveredPlanTitle === null
-                  ? isSubscribed || (userSubscriptionPlan === null && plan.title === 'Azura (Blueberry)')
-                  : hoveredPlanTitle === plan.title;
+                const isHighlighted =
+                  hoveredPlanTitle === null
+                    ? isSubscribed ||
+                      (userSubscriptionPlan === null &&
+                        plan.title === 'Azura (Blueberry)')
+                    : hoveredPlanTitle === plan.title;
 
                 return (
                   <SubscriptionCard
@@ -137,7 +172,12 @@ export function Subscription() {
               })}
             </Box>
             {selectedPlan && (
-              <PaymentModal plan={selectedPlan} isOpen={!!selectedPlan} onClose={handleCloseModal} isMonthly={isMonthly} />
+              <PaymentModal
+                plan={selectedPlan}
+                isOpen={!!selectedPlan}
+                onClose={handleCloseModal}
+                isMonthly={isMonthly}
+              />
             )}
           </Box>
         </Box>

@@ -63,7 +63,10 @@ export const useArchiveChatPageAPI = (
 
     const parsed = typeof data === 'string' ? JSON.parse(data) : data;
     const charactersObj = parsed.Characters ?? {};
-    const chatEntries = Object.entries(charactersObj) as [string, CharacterData][];
+    const chatEntries = Object.entries(charactersObj) as [
+      string,
+      CharacterData,
+    ][];
 
     const chatList: Chat[] = chatEntries.map(([chat_uuid, chatData]) => ({
       chat_uuid,
@@ -97,7 +100,10 @@ export const useArchiveChatPageAPI = (
   };
 
   const handleDeleteChat = async (chatUuid: string): Promise<void> => {
-    const { error } = await supabase.from('chats').delete().eq('chat_uuid', chatUuid);
+    const { error } = await supabase
+      .from('chats')
+      .delete()
+      .eq('chat_uuid', chatUuid);
     if (error) {
       console.error('Error deleting chat:', error);
     } else {
@@ -106,7 +112,10 @@ export const useArchiveChatPageAPI = (
   };
 
   const handlePinChat = async (chatUuid: string): Promise<void> => {
-    const { error } = await supabase.from('chats').update({ is_pinned: true }).eq('chat_uuid', chatUuid);
+    const { error } = await supabase
+      .from('chats')
+      .update({ is_pinned: true })
+      .eq('chat_uuid', chatUuid);
     if (error) {
       console.error('Error pinning chat:', error);
     } else {

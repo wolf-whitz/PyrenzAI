@@ -55,7 +55,7 @@ export const useCreateAPI = (
     : typeof rawTags === 'string'
       ? rawTags.split(',').map((tag: string) => tag.trim())
       : [];
-  
+
   const handleImageSelect = (file: File | null) => {
     if (file) {
       const blobUrl = URL.createObjectURL(file);

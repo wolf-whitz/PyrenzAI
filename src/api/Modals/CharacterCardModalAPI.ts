@@ -12,7 +12,11 @@ interface UseCharacterModalApiProps {
   onClose: () => void;
 }
 
-export const useCharacterModalApi = ({ character: initialCharacter, isOwner, onClose }: UseCharacterModalApiProps) => {
+export const useCharacterModalApi = ({
+  character: initialCharacter,
+  isOwner,
+  onClose,
+}: UseCharacterModalApiProps) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [userUUID, setUserUUID] = useState<string | null>(null);
@@ -162,7 +166,9 @@ export const useCharacterModalApi = ({ character: initialCharacter, isOwner, onC
     }
   };
 
-  const tags = initialCharacter ? ensureArray(initialCharacter.tags).slice(0, 5) : [];
+  const tags = initialCharacter
+    ? ensureArray(initialCharacter.tags).slice(0, 5)
+    : [];
 
   return {
     isLoading,
@@ -182,7 +188,7 @@ const ensureArray = (tags: string | string[] | null | undefined) => {
     try {
       return JSON.parse(tags);
     } catch (e) {
-      console.error("Error parsing tags:", e);
+      console.error('Error parsing tags:', e);
       return [];
     }
   }

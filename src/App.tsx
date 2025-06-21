@@ -1,5 +1,10 @@
 import React, { useEffect, useState, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useNavigate,
+} from 'react-router-dom';
 import { AppRoutes } from '~/routes/routes';
 import { Spinner } from '@components';
 import { supabase } from './Utility/supabaseClient';
@@ -14,7 +19,9 @@ const AppContent = () => {
 
   useEffect(() => {
     const checkUserStatus = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
       if (user) {
         const { data, error } = await supabase
@@ -30,7 +37,10 @@ const AppContent = () => {
         }
 
         if (data?.is_deleted) {
-          showAlert('Your account is deleted. Please contact an admin to immediately open your account.', 'alert');
+          showAlert(
+            'Your account is deleted. Please contact an admin to immediately open your account.',
+            'alert'
+          );
           setIsDeleted(true);
           await supabase.auth.signOut();
         } else {

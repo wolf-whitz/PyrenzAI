@@ -3,6 +3,7 @@
 When creating a Character, you must complete four fields: Name, Persona, First Message, and Description. Additionally, you may choose to fill in the three supplementary boxes: Scenario, Example Conversations, and Model Instructions.
 
 ## 🙌 Creating Your First Character 🙌
+
 To create a Character, click the Create button on the left sidebar.
 
 ![Create](/Markdowns/CreateWhere.png)
@@ -55,7 +56,6 @@ Next, let’s talk about Tags.
 
 ![Tags](/Markdowns/TagsOverview.png)
 
-
 Tags categorize and define your character's traits, such as gender, age, or background, aiding in discoverability. If you want your character to be easily found or popular, choosing the right tags is essential.
 
 Now that we’ve completed everything, let’s move on to the advanced topics.
@@ -66,7 +66,7 @@ Now that we’ve completed everything, let’s move on to the advanced topics.
 
 Model instructions act as a foundational system prompt that guides a large language model (LLM) on how to respond.
 
- But what is a system prompt? In the context of LLMs, a system prompt is a framework that shapes the model’s behavior, defining guidelines and constraints to create a specific user experience. For instance, if you don’t want the model to speak on your behalf, you might tell it casually, “Stop speaking for me!” However, model instructions refine this approach into a structured directive.
+But what is a system prompt? In the context of LLMs, a system prompt is a framework that shapes the model’s behavior, defining guidelines and constraints to create a specific user experience. For instance, if you don’t want the model to speak on your behalf, you might tell it casually, “Stop speaking for me!” However, model instructions refine this approach into a structured directive.
 
 For example:
 
@@ -100,7 +100,6 @@ Here’s an example of W++ formatting:
 
 ![W++ example](/Markdowns/Formats/W++example.png)
 
-
 In this format, our character, Roderick, is portrayed as an anxious university student aspiring to be a writer.
 
 Notice the use of brackets and quotation marks: each category encapsulates relevant traits, and each trait is enclosed in quotation marks, separated by plus signs. The repetition within the Personality and Mind categories reinforces the character’s core traits for the AI.
@@ -125,11 +124,9 @@ Similar to W++ and SBF, PList categorizes a character’s traits while mirroring
 
 ![Plist example](/Markdowns/Formats/PlistOverview.png)
 
-
 In PList, categories are enclosed by square brackets, and traits are separated by commas rather than plus signs. However, this format can constrain complex descriptions requiring commas for elaboration:
 
 ![Plist example](/Markdowns/Formats/PlistExample.png)
-
 
 This limitation makes it challenging to articulate detailed traits without resorting to additional punctuation.
 
@@ -140,6 +137,5 @@ One of the most universally accepted formats is prose, which involves writing in
 When utilizing prose, it's advisable to connect personality traits to a character’s backstory. For example, here’s a paragraph that highlights Rod’s romantic and empathetic nature:
 
 ![Prose example](/Markdowns/Formats/ProseExample.png)
-
 
 Now once you created your character and setted up everything then your ready to go to your pyrenzai adventure!

@@ -8,7 +8,10 @@ interface MessageCustomizationModalProps {
   onClose: () => void;
 }
 
-export function MessageCustomizationModal({ open, onClose }: MessageCustomizationModalProps) {
+export function MessageCustomizationModal({
+  open,
+  onClose,
+}: MessageCustomizationModalProps) {
   const { customization, setCustomization } = useUserStore();
 
   const {
@@ -29,12 +32,13 @@ export function MessageCustomizationModal({ open, onClose }: MessageCustomizatio
     charQuotedColor,
   });
 
-  const handleColorChange = (colorType: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    setColors({
-      ...colors,
-      [colorType]: e.target.value,
-    });
-  };
+  const handleColorChange =
+    (colorType: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      setColors({
+        ...colors,
+        [colorType]: e.target.value,
+      });
+    };
 
   const handleSave = () => {
     setCustomization(colors);
@@ -54,52 +58,112 @@ export function MessageCustomizationModal({ open, onClose }: MessageCustomizatio
 
   return (
     <Modal open={open} onClose={onClose}>
-      <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4, borderRadius: 2 }}>
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 400,
+          bgcolor: 'background.paper',
+          boxShadow: 24,
+          p: 4,
+          borderRadius: 2,
+        }}
+      >
         <Typography variant="h6" gutterBottom>
           Chat Appearance
         </Typography>
 
         <Stack direction="column" spacing={2}>
-          <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
             <Typography variant="body1" color="text.secondary">
               User Text Color:
             </Typography>
-            <input type="color" value={colors.userTextColor} onChange={handleColorChange('userTextColor')} />
+            <input
+              type="color"
+              value={colors.userTextColor}
+              onChange={handleColorChange('userTextColor')}
+            />
           </Stack>
 
-          <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
             <Typography variant="body1" color="text.secondary">
               Character Text Color:
             </Typography>
-            <input type="color" value={colors.charTextColor} onChange={handleColorChange('charTextColor')} />
+            <input
+              type="color"
+              value={colors.charTextColor}
+              onChange={handleColorChange('charTextColor')}
+            />
           </Stack>
 
-          <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
             <Typography variant="body1" color="text.secondary">
               User Italic Color:
             </Typography>
-            <input type="color" value={colors.userItalicColor} onChange={handleColorChange('userItalicColor')} />
+            <input
+              type="color"
+              value={colors.userItalicColor}
+              onChange={handleColorChange('userItalicColor')}
+            />
           </Stack>
 
-          <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
             <Typography variant="body1" color="text.secondary">
               Character Italic Color:
             </Typography>
-            <input type="color" value={colors.charItalicColor} onChange={handleColorChange('charItalicColor')} />
+            <input
+              type="color"
+              value={colors.charItalicColor}
+              onChange={handleColorChange('charItalicColor')}
+            />
           </Stack>
 
-          <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
             <Typography variant="body1" color="text.secondary">
               User Quoted Color:
             </Typography>
-            <input type="color" value={colors.userQuotedColor} onChange={handleColorChange('userQuotedColor')} />
+            <input
+              type="color"
+              value={colors.userQuotedColor}
+              onChange={handleColorChange('userQuotedColor')}
+            />
           </Stack>
 
-          <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
             <Typography variant="body1" color="text.secondary">
               Character Quoted Color:
             </Typography>
-            <input type="color" value={colors.charQuotedColor} onChange={handleColorChange('charQuotedColor')} />
+            <input
+              type="color"
+              value={colors.charQuotedColor}
+              onChange={handleColorChange('charQuotedColor')}
+            />
           </Stack>
         </Stack>
 

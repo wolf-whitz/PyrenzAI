@@ -37,23 +37,26 @@ export const usePreviousChatAPI = () => {
         return;
       }
 
-      const { data, error } = await supabase
-        .rpc('get_chats', {
-          page: pageNumber,
-          per_page: 5,
-        });
+      const { data, error } = await supabase.rpc('get_chats', {
+        page: pageNumber,
+        per_page: 5,
+      });
 
       if (error) throw error;
 
       if (data && data.Characters) {
-        const formattedChats = Object.entries(data.Characters).map(([chat_uuid, chatData]: [string, any]) => ({
-          id: chatData.char_uuid,
-          chat_uuid,
-          preview_message: chatData.preview_message,
-          preview_image: chatData.preview_image,
-        }));
+        const formattedChats = Object.entries(data.Characters).map(
+          ([chat_uuid, chatData]: [string, any]) => ({
+            id: chatData.char_uuid,
+            chat_uuid,
+            preview_message: chatData.preview_message,
+            preview_image: chatData.preview_image,
+          })
+        );
 
-        setChats(prevChats => pageNumber === 0 ? formattedChats : [...prevChats, ...formattedChats]);
+        setChats((prevChats) =>
+          pageNumber === 0 ? formattedChats : [...prevChats, ...formattedChats]
+        );
         setHasMore(formattedChats.length > 0);
       } else {
         setHasMore(false);
@@ -118,7 +121,7 @@ export const usePreviousChatAPI = () => {
   };
 
   const loadMore = () => {
-    setPage(prevPage => prevPage + 1);
+    setPage((prevPage) => prevPage + 1);
   };
 
   const isInitialLoading = page === 0 && loading;
@@ -138,7 +141,8 @@ export const usePreviousChatAPI = () => {
     handleDelete,
     handleMouseDown,
     handleMouseUp,
-    truncateMessage: (text: string, maxLength = 50) => text?.length > maxLength ? text.slice(0, maxLength) + '...' : text || '',
+    truncateMessage: (text: string, maxLength = 50) =>
+      text?.length > maxLength ? text.slice(0, maxLength) + '...' : text || '',
     loadMore,
     hasMore,
   };

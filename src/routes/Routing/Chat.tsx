@@ -16,13 +16,7 @@ export function ChatPage() {
   const { chat_uuid } = useParams<{ chat_uuid: string }>();
   const navigate = useNavigate();
 
-  const {
-    setFirstMessage,
-    setUser,
-    setChar,
-    user,
-    char,
-  } = useChatStore();
+  const { setFirstMessage, setUser, setChar, user, char } = useChatStore();
 
   const [loading, setLoading] = useState(true);
   const [userUuid, setUserUuid] = useState<string | null>(null);

@@ -26,7 +26,7 @@ export function AuthenticationModal({
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const { t } = useTranslation();
-  const setIsLogin = useUserStore((state) => state.setIsLogin); 
+  const setIsLogin = useUserStore((state) => state.setIsLogin);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,7 +43,7 @@ export function AuthenticationModal({
           return;
         }
       }
-      setIsLogin(true); 
+      setIsLogin(true);
       onClose();
     } catch (err: any) {
       setError(err.message || t('errors.anErrorOccurred'));
@@ -59,7 +59,7 @@ export function AuthenticationModal({
 
     try {
       await handleOAuthSignIn(provider);
-      setIsLogin(true); 
+      setIsLogin(true);
       onClose();
     } catch (err: any) {
       setError(err.message || t('errors.oauthError'));
@@ -222,8 +222,8 @@ export function AuthenticationModal({
                   {loading
                     ? `${mode === 'login' ? t('auth.loggingIn') : t('auth.signingUp')}...`
                     : mode === 'login'
-                    ? t('buttons.login')
-                    : t('buttons.signUp')}
+                      ? t('buttons.login')
+                      : t('buttons.signUp')}
                 </motion.button>
               </form>
 

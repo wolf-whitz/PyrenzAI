@@ -1,11 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import {
-  Menu,
-  MenuItem,
-  Typography,
-  TextField,
-  Box
-} from '@mui/material';
+import { Menu, MenuItem, Typography, TextField, Box } from '@mui/material';
 import { supabase } from '~/Utility/supabaseClient';
 
 interface Tag {
@@ -43,14 +37,16 @@ export function TagsMenu({ anchorEl, onClose, onTagClick }: TagsMenuProps) {
   }, [anchorEl]);
 
   const filteredTags = useMemo(() => {
-    return tags.filter((tag) =>
-      tag.tag_name && typeof tag.tag_name === 'string' && tag.tag_name.toLowerCase().includes(searchQuery.toLowerCase())
+    return tags.filter(
+      (tag) =>
+        tag.tag_name &&
+        typeof tag.tag_name === 'string' &&
+        tag.tag_name.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [tags, searchQuery]);
 
   useEffect(() => {
-    const timerId = setTimeout(() => {
-    }, 500);
+    const timerId = setTimeout(() => {}, 500);
 
     return () => {
       clearTimeout(timerId);

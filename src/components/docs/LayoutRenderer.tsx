@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import {
   Typography,
   Paper,
@@ -7,36 +7,48 @@ import {
   Box,
   IconButton,
   Link as MuiLink,
-} from '@mui/material'
-import ReactMarkdown, { Components } from 'react-markdown'
-import remarkGfm from 'remark-gfm'
-import ContentCopyIcon from '@mui/icons-material/ContentCopy'
-import { Light as SyntaxHighlighter } from 'react-syntax-highlighter'
-import ts from 'react-syntax-highlighter/dist/esm/languages/hljs/typescript'
-import js from 'react-syntax-highlighter/dist/esm/languages/hljs/javascript'
-import { atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs'
-import type { DocMeta } from '@shared-types'
+} from '@mui/material';
+import ReactMarkdown, { Components } from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
+import ts from 'react-syntax-highlighter/dist/esm/languages/hljs/typescript';
+import js from 'react-syntax-highlighter/dist/esm/languages/hljs/javascript';
+import { atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import type { DocMeta } from '@shared-types';
 
-SyntaxHighlighter.registerLanguage('typescript', ts)
-SyntaxHighlighter.registerLanguage('javascript', js)
+SyntaxHighlighter.registerLanguage('typescript', ts);
+SyntaxHighlighter.registerLanguage('javascript', js);
 
 type CustomCodeProps = {
-  inline?: boolean
-  children?: React.ReactNode
-  className?: string
-}
+  inline?: boolean;
+  children?: React.ReactNode;
+  className?: string;
+};
 
-export function LayoutRenderer({ meta, content }: { meta: DocMeta; content: string }): React.ReactElement {
-  const [copied, setCopied] = React.useState<{ [key: string]: boolean }>({})
+export function LayoutRenderer({
+  meta,
+  content,
+}: {
+  meta: DocMeta;
+  content: string;
+}): React.ReactElement {
+  const [copied, setCopied] = React.useState<{ [key: string]: boolean }>({});
 
   const handleCopy = (text: string, key: string) => {
-    navigator.clipboard.writeText(text).then(() => {
-      setCopied((prev) => ({ ...prev, [key]: true }))
-      setTimeout(() => setCopied((prev) => ({ ...prev, [key]: false })), 2000)
-    }).catch(err => {
-      console.error('Failed to copy text: ', err)
-    })
-  }
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        setCopied((prev) => ({ ...prev, [key]: true }));
+        setTimeout(
+          () => setCopied((prev) => ({ ...prev, [key]: false })),
+          2000
+        );
+      })
+      .catch((err) => {
+        console.error('Failed to copy text: ', err);
+      });
+  };
 
   const components: Components = {
     h1: ({ children }) => (
@@ -60,8 +72,8 @@ export function LayoutRenderer({ meta, content }: { meta: DocMeta; content: stri
       </Typography>
     ),
     code: ({ inline, children, className }: CustomCodeProps) => {
-      const key = React.useId()
-      const codeText = String(children).replace(/\n$/, '')
+      const key = React.useId();
+      const codeText = String(children).replace(/\n$/, '');
 
       if (inline) {
         return (
@@ -79,11 +91,11 @@ export function LayoutRenderer({ meta, content }: { meta: DocMeta; content: stri
           >
             {children}
           </Box>
-        )
+        );
       }
 
-      const match = /language-(\w+)/.exec(className || '')
-      const language = match?.[1] || 'text'
+      const match = /language-(\w+)/.exec(className || '');
+      const language = match?.[1] || 'text';
 
       return (
         <Box sx={{ position: 'relative', my: 2 }} data-pyrenz-type="code-block">
@@ -119,7 +131,7 @@ export function LayoutRenderer({ meta, content }: { meta: DocMeta; content: stri
             <ContentCopyIcon fontSize="small" />
           </IconButton>
         </Box>
-      )
+      );
     },
     a: ({ href, children }) => (
       <MuiLink
@@ -153,7 +165,10 @@ export function LayoutRenderer({ meta, content }: { meta: DocMeta; content: stri
       </List>
     ),
     ol: ({ children }) => (
-      <List sx={{ listStyle: 'decimal inside' }} data-pyrenz-type="ordered-list">
+      <List
+        sx={{ listStyle: 'decimal inside' }}
+        data-pyrenz-type="ordered-list"
+      >
         {children}
       </List>
     ),
@@ -162,11 +177,11 @@ export function LayoutRenderer({ meta, content }: { meta: DocMeta; content: stri
         {children}
       </ListItem>
     ),
-  }
+  };
 
   return (
     <ReactMarkdown components={components} remarkPlugins={[remarkGfm]}>
       {content}
     </ReactMarkdown>
-  )
+  );
 }

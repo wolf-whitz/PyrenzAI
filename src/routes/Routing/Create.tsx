@@ -12,14 +12,14 @@ import { supabase } from '~/Utility/supabaseClient';
 import { useParams } from 'react-router-dom';
 import { useCharacterStore, useUserStore } from '~/store';
 import { Character } from '@shared-types';
-import { User } from '@supabase/supabase-js';  
+import { User } from '@supabase/supabase-js';
 
 export function CreatePage() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
   const [characterUpdate, setCharacterUpdate] = useState(false);
   const [creatorName, setCreatorName] = useState<string | null>(null);
-  const [user, setUser] = useState<User | null>(null); 
+  const [user, setUser] = useState<User | null>(null);
 
   const setCharacter = useCharacterStore((state) => state.setCharacter);
   const user_uuid = useUserStore((state) => state.userUUID);
@@ -30,7 +30,9 @@ export function CreatePage() {
 
   useEffect(() => {
     const checkUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       setUser(user);
     };
 
@@ -61,7 +63,10 @@ export function CreatePage() {
               .single();
 
             if (privateResponse.error) {
-              console.error('Error fetching character data:', privateResponse.error);
+              console.error(
+                'Error fetching character data:',
+                privateResponse.error
+              );
             } else if (privateResponse.data) {
               data = privateResponse.data;
             }

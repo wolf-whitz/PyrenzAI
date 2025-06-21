@@ -31,7 +31,7 @@ export function Home() {
     t,
     itemsPerPage,
     handleButtonClick,
-    onButtonTagClicked,  
+    onButtonTagClicked,
   } = useHomepageAPI();
 
   const toggleMode = () => {

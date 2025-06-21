@@ -1,12 +1,7 @@
 import { motion } from 'framer-motion';
 import { LanguageModal } from '@components';
 import { ChevronLeft } from 'lucide-react';
-import {
-  Avatar,
-  Button,
-  Typography,
-  Box,
-} from '@mui/material';
+import { Avatar, Button, Typography, Box } from '@mui/material';
 import { useAccountAPI } from '@api';
 import { PyrenzDialog } from '~/theme';
 import { useState } from 'react';

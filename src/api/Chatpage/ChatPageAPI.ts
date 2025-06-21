@@ -30,7 +30,9 @@ export const fetchChatData = async (
       throw new Error(Character.error);
     }
 
-    const tags = Array.isArray(Character.tags) ? JSON.stringify(Character.tags) : Character.tags;
+    const tags = Array.isArray(Character.tags)
+      ? JSON.stringify(Character.tags)
+      : Character.tags;
 
     const { data, error } = await supabase
       .from('chat_messages')

@@ -8,7 +8,11 @@ interface CreateCharacterResponse {
   error?: string;
 }
 
-async function insertTags(char_uuid: string, user_uuid: string, tags: string[]) {
+async function insertTags(
+  char_uuid: string,
+  user_uuid: string,
+  tags: string[]
+) {
   if (!tags || tags.length === 0) return;
 
   for (const tag of tags) {
@@ -18,10 +22,7 @@ async function insertTags(char_uuid: string, user_uuid: string, tags: string[]) 
       tag_name: tag,
     };
 
-    const { error } = await supabase
-      .from('tags')
-      .insert([tagEntry])
-      .select();
+    const { error } = await supabase.from('tags').insert([tagEntry]).select();
 
     if (error) {
       console.error(`Error inserting tag "${tag}":`, error.message);
@@ -40,21 +41,25 @@ export const createCharacter = async (
     const characterUuid = uuidv4();
     if (!characterUuid) throw new Error('Failed to generate UUID.');
 
-    const { char_uuid, tags, creator_uuid: user_uuid, is_public, ...rest } = character;
+    const {
+      char_uuid,
+      tags,
+      creator_uuid: user_uuid,
+      is_public,
+      ...rest
+    } = character;
 
     const insertData = {
       char_uuid: characterUuid,
       tags: tags || [],
       creator_uuid: user_uuid,
       is_public: is_public,
-      ...rest
+      ...rest,
     };
 
     const tableName = is_public ? 'public_characters' : 'private_characters';
 
-    const { error } = await supabase
-      .from(tableName)
-      .insert([insertData]);
+    const { error } = await supabase.from(tableName).insert([insertData]);
 
     if (error) {
       console.error(`Error creating character in ${tableName}:`, error);
@@ -81,7 +86,13 @@ export const updateCharacter = async (
     if (!character.creator || character.creator.trim() === '')
       return { error: 'Creator is required.' };
 
-    const { char_uuid, tags, creator_uuid: user_uuid, is_public, ...rest } = character;
+    const {
+      char_uuid,
+      tags,
+      creator_uuid: user_uuid,
+      is_public,
+      ...rest
+    } = character;
     if (!char_uuid)
       return { error: 'Character UUID is required for updating.' };
 
@@ -89,7 +100,7 @@ export const updateCharacter = async (
       tags: tags,
       creator_uuid: user_uuid,
       is_public: is_public,
-      ...rest
+      ...rest,
     };
 
     const { error } = await supabase.rpc('update_character', {
@@ -104,10 +115,7 @@ export const updateCharacter = async (
     }
 
     if (user_uuid) {
-      await supabase
-        .from('tags')
-        .delete()
-        .eq('char_uuid', char_uuid);
+      await supabase.from('tags').delete().eq('char_uuid', char_uuid);
 
       if (tags) {
         await insertTags(char_uuid, user_uuid, tags);

@@ -85,8 +85,8 @@ export function SearchBar({
               '& fieldset': { border: 'none' },
               '&:hover fieldset': { border: 'none' },
               '& input': {
-                backgroundColor: 'transparent',  
-                color: 'white',  
+                backgroundColor: 'transparent',
+                color: 'white',
               },
             },
           }}

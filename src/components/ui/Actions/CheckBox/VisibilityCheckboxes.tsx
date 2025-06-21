@@ -7,7 +7,9 @@ export function VisibilityCheckboxes() {
   const setCharacter = useCharacterStore((state) => state.setCharacter);
   const isPublic = useCharacterStore((state) => state.is_public);
   const isNSFW = useCharacterStore((state) => state.is_nsfw);
-  const isDetailsPrivate = useCharacterStore((state) => state.is_details_private);  
+  const isDetailsPrivate = useCharacterStore(
+    (state) => state.is_details_private
+  );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
@@ -62,7 +64,7 @@ export function VisibilityCheckboxes() {
         <FormControlLabel
           control={
             <Checkbox
-              name="is_details_private"  
+              name="is_details_private"
               checked={isDetailsPrivate}
               onChange={handleChange}
               inputProps={{ 'aria-label': 'Hide Details' }}

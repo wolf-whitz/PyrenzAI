@@ -29,13 +29,15 @@ export function Setting() {
   useEffect(() => {
     const init = async () => {
       setLoading(true);
-      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      const { data: sessionData, error: sessionError } =
+        await supabase.auth.getSession();
       if (sessionError || !sessionData.session) {
         setLoading(false);
         return;
       }
 
-      const { data: userData, error: userError } = await supabase.auth.getUser();
+      const { data: userData, error: userError } =
+        await supabase.auth.getUser();
       if (!userError && userData?.user) setUser(userData.user);
       setLoading(false);
     };
@@ -62,11 +64,16 @@ export function Setting() {
     const chunkedTabs = isMobile
       ? [mutableTabs.slice(0, 2), mutableTabs.slice(2)]
       : isMedium
-      ? [mutableTabs.slice(0, 3), mutableTabs.slice(3)]
-      : [mutableTabs];
+        ? [mutableTabs.slice(0, 3), mutableTabs.slice(3)]
+        : [mutableTabs];
 
     return (
-      <Box display="flex" flexDirection="column" alignItems="center" width="100%">
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        width="100%"
+      >
         {chunkedTabs.map((chunk, i) => (
           <Tabs
             key={i}

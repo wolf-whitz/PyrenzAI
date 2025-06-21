@@ -124,7 +124,11 @@ export function CharacterCardModal({
             <Typography
               variant="caption"
               color="white"
-              sx={{ mt: 0.5, cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+              sx={{
+                mt: 0.5,
+                cursor: 'pointer',
+                '&:hover': { textDecoration: 'underline' },
+              }}
               onClick={handleCreatorClick}
             >
               @{character.creator}
@@ -135,7 +139,10 @@ export function CharacterCardModal({
               color="white"
               sx={{ mt: 2, opacity: 0.9 }}
             >
-              {truncateText(character.description || 'No description available.', 100)}
+              {truncateText(
+                character.description || 'No description available.',
+                100
+              )}
             </Typography>
 
             <Box sx={{ display: 'flex', alignItems: 'center', mt: 3 }}>

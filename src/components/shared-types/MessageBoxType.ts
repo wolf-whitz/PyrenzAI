@@ -25,7 +25,11 @@ export interface MessageBoxProps {
     currentMessage: string,
     type: 'user' | 'char'
   ) => void;
-  onSaveEdit: (messageId: string, editedMessage: string, type: 'user' | 'char') => void;
+  onSaveEdit: (
+    messageId: string,
+    editedMessage: string,
+    type: 'user' | 'char'
+  ) => void;
   onCancelEdit: () => void;
   setEditedMessage: (message: string) => void;
 }

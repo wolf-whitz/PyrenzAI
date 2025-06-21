@@ -15,7 +15,7 @@ export const componentOverrides = {
         color: '#fff',
       },
     },
-  },    
+  },
   MuiIconButton: {
     styleOverrides: {
       root: {

@@ -16,7 +16,11 @@ interface MessageContextMenuProps {
   onRegenerate: (messageId: string) => void;
   onRemove: (messageId: string) => void;
   handleSpeak: (text: string) => void;
-  onEditClick: (messageId: string, currentMessage: string, type: 'user' | 'char') => void;
+  onEditClick: (
+    messageId: string,
+    currentMessage: string,
+    type: 'user' | 'char'
+  ) => void;
   handleCopy: () => void;
   onClose: () => void;
 }
@@ -26,7 +30,8 @@ const menuConfig = {
     {
       icon: <DeleteIcon />,
       label: 'Delete',
-      action: (props: MessageContextMenuProps) => () => props.msg.id && props.onRemove(props.msg.id),
+      action: (props: MessageContextMenuProps) => () =>
+        props.msg.id && props.onRemove(props.msg.id),
     },
     {
       icon: <FileCopyIcon />,
@@ -36,24 +41,29 @@ const menuConfig = {
     {
       icon: <EditIcon />,
       label: 'Edit',
-      action: (props: MessageContextMenuProps) => () => props.msg.id && props.onEditClick(props.msg.id, props.msg.text || '', 'user'),
+      action: (props: MessageContextMenuProps) => () =>
+        props.msg.id &&
+        props.onEditClick(props.msg.id, props.msg.text || '', 'user'),
     },
   ],
   char: [
     {
       icon: <RefreshIcon />,
       label: 'Regenerate',
-      action: (props: MessageContextMenuProps) => () => props.msg.id && props.onRegenerate(props.msg.id),
+      action: (props: MessageContextMenuProps) => () =>
+        props.msg.id && props.onRegenerate(props.msg.id),
     },
     {
       icon: <DeleteIcon />,
       label: 'Delete',
-      action: (props: MessageContextMenuProps) => () => props.msg.id && props.onRemove(props.msg.id),
+      action: (props: MessageContextMenuProps) => () =>
+        props.msg.id && props.onRemove(props.msg.id),
     },
     {
       icon: <VolumeUpIcon />,
       label: 'Speak',
-      action: (props: MessageContextMenuProps) => () => props.handleSpeak(props.msg.text || ''),
+      action: (props: MessageContextMenuProps) => () =>
+        props.handleSpeak(props.msg.text || ''),
     },
     {
       icon: <FileCopyIcon />,
@@ -63,7 +73,9 @@ const menuConfig = {
     {
       icon: <EditIcon />,
       label: 'Edit',
-      action: (props: MessageContextMenuProps) => () => props.msg.id && props.onEditClick(props.msg.id, props.msg.text || '', 'char'),
+      action: (props: MessageContextMenuProps) => () =>
+        props.msg.id &&
+        props.onEditClick(props.msg.id, props.msg.text || '', 'char'),
     },
   ],
 };
@@ -73,7 +85,9 @@ export const MessageContextMenu = (props: MessageContextMenuProps) => {
 
   if (msg.error) return null;
 
-  const handleAction = (action: (props: MessageContextMenuProps) => () => void) => {
+  const handleAction = (
+    action: (props: MessageContextMenuProps) => () => void
+  ) => {
     action(props)();
     onClose();
   };
@@ -89,7 +103,8 @@ export const MessageContextMenu = (props: MessageContextMenuProps) => {
         backdropFilter: 'blur(16px)',
         WebkitBackdropFilter: 'blur(16px)',
         backgroundColor: 'rgba(40, 40, 40, 0.35)',
-        backgroundImage: 'linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,0,0,0.05))',
+        backgroundImage:
+          'linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,0,0,0.05))',
         borderRadius: '12px',
         border: '1px solid rgba(255, 255, 255, 0.15)',
         boxShadow: '0 8px 24px rgba(0, 0, 0, 0.2)',

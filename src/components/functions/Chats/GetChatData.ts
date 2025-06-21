@@ -16,21 +16,23 @@ export async function getChatData(chatId: string): Promise<ChatDataResult> {
 
   const inputCharUuid = chatData.char_uuid;
 
-  const { data: publicCharacterData, error: publicCharacterError } = await supabase
-    .from('public_characters')
-    .select('*')
-    .eq('char_uuid', inputCharUuid)
-    .single();
+  const { data: publicCharacterData, error: publicCharacterError } =
+    await supabase
+      .from('public_characters')
+      .select('*')
+      .eq('char_uuid', inputCharUuid)
+      .single();
 
   if (!publicCharacterError && publicCharacterData) {
     return publicCharacterData;
   }
 
-  const { data: privateCharacterData, error: privateCharacterError } = await supabase
-    .from('private_characters')
-    .select('*')
-    .eq('char_uuid', inputCharUuid)
-    .single();
+  const { data: privateCharacterData, error: privateCharacterError } =
+    await supabase
+      .from('private_characters')
+      .select('*')
+      .eq('char_uuid', inputCharUuid)
+      .single();
 
   if (privateCharacterError || !privateCharacterData) {
     return { error: 'Character not found' };

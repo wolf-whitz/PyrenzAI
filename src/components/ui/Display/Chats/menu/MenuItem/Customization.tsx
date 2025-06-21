@@ -14,7 +14,7 @@ interface ModelOption {
   label: string;
   name: string;
   description: string;
-  subscription_plan: string;  
+  subscription_plan: string;
 }
 
 interface CustomizationProps {
@@ -46,7 +46,9 @@ export function Customization({
   subscriptionPlan,
   modelOptions,
 }: CustomizationProps) {
-  const [showPopover, setShowPopover] = useState<keyof typeof sliderDescriptions | null>(null);
+  const [showPopover, setShowPopover] = useState<
+    keyof typeof sliderDescriptions | null
+  >(null);
 
   const {
     maxTokens,
@@ -70,7 +72,7 @@ export function Customization({
           value: option.name,
           label: option.label,
           description: option.description,
-          subscription_plan: option.subscription_plan, 
+          subscription_plan: option.subscription_plan,
         }))}
       />
 

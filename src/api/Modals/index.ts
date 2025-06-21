@@ -1,2 +1,2 @@
 export * from './AuthenticationAPI';
-export * from './CharacterCardModalAPI'
+export * from './CharacterCardModalAPI';

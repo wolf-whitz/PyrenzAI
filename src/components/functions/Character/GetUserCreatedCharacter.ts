@@ -48,7 +48,11 @@ export const GetUserCreatedCharacters = (
         const ownerStatus = userData.user_uuid === currentUserUuid;
         setIsOwner(ownerStatus);
 
-        const { characters, max_page } = await fetchCharacters(userData.user_uuid, page, itemsPerPage);
+        const { characters, max_page } = await fetchCharacters(
+          userData.user_uuid,
+          page,
+          itemsPerPage
+        );
 
         if (userData) {
           setUserData({ ...userData, isOwner: ownerStatus });
@@ -66,7 +70,10 @@ export const GetUserCreatedCharacters = (
     };
 
     const getCreatorUuid = async (): Promise<string | null> => {
-      const { data: { user }, error } = await supabase.auth.getUser();
+      const {
+        data: { user },
+        error,
+      } = await supabase.auth.getUser();
 
       if (error || !user) {
         console.error('Error fetching user:', error);
@@ -90,23 +97,29 @@ export const GetUserCreatedCharacters = (
       return {
         username: data.username,
         user_avatar: data.avatar_url,
-        user_uuid: data.user_uuid
+        user_uuid: data.user_uuid,
       };
     };
 
-    const fetchCharacters = async (creatorUUID: string, page: number, itemsPerPage: number) => {
+    const fetchCharacters = async (
+      creatorUUID: string,
+      page: number,
+      itemsPerPage: number
+    ) => {
       const { show_nsfw } = useUserStore.getState();
 
-      const { data, error } = await supabase.rpc('get_filtered_characters', {
-        search: null,
-        show_nsfw: show_nsfw,
-        blocked_tags: [],
-        gender_filter: null,
-        tag: [],
-        creatoruuid: creatorUUID,
-        items_per_page: itemsPerPage,
-        page: page,
-      }).single<FilteredCharactersResponse>();
+      const { data, error } = await supabase
+        .rpc('get_filtered_characters', {
+          search: null,
+          show_nsfw: show_nsfw,
+          blocked_tags: [],
+          gender_filter: null,
+          tag: [],
+          creatoruuid: creatorUUID,
+          items_per_page: itemsPerPage,
+          page: page,
+        })
+        .single<FilteredCharactersResponse>();
 
       if (error || !data) {
         console.error('Error fetching characters:', error);
@@ -117,7 +130,7 @@ export const GetUserCreatedCharacters = (
     };
 
     const resolveUuid = async () => {
-      const uuid = creatorUUID || await getCreatorUuid();
+      const uuid = creatorUUID || (await getCreatorUuid());
       if (uuid) {
         await fetchData(uuid);
       } else {

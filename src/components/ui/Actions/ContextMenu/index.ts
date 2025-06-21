@@ -1,3 +1,3 @@
-export * from './CustomContextMenu'
-export * from './TagsContextMenu'
-export * from './MessageContextMenu'
+export * from './CustomContextMenu';
+export * from './TagsContextMenu';
+export * from './MessageContextMenu';

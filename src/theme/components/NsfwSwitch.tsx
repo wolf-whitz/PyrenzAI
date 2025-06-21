@@ -8,7 +8,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Button
+  Button,
 } from '@mui/material';
 import { pink } from '@mui/material/colors';
 import { styled } from '@mui/material/styles';
@@ -57,7 +57,13 @@ export function NSFWSwitch() {
 
   return (
     <>
-      <Tooltip title="NSFW Switch" arrow open={openTooltip} onOpen={handleTooltipOpen} onClose={handleTooltipClose}>
+      <Tooltip
+        title="NSFW Switch"
+        arrow
+        open={openTooltip}
+        onOpen={handleTooltipOpen}
+        onClose={handleTooltipClose}
+      >
         <PinkSwitch
           checked={show_nsfw}
           onChange={handleSwitchChange}
@@ -74,16 +80,27 @@ export function NSFWSwitch() {
         <DialogTitle id="alert-dialog-title">Confirm Action</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-          Enabling NSFW content confirms that you are 18 or older and that you agree to our Terms of Service.
-Pyrenzai does not guarantee the nature of user-generated content. If you encounter any characters or content that violate our rules, please report them.
-Are you sure you want to enable NSFW content?
+            Enabling NSFW content confirms that you are 18 or older and that you
+            agree to our Terms of Service. Pyrenzai does not guarantee the
+            nature of user-generated content. If you encounter any characters or
+            content that violate our rules, please report them. Are you sure you
+            want to enable NSFW content?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancel} color="inherit" sx={{ backgroundColor: 'transparent', color: 'white' }}>
+          <Button
+            onClick={handleCancel}
+            color="inherit"
+            sx={{ backgroundColor: 'transparent', color: 'white' }}
+          >
             Cancel
           </Button>
-          <Button onClick={handleConfirm} color="inherit" autoFocus sx={{ backgroundColor: 'transparent', color: 'white' }}>
+          <Button
+            onClick={handleConfirm}
+            color="inherit"
+            autoFocus
+            sx={{ backgroundColor: 'transparent', color: 'white' }}
+          >
             Confirm
           </Button>
         </DialogActions>

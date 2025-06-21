@@ -17,10 +17,7 @@ interface ChatHeaderProps {
   toggleSettings: () => void;
 }
 
-export function ChatHeader({
-  char,
-  toggleSettings,
-}: ChatHeaderProps) {
+export function ChatHeader({ char, toggleSettings }: ChatHeaderProps) {
   const theme = useTheme();
   const isMdScreen = useMediaQuery(theme.breakpoints.up('lg'));
   const navigate = useNavigate();

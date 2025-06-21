@@ -90,7 +90,7 @@ export function Dropzone({
           isBannerDragActive ? 'bg-gray-700' : 'bg-gray-800',
           'border-dashed border-2 border-gray-500',
           className,
-          'rounded-lg overflow-hidden'  
+          'rounded-lg overflow-hidden'
         )}
         sx={{
           height: '490px',
@@ -106,7 +106,7 @@ export function Dropzone({
               width: '100%',
               height: '100%',
               objectFit: 'cover',
-              display: 'block'  
+              display: 'block',
             }}
           />
         ) : (
@@ -118,7 +118,10 @@ export function Dropzone({
             height="100%"
           >
             <PersonIcon sx={{ fontSize: '2rem', color: 'white' }} />
-            <Typography variant="body1" sx={{ color: 'white', mt: 2, textAlign: 'center' }}>
+            <Typography
+              variant="body1"
+              sx={{ color: 'white', mt: 2, textAlign: 'center' }}
+            >
               {label}
             </Typography>
           </Box>

@@ -24,7 +24,10 @@ interface CharacterCardProps {
   isOwner?: boolean;
 }
 
-export function CharacterCard({ character, isOwner = false }: CharacterCardProps) {
+export function CharacterCard({
+  character,
+  isOwner = false,
+}: CharacterCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState<Character | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -50,7 +53,10 @@ export function CharacterCard({ character, isOwner = false }: CharacterCardProps
 
   if (character.isLoading) return null;
 
-  const tagsArray = typeof character.tags === 'string' ? JSON.parse(character.tags) : character.tags;
+  const tagsArray =
+    typeof character.tags === 'string'
+      ? JSON.parse(character.tags)
+      : character.tags;
 
   return (
     <>
@@ -80,7 +86,8 @@ export function CharacterCard({ character, isOwner = false }: CharacterCardProps
                 character.is_nsfw && (e.currentTarget.style.filter = 'none')
               }
               onMouseOut={(e: React.MouseEvent<HTMLElement>) =>
-                character.is_nsfw && (e.currentTarget.style.filter = 'blur(4px)')
+                character.is_nsfw &&
+                (e.currentTarget.style.filter = 'blur(4px)')
               }
             />
           </PyrenzCharacterCardImage>

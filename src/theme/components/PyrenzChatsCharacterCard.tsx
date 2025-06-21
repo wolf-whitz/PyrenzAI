@@ -62,7 +62,9 @@ interface PyrenzChatsCharacterCardProps {
   isPinned?: boolean;
 }
 
-export const PyrenzChatsCharacterCard: React.FC<PyrenzChatsCharacterCardProps> = ({
+export const PyrenzChatsCharacterCard: React.FC<
+  PyrenzChatsCharacterCardProps
+> = ({
   imageSrc,
   characterName,
   children,
@@ -142,28 +144,36 @@ export const PyrenzChatsCharacterCard: React.FC<PyrenzChatsCharacterCardProps> =
           },
         }}
       >
-        <MenuItem onClick={(e) => {
-          handleClose();
-          if (ChatSend) {
-            ChatSend(e as unknown as React.MouseEvent<HTMLDivElement>);
-          }
-        }}>
+        <MenuItem
+          onClick={(e) => {
+            handleClose();
+            if (ChatSend) {
+              ChatSend(e as unknown as React.MouseEvent<HTMLDivElement>);
+            }
+          }}
+        >
           Chat Now
         </MenuItem>
-        <MenuItem onClick={(e) => {
-          handleClose();
-          if (onPinClick) {
-            onPinClick(e as unknown as React.MouseEvent<HTMLButtonElement>);
-          }
-        }}>
+        <MenuItem
+          onClick={(e) => {
+            handleClose();
+            if (onPinClick) {
+              onPinClick(e as unknown as React.MouseEvent<HTMLButtonElement>);
+            }
+          }}
+        >
           Pin Chat
         </MenuItem>
-        <MenuItem onClick={(e) => {
-          handleClose();
-          if (onDeleteClick) {
-            onDeleteClick(e as unknown as React.MouseEvent<HTMLButtonElement>);
-          }
-        }}>
+        <MenuItem
+          onClick={(e) => {
+            handleClose();
+            if (onDeleteClick) {
+              onDeleteClick(
+                e as unknown as React.MouseEvent<HTMLButtonElement>
+              );
+            }
+          }}
+        >
           Delete Chat
         </MenuItem>
       </Menu>

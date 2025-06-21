@@ -5,7 +5,9 @@ import { User } from '@supabase/supabase-js';
 import { useUserStore } from '~/store';
 
 export const useAccountAPI = () => {
-  const [languages, setLanguages] = useState<{ code: string; name: string }[]>([]);
+  const [languages, setLanguages] = useState<{ code: string; name: string }[]>(
+    []
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
@@ -24,11 +26,13 @@ export const useAccountAPI = () => {
     };
 
     const fetchUser = async () => {
-      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      const { data: sessionData, error: sessionError } =
+        await supabase.auth.getSession();
       if (sessionError || !sessionData.session) {
         console.error('Error fetching session:', sessionError);
       } else {
-        const { data: userData, error: userError } = await supabase.auth.getUser();
+        const { data: userData, error: userError } =
+          await supabase.auth.getUser();
         if (userError) {
           console.error('Error fetching user:', userError);
         } else {
@@ -46,12 +50,12 @@ export const useAccountAPI = () => {
   };
 
   const clearCookies = () => {
-    const cookies = document.cookie.split(";");
+    const cookies = document.cookie.split(';');
 
     for (const cookie of cookies) {
-      const eqPos = cookie.indexOf("=");
+      const eqPos = cookie.indexOf('=');
       const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-      document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+      document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
     }
   };
 

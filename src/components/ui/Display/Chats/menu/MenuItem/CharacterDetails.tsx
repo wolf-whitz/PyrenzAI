@@ -32,7 +32,10 @@ export function CharacterDetails({ char, onSubmit }: CharacterDetailsProps) {
             throw error;
           }
         } catch (error) {
-          console.error(`Error fetching character details from ${table}:`, error);
+          console.error(
+            `Error fetching character details from ${table}:`,
+            error
+          );
         }
       }
       setShowDetails(false);
@@ -41,12 +44,13 @@ export function CharacterDetails({ char, onSubmit }: CharacterDetailsProps) {
     fetchCharacterDetails();
   }, [char.char_uuid]);
 
-  const handleChange = (field: keyof Character) => (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setCharacterDetails({
-      ...characterDetails,
-      [field]: e.target.value,
-    });
-  };
+  const handleChange =
+    (field: keyof Character) => (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setCharacterDetails({
+        ...characterDetails,
+        [field]: e.target.value,
+      });
+    };
 
   const handleSubmit = () => {
     onSubmit(characterDetails);
@@ -58,7 +62,12 @@ export function CharacterDetails({ char, onSubmit }: CharacterDetailsProps) {
 
   if (!showDetails) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100%"
+      >
         <Typography variant="h6">Details Have Been Hidden</Typography>
       </Box>
     );

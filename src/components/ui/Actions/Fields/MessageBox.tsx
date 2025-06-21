@@ -4,10 +4,7 @@ import {
   CustomMarkdown,
   MessageContextMenu,
 } from '@components';
-import {
-  Box,
-  useTheme,
-} from '@mui/material';
+import { Box, useTheme } from '@mui/material';
 import { PyrenzMessageBox, PyrenzDialog } from '~/theme';
 import type { MessageBoxProps } from '@shared-types';
 
@@ -29,8 +26,12 @@ export const MessageBox = React.memo(function MessageBox({
   onCancelEdit,
 }: MessageBoxProps) {
   const dataState = msg.type;
-  const displayName = dataState === 'user' ? msg.username || user.username : msg.name || char.name;
-  const isEditingThisMessage = editingMessageId === msg.id && editingMessageType === dataState;
+  const displayName =
+    dataState === 'user'
+      ? msg.username || user.username
+      : msg.name || char.name;
+  const isEditingThisMessage =
+    editingMessageId === msg.id && editingMessageType === dataState;
 
   const [localEditedMessage, setLocalEditedMessage] = useState(msg.text || '');
   const [debouncedValue, setDebouncedValue] = useState(localEditedMessage);
@@ -53,7 +54,10 @@ export const MessageBox = React.memo(function MessageBox({
   }, [localEditedMessage, isEditingThisMessage]);
 
   const theme = useTheme();
-  const [menuPosition, setMenuPosition] = useState<{ top: number; left: number } | null>(null);
+  const [menuPosition, setMenuPosition] = useState<{
+    top: number;
+    left: number;
+  } | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
   const handleMessageBoxClick = (event: React.MouseEvent) => {
@@ -157,7 +161,10 @@ export const MessageBox = React.memo(function MessageBox({
             maxWidth: '100%',
           }}
         >
-          {isGenerating && dataState === 'char' && isLastMessage && !msg.text ? (
+          {isGenerating &&
+          dataState === 'char' &&
+          isLastMessage &&
+          !msg.text ? (
             <TypingIndicator />
           ) : (
             <CustomMarkdown

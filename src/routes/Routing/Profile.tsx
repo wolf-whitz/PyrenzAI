@@ -6,7 +6,14 @@ import {
   GetUserCreatedCharacters,
   MobileNav,
 } from '@components';
-import { Box, Typography, useMediaQuery, useTheme, CircularProgress, IconButton } from '@mui/material';
+import {
+  Box,
+  Typography,
+  useMediaQuery,
+  useTheme,
+  CircularProgress,
+  IconButton,
+} from '@mui/material';
 import { useState } from 'react';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -18,7 +25,8 @@ export function ProfilePage() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  const { characters, userData, loading, isOwner, maxPage } = GetUserCreatedCharacters(creator_uuid, page);
+  const { characters, userData, loading, isOwner, maxPage } =
+    GetUserCreatedCharacters(creator_uuid, page);
 
   const handlePreviousPage = () => {
     if (page > 1) {
@@ -37,7 +45,14 @@ export function ProfilePage() {
       <Box display="flex" flexDirection="column" minHeight="100vh">
         <Box display="flex" flex={1}>
           <Sidebar className="flex-shrink-0" />
-          <Box flex={1} overflow="auto" display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+          <Box
+            flex={1}
+            overflow="auto"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            minHeight="200px"
+          >
             <CircularProgress />
           </Box>
         </Box>
@@ -51,8 +66,17 @@ export function ProfilePage() {
       <Box display="flex" flexDirection="column" minHeight="100vh">
         <Box display="flex" flex={1}>
           <Sidebar className="flex-shrink-0" />
-          <Box flex={1} overflow="auto" display="flex" justifyContent="center" alignItems="center" minHeight="200px">
-            <Typography variant="h6">This user does not exist (·•᷄‎ࡇ•᷅ )</Typography>
+          <Box
+            flex={1}
+            overflow="auto"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            minHeight="200px"
+          >
+            <Typography variant="h6">
+              This user does not exist (·•᷄‎ࡇ•᷅ )
+            </Typography>
           </Box>
         </Box>
         {isMobile && <MobileNav setShowLoginModal={setShowLoginModal} />}
@@ -96,7 +120,12 @@ export function ProfilePage() {
             )}
           </Box>
           {characters.length > 0 && maxPage > 1 && (
-            <Box display="flex" justifyContent="center" alignItems="center" mt={2}>
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              mt={2}
+            >
               <IconButton onClick={handlePreviousPage} disabled={page === 1}>
                 <ChevronLeftIcon />
               </IconButton>

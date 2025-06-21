@@ -1,4 +1,4 @@
-import type { DocMeta } from '@shared-types'
+import type { DocMeta } from '@shared-types';
 
 export const docPath = {
   default: 'intro',
@@ -7,7 +7,8 @@ export const docPath = {
       slug: 'intro',
       file: 'Intro.md',
       title: 'PyrenzAI',
-      description: 'PyrenzAI is your go-to AI chat app where you can vibe with endless anime characters 24/7. Dive into fully immersive stories',
+      description:
+        'PyrenzAI is your go-to AI chat app where you can vibe with endless anime characters 24/7. Dive into fully immersive stories',
       layout: 'default',
       banner: '/Banner.png',
     },
@@ -20,4 +21,4 @@ export const docPath = {
       layout: 'default',
     },
   ],
-} satisfies { default: string; pages: DocMeta[] }
+} satisfies { default: string; pages: DocMeta[] };

@@ -88,7 +88,7 @@ export function AdModal({ isOpen, onClose }: AdModalProps) {
     <div
       className="fixed inset-0 flex items-center justify-center z-50 w-full h-full"
       style={{
-        backgroundColor: 'rgba(15, 20, 30, 0.4)', 
+        backgroundColor: 'rgba(15, 20, 30, 0.4)',
         backdropFilter: 'blur(10px)',
         WebkitBackdropFilter: 'blur(10px)',
       }}
@@ -102,7 +102,7 @@ export function AdModal({ isOpen, onClose }: AdModalProps) {
       <div
         className="p-6 rounded-lg text-center w-full max-w-md relative"
         style={{
-          backgroundColor: 'rgba(30, 30, 40, 0.25)', 
+          backgroundColor: 'rgba(30, 30, 40, 0.25)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
           border: '1px solid rgba(255, 255, 255, 0.08)',
@@ -123,7 +123,8 @@ export function AdModal({ isOpen, onClose }: AdModalProps) {
           Support PyrenzAI Now!
         </Typography>
         <Typography variant="body1" className="text-white mb-4">
-          ☕️ Help keep The devs awake! Your support = more caffeine = more late-night coding sessions 🙌
+          ☕️ Help keep The devs awake! Your support = more caffeine = more
+          late-night coding sessions 🙌
         </Typography>
         <Typography variant="caption" className="text-gray-300 mb-4 block">
           PS: If you wanna donate press the coffee icon ;3

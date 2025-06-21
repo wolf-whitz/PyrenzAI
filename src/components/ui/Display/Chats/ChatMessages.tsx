@@ -6,7 +6,11 @@ import { MessageBox, Character } from '@components';
 
 interface ChatMessagesExtendedProps extends ChatMessagesProps {
   setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>;
-  onEditMessage: (messageId: string, editedMessage: string, type: 'user' | 'char') => void;
+  onEditMessage: (
+    messageId: string,
+    editedMessage: string,
+    type: 'user' | 'char'
+  ) => void;
   firstMessage: string;
 }
 
@@ -22,7 +26,9 @@ export function ChatMessages({
   firstMessage,
 }: ChatMessagesExtendedProps) {
   const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
-  const [editingMessageType, setEditingMessageType] = useState<'user' | 'char' | null>(null);
+  const [editingMessageType, setEditingMessageType] = useState<
+    'user' | 'char' | null
+  >(null);
   const [editedMessage, setEditedMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -43,13 +49,21 @@ export function ChatMessages({
     }
   };
 
-  const handleEditClick = (messageId: string, currentMessage: string, type: 'user' | 'char') => {
+  const handleEditClick = (
+    messageId: string,
+    currentMessage: string,
+    type: 'user' | 'char'
+  ) => {
     setEditingMessageId(messageId);
     setEditingMessageType(type);
     setEditedMessage(currentMessage);
   };
 
-  const handleSaveEdit = async (messageId: string, editedMessage: string, type: 'user' | 'char') => {
+  const handleSaveEdit = async (
+    messageId: string,
+    editedMessage: string,
+    type: 'user' | 'char'
+  ) => {
     if (onEditMessage) {
       setIsLoading(true);
       await onEditMessage(messageId, editedMessage, type);

@@ -3,7 +3,7 @@ import { saveImageToDB, getImageFromDB, openDB } from '~/Utility/IndexDB';
 import { Box, Typography } from '@mui/material';
 import { PyrenzBlueButton } from '~/theme';
 import { useUserStore } from '~/store';
-import { MessageCustomizationModal } from '@components'; 
+import { MessageCustomizationModal } from '@components';
 
 export function Cosmetic() {
   const [bgImage, setBgImage] = useState<string | null>(null);

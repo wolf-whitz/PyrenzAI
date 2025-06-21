@@ -70,7 +70,10 @@ export function Profile() {
 
       img.onload = () => {
         if (img.width !== 400 || img.height !== 400) {
-          showAlert('Profile image dimensions should be 400x400 pixels', 'alert');
+          showAlert(
+            'Profile image dimensions should be 400x400 pixels',
+            'alert'
+          );
           URL.revokeObjectURL(objectURL);
           return;
         }
@@ -106,7 +109,10 @@ export function Profile() {
     try {
       const updateData: any = { username };
 
-      const tagsArray = tagsInput.split(',').map(tag => tag.trim()).filter(tag => tag);
+      const tagsArray = tagsInput
+        .split(',')
+        .map((tag) => tag.trim())
+        .filter((tag) => tag);
       updateData.blocked_tags = tagsArray;
 
       if (profileImage) {
@@ -117,7 +123,10 @@ export function Profile() {
           .upload(filePath, profileImage);
 
         if (uploadError) {
-          showAlert(`Error uploading profile image: ${uploadError.message}`, 'alert');
+          showAlert(
+            `Error uploading profile image: ${uploadError.message}`,
+            'alert'
+          );
           setIsLoading(false);
           return;
         }
@@ -142,7 +151,10 @@ export function Profile() {
         navigate('/Profile');
       }
     } catch (error) {
-      showAlert(`Error during submission: ${error instanceof Error ? error.message : String(error)}`, 'alert');
+      showAlert(
+        `Error during submission: ${error instanceof Error ? error.message : String(error)}`,
+        'alert'
+      );
     } finally {
       setIsLoading(false);
     }
@@ -151,7 +163,10 @@ export function Profile() {
   return (
     <Box sx={{ padding: '20px', maxWidth: '400px', margin: '0 auto' }}>
       <Box sx={{ marginBottom: '20px' }}>
-        <Typography variant="subtitle1" sx={{ fontWeight: 'bold', marginBottom: '8px' }}>
+        <Typography
+          variant="subtitle1"
+          sx={{ fontWeight: 'bold', marginBottom: '8px' }}
+        >
           Profile Image
         </Typography>
         <PyrenzFormControl>
@@ -187,7 +202,10 @@ export function Profile() {
       </Box>
 
       <Box sx={{ marginBottom: '20px' }}>
-        <Typography variant="subtitle1" sx={{ fontWeight: 'bold', marginBottom: '8px' }}>
+        <Typography
+          variant="subtitle1"
+          sx={{ fontWeight: 'bold', marginBottom: '8px' }}
+        >
           Username
         </Typography>
         <TextField
@@ -200,7 +218,10 @@ export function Profile() {
       </Box>
 
       <Box sx={{ marginBottom: '20px' }}>
-        <Typography variant="subtitle1" sx={{ fontWeight: 'bold', marginBottom: '8px' }}>
+        <Typography
+          variant="subtitle1"
+          sx={{ fontWeight: 'bold', marginBottom: '8px' }}
+        >
           Blocked Tags
         </Typography>
         <Textarea

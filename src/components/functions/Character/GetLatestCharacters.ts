@@ -18,7 +18,7 @@ export async function GetLatestCharacters(
     items_per_page: maxCharacter,
     show_nsfw,
     blocked_tags: blocked_tags || [],
-    sort_by: 'created_at',  
+    sort_by: 'created_at',
     gender_filter: null,
     search: null,
     tag: [],

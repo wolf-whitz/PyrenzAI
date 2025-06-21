@@ -17,7 +17,10 @@ interface CustomButtonProps {
   onButtonTagClicked: (tag: string) => void;
 }
 
-export function CustomButton({ onButtonClick, onButtonTagClicked }: CustomButtonProps) {
+export function CustomButton({
+  onButtonClick,
+  onButtonTagClicked,
+}: CustomButtonProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [visibleButtons] = useState(buttons);
   const [loading, setLoading] = useState(false);
@@ -34,7 +37,7 @@ export function CustomButton({ onButtonClick, onButtonTagClicked }: CustomButton
   ) => {
     setLoading(true);
     await onButtonClick(type, maxCharacter, page, tag, gender, searchQuery);
-    console.log(type )
+    console.log(type);
     setLoading(false);
   };
 

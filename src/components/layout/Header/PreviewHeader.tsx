@@ -77,7 +77,11 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
   }
 
   return (
-    <AppBar position="static" elevation={0} sx={{ backgroundColor: 'gray.900' }}>
+    <AppBar
+      position="static"
+      elevation={0}
+      sx={{ backgroundColor: 'gray.900' }}
+    >
       <Toolbar
         className="flex justify-between items-center w-full max-w-screen-2xl mx-auto px-6"
         sx={{ overflowX: 'hidden' }}

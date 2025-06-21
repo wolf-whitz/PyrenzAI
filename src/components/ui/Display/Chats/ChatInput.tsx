@@ -16,7 +16,12 @@ interface ChatInputProps {
 const MAX_CHAR_LIMIT = 1500;
 const MAX_TEXT_AREA_HEIGHT = 200;
 
-export function ChatInput({ className, handleSend, char, isGenerating }: ChatInputProps) {
+export function ChatInput({
+  className,
+  handleSend,
+  char,
+  isGenerating,
+}: ChatInputProps) {
   const [message, setMessage] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -28,9 +33,12 @@ export function ChatInput({ className, handleSend, char, isGenerating }: ChatInp
     setMessage('');
   }, [message, handleSend]);
 
-  const handleMessageChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setMessage(e.target.value);
-  }, []);
+  const handleMessageChange = useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setMessage(e.target.value);
+    },
+    []
+  );
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -48,7 +56,9 @@ export function ChatInput({ className, handleSend, char, isGenerating }: ChatInp
         transition={{ duration: 0.3, ease: 'easeOut' }}
         className={`relative mx-auto w-full max-w-full md:max-w-[500px] lg:max-w-[640px] p-4 ${className}`}
       >
-        <Box className={`relative flex bg-gray-700 rounded-lg p-3 w-full ${className}`}>
+        <Box
+          className={`relative flex bg-gray-700 rounded-lg p-3 w-full ${className}`}
+        >
           <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
             <button
               className="mr-2 text-gray-400 hover:text-white transition duration-200 p-2 rounded-full flex-shrink-0"
@@ -100,7 +110,9 @@ export function ChatInput({ className, handleSend, char, isGenerating }: ChatInp
           </motion.div>
         </Box>
       </Box>
-      {isMenuOpen && <Menu onClose={() => setIsMenuOpen(false)} char={char as Character} />}
+      {isMenuOpen && (
+        <Menu onClose={() => setIsMenuOpen(false)} char={char as Character} />
+      )}
     </>
   );
 }

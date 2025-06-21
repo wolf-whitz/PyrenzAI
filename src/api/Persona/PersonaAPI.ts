@@ -47,7 +47,9 @@ export const usePersonaAPI = () => {
     try {
       const { data, error } = await supabase
         .from('personas')
-        .select('id, persona_name, persona_description, persona_profile, is_selected')
+        .select(
+          'id, persona_name, persona_description, persona_profile, is_selected'
+        )
         .eq('user_uuid', userUuid);
 
       if (error) {
@@ -130,8 +132,14 @@ export const usePersonaAPI = () => {
       if (!userUuid) return;
 
       try {
-        await supabase.from('personas').update({ is_selected: false }).eq('user_uuid', userUuid);
-        await supabase.from('personas').update({ is_selected: true }).eq('id', id);
+        await supabase
+          .from('personas')
+          .update({ is_selected: false })
+          .eq('user_uuid', userUuid);
+        await supabase
+          .from('personas')
+          .update({ is_selected: true })
+          .eq('id', id);
 
         await fetchPersona();
       } catch (error) {
@@ -165,7 +173,9 @@ export const usePersonaAPI = () => {
       setNewPersonaDescription: React.Dispatch<React.SetStateAction<string>>,
       setSelectedImage: React.Dispatch<React.SetStateAction<string | null>>,
       setModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
-      setEditingPersona: React.Dispatch<React.SetStateAction<PersonaCard | null>>
+      setEditingPersona: React.Dispatch<
+        React.SetStateAction<PersonaCard | null>
+      >
     ) => {
       if (!newPersonaName || !newPersonaDescription || !userUuid) return;
 

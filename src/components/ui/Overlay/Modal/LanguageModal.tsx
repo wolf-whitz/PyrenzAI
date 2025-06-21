@@ -15,7 +15,11 @@ interface LanguageModalProps {
   onClose: () => void;
 }
 
-export function LanguageModal({ languages, isOpen, onClose }: LanguageModalProps) {
+export function LanguageModal({
+  languages,
+  isOpen,
+  onClose,
+}: LanguageModalProps) {
   const { t } = useTranslation();
 
   const changeLanguage = useCallback(

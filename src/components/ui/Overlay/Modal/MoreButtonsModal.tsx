@@ -9,7 +9,7 @@ import {
   TextField,
   IconButton,
   InputAdornment,
-  CircularProgress
+  CircularProgress,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Search } from 'lucide-react';
@@ -35,9 +35,7 @@ export function MoreButtonsModal({
   useEffect(() => {
     const fetchTags = async () => {
       setIsLoading(true);
-      let query = supabase
-        .from('tags')
-        .select('tag_name');
+      let query = supabase.from('tags').select('tag_name');
 
       if (searchQuery) {
         query = query.ilike('tag_name', `%${searchQuery}%`);
@@ -48,7 +46,7 @@ export function MoreButtonsModal({
       if (error) {
         console.error('Error fetching tags:', error);
       } else {
-        setTags(data.map(tag => tag.tag_name));
+        setTags(data.map((tag) => tag.tag_name));
       }
       setIsLoading(false);
     };
