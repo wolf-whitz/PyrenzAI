@@ -55,7 +55,7 @@ export const useAccountAPI = () => {
     }
   };
 
-  const handleLogOut = async () => {
+  const confirmLogOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
       console.error('Error logging out:', error);
@@ -69,13 +69,7 @@ export const useAccountAPI = () => {
     }
   };
 
-  const handleDeleteAccount = async () => {
-    setOpenDialog(true);
-  };
-
   const confirmDeleteAccount = async () => {
-    setOpenDialog(false);
-
     try {
       const { error: updateError } = await supabase
         .from('user_data')
@@ -87,17 +81,7 @@ export const useAccountAPI = () => {
         return;
       }
 
-      const { error: logoutError } = await supabase.auth.signOut();
-      if (logoutError) {
-        console.error('Error logging out:', logoutError);
-      } else {
-        console.log('Logged out successfully');
-        localStorage.clear();
-        clearCookies();
-        setUser(null);
-        setIsLogin(false);
-        navigate('/');
-      }
+      await confirmLogOut();
     } catch (error) {
       console.error('Error deleting account:', error);
     }
@@ -109,8 +93,7 @@ export const useAccountAPI = () => {
     user,
     openDialog,
     toggleModal,
-    handleLogOut,
-    handleDeleteAccount,
+    confirmLogOut,
     confirmDeleteAccount,
     setOpenDialog,
   };

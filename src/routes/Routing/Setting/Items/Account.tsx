@@ -17,8 +17,7 @@ export function Account() {
     isModalOpen,
     user,
     toggleModal,
-    handleLogOut,
-    handleDeleteAccount,
+    confirmLogOut,
     confirmDeleteAccount,
   } = useAccountAPI();
 
@@ -38,11 +37,6 @@ export function Account() {
   };
 
   const handleCloseLogoutDialog = () => {
-    setOpenLogoutDialog(false);
-  };
-
-  const handleConfirmLogout = () => {
-    handleLogOut();
     setOpenLogoutDialog(false);
   };
 
@@ -172,7 +166,7 @@ export function Account() {
         onClose={handleCloseLogoutDialog}
         title="Confirm Logout"
         content="Are you sure you want to log out?"
-        onConfirm={handleConfirmLogout}
+        onConfirm={confirmLogOut}
       />
 
       <PyrenzDialog
