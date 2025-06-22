@@ -1,13 +1,22 @@
 import { useState } from 'react';
-import { FaDiscord, FaCheck, FaTimes } from 'react-icons/fa';
+import { FaDiscord } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
-import { motion, AnimatePresence } from 'framer-motion';
-import ReactDOM from 'react-dom';
 import { handleLogin, handleOAuthSignIn, handleSignUp } from '~/api';
-import posthog from 'posthog-js';
-import * as Dialog from '@radix-ui/react-dialog';
+import * as Sentry from '@sentry/react';
 import { useTranslation } from 'react-i18next';
 import { useUserStore } from '~/store';
+import {
+  Box,
+  Modal,
+  Typography,
+  TextField,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  Divider,
+  Backdrop,
+} from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 interface AuthenticationModalProps {
   mode: 'login' | 'register';
@@ -15,18 +24,15 @@ interface AuthenticationModalProps {
   toggleMode: () => void;
 }
 
-export function AuthenticationModal({
-  mode,
-  onClose,
-  toggleMode,
-}: AuthenticationModalProps) {
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [isAdult, setIsAdult] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
+export function AuthenticationModal({ mode, onClose, toggleMode }: AuthenticationModalProps) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isAdult, setIsAdult] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const { t } = useTranslation();
   const setIsLogin = useUserStore((state) => state.setIsLogin);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,7 +53,7 @@ export function AuthenticationModal({
       onClose();
     } catch (err: any) {
       setError(err.message || t('errors.anErrorOccurred'));
-      posthog.capture(`${mode}_error`, { error: err.message });
+      Sentry.captureException(err);
     } finally {
       setLoading(false);
     }
@@ -63,202 +69,185 @@ export function AuthenticationModal({
       onClose();
     } catch (err: any) {
       setError(err.message || t('errors.oauthError'));
-      posthog.capture('oauth_error', { provider, error: err.message });
+      Sentry.captureException(err);
     } finally {
       setLoading(false);
     }
   };
 
-  return ReactDOM.createPortal(
-    <Dialog.Root open onOpenChange={onClose}>
-      <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-50 bg-black bg-opacity-50" />
-        <AnimatePresence>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
-            transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="fixed inset-0 flex items-center justify-center z-50"
-          >
-            <Dialog.Content
-              className="relative bg-gray-900 text-white p-8 rounded-lg shadow-2xl w-[400px] border border-gray-700"
-              onClick={(e) => e.stopPropagation()}
-              aria-describedby="dialog-description"
+  return (
+    <Modal
+      open
+      onClose={onClose}
+      closeAfterTransition
+      BackdropComponent={Backdrop}
+      BackdropProps={{ timeout: 500 }}
+    >
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
+          outline: 'none',
+        }}
+      >
+        <Box
+          sx={{
+            backdropFilter: 'blur(12px)',
+            backgroundColor: 'rgba(30, 30, 47, 0.7)',
+            borderRadius: '16px',
+            p: 4,
+            width: 400,
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.37)',
+            color: 'white',
+            position: 'relative',
+          }}
+        >
+          <Typography variant="h5" sx={{ mb: 3, textAlign: 'center', fontWeight: 700 }}>
+            {mode === 'login' ? t('buttons.login') : t('buttons.createAccount')}
+          </Typography>
+
+          {error && (
+            <Typography color="error" align="center" sx={{ mb: 2 }}>
+              {error}
+            </Typography>
+          )}
+
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 3 }}>
+            <Button
+              variant="outlined"
+              startIcon={<FcGoogle />}
+              onClick={() => handleOAuth('google')}
+              disabled={loading}
+              sx={{
+                color: 'white',
+                borderColor: '#555',
+                '&:hover': { borderColor: '#888' },
+              }}
             >
-              <button
-                onClick={onClose}
-                className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
-              >
-                <FaTimes className="text-xl" />
-              </button>
+              <Typography variant="button">
+                {mode === 'login' ? t('auth.loginWithGoogle') : t('auth.signUpWithGoogle')}
+              </Typography>
+            </Button>
 
-              <Dialog.Title className="text-2xl font-bold mb-6 text-center font-pyrenzfont">
-                {mode === 'login'
-                  ? t('buttons.login')
-                  : t('buttons.createAccount')}
-              </Dialog.Title>
+            <Button
+              variant="outlined"
+              startIcon={<FaDiscord style={{ color: 'white' }} />}
+              onClick={() => handleOAuth('discord')}
+              disabled={loading}
+              sx={{
+                color: 'white',
+                borderColor: '#5865F2',
+                backgroundColor: '#5865F2',
+                '&:hover': { backgroundColor: '#4752c4' },
+              }}
+            >
+              <Typography variant="button">
+                {mode === 'login' ? t('auth.loginWithDiscord') : t('auth.signUpWithDiscord')}
+              </Typography>
+            </Button>
+          </Box>
 
-              <p id="dialog-description" className="sr-only">
-                {mode === 'login'
-                  ? t('auth.loginToAccount')
-                  : t('auth.createNewAccount')}
-              </p>
+          <Divider sx={{ my: 3, borderColor: 'rgba(255,255,255,0.2)' }}>
+            <Typography variant="caption" color="text.secondary">
+              {t('auth.or')}
+            </Typography>
+          </Divider>
 
-              {error && (
-                <motion.p
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="text-red-500 text-sm text-center mb-3 font-pyrenzfont"
-                >
-                  {error}
-                </motion.p>
-              )}
+          <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <TextField
+              label={t('auth.email')}
+              type="email"
+              placeholder={t('auth.yourEmailAddress')}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              InputLabelProps={{ style: { color: '#ccc' } }}
+              InputProps={{ style: { color: '#fff' } }}
+            />
 
-              <div className="flex flex-col gap-3 mb-5">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => handleOAuth('google')}
-                  className="flex items-center justify-center gap-3 bg-white text-black py-2 rounded font-bold transition-all hover:bg-gray-200 font-pyrenzfont border border-gray-400 shadow-md"
-                  disabled={loading}
-                >
-                  <FcGoogle className="text-xl" />
-                  {mode === 'login'
-                    ? t('auth.loginWithGoogle')
-                    : t('auth.signUpWithGoogle')}
-                </motion.button>
+            <TextField
+              label={t('auth.password')}
+              type="password"
+              placeholder={t('auth.yourPassword')}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              InputLabelProps={{ style: { color: '#ccc' } }}
+              InputProps={{ style: { color: '#fff' } }}
+            />
 
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => handleOAuth('discord')}
-                  className="flex items-center justify-center gap-3 bg-[#5865F2] text-white py-2 rounded font-bold transition-all hover:bg-[#4651c8] font-pyrenzfont shadow-md"
-                  disabled={loading}
-                >
-                  <FaDiscord className="text-xl" />
-                  {mode === 'login'
-                    ? t('auth.loginWithDiscord')
-                    : t('auth.signUpWithDiscord')}
-                </motion.button>
-              </div>
-
-              <div className="flex items-center my-6">
-                <div className="flex-1 border-t border-gray-700"></div>
-                <span className="mx-4 text-gray-400 text-sm font-pyrenzfont">
-                  {t('auth.or')}
-                </span>
-                <div className="flex-1 border-t border-gray-700"></div>
-              </div>
-
-              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                <div>
-                  <label className="text-gray-400 text-sm font-pyrenzfont">
-                    {t('auth.email')}
-                  </label>
-                  <input
-                    type="email"
-                    placeholder={t('auth.yourEmailAddress')}
-                    className="mt-1 p-3 rounded bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none w-full font-pyrenzfont transition-all"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
+            {mode === 'register' && (
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={isAdult}
+                    onChange={() => setIsAdult(!isAdult)}
+                    sx={{
+                      color: '#fff',
+                      '&.Mui-checked': { color: '#fff' },
+                    }}
                   />
-                </div>
+                }
+                label={<Typography variant="body2">{t('auth.confirm18')}</Typography>}
+                sx={{ color: '#fff' }}
+              />
+            )}
 
-                <div>
-                  <label className="text-gray-400 text-sm font-pyrenzfont">
-                    {t('auth.password')}
-                  </label>
-                  <input
-                    type="password"
-                    placeholder={t('auth.yourPassword')}
-                    className="mt-1 p-3 rounded bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none w-full font-pyrenzfont transition-all"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
-                </div>
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={loading}
+              sx={{
+                mt: 2,
+                backgroundColor: '#3f51b5',
+                '&:hover': { backgroundColor: '#334296' },
+              }}
+            >
+              {loading
+                ? `${mode === 'login' ? t('auth.loggingIn') : t('auth.signingUp')}...`
+                : mode === 'login'
+                ? t('buttons.login')
+                : t('buttons.signUp')}
+            </Button>
+          </Box>
 
-                {mode === 'register' && (
-                  <div className="flex items-center gap-3 mt-2">
-                    <label
-                      htmlFor="confirm18"
-                      className="relative w-6 h-6 flex items-center justify-center cursor-pointer"
-                    >
-                      <input
-                        type="checkbox"
-                        id="confirm18"
-                        className="peer hidden"
-                        checked={isAdult}
-                        onChange={() => setIsAdult(!isAdult)}
-                      />
-                      <motion.div
-                        whileTap={{ scale: 0.9 }}
-                        className="w-6 h-6 border-2 border-gray-600 rounded-md peer-checked:border-blue-500 flex items-center justify-center transition-all duration-200"
-                      >
-                        <FaCheck
-                          className={`w-4 h-4 text-blue-500 ${isAdult ? 'block' : 'hidden'}`}
-                        />
-                      </motion.div>
-                    </label>
-                    <span
-                      className="text-gray-400 text-sm cursor-pointer font-pyrenzfont"
-                      onClick={() => setIsAdult(!isAdult)}
-                    >
-                      {t('auth.confirm18')}
-                    </span>
-                  </div>
-                )}
+          <Typography variant="body2" sx={{ mt: 3, textAlign: 'center', color: '#aaa' }}>
+            By continuing, you agree to our{' '}
+            <Typography
+              component="span"
+              variant="body2"
+              onClick={() => navigate('/Policy')}
+              sx={{ color: '#3f51b5', cursor: 'pointer', textDecoration: 'underline' }}
+            >
+              Privacy Policy
+            </Typography>
+            .
+          </Typography>
 
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  type="submit"
-                  className="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-bold transition-all font-pyrenzfont"
-                  disabled={loading}
-                >
-                  {loading
-                    ? `${mode === 'login' ? t('auth.loggingIn') : t('auth.signingUp')}...`
-                    : mode === 'login'
-                      ? t('buttons.login')
-                      : t('buttons.signUp')}
-                </motion.button>
-              </form>
+          <Divider sx={{ my: 2, borderColor: 'rgba(255,255,255,0.1)' }} />
 
-              <p className="text-gray-500 text-xs text-center mt-6 font-pyrenzfont">
-                {t('auth.byContinuing')}
-                <span className="text-blue-500 cursor-pointer">
-                  {t('footer.legal.termsOfService')}
-                </span>{' '}
-                {t('auth.and')}{' '}
-                <span className="text-blue-500 cursor-pointer">
-                  {t('footer.legal.privacyPolicy')}
-                </span>
-                .
-              </p>
-
-              <hr className="mt-4 border-t-2 border-gray-700 w-4/5 mx-auto opacity-50" />
-
-              <p className="text-gray-400 text-sm text-center mt-4 font-pyrenzfont">
-                {mode === 'login'
-                  ? t('auth.dontHaveAccount')
-                  : t('auth.alreadyHaveAccount')}{' '}
-                <span
-                  className="text-blue-500 cursor-pointer"
-                  onClick={toggleMode}
-                >
-                  {mode === 'login'
-                    ? t('buttons.register')
-                    : t('buttons.login')}
-                </span>
-              </p>
-            </Dialog.Content>
-          </motion.div>
-        </AnimatePresence>
-      </Dialog.Portal>
-    </Dialog.Root>,
-    document.getElementById('modal-root')!
+          <Typography variant="body2" sx={{ textAlign: 'center', color: '#aaa' }}>
+            {mode === 'login'
+              ? t('auth.dontHaveAccount')
+              : t('auth.alreadyHaveAccount')}{' '}
+            <Typography
+              variant="body2"
+              component="span"
+              sx={{
+                color: '#3f51b5',
+                cursor: 'pointer',
+                textDecoration: 'underline',
+              }}
+              onClick={toggleMode}
+            >
+              {mode === 'login' ? t('buttons.register') : t('buttons.login')}
+            </Typography>
+          </Typography>
+        </Box>
+      </Box>
+    </Modal>
   );
 }

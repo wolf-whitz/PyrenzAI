@@ -138,9 +138,7 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
       aria-describedby="drafts-modal-description"
       closeAfterTransition
       BackdropComponent={Backdrop}
-      BackdropProps={{
-        timeout: 500,
-      }}
+      BackdropProps={{ timeout: 500 }}
     >
       <Fade in={true}>
         <Box
@@ -153,10 +151,12 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
             maxWidth: 'md',
             maxHeight: '90vh',
             overflowY: 'auto',
-            bgcolor: 'background.paper',
-            boxShadow: 24,
+            background: 'rgba(255, 255, 255, 0.05)',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
+            borderRadius: '16px',
             p: 4,
-            borderRadius: '8px',
           }}
         >
           <motion.div
@@ -167,7 +167,7 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
             <Typography
               variant="h5"
               component="h2"
-              className="text-center mb-4"
+              className="text-center mb-4 text-white"
             >
               Select a Draft
             </Typography>
@@ -178,7 +178,7 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
                 <SkeletonLoader />
               </>
             ) : displayedDrafts.length === 0 ? (
-              <Typography variant="body1" className="text-center text-gray-400">
+              <Typography variant="body1" className="text-center text-gray-300">
                 No drafts available.
               </Typography>
             ) : (
@@ -186,42 +186,41 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
                 {displayedDrafts.map((draft) => (
                   <Card
                     key={draft.id}
-                    className="bg-gray-800 p-4 rounded-lg mb-4 relative border border-gray-700 hover:border-gray-500 transition-colors"
+                    className="mb-4"
+                    sx={{
+                      background: 'rgba(255, 255, 255, 0.05)',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      backdropFilter: 'blur(12px)',
+                      WebkitBackdropFilter: 'blur(12px)',
+                      borderRadius: '12px',
+                      color: '#fff',
+                      cursor: 'pointer',
+                      '&:hover': {
+                        borderColor: 'rgba(255, 255, 255, 0.3)',
+                      },
+                    }}
+                    onClick={() => handleSelectDraft(draft)}
                   >
-                    <CardActions className="absolute top-2 right-2">
+                    <CardActions sx={{ position: 'absolute', top: 0, right: 0 }}>
                       <IconButton
                         onClick={(e) => {
                           e.stopPropagation();
                           handleRemoveDraft(draft.id);
                         }}
-                        className="text-red-500 hover:text-red-600"
+                        sx={{ color: '#f87171', '&:hover': { color: '#ef4444' } }}
                       >
                         <Trash />
                       </IconButton>
                     </CardActions>
-                    <CardContent
-                      onClick={() => handleSelectDraft(draft)}
-                      className="cursor-pointer"
-                    >
-                      <Typography
-                        variant="h6"
-                        component="h3"
-                        className="text-xl font-semibold mb-2"
-                      >
+                    <CardContent>
+                      <Typography variant="h6" sx={{ mb: 1 }}>
                         {draft.name || 'Untitled Draft'}
                       </Typography>
-                      <Typography
-                        variant="body2"
-                        className="text-gray-400 mb-2"
-                      >
+                      <Typography variant="body2" sx={{ color: '#d1d5db', mb: 1 }}>
                         {draft.description || 'No description available.'}
                       </Typography>
-                      <Typography
-                        variant="caption"
-                        className="text-gray-500 text-sm"
-                      >
-                        Created at:{' '}
-                        {new Date(draft.created_at).toLocaleString()}
+                      <Typography variant="caption" sx={{ color: '#9ca3af' }}>
+                        Created at: {new Date(draft.created_at).toLocaleString()}
                       </Typography>
                     </CardContent>
                   </Card>
@@ -230,7 +229,7 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
                   <Button
                     onClick={handlePrevPage}
                     disabled={currentPage === 0}
-                    className="text-white p-2 rounded-lg bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50"
+                    className="text-white p-2 rounded-lg bg-blue-500 hover:bg-blue-600 disabled:opacity-50"
                     startIcon={<ChevronLeft />}
                   >
                     Previous
@@ -238,7 +237,7 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
                   <Button
                     onClick={handleNextPage}
                     disabled={(currentPage + 1) * 3 >= drafts.length}
-                    className="text-white p-2 rounded-lg bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50"
+                    className="text-white p-2 rounded-lg bg-blue-500 hover:bg-blue-600 disabled:opacity-50"
                     endIcon={<ChevronRight />}
                   >
                     Next

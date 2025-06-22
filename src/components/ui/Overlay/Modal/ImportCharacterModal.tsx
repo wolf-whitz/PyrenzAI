@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
-  Typography,
   SelectChangeEvent,
   CircularProgress,
   Box,
@@ -39,61 +38,19 @@ interface AIOption {
 }
 
 const aiOptions: AIOption[] = [
-  {
-    Website: 'SakuraFm',
-    Placeholder: 'Link Example: https://www.sakura.fm/chat/4Xa0Rsc?id=3mBbOSH',
-  },
-  {
-    Website: 'Dopple',
-    Placeholder:
-      'Link Example: https://beta.hiwaifu.com/chat/chattow?destination=newChat&chat_id=4443d97b7e433b321c875839fef1af93&session_id=433476874',
-  },
-  {
-    Website: 'Character AI',
-    Placeholder:
-      'Link Example: https://character.ai/chat/smtV3Vyez6ODkwS8BErmBAdgGNj-1XWU73wIFVOY1hQ',
-  },
-  {
-    Website: 'FlowGPT',
-    Placeholder:
-      'Link Example: https://flowgpt.com/chat/investgpt-use-chatgpt-to-invest',
-  },
-  {
-    Website: 'SpicyChat',
-    Placeholder:
-      'Link Example: https://spicychat.ai/chat/bc0e0b5a-0f72-4f1a-a2f4-5ce50849c6f7',
-  },
-  {
-    Website: 'PepHopAi',
-    Placeholder:
-      'Link Example: https://pephop.ai/characters/12fe3b95-b73b-434c-88e7-a9276ddcd70a_character-chef-lauren',
-  },
-  {
-    Website: 'ChubAI',
-    Placeholder:
-      'Link Example: https://chub.ai/characters/dsiqueira/misandristic-society-of-themyscira-23f168c6f709',
-  },
-  {
-    Website: 'PolyAI',
-    Placeholder:
-      'Link Example: https://www.polybuzz.ai/character/chat/pb2HN?recSid=f6df7cae5f678272:cbda1a8b8be92cbc:164c4bb9f71f236b:1&chatScene=3&genderTab=all',
-  },
-  {
-    Website: 'CharSnap',
-    Placeholder:
-      'Link Example: https://charsnap.ai/conversation/1af4c8b1-10e1-46a9-8055-2ab3c2d3458e',
-  },
-  {
-    Website: 'SpellBound',
-    Placeholder:
-      'Link Example: https://www.tryspellbound.com/app/characters/169123',
-  },
+  { Website: 'SakuraFm', Placeholder: 'Link Example: https://www.sakura.fm/chat/...' },
+  { Website: 'Dopple', Placeholder: 'Link Example: https://beta.hiwaifu.com/chat/...' },
+  { Website: 'Character AI', Placeholder: 'Link Example: https://character.ai/chat/...' },
+  { Website: 'FlowGPT', Placeholder: 'Link Example: https://flowgpt.com/chat/...' },
+  { Website: 'SpicyChat', Placeholder: 'Link Example: https://spicychat.ai/chat/...' },
+  { Website: 'PepHopAi', Placeholder: 'Link Example: https://pephop.ai/characters/...' },
+  { Website: 'ChubAI', Placeholder: 'Link Example: https://chub.ai/characters/...' },
+  { Website: 'PolyAI', Placeholder: 'Link Example: https://www.polybuzz.ai/character/chat/...' },
+  { Website: 'CharSnap', Placeholder: 'Link Example: https://charsnap.ai/conversation/...' },
+  { Website: 'SpellBound', Placeholder: 'Link Example: https://www.tryspellbound.com/app/characters/...' },
 ];
 
-export function ImportCharacterModal({
-  onClose,
-  onImport,
-}: ImportCharacterModalProps) {
+export function ImportCharacterModal({ onClose, onImport }: ImportCharacterModalProps) {
   const [link, setLink] = useState('');
   const [selectedAI, setSelectedAI] = useState(aiOptions[2].Website);
   const [placeholder, setPlaceholder] = useState(aiOptions[2].Placeholder);
@@ -105,9 +62,7 @@ export function ImportCharacterModal({
   };
 
   const handleAISelectionChange = (event: SelectChangeEvent<string>) => {
-    const selectedOption = aiOptions.find(
-      (option) => option.Website === event.target.value
-    );
+    const selectedOption = aiOptions.find(option => option.Website === event.target.value);
     if (selectedOption) {
       setSelectedAI(selectedOption.Website);
       setPlaceholder(selectedOption.Placeholder);
@@ -122,23 +77,19 @@ export function ImportCharacterModal({
 
     setLoading(true);
     try {
-      const response = await Utils.post<ImportCharacterResponse>(
-        '/api/CharacterExtract',
-        { type: selectedAI, url: link }
-      );
+      const response = await Utils.post<ImportCharacterResponse>('/api/CharacterExtract', {
+        type: selectedAI,
+        url: link,
+      });
 
       if (response.success && response.data.error) {
         showAlert('Error importing character: ' + response.data.error, 'Alert');
         Sentry.captureMessage('Error importing character', {
-          extra: {
-            error: response.data.error,
-          },
+          extra: { error: response.data.error },
         });
       } else {
         const data = response.data;
-        if (!data) {
-          throw new Error('Invalid response data');
-        }
+        if (!data) throw new Error('Invalid response data');
 
         const extractedData = Object.fromEntries(
           Object.entries({
@@ -148,20 +99,15 @@ export function ImportCharacterModal({
             name: data.name,
             description: data.description,
             tags: data.tags,
-          }).filter(
-            ([_, value]) =>
-              value !== undefined && value !== null && value !== ''
-          )
+          }).filter(([_, value]) => value !== undefined && value !== null && value !== '')
         );
 
-        console.log(extractedData);
         onImport(extractedData);
         showAlert('Character imported successfully!', 'Success');
         onClose();
       }
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : String(error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
       showAlert('Error importing character: ' + errorMessage, 'Alert');
       Sentry.captureException(error);
     } finally {
@@ -177,9 +123,7 @@ export function ImportCharacterModal({
       aria-describedby="import-character-modal-description"
       closeAfterTransition
       BackdropComponent={Backdrop}
-      BackdropProps={{
-        timeout: 500,
-      }}
+      BackdropProps={{ timeout: 500 }}
     >
       <Fade in={true}>
         <Box
@@ -189,18 +133,17 @@ export function ImportCharacterModal({
             left: '50%',
             transform: 'translate(-50%, -50%)',
             width: '90vw',
-            maxWidth: 'md',
-            bgcolor: 'background.paper',
-            boxShadow: 24,
+            maxWidth: 600,
             p: 4,
-            borderRadius: '8px',
+            borderRadius: '16px',
+            backgroundColor: 'rgba(255, 255, 255, 0.05)',
+            backdropFilter: 'blur(12px)',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.37)',
+            color: 'white',
           }}
         >
-          <motion.div
-            initial={{ scale: 0.8 }}
-            animate={{ scale: 1 }}
-            exit={{ scale: 0.8 }}
-          >
+          <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1 }} exit={{ scale: 0.8 }}>
             <div className="mt-4">
               <AISelectDropdown
                 options={aiOptions}
@@ -219,7 +162,7 @@ export function ImportCharacterModal({
               />
             </div>
             <div className="flex justify-end mt-4 space-x-2">
-              <PyrenzBlueButton variant="outlined" onClick={onClose}>
+              <PyrenzBlueButton  onClick={onClose}>
                 Cancel
               </PyrenzBlueButton>
               <PyrenzBlueButton

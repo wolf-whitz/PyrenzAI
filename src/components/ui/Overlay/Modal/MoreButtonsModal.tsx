@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import {
   Button,
   Box,
@@ -10,6 +9,7 @@ import {
   IconButton,
   InputAdornment,
   CircularProgress,
+  Divider,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Search } from 'lucide-react';
@@ -75,9 +75,7 @@ export function MoreButtonsModal({
       aria-describedby="more-buttons-modal-description"
       closeAfterTransition
       BackdropComponent={Backdrop}
-      BackdropProps={{
-        timeout: 500,
-      }}
+      BackdropProps={{ timeout: 500 }}
     >
       <Fade in={isOpen}>
         <Box
@@ -89,54 +87,66 @@ export function MoreButtonsModal({
             transform: 'translate(-50%, -50%)',
             width: '80%',
             maxWidth: '400px',
-            bgcolor: 'background.paper',
-            boxShadow: 24,
             p: 4,
-            borderRadius: '8px',
-            border: '1px solid #add8e6',
+            borderRadius: '16px',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            backdropFilter: 'blur(12px)',
+            backgroundColor: 'rgba(255, 255, 255, 0.05)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.37)',
+            color: 'white',
           }}
         >
-          <motion.div
-            initial={{ scale: 0.5 }}
-            animate={{ scale: 1 }}
-            exit={{ scale: 0.5 }}
-          >
-            <TextField
-              placeholder="Search for characters via tags, Male, Female, etc!"
-              value={searchQuery}
-              onChange={handleSearch}
-              fullWidth
-              margin="normal"
-              variant="outlined"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <IconButton edge="start">
-                      {isLoading ? <CircularProgress size={24} /> : <Search />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <div className="flex flex-wrap gap-2 mb-4">
-              {tags.map((tag, index) => (
-                <Button
-                  key={index}
-                  variant="outlined"
-                  onClick={() => handleTagClick(tag)}
-                  sx={{
+          <TextField
+            placeholder="Search for characters via tags, Male, Female, etc!"
+            value={searchQuery}
+            onChange={handleSearch}
+            fullWidth
+            margin="normal"
+            variant="outlined"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <IconButton edge="start">
+                    {isLoading ? <CircularProgress size={24} /> : <Search />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+              style: { color: '#fff' },
+            }}
+            InputLabelProps={{
+              style: { color: '#ccc' },
+            }}
+          />
+
+          {/* Divider between search and tags */}
+          <Divider
+            sx={{
+              my: 2,
+              borderColor: 'rgba(255,255,255,0.15)',
+            }}
+          />
+
+          <div className="flex flex-wrap gap-2 mb-4">
+            {tags.map((tag, index) => (
+              <Button
+                key={index}
+                variant="outlined"
+                onClick={() => handleTagClick(tag)}
+                sx={{
+                  borderColor: 'rgba(173, 216, 230, 0.6)',
+                  color: '#fff',
+                  backdropFilter: 'blur(4px)',
+                  backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                  '&:hover': {
                     borderColor: '#add8e6',
-                    color: '#fff',
-                    '&:hover': {
-                      borderColor: '#add8e6',
-                    },
-                  }}
-                >
-                  {tag}
-                </Button>
-              ))}
-            </div>
-          </motion.div>
+                    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                  },
+                }}
+              >
+                {tag}
+              </Button>
+            ))}
+          </div>
         </Box>
       </Fade>
     </Modal>

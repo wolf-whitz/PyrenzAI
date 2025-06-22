@@ -17,14 +17,13 @@ export const PyrenzBlueButton = styled(Button)<{
   color: 'white',
   backgroundColor: 'black',
   transition: 'all 0.3s ease',
-  borderRadius: 6,
+  borderRadius: 4,
   justifyContent: 'center',
   '&:hover': {
     animation: `${zoomIn} 0.3s ease forwards`,
     boxShadow: 'none',
     backgroundColor: '#add8e6',
     color: 'black',
-    borderRadius: 6,
   },
   '&[data-state="loading"]': {
     opacity: 0.6,
