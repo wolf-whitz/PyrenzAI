@@ -8,19 +8,17 @@ import { usePyrenzAlert } from '~/provider';
 interface DropzoneProps {
   onDrop: (acceptedFiles: File[]) => void;
   label?: string;
-  className: string;
+  className?: string;
   initialImage?: string | null;
 }
 
 export function Dropzone({
   onDrop,
-  label = 'Drag & drop a file here or click to upload',
+  label = 'Drag & drop an image or click to upload',
   className,
   initialImage,
 }: DropzoneProps) {
-  const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(
-    initialImage || null
-  );
+  const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(initialImage || null);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const showAlert = usePyrenzAlert();
 
@@ -31,9 +29,9 @@ export function Dropzone({
   }, [initialImage]);
 
   const {
-    getRootProps: getBannerRootProps,
-    getInputProps: getBannerInputProps,
-    isDragActive: isBannerDragActive,
+    getRootProps,
+    getInputProps,
+    isDragActive,
   } = useDropzone({
     onDrop: (acceptedFiles) => {
       if (acceptedFiles.length > 0) {
@@ -55,23 +53,17 @@ export function Dropzone({
         }
 
         if (file.size > 1024 * 1024) {
-          showAlert(
-            'File size exceeds 1 MB. Please choose a smaller file.',
-            'Alert'
-          );
+          showAlert('File size exceeds 1 MB. Please choose a smaller file.', 'Alert');
           return;
         }
 
         const reader = new FileReader();
-
         reader.onloadend = () => {
           const base64data = reader.result as string;
           setBannerImagePreview(base64data);
         };
-
         reader.readAsDataURL(file);
-
-        setUploadedFiles((prevFiles) => [...prevFiles, file]);
+        setUploadedFiles((prev) => [...prev, file]);
       }
       onDrop(acceptedFiles);
     },
@@ -82,32 +74,23 @@ export function Dropzone({
   });
 
   return (
-    <Box className="relative">
+    <Box className="relative w-full max-w-md mx-auto">
       <Box
-        {...getBannerRootProps()}
+        {...getRootProps()}
         className={clsx(
-          'relative flex flex-col items-center justify-center cursor-pointer transition-colors',
-          isBannerDragActive ? 'bg-gray-700' : 'bg-gray-800',
+          'h-[280px] w-full cursor-pointer transition-all duration-200',
+          isDragActive ? 'bg-gray-700' : 'bg-gray-800',
           'border-dashed border-2 border-gray-500',
-          className,
-          'rounded-lg overflow-hidden'
+          'rounded-xl overflow-hidden hover:border-white',
+          className
         )}
-        sx={{
-          height: '490px',
-          width: '300px',
-        }}
       >
-        <input {...getBannerInputProps()} />
+        <input {...getInputProps()} />
         {bannerImagePreview ? (
           <img
             src={bannerImagePreview}
             alt={label}
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              display: 'block',
-            }}
+            className="h-full w-full object-cover object-[center_-2rem] transition-all duration-200"
           />
         ) : (
           <Box
@@ -116,11 +99,12 @@ export function Dropzone({
             alignItems="center"
             justifyContent="center"
             height="100%"
+            px={2}
           >
-            <PersonIcon sx={{ fontSize: '2rem', color: 'white' }} />
+            <PersonIcon sx={{ fontSize: '3rem', color: '#ccc' }} />
             <Typography
-              variant="body1"
-              sx={{ color: 'white', mt: 2, textAlign: 'center' }}
+              variant="body2"
+              sx={{ color: '#ccc', mt: 1, textAlign: 'center' }}
             >
               {label}
             </Typography>

@@ -27,18 +27,20 @@ export const PyrenzDialog = ({
   onConfirm,
 }: PyrenzDialogProps) => {
   const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
     <Dialog
       open={open}
       onClose={onClose}
-      fullScreen={fullScreen}
+      TransitionComponent={Fade}
+      fullWidth
+      maxWidth="xs"
+      scroll="body"
       aria-labelledby="pyrenz-dialog-title"
       aria-describedby="pyrenz-dialog-description"
-      TransitionComponent={Fade}
-      sx={{
-        '& .MuiDialog-paper': {
+      PaperProps={{
+        sx: {
           background: 'rgba(255, 255, 255, 0.05)',
           backdropFilter: 'blur(15px)',
           WebkitBackdropFilter: 'blur(15px)',
@@ -46,6 +48,7 @@ export const PyrenzDialog = ({
           border: '1px solid rgba(255, 255, 255, 0.2)',
           boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
           color: '#fff',
+          m: isMobile ? 2 : 'auto',
         },
       }}
     >
@@ -80,10 +83,6 @@ export const PyrenzDialog = ({
             '&:hover': {
               backgroundColor: 'rgba(255, 255, 255, 0.2)',
               borderColor: 'rgba(255, 255, 255, 0.3)',
-              borderRadius: '10px',
-            },
-            '&:focus': {
-              borderRadius: '10px',
             },
           }}
         >
@@ -102,10 +101,6 @@ export const PyrenzDialog = ({
             px: 3,
             '&:hover': {
               backgroundColor: 'rgba(255, 255, 255, 1)',
-              borderRadius: '10px',
-            },
-            '&:focus': {
-              borderRadius: '10px',
             },
           }}
         >

@@ -8,8 +8,7 @@ import {
   Fade,
 } from '@mui/material';
 import { PlusCircle, Edit, Trash2 } from 'lucide-react';
-import { Textarea } from '@components';
-import { useDropzone } from 'react-dropzone';
+import { Textarea, Dropzone } from '@components';
 import { PyrenzBlueButton } from '~/theme';
 import { usePyrenzAlert } from '~/provider';
 import { supabase } from '~/Utility/supabaseClient';
@@ -46,22 +45,12 @@ export function CreatePersonaModal({
   isEditing,
   onDelete,
 }: CreatePersonaModalProps) {
-  const [previewImage, setPreviewImage] = useState<string | null>(
-    selectedImage
-  );
+  const [previewImage, setPreviewImage] = useState<string | null>(selectedImage);
   const showAlert = usePyrenzAlert();
 
   useEffect(() => {
     setPreviewImage(selectedImage);
   }, [selectedImage]);
-
-  useEffect(() => {
-    return () => {
-      if (previewImage && previewImage.startsWith('blob:')) {
-        URL.revokeObjectURL(previewImage);
-      }
-    };
-  }, [previewImage]);
 
   const onDrop = async (acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
@@ -97,29 +86,6 @@ export function CreatePersonaModal({
     }
   };
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: {
-      'image/*': ['.jpeg', '.jpg', '.png'],
-    },
-    maxSize: 1024 * 1024,
-    onDropRejected: (fileRejections) => {
-      fileRejections.forEach(({ errors }) => {
-        errors.forEach((error) => {
-          if (error.code === 'file-too-large') {
-            showAlert('File is too large. Maximum size is 1MB.', 'alert');
-          }
-          if (error.code === 'file-invalid-type') {
-            showAlert(
-              'Invalid file type. Only JPEG, JPG, and PNG images are allowed.',
-              'alert'
-            );
-          }
-        });
-      });
-    },
-  });
-
   return (
     <Modal
       open={isModalOpen}
@@ -133,7 +99,14 @@ export function CreatePersonaModal({
       }}
     >
       <Fade in={isModalOpen}>
-        <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md text-white shadow-xl rounded-xl p-6 bg-gray-800 max-h-[90vh] overflow-y-auto">
+        <Box
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md text-white shadow-xl rounded-xl p-6 max-h-[90vh] overflow-y-auto"
+          sx={{
+            backgroundColor: 'rgba(255, 255, 255, 0.15)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+          }}
+        >
           <Typography
             variant="h6"
             className="text-center text-lg font-semibold mb-6"
@@ -141,27 +114,11 @@ export function CreatePersonaModal({
             {isEditing ? 'Edit Persona' : 'Create New Persona'}
           </Typography>
 
-          <div
-            {...getRootProps()}
-            className="mb-4 p-4 border-2 border-dashed border-gray-500 rounded-lg text-center cursor-pointer relative"
-          >
-            <input {...getInputProps()} />
-            {previewImage ? (
-              <img
-                src={previewImage}
-                alt="Preview"
-                className="w-full h-auto max-h-60 object-cover rounded-lg"
-              />
-            ) : (
-              <>
-                {isDragActive ? (
-                  <p>Drop the files here</p>
-                ) : (
-                  <p>Drag & drop an image here, or click to select an image</p>
-                )}
-              </>
-            )}
-          </div>
+          <Dropzone
+            onDrop={onDrop}
+            className="mb-4"
+            initialImage={previewImage}
+          />
 
           <PyrenzBlueButton
             onClick={() => setCharacterCardImageModalOpen(true)}

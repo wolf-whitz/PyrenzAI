@@ -4,10 +4,9 @@ import { Dropzone, Textarea } from '@components';
 import {
   Modal,
   Box,
-  TextField,
-  Skeleton,
   Card,
   CardMedia,
+  Skeleton,
   CircularProgress,
   Typography,
 } from '@mui/material';
@@ -45,17 +44,16 @@ export function ImageUploader({
     setTextareaValue('');
     setImageUrl(null);
     setIsSubmitted(false);
-    if (bannerImagePreview) {
-      setBannerImagePreview(null);
-    }
+    setBannerImagePreview(null);
   };
 
   const handleDrop = (acceptedFiles: File[]) => {
     const file = acceptedFiles[0] || null;
     if (file) {
-      setBannerImagePreview(URL.createObjectURL(file));
+      const imageUrl = URL.createObjectURL(file);
+      setBannerImagePreview(imageUrl);
+      onImageSelect(file);
     }
-    onImageSelect(file);
   };
 
   const handleSubmit = async () => {
@@ -76,9 +74,8 @@ export function ImageUploader({
       const queryParams = `${prompt}&model=${model}&nologo=${nologo}&enhance=${enhance}`;
       const url = `https://image.pollinations.ai/prompt/${queryParams}`;
 
-      const response = await fetch(url, { method: 'GET' });
-
-      if (!response.ok) throw new Error('Network response was not ok');
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('Image generation failed');
 
       const blob = await response.blob();
       const blobUrl = URL.createObjectURL(blob);
@@ -90,7 +87,7 @@ export function ImageUploader({
       onImageSelect(file);
       setBannerImagePreview(blobUrl);
     } catch (error) {
-      console.error('Error creating image:', error);
+      console.error('Image generation error:', error);
       showAlert('Error creating image', 'Alert');
     } finally {
       setIsLoading(false);
@@ -99,22 +96,22 @@ export function ImageUploader({
 
   return (
     <motion.div
-      className="w-full mb-4"
+      className="w-full mb-4 max-w-2xl mx-auto flex flex-col items-center"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
       <Dropzone
         onDrop={handleDrop}
-        label="Drop a banner image here&nbsp;&nbsp;&nbsp;(ᵕ—ᴗ—)"
-        className="bg-gray-800 border-dashed border-2 border-gray-500"
+        label="Drop a banner image here (ᵕ—ᴗ—)"
         initialImage={bannerImagePreview}
+        className="w-full"
       />
-      <div className="flex items-center mt-4">
+
+      <div className="flex justify-center mt-4">
         <PyrenzBlueButton
           variant="contained"
           startIcon={<AddPhotoAlternateIcon />}
-          className="mr-2"
           onClick={handleOpen}
         >
           Generate Image
@@ -131,8 +128,10 @@ export function ImageUploader({
             width: '90%',
             maxWidth: 400,
             maxHeight: '90vh',
-            bgcolor: 'background.paper',
-            border: '2px solid #000',
+            bgcolor: 'rgba(255,255,255,0.15)',
+            borderRadius: '16px',
+            backdropFilter: 'blur(16px)',
+            border: '1px solid rgba(255,255,255,0.3)',
             boxShadow: 24,
             p: 4,
             overflow: 'auto',
@@ -141,8 +140,9 @@ export function ImageUploader({
           <Textarea
             value={textareaValue}
             onChange={(e) => setTextareaValue(e.target.value)}
-            placeholder="Enter a description to generate an image for your character&nbsp;&nbsp;₍⑅ᐢ..ᐢ₎"
+            placeholder="Enter a description to generate an image for your character ₍⑅ᐢ..ᐢ₎"
           />
+
           {isSubmitted && (
             <Card
               sx={{
@@ -170,9 +170,10 @@ export function ImageUploader({
               )}
             </Card>
           )}
+
           <div className="flex justify-end mt-4">
             <PyrenzBlueButton
-              variant="outlined"
+              variant="contained"
               onClick={handleClear}
               sx={{ mr: 2 }}
             >
@@ -182,6 +183,7 @@ export function ImageUploader({
               Submit
             </PyrenzBlueButton>
           </div>
+
           <Typography
             variant="caption"
             display="block"

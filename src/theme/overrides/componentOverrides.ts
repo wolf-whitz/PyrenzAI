@@ -45,16 +45,13 @@ export const componentOverrides = {
         borderColor: '#add8e6',
         minWidth: 'auto',
         padding: '6px 12px',
-        borderRadius: '20px',
         '&:hover': {
-          borderRadius: '20px',
           backgroundColor: 'rgba(173, 216, 230, 0.1)',
         },
       },
       sizeSmall: {
         padding: '4px 8px',
         fontSize: '0.875rem',
-        borderRadius: '20px',
       },
     },
   },
