@@ -1,31 +1,22 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '~/Utility/supabaseClient';
 import { GetUserUUID } from '@components';
 
 interface Chat {
-  id: string;
   chat_uuid: string;
   preview_message: string;
   preview_image: string;
-}
-
-interface ContextMenu {
-  mouseX: number;
-  mouseY: number;
-  chatId: string | null;
 }
 
 export const usePreviousChatAPI = () => {
   const [chats, setChats] = useState<Chat[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [contextMenu, setContextMenu] = useState<ContextMenu | null>(null);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(false);
 
   const navigate = useNavigate();
-  const longPressTimer = useRef<NodeJS.Timeout | null>(null);
 
   const fetchPreviousChats = async (pageNumber: number) => {
     try {
@@ -47,7 +38,6 @@ export const usePreviousChatAPI = () => {
       if (data && data.Characters) {
         const formattedChats = Object.entries(data.Characters).map(
           ([chat_uuid, chatData]: [string, any]) => ({
-            id: chatData.char_uuid,
             chat_uuid,
             preview_message: chatData.preview_message,
             preview_image: chatData.preview_image,
@@ -73,50 +63,18 @@ export const usePreviousChatAPI = () => {
     fetchPreviousChats(page);
   }, [page]);
 
-  const handleContextMenu = (event: React.MouseEvent, chatId: string) => {
-    event.preventDefault();
-    setContextMenu(
-      contextMenu === null
-        ? {
-            mouseX: event.clientX + 2,
-            mouseY: event.clientY - 6,
-            chatId,
-          }
-        : null
-    );
-  };
-
-  const handleClose = () => {
-    setContextMenu(null);
-  };
-
-  const handleDelete = async (chatId: string | null | undefined) => {
-    if (!chatId) return;
+  const handleDelete = async (chatUuid: string | null | undefined) => {
+    if (!chatUuid) return;
 
     try {
-      const { error } = await supabase.from('chats').delete().eq('id', chatId);
+      const { error } = await supabase.from('chats').delete().eq('chat_uuid', chatUuid);
 
       if (error) throw error;
 
-      setChats(chats.filter((chat) => chat.id !== chatId));
+      setChats(chats.filter((chat) => chat.chat_uuid !== chatUuid));
     } catch (err: any) {
       console.error('Failed to delete chat:', err);
       setError('Failed to delete chat. Please try again later.');
-    } finally {
-      handleClose();
-    }
-  };
-
-  const handleMouseDown = (event: React.MouseEvent, chatId: string) => {
-    longPressTimer.current = setTimeout(() => {
-      handleContextMenu(event, chatId);
-    }, 500);
-  };
-
-  const handleMouseUp = () => {
-    if (longPressTimer.current) {
-      clearTimeout(longPressTimer.current);
-      longPressTimer.current = null;
     }
   };
 
@@ -131,18 +89,13 @@ export const usePreviousChatAPI = () => {
     isInitialLoading,
     loading,
     error,
-    contextMenu,
     handleMessageClick: (chatUuid: string) => {
       navigate(`/chat/${chatUuid}`);
       window.location.reload();
     },
-    handleContextMenu,
-    handleClose,
     handleDelete,
-    handleMouseDown,
-    handleMouseUp,
     truncateMessage: (text: string, maxLength = 50) =>
-      text?.length > maxLength ? text.slice(0, maxLength) + '...' : text || '',
+      text?.length > maxLength ? `${text.slice(0, maxLength)}...` : text || '',
     loadMore,
     hasMore,
   };
