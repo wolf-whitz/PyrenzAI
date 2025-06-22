@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { Dropzone, Textarea } from '@components';
 import {
   Modal,
@@ -23,9 +22,7 @@ export function ImageUploader({
   onImageSelect,
   initialImage,
 }: ImageUploaderProps) {
-  const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(
-    initialImage || null
-  );
+  const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(initialImage || null);
   const [open, setOpen] = useState(false);
   const [textareaValue, setTextareaValue] = useState('');
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -95,28 +92,22 @@ export function ImageUploader({
   };
 
   return (
-    <motion.div
-      className="w-full mb-4 max-w-2xl mx-auto flex flex-col items-center"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-    >
+    <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
       <Dropzone
         onDrop={handleDrop}
         label="Drop a banner image here (ᵕ—ᴗ—)"
         initialImage={bannerImagePreview}
-        className="w-full"
+        className="w-full mb-4"
       />
 
-      <div className="flex justify-center mt-4">
-        <PyrenzBlueButton
-          variant="contained"
-          startIcon={<AddPhotoAlternateIcon />}
-          onClick={handleOpen}
-        >
-          Generate Image
-        </PyrenzBlueButton>
-      </div>
+      <PyrenzBlueButton
+        variant="contained"
+        startIcon={<AddPhotoAlternateIcon />}
+        onClick={handleOpen}
+        sx={{ mb: 2 }}
+      >
+        Generate Image
+      </PyrenzBlueButton>
 
       <Modal open={open} onClose={handleClose}>
         <Box
@@ -171,7 +162,7 @@ export function ImageUploader({
             </Card>
           )}
 
-          <div className="flex justify-end mt-4">
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 4 }}>
             <PyrenzBlueButton
               variant="contained"
               onClick={handleClear}
@@ -182,7 +173,7 @@ export function ImageUploader({
             <PyrenzBlueButton variant="contained" onClick={handleSubmit}>
               Submit
             </PyrenzBlueButton>
-          </div>
+          </Box>
 
           <Typography
             variant="caption"
@@ -193,6 +184,6 @@ export function ImageUploader({
           </Typography>
         </Box>
       </Modal>
-    </motion.div>
+    </Box>
   );
 }

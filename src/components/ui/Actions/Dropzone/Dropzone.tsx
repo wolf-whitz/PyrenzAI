@@ -19,7 +19,6 @@ export function Dropzone({
   initialImage,
 }: DropzoneProps) {
   const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(initialImage || null);
-  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const showAlert = usePyrenzAlert();
 
   useEffect(() => {
@@ -28,25 +27,10 @@ export function Dropzone({
     }
   }, [initialImage]);
 
-  const {
-    getRootProps,
-    getInputProps,
-    isDragActive,
-  } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (acceptedFiles) => {
-      if (acceptedFiles.length > 0) {
-        const file = acceptedFiles[0];
-
-        const isDuplicate = uploadedFiles.some(
-          (uploadedFile) =>
-            uploadedFile.name === file.name && uploadedFile.size === file.size
-        );
-
-        if (isDuplicate) {
-          showAlert('This file has already been uploaded.', 'Alert');
-          return;
-        }
-
+      const file = acceptedFiles[0];
+      if (file) {
         if (!file.type.startsWith('image/')) {
           showAlert('Please upload an image file.', 'Alert');
           return;
@@ -63,9 +47,8 @@ export function Dropzone({
           setBannerImagePreview(base64data);
         };
         reader.readAsDataURL(file);
-        setUploadedFiles((prev) => [...prev, file]);
+        onDrop(acceptedFiles);
       }
-      onDrop(acceptedFiles);
     },
     accept: {
       'image/*': ['.jpeg', '.png'],
@@ -74,43 +57,33 @@ export function Dropzone({
   });
 
   return (
-    <Box className="relative w-full max-w-md mx-auto">
-      <Box
-        {...getRootProps()}
-        className={clsx(
-          'h-[280px] w-full cursor-pointer transition-all duration-200',
-          isDragActive ? 'bg-gray-700' : 'bg-gray-800',
-          'border-dashed border-2 border-gray-500',
-          'rounded-xl overflow-hidden hover:border-white',
-          className
-        )}
-      >
-        <input {...getInputProps()} />
-        {bannerImagePreview ? (
-          <img
-            src={bannerImagePreview}
-            alt={label}
-            className="h-full w-full object-cover object-[center_-2rem] transition-all duration-200"
-          />
-        ) : (
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
-            height="100%"
-            px={2}
-          >
-            <PersonIcon sx={{ fontSize: '3rem', color: '#ccc' }} />
-            <Typography
-              variant="body2"
-              sx={{ color: '#ccc', mt: 1, textAlign: 'center' }}
-            >
-              {label}
-            </Typography>
-          </Box>
-        )}
-      </Box>
+    <Box {...getRootProps()} className={clsx('w-full cursor-pointer transition-all duration-200', className)}>
+      <input {...getInputProps()} />
+      {bannerImagePreview ? (
+        <img
+          src={bannerImagePreview}
+          alt={label}
+          className="w-full h-auto object-cover"
+        />
+      ) : (
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          sx={{
+            border: '2px dashed grey',
+            borderRadius: '16px',
+            p: 4,
+            bgcolor: isDragActive ? 'rgba(0, 0, 0, 0.7)' : 'rgba(0, 0, 0, 0.5)',
+          }}
+        >
+          <PersonIcon sx={{ fontSize: '3rem', color: '#ccc' }} />
+          <Typography variant="body2" sx={{ color: '#ccc', mt: 1, textAlign: 'center' }}>
+            {label}
+          </Typography>
+        </Box>
+      )}
     </Box>
   );
 }
