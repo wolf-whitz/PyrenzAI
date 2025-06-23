@@ -12,27 +12,31 @@ interface ChatMessageWithId {
   created_at: string;
 }
 
+interface FetchChatDataResult {
+  is_error: boolean;
+  Character?: Character;
+  firstMessage?: string;
+  error?: string;
+}
+
 export const fetchChatData = async (
   chat_uuid: string,
   avatar_url: string
-): Promise<{
-  Character: Character;
-  firstMessage: string;
-}> => {
+): Promise<FetchChatDataResult> => {
   if (!chat_uuid) {
-    throw new Error('Missing chat_uuid');
+    return { is_error: true, error: 'Missing chat_uuid' };
   }
 
   try {
-    const Character = await getChatData(chat_uuid);
+    const characterData = await getChatData(chat_uuid);
 
-    if ('error' in Character) {
-      throw new Error(Character.error);
+    if ('error' in characterData) {
+      return { is_error: true, error: characterData.error };
     }
 
-    const tags = Array.isArray(Character.tags)
-      ? JSON.stringify(Character.tags)
-      : Character.tags;
+    const tags = Array.isArray(characterData.tags)
+      ? JSON.stringify(characterData.tags)
+      : characterData.tags;
 
     const { data, error } = await supabase
       .from('chat_messages')
@@ -42,7 +46,7 @@ export const fetchChatData = async (
 
     if (error) {
       Sentry.captureException(error);
-      throw error;
+      return { is_error: true, error: 'Failed to fetch chat messages' };
     }
 
     const reversedMessages = (data || []).reverse();
@@ -54,7 +58,7 @@ export const fetchChatData = async (
         if (msg.user_message) {
           messages.push({
             id: `${msg.id}`,
-            name: Character.name || 'Anon',
+            name: characterData.name || 'Anon',
             text: msg.user_message,
             profile_image: avatar_url || '',
             type: 'user',
@@ -65,12 +69,12 @@ export const fetchChatData = async (
         if (msg.char_message) {
           messages.push({
             id: `${msg.id}`,
-            name: Character.name || 'Anon',
+            name: characterData.name || 'Anon',
             text: msg.char_message,
-            profile_image: Character.profile_image || '',
+            profile_image: characterData.profile_image || '',
             type: 'char',
             chat_uuid,
-            gender: Character.gender,
+            gender: characterData.gender,
           });
         }
 
@@ -81,15 +85,12 @@ export const fetchChatData = async (
     useChatStore.getState().setMessages(formattedMessages);
 
     return {
-      Character,
-      firstMessage: Character.first_message,
+      is_error: false,
+      Character: characterData,
+      firstMessage: characterData.first_message,
     };
   } catch (error) {
-    if (error instanceof Error) {
-      Sentry.captureException(error);
-    } else {
-      Sentry.captureException(new Error(String(error)));
-    }
-    throw error;
+    Sentry.captureException(error instanceof Error ? error : new Error(String(error)));
+    return { is_error: true, error: 'An error occurred while fetching chat data' };
   }
 };

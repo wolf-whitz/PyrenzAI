@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useChatStore } from '~/store';
 import { fetchChatData } from '@api';
@@ -10,7 +9,8 @@ import {
   GetUserUUID,
   GetUserData,
 } from '@components';
-import { Box, CircularProgress, Typography } from '@mui/material';
+import { Box, CircularProgress, Typography, Fade } from '@mui/material';
+import { Character } from '@shared-types';
 
 export function ChatPage() {
   const { chat_uuid } = useParams<{ chat_uuid: string }>();
@@ -72,39 +72,27 @@ export function ChatPage() {
     const getChatData = async () => {
       if (!chat_uuid || !userUuid || !user) return;
 
-      try {
-        const result = await fetchChatData(chat_uuid, user.user_avatar || '');
+      const result = await fetchChatData(chat_uuid, user.user_avatar || '');
 
-        if (!result?.Character) {
-          throw new Error('Character data missing');
-        }
-
+      if (result.is_error) {
+        console.error('Error fetching chat data:', result.error);
+        setFetchError(true);
+      } else {
         const updatedChar = {
           ...result.Character,
         };
 
-        setChar(updatedChar);
-        setFirstMessage(result.firstMessage ?? updatedChar.first_message);
+        setChar(updatedChar as Character);
+        setFirstMessage(result.firstMessage ?? updatedChar.first_message ?? '');
         setFetchError(false);
-      } catch (error) {
-        console.error('Error fetching chat data:', error);
-        setFetchError(true);
-      } finally {
-        setLoading(false);
       }
+      setLoading(false);
     };
 
     getChatData();
   }, [chat_uuid, userUuid, user, setChar, setFirstMessage]);
 
-  if (
-    loading ||
-    !user ||
-    !char ||
-    !char.char_uuid ||
-    !char.profile_image ||
-    !char.name
-  ) {
+  if (loading || !user) {
     return (
       <Box
         display="flex"
@@ -118,13 +106,9 @@ export function ChatPage() {
     );
   }
 
-  if (fetchError || !chat_uuid || userDataError) {
+  if (fetchError || !chat_uuid || userDataError || !char) {
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
-      >
+      <Fade in={true} timeout={600}>
         <Box
           display="flex"
           minHeight="100vh"
@@ -159,16 +143,12 @@ export function ChatPage() {
             </Typography>
           </Box>
         </Box>
-      </motion.div>
+      </Fade>
     );
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: 'easeOut' }}
-    >
+    <Fade in={true} timeout={600}>
       <Box
         display="flex"
         minHeight="100vh"
@@ -189,6 +169,6 @@ export function ChatPage() {
           <PreviousChat />
         </Box>
       </Box>
-    </motion.div>
+    </Fade>
   );
 }
