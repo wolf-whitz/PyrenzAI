@@ -1,8 +1,8 @@
 import {
-  Whatshot as Sparkles,
-  Refresh as RefreshCw,
-  LocalFireDepartment as Flame,
-  Sell as Tag,
+  WhatshotOutlined as Sparkles,
+  RefreshOutlined as RefreshCw,
+  LocalFireDepartmentOutlined as Flame,
+  SellOutlined as Tag,
 } from '@mui/icons-material';
 
 export type ButtonType = {
