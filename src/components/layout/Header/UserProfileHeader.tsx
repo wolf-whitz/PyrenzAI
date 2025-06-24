@@ -27,19 +27,19 @@ export function UserProfileHeader({ user }: UserProfileHeaderProps) {
     switch (user.subscription_plan) {
       case 'Melon':
         return {
-          label: 'Melon',
+          label: '🍈 Melon',
           background: 'linear-gradient(135deg, #FFA726, #FFEB3B)',
           color: '#000',
         };
       case 'Durian':
         return {
-          label: 'Durian',
+          label: '🟤 Durian',
           background: '#8B4513',
           color: '#fff',
         };
       case 'Pineapple':
         return {
-          label: 'Pineapple',
+          label: '🍍 Pineapple',
           background: 'orange',
           color: '#000',
         };
@@ -60,7 +60,10 @@ export function UserProfileHeader({ user }: UserProfileHeaderProps) {
           onError={() => setAvatarError(true)}
         />
         <Box display="flex" alignItems="center">
-          <Box component="span" sx={{ fontSize: '1.25rem', fontWeight: 'medium', mr: 1 }}>
+          <Box
+            component="span"
+            sx={{ fontSize: '1.25rem', fontWeight: 'medium', mr: 1 }}
+          >
             {user.username}
           </Box>
           {plan && (
@@ -73,11 +76,11 @@ export function UserProfileHeader({ user }: UserProfileHeaderProps) {
                 background: plan.background,
                 color: plan.color,
                 fontWeight: 600,
-                fontSize: '0.7rem',
+                fontSize: '0.75rem',
                 borderRadius: '8px',
                 textTransform: 'uppercase',
                 border: 0,
-              }}
+               }}
             />
           )}
         </Box>

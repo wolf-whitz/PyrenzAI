@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { CircularProgress, Typography, Link } from '@mui/material';
 import { CreateButton, DraftsModal, ImportCharacterModal } from '@components';
-import SaveIcon from '@mui/icons-material/Save';
-import DescriptionIcon from '@mui/icons-material/Description';
-import UploadFileIcon from '@mui/icons-material/UploadFile';
-import DeleteIcon from '@mui/icons-material/Delete';
+import {
+  SaveOutlined as SaveIcon,
+  DescriptionOutlined as DescriptionIcon,
+  UploadFileOutlined as UploadFileIcon,
+  DeleteOutlined as DeleteIcon
+} from '@mui/icons-material';
 import { Character, Draft } from '@shared-types';
 import { PyrenzBlueButton } from '~/theme';
 import { useNavigate } from 'react-router-dom';
@@ -32,8 +34,7 @@ export function FormActions({
   character_update,
 }: FormActionsProps) {
   const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
-  const [isImportCharacterModalOpen, setIsImportCharacterModalOpen] =
-    useState(false);
+  const [isImportCharacterModalOpen, setIsImportCharacterModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleOpenDraftModal = () => {
@@ -86,7 +87,7 @@ export function FormActions({
           saveLoading ? (
             <CircularProgress size={20} color="inherit" />
           ) : (
-            <SaveIcon className="text-xl" />
+            <SaveIcon />
           )
         }
       >
@@ -97,7 +98,7 @@ export function FormActions({
         color="primary"
         onClick={handleOpenDraftModal}
         className="w-full sm:w-auto"
-        startIcon={<DescriptionIcon className="text-xl" />}
+        startIcon={<DescriptionIcon />}
       >
         Drafts
       </PyrenzBlueButton>
@@ -106,7 +107,7 @@ export function FormActions({
         color="primary"
         onClick={handleOpenImportCharacterModal}
         className="w-full sm:w-auto"
-        startIcon={<UploadFileIcon className="text-xl" />}
+        startIcon={<UploadFileIcon />}
       >
         Import Character
       </PyrenzBlueButton>
@@ -116,7 +117,7 @@ export function FormActions({
           color="error"
           onClick={onDelete}
           className="w-full sm:w-auto"
-          startIcon={<DeleteIcon className="text-xl" />}
+          startIcon={<DeleteIcon />}
         >
           Delete
         </PyrenzBlueButton>

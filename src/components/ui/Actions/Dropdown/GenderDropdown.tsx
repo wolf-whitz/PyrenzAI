@@ -1,4 +1,10 @@
-import { DropdownField } from '~/components';
+import React from 'react';
+import {
+  Select,
+  MenuItem,
+  FormControl,
+} from '@mui/material';
+import { PyrenzFormControl, PyrenzOutlinedInput, PyrenzInputLabel } from '~/theme';
 import { useCharacterStore } from '~/store';
 
 export function GenderDropdown() {
@@ -12,13 +18,22 @@ export function GenderDropdown() {
   ];
 
   return (
-    <DropdownField
-      name="gender"
-      value={gender}
-      onChange={(val) => setGender(val)}
-      label="Gender"
-      options={genderOptions}
-      ariaLabel="Gender"
-    />
+    <PyrenzFormControl fullWidth>
+      <PyrenzInputLabel id="gender-label">Gender</PyrenzInputLabel>
+      <Select
+        labelId="gender-label"
+        id="gender"
+        value={gender}
+        onChange={(event) => setGender(event.target.value)}
+        input={<PyrenzOutlinedInput label="Gender" />}
+        aria-label="Gender"
+      >
+        {genderOptions.map((option) => (
+          <MenuItem key={option.value} value={option.value}>
+            {option.label}
+          </MenuItem>
+        ))}
+      </Select>
+    </PyrenzFormControl>
   );
 }
