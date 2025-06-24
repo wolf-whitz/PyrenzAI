@@ -10,6 +10,8 @@ interface ChatStore {
   setUser: (user: UserData) => void;
   char: Character | null;
   setChar: (char: Character) => void;
+  personaName: string | null;
+  setPersonaName: (personaName: string) => void;
 }
 
 export const useChatStore = create<ChatStore>((set) => ({
@@ -28,4 +30,7 @@ export const useChatStore = create<ChatStore>((set) => ({
 
   char: null,
   setChar: (char: Character) => set({ char }),
+
+  personaName: null,
+  setPersonaName: (personaName: string) => set({ personaName }),
 }));

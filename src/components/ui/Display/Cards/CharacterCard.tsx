@@ -2,9 +2,11 @@ import { useState, useEffect, useCallback } from 'react';
 import { CharacterCardModal } from '@components';
 import { Character } from '@shared-types';
 import { Box, Typography, Fade } from '@mui/material';
-import MessageIcon from '@mui/icons-material/Message';
-import PublicIcon from '@mui/icons-material/Public';
-import LockIcon from '@mui/icons-material/Lock';
+import {
+  MessageOutlined as MessageIcon,
+  PublicOutlined as PublicIcon,
+  LockOutlined as LockIcon
+} from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import {
   PyrenzCharacterCard,

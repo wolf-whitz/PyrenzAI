@@ -10,11 +10,13 @@ import {
   Box,
 } from '@mui/material';
 import { motion } from 'framer-motion';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import MessageIcon from '@mui/icons-material/Message';
-import PublicIcon from '@mui/icons-material/Public';
-import LockIcon from '@mui/icons-material/Lock';
+import {
+  EditOutlined as EditIcon,
+  DeleteOutlined as DeleteIcon,
+  MessageOutlined as MessageIcon,
+  PublicOutlined as PublicIcon,
+  LockOutlined as LockIcon
+} from '@mui/icons-material';
 import { ShimmerText } from 'react-shimmer-effects';
 
 interface CharacterCardModalProps {

@@ -169,7 +169,6 @@ export const MessageBox = React.memo(function MessageBox({
           ) : (
             <CustomMarkdown
               text={msg.text || ''}
-              user={user}
               char={char}
               dataState={dataState}
             />

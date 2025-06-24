@@ -8,7 +8,7 @@ import {
   Fade,
   Container,
 } from '@mui/material';
-import { ArrowLeft, Settings } from 'lucide-react';
+import { ArrowBack, SettingsOutlined } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { Character } from '@shared-types';
 
@@ -49,7 +49,7 @@ export function ChatHeader({ char, toggleSettings }: ChatHeaderProps) {
                 sx={{ color: 'grey', '&:hover': { color: 'white' } }}
                 aria-label="Go to home"
               >
-                <ArrowLeft size={24} />
+                <ArrowBack fontSize="small" />
               </IconButton>
             )}
             <IconButton
@@ -77,7 +77,7 @@ export function ChatHeader({ char, toggleSettings }: ChatHeaderProps) {
               }}
               aria-label="Settings"
             >
-              <Settings size={24} />
+              <SettingsOutlined fontSize="small" />
             </IconButton>
           </Box>
         </Box>

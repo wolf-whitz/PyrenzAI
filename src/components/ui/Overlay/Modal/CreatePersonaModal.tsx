@@ -7,7 +7,7 @@ import {
   Backdrop,
   Fade,
 } from '@mui/material';
-import { PlusCircle, Edit, Trash2 } from 'lucide-react';
+import { AddCircleOutline as PlusCircleIcon, EditOutlined as EditIcon, DeleteOutline as DeleteIcon } from '@mui/icons-material';
 import { Textarea, Dropzone } from '@components';
 import { PyrenzBlueButton } from '~/theme';
 import { usePyrenzAlert } from '~/provider';
@@ -153,7 +153,7 @@ export function CreatePersonaModal({
                 <CircularProgress size={20} className="text-white" />
               ) : (
                 <>
-                  {isEditing ? <Edit size={18} /> : <PlusCircle size={18} />}
+                  {isEditing ? <EditIcon fontSize="small" /> : <PlusCircleIcon fontSize="small" />}
                   <span>{isEditing ? 'Update' : 'Create'}</span>
                 </>
               )}
@@ -164,7 +164,7 @@ export function CreatePersonaModal({
                 onClick={onDelete}
                 className="min-w-[120px] flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600"
               >
-                <Trash2 size={18} />
+                <DeleteIcon fontSize="small" />
                 <span>Delete</span>
               </PyrenzBlueButton>
             )}

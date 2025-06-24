@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Typography, Box } from '@mui/material';
-import { useUserStore } from '~/store';
+import { supabase } from '~/Utility/supabaseClient';
+import { useUserStore, useChatStore } from '~/store';
 
 interface CustomMarkdownProps {
   text?: string;
   char?: { name: string };
-  user?: { username: string };
   ai_message?: string;
   dataState?: 'user' | 'char';
 }
@@ -15,24 +15,44 @@ interface CustomMarkdownProps {
 export function CustomMarkdown({
   text = '',
   char,
-  user,
   ai_message = '',
   dataState,
 }: CustomMarkdownProps) {
   const [replacedText, setReplacedText] = useState<string>(text);
+  const { customization, username, userUUID } = useUserStore();
+  const { personaName, setPersonaName } = useChatStore();
 
-  const { customization } = useUserStore();
+  useEffect(() => {
+    const fetchPersonaData = async () => {
+      if (!userUUID) return;
+
+      if (!personaName) {
+        const { data: personaData } = await supabase
+          .from('personas')
+          .select('persona_name')
+          .eq('user_uuid', userUUID)
+          .eq('is_selected', true)
+          .single();
+
+        if (personaData) {
+          setPersonaName(personaData.persona_name);
+        }
+      }
+    };
+
+    fetchPersonaData();
+  }, [userUUID, personaName, setPersonaName]);
 
   useEffect(() => {
     const replacePlaceholders = (content: string) =>
       content
-        .replace(/{{char}}/g, char?.name || '')
-        .replace(/{{user}}/g, user?.username || '')
+        .replace(/{{char}}/g, char?.name || 'Anon')
+        .replace(/{{user}}/g, personaName || username || 'Anon')
         .replace(/{{you}}:/g, '')
         .replace(/{{ai_message}}/g, ai_message);
 
     setReplacedText(replacePlaceholders(text));
-  }, [text, char, user, ai_message]);
+  }, [text, char, username, personaName, ai_message]);
 
   const getColor = (
     type: 'text' | 'italic' | 'quote',
@@ -77,7 +97,6 @@ export function CustomMarkdown({
               component="span"
               sx={{
                 color: getColor('text', dataState),
-                fontWeight: 'bold',
               }}
             >
               {children}

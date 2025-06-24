@@ -12,7 +12,7 @@ import {
   Divider,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { Search } from 'lucide-react';
+import SearchIcon from '@mui/icons-material/Search';
 import { supabase } from '~/Utility/supabaseClient';
 
 interface MoreButtonsModalProps {
@@ -107,7 +107,7 @@ export function MoreButtonsModal({
               startAdornment: (
                 <InputAdornment position="start">
                   <IconButton edge="start">
-                    {isLoading ? <CircularProgress size={24} /> : <Search />}
+                    {isLoading ? <CircularProgress size={24} /> : <SearchIcon />}
                   </IconButton>
                 </InputAdornment>
               ),
@@ -118,7 +118,6 @@ export function MoreButtonsModal({
             }}
           />
 
-          {/* Divider between search and tags */}
           <Divider
             sx={{
               my: 2,

@@ -12,18 +12,18 @@ import {
   useTheme,
 } from '@mui/material';
 import {
-  Home as HomeIcon,
-  Chat as ChatIcon,
+  HomeOutlined as HomeIcon,
+  ChatOutlined as ChatIcon,
   Menu as MenuIcon,
   AutoAwesome as PyrenzPlusIcon,
-  Login as LoginIcon,
-  PersonAdd as PersonAddIcon,
-  Description as DescriptionIcon,
+  LoginOutlined as LoginIcon,
+  PersonAddOutlined as PersonAddIcon,
+  DescriptionOutlined as DescriptionIcon,
 } from '@mui/icons-material';
 import { FaDiscord } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '~/Utility/supabaseClient';
-import { PyrenzStyledDrawer, PyrenzBlueButton } from '~/theme';
+import { PyrenzStyledDrawer, PyrenzBlueButtonWithLoading } from '~/theme';
 import { useUserStore } from '~/store';
 
 interface HeaderProps {
@@ -63,7 +63,7 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
     {
       name: t('footer.links.discord'),
       icon: <FaDiscord />,
-      link: 'https://discord.com',
+      link: 'https://discord.gg/zTcyP4WB8h',
       external: true,
     },
   ];
@@ -77,65 +77,73 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
   }
 
   return (
-    <AppBar
-      position="static"
-      elevation={0}
-      sx={{ backgroundColor: 'gray.900' }}
-    >
-      <Toolbar
-        className="flex justify-between items-center w-full max-w-screen-2xl mx-auto px-6"
-        sx={{ overflowX: 'hidden' }}
-      >
-        <div
-          className="flex items-center space-x-4 cursor-pointer lg:ml-[60px]"
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        >
-          <img
-            src="/favicon.png"
-            alt={t('footer.pyrenzLogo')}
-            className="h-8 w-8"
-          />
-          <h1 className="text-2xl font-bold font-pyrenzfont">
+    <AppBar position="static" elevation={0} sx={{ backgroundColor: 'gray.900' }}>
+      <Toolbar className="flex justify-between items-center w-full max-w-screen-2xl mx-auto px-6" sx={{ overflowX: 'hidden' }}>
+        <div className="flex items-center space-x-4 cursor-pointer lg:ml-[60px]" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+          <img src="/favicon.png" alt={t('footer.pyrenzLogo')} className="h-8 w-8" />
+          <div className="text-2xl font-bold font-pyrenzfont hover:text-blue-500 transition-colors duration-300">
             Pyrenz<span className="text-[#add8e6]">AI</span>
-          </h1>
+          </div>
         </div>
 
         {!isMediumOrSmaller && (
           <div className="hidden md:flex items-center space-x-8">
             {menuItems.map(({ name, icon, link, external }) => (
-              <PyrenzBlueButton
+              <PyrenzBlueButtonWithLoading
                 key={name}
                 startIcon={icon}
-                sx={{ backgroundColor: 'transparent' }}
-                className="font-pyrenzfont hover:text-blue-600 whitespace-nowrap"
-                onClick={() =>
-                  external
-                    ? window.open(link, '_blank')
-                    : (window.location.href = link)
-                }
+                sx={{
+                  color: 'white',
+                  border: 'none',
+                  background: 'transparent',
+                  '&:hover': {
+                    background: 'transparent',
+                    border: 'none',
+                    color: 'blue',
+                  }
+                }}
+                className="font-pyrenzfont whitespace-nowrap"
+                onClick={() => external ? window.open(link, '_blank') : (window.location.href = link)}
               >
                 {name}
-              </PyrenzBlueButton>
+              </PyrenzBlueButtonWithLoading>
             ))}
             {!isLoggedIn && (
               <>
-                <PyrenzBlueButton
+                <PyrenzBlueButtonWithLoading
                   startIcon={<LoginIcon />}
-                  sx={{ backgroundColor: 'transparent' }}
-                  className="font-pyrenzfont hover:text-blue-600 whitespace-nowrap"
+                  sx={{
+                    color: 'white',
+                    border: 'none',
+                    background: 'transparent',
+                    '&:hover': {
+                      background: 'transparent',
+                      border: 'none',
+                      color: 'blue',
+                    }
+                  }}
+                  className="font-pyrenzfont whitespace-nowrap"
                   onClick={() => setShowLogin(true)}
                 >
                   {t('buttons.login')}
-                </PyrenzBlueButton>
-                <PyrenzBlueButton
+                </PyrenzBlueButtonWithLoading>
+                <PyrenzBlueButtonWithLoading
                   startIcon={<PersonAddIcon />}
-                  variant="contained"
-                  sx={{ backgroundColor: 'transparent' }}
-                  className="bg-[#E03201] font-pyrenzfont hover:bg-blue-600 whitespace-nowrap"
+                  sx={{
+                    color: 'white',
+                    border: 'none',
+                    background: 'transparent',
+                    '&:hover': {
+                      background: 'transparent',
+                      border: 'none',
+                      color: 'blue',
+                    }
+                  }}
+                  className="font-pyrenzfont whitespace-nowrap"
                   onClick={() => setShowRegister(true)}
                 >
                   {t('buttons.signUp')}
-                </PyrenzBlueButton>
+                </PyrenzBlueButtonWithLoading>
               </>
             )}
           </div>
@@ -146,10 +154,7 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
             <IconButton onClick={() => setMenuOpen(true)}>
               <MenuIcon />
             </IconButton>
-            <PyrenzStyledDrawer
-              isOpen={menuOpen}
-              onClose={() => setMenuOpen(false)}
-            >
+            <PyrenzStyledDrawer isOpen={menuOpen} onClose={() => setMenuOpen(false)}>
               <Box
                 sx={{ width: 250 }}
                 role="presentation"
@@ -161,23 +166,18 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
                     <ListItem
                       key={name}
                       component="button"
-                      onClick={() =>
-                        external
-                          ? window.open(link, '_blank')
-                          : (window.location.href = link)
-                      }
+                      onClick={() => external ? window.open(link, '_blank') : (window.location.href = link)}
                       sx={{
                         backgroundColor: 'transparent',
+                        color: 'white',
                         '&:hover': {
                           backgroundColor: 'rgba(0, 0, 0, 0.3)',
                           borderRadius: '50px',
-                          transform: 'scale(1.05)',
-                          transition:
-                            'transform 0.3s ease, background-color 0.3s ease',
+                          color: 'blue',
                         },
                       }}
                     >
-                      <ListItemIcon>{icon}</ListItemIcon>
+                      <ListItemIcon sx={{ color: 'inherit' }}>{icon}</ListItemIcon>
                       <ListItemText primary={name} />
                     </ListItem>
                   ))}
@@ -189,15 +189,14 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
                         sx={{
                           backgroundColor: 'transparent',
                           borderRadius: '50px',
+                          color: 'white',
                           '&:hover': {
                             backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                            transform: 'scale(1.05)',
-                            transition:
-                              'transform 0.3s ease, background-color 0.3s ease',
+                            color: 'blue',
                           },
                         }}
                       >
-                        <ListItemIcon>
+                        <ListItemIcon sx={{ color: 'inherit' }}>
                           <LoginIcon />
                         </ListItemIcon>
                         <ListItemText primary={t('buttons.login')} />
@@ -208,15 +207,14 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
                         sx={{
                           backgroundColor: 'transparent',
                           borderRadius: '50px',
+                          color: 'white',
                           '&:hover': {
                             backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                            transform: 'scale(1.05)',
-                            transition:
-                              'transform 0.3s ease, background-color 0.3s ease',
+                            color: 'blue',
                           },
                         }}
                       >
-                        <ListItemIcon>
+                        <ListItemIcon sx={{ color: 'inherit' }}>
                           <PersonAddIcon />
                         </ListItemIcon>
                         <ListItemText primary={t('buttons.signUp')} />

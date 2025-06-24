@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Box, Typography, Avatar, IconButton } from '@mui/material';
-import LinkIcon from '@mui/icons-material/Link';
+import LinkIcon from '@mui/icons-material/LinkOutlined';
 import { usePyrenzAlert } from '~/provider';
 import { User } from '@shared-types';
 
@@ -38,11 +38,11 @@ export function UserProfileHeader({ user }: UserProfileHeaderProps) {
           aria-label="copy profile URL"
           sx={{
             '&:hover': {
-              backgroundColor: 'transparent',
-              color: 'grey',
+              backgroundColor: 'rgba(0, 0, 0, 0.04)',
+              borderColor: 'grey.700',
             },
-            color: 'inherit',
-            transition: 'color 0.3s',
+            color: 'grey.500',
+            transition: 'all 0.3s',
             ml: 1,
           }}
         >

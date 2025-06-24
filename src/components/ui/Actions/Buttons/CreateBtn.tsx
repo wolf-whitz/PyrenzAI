@@ -1,7 +1,6 @@
-import React from 'react';
 import { CircularProgress } from '@mui/material';
 import clsx from 'clsx';
-import { Plus } from 'lucide-react';
+import { AddOutlined as AddIcon } from '@mui/icons-material';
 import { PyrenzBlueButton } from '~/theme';
 
 interface CreateButtonProps {
@@ -25,7 +24,7 @@ export function CreateButton({
         loading ? (
           <CircularProgress size={20} color="inherit" />
         ) : (
-          <Plus className="mr-2" />
+          <AddIcon className="mr-2" />
         )
       }
     >

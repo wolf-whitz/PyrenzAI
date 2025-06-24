@@ -1,8 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { motion } from 'framer-motion';
-import { supabase } from '~/Utility/supabaseClient';
-import { GetUserUUID } from '@components';
-import { ChevronLeft, ChevronRight, Trash } from 'lucide-react';
 import {
   Typography,
   IconButton,
@@ -15,6 +11,9 @@ import {
   Backdrop,
   Fade,
 } from '@mui/material';
+import { ChevronLeftOutlined as ChevronLeftIcon, ChevronRightOutlined as ChevronRightIcon, DeleteOutlined as DeleteIcon } from '@mui/icons-material';
+import { supabase } from '~/Utility/supabaseClient';
+import { GetUserUUID } from '@components';
 import { Draft } from '@shared-types';
 
 interface DraftsModalProps {
@@ -159,93 +158,87 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
             p: 4,
           }}
         >
-          <motion.div
-            initial={{ scale: 0.9 }}
-            animate={{ scale: 1 }}
-            exit={{ scale: 0.9 }}
+          <Typography
+            variant="h5"
+            component="h2"
+            className="text-center mb-4 text-white"
           >
-            <Typography
-              variant="h5"
-              component="h2"
-              className="text-center mb-4 text-white"
-            >
-              Select a Draft
+            Select a Draft
+          </Typography>
+          {loading ? (
+            <>
+              <SkeletonLoader />
+              <SkeletonLoader />
+              <SkeletonLoader />
+            </>
+          ) : displayedDrafts.length === 0 ? (
+            <Typography variant="body1" className="text-center text-gray-300">
+              No drafts available.
             </Typography>
-            {loading ? (
-              <>
-                <SkeletonLoader />
-                <SkeletonLoader />
-                <SkeletonLoader />
-              </>
-            ) : displayedDrafts.length === 0 ? (
-              <Typography variant="body1" className="text-center text-gray-300">
-                No drafts available.
-              </Typography>
-            ) : (
-              <>
-                {displayedDrafts.map((draft) => (
-                  <Card
-                    key={draft.id}
-                    className="mb-4"
-                    sx={{
-                      background: 'rgba(255, 255, 255, 0.05)',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
-                      backdropFilter: 'blur(12px)',
-                      WebkitBackdropFilter: 'blur(12px)',
-                      borderRadius: '12px',
-                      color: '#fff',
-                      cursor: 'pointer',
-                      '&:hover': {
-                        borderColor: 'rgba(255, 255, 255, 0.3)',
-                      },
-                    }}
-                    onClick={() => handleSelectDraft(draft)}
-                  >
-                    <CardActions sx={{ position: 'absolute', top: 0, right: 0 }}>
-                      <IconButton
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleRemoveDraft(draft.id);
-                        }}
-                        sx={{ color: '#f87171', '&:hover': { color: '#ef4444' } }}
-                      >
-                        <Trash />
-                      </IconButton>
-                    </CardActions>
-                    <CardContent>
-                      <Typography variant="h6" sx={{ mb: 1 }}>
-                        {draft.name || 'Untitled Draft'}
-                      </Typography>
-                      <Typography variant="body2" sx={{ color: '#d1d5db', mb: 1 }}>
-                        {draft.description || 'No description available.'}
-                      </Typography>
-                      <Typography variant="caption" sx={{ color: '#9ca3af' }}>
-                        Created at: {new Date(draft.created_at).toLocaleString()}
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                ))}
-                <div className="flex justify-between mt-4">
-                  <Button
-                    onClick={handlePrevPage}
-                    disabled={currentPage === 0}
-                    className="text-white p-2 rounded-lg bg-blue-500 hover:bg-blue-600 disabled:opacity-50"
-                    startIcon={<ChevronLeft />}
-                  >
-                    Previous
-                  </Button>
-                  <Button
-                    onClick={handleNextPage}
-                    disabled={(currentPage + 1) * 3 >= drafts.length}
-                    className="text-white p-2 rounded-lg bg-blue-500 hover:bg-blue-600 disabled:opacity-50"
-                    endIcon={<ChevronRight />}
-                  >
-                    Next
-                  </Button>
-                </div>
-              </>
-            )}
-          </motion.div>
+          ) : (
+            <>
+              {displayedDrafts.map((draft) => (
+                <Card
+                  key={draft.id}
+                  className="mb-4"
+                  sx={{
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    backdropFilter: 'blur(12px)',
+                    WebkitBackdropFilter: 'blur(12px)',
+                    borderRadius: '12px',
+                    color: '#fff',
+                    cursor: 'pointer',
+                    '&:hover': {
+                      borderColor: 'rgba(255, 255, 255, 0.3)',
+                    },
+                  }}
+                  onClick={() => handleSelectDraft(draft)}
+                >
+                  <CardActions sx={{ position: 'absolute', top: 0, right: 0 }}>
+                    <IconButton
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRemoveDraft(draft.id);
+                      }}
+                      sx={{ color: '#f87171', '&:hover': { color: '#ef4444' } }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </CardActions>
+                  <CardContent>
+                    <Typography variant="h6" sx={{ mb: 1 }}>
+                      {draft.name || 'Untitled Draft'}
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: '#d1d5db', mb: 1 }}>
+                      {draft.description || 'No description available.'}
+                    </Typography>
+                    <Typography variant="caption" sx={{ color: '#9ca3af' }}>
+                      Created at: {new Date(draft.created_at).toLocaleString()}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              ))}
+              <div className="flex justify-between mt-4">
+                <Button
+                  onClick={handlePrevPage}
+                  disabled={currentPage === 0}
+                  className="text-white p-2 rounded-lg bg-blue-500 hover:bg-blue-600 disabled:opacity-50"
+                  startIcon={<ChevronLeftIcon />}
+                >
+                  Previous
+                </Button>
+                <Button
+                  onClick={handleNextPage}
+                  disabled={(currentPage + 1) * 3 >= drafts.length}
+                  className="text-white p-2 rounded-lg bg-blue-500 hover:bg-blue-600 disabled:opacity-50"
+                  endIcon={<ChevronRightIcon />}
+                >
+                  Next
+                </Button>
+              </div>
+            </>
+          )}
         </Box>
       </Fade>
     </Modal>

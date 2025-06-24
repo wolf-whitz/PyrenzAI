@@ -1,9 +1,8 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Send, MoreVertical, Loader2 } from 'lucide-react';
+import { MoreVertOutlined as MoreVertIcon, SendOutlined as SendIcon } from '@mui/icons-material';
+import { CircularProgress, Box, IconButton } from '@mui/material';
 import { Menu } from '@components';
 import { Character } from '@shared-types';
-import { Box } from '@mui/material';
 
 interface ChatInputProps {
   className?: string;
@@ -43,31 +42,44 @@ export function ChatInput({
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, MAX_TEXT_AREA_HEIGHT)}px`;
+      textareaRef.current.style.height = `${Math.min(
+        textareaRef.current.scrollHeight,
+        MAX_TEXT_AREA_HEIGHT
+      )}px`;
     }
   }, [message]);
 
   return (
     <>
       <Box
-        component={motion.div}
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, ease: 'easeOut' }}
         className={`relative mx-auto w-full max-w-full md:max-w-[500px] lg:max-w-[640px] p-4 ${className}`}
+        sx={{
+          opacity: 0,
+          y: 10,
+          animation: 'fadeIn 0.3s ease-out forwards',
+          '@keyframes fadeIn': {
+            to: {
+              opacity: 1,
+              y: 0,
+            },
+          },
+        }}
       >
         <Box
           className={`relative flex bg-gray-700 rounded-lg p-3 w-full ${className}`}
         >
-          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-            <button
-              className="mr-2 text-gray-400 hover:text-white transition duration-200 p-2 rounded-full flex-shrink-0"
-              onClick={() => setIsMenuOpen(true)}
-              aria-label="More options"
-            >
-              <MoreVertical size={20} />
-            </button>
-          </motion.div>
+          <IconButton
+            className="mr-2 text-gray-400 hover:text-white transition duration-200 p-2 rounded-full flex-shrink-0"
+            onClick={() => setIsMenuOpen(true)}
+            aria-label="More options"
+            sx={{
+              '&:hover': {
+                transform: 'scale(1.1)',
+              },
+            }}
+          >
+            <MoreVertIcon fontSize="small" />
+          </IconButton>
           <textarea
             ref={textareaRef}
             value={message}
@@ -78,41 +90,36 @@ export function ChatInput({
                 sendMessage();
               }
             }}
-            placeholder={`Chat with ${char.name}`}
+            placeholder="Write something..."
             className="flex-1 w-full bg-transparent outline-none text-white px-4 py-2 rounded-lg focus:ring-0 resize-none overflow-auto min-w-0"
             rows={1}
             maxLength={MAX_CHAR_LIMIT}
             disabled={isGenerating}
             style={{ maxHeight: `${MAX_TEXT_AREA_HEIGHT}px` }}
           />
-          <motion.div
-            whileHover={!isGenerating && message.trim() ? { scale: 1.05 } : {}}
-            whileTap={!isGenerating && message.trim() ? { scale: 0.95 } : {}}
+          <IconButton
+            onClick={sendMessage}
+            className={`ml-2 flex items-center gap-1 text-gray-400 transition duration-200 p-2 rounded-full flex-shrink-0 ${
+              !message.trim() || isGenerating
+                ? 'cursor-not-allowed opacity-50'
+                : 'hover:text-white'
+            }`}
+            aria-label="Send message"
+            disabled={!message.trim() || isGenerating}
+            sx={{
+              '&:hover': !isGenerating && message.trim() ? { transform: 'scale(1.05)' } : {},
+              '&:active': !isGenerating && message.trim() ? { transform: 'scale(0.95)' } : {},
+            }}
           >
-            <button
-              onClick={sendMessage}
-              className={`ml-2 flex items-center gap-1 text-gray-400 transition duration-200 p-2 rounded-full flex-shrink-0 ${
-                !message.trim() || isGenerating
-                  ? 'cursor-not-allowed opacity-50'
-                  : 'hover:text-white'
-              }`}
-              aria-label="Send message"
-              disabled={!message.trim() || isGenerating}
-            >
-              <AnimatePresence mode="wait">
-                {isGenerating ? (
-                  <Loader2 className="animate-spin" size={20} />
-                ) : (
-                  <Send size={20} />
-                )}
-              </AnimatePresence>
-            </button>
-          </motion.div>
+            {isGenerating ? (
+              <CircularProgress size={20} className="text-white" />
+            ) : (
+              <SendIcon fontSize="small" />
+            )}
+          </IconButton>
         </Box>
       </Box>
-      {isMenuOpen && (
-        <Menu onClose={() => setIsMenuOpen(false)} char={char as Character} />
-      )}
+      {isMenuOpen && <Menu onClose={() => setIsMenuOpen(false)} char={char as Character} />}
     </>
   );
 }

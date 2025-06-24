@@ -7,7 +7,7 @@ import {
   IconButton,
   Typography,
 } from '@mui/material';
-import { HelpCircle } from 'lucide-react';
+import { HelpOutlineOutlined as HelpIcon } from '@mui/icons-material';
 import {
   PyrenzFormControl,
   PyrenzOutlinedInput,
@@ -81,7 +81,7 @@ export function ModelSelection({
                   onMouseLeave={handlePopoverClose}
                   size="small"
                 >
-                  <HelpCircle size={16} />
+                  <HelpIcon fontSize="small" />
                 </IconButton>
               </Box>
             </MenuItem>

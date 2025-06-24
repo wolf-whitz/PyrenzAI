@@ -1,10 +1,10 @@
 import { motion } from 'framer-motion';
 import { LanguageModal } from '@components';
-import { ChevronLeft } from 'lucide-react';
 import { Avatar, Button, Typography, Box } from '@mui/material';
 import { useAccountAPI } from '@api';
 import { PyrenzDialog } from '~/theme';
 import { useState } from 'react';
+import { ChevronLeftOutlined as ChevronLeftIcon } from '@mui/icons-material';
 
 export function Account() {
   const {
@@ -87,7 +87,7 @@ export function Account() {
           <Button
             onClick={toggleModal}
             style={{ color: '#fff', minWidth: 0 }}
-            startIcon={<ChevronLeft className="chevron-icon" />}
+            startIcon={<ChevronLeftIcon className="chevron-icon" />}
             sx={{
               '&:hover .chevron-icon': {
                 color: 'blue',
@@ -115,7 +115,7 @@ export function Account() {
           <Button
             onClick={handleOpenLogoutDialog}
             style={{ color: '#fff', minWidth: 0 }}
-            startIcon={<ChevronLeft className="chevron-icon" />}
+            startIcon={<ChevronLeftIcon className="chevron-icon" />}
             sx={{
               '&:hover .chevron-icon': {
                 color: 'blue',
@@ -143,7 +143,7 @@ export function Account() {
           <Button
             onClick={handleOpenDeleteDialog}
             style={{ color: '#fff', minWidth: 0 }}
-            startIcon={<ChevronLeft className="chevron-icon" />}
+            startIcon={<ChevronLeftIcon className="chevron-icon" />}
             sx={{
               '&:hover .chevron-icon': {
                 color: 'blue',

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import {
-  Home as HomeIcon,
-  Add as PlusIcon,
-  Settings as SettingsIcon,
-  Chat as MessageSquareIcon,
-  AccountCircle as AccountCircleIcon,
+  HomeOutlined as HomeIcon,
+  AddOutlined as PlusIcon,
+  SettingsOutlined as SettingsIcon,
+  ChatOutlined as MessageSquareIcon,
+  AccountCircleOutlined as AccountCircleIcon,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '~/store';

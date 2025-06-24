@@ -1,9 +1,9 @@
-import React from 'react';
 import { PyrenzSlider } from '~/theme';
-import { HelpCircle } from 'lucide-react';
+import { HelpOutlineOutlined as HelpIcon } from '@mui/icons-material';
 import Popover from '@mui/material/Popover';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import { useState } from 'react';
 
 interface SliderComponentProps {
   sliderKey: string;
@@ -24,7 +24,7 @@ export function SliderComponent({
   maxValue,
   className,
 }: SliderComponentProps) {
-  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -59,7 +59,7 @@ export function SliderComponent({
             focus: { outline: 'none' },
           }}
         >
-          <HelpCircle />
+          <HelpIcon fontSize="small" />
         </Box>
         <Popover
           id="mouse-over-popover"

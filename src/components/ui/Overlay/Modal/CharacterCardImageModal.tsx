@@ -11,10 +11,11 @@ import {
   Button,
   Backdrop,
   Fade,
+  IconButton,
 } from '@mui/material';
+import { Close as CloseIcon } from '@mui/icons-material';
 import { supabase } from '~/Utility/supabaseClient';
 import * as Sentry from '@sentry/react';
-import { X } from 'lucide-react';
 import { usePyrenzAlert } from '~/provider';
 
 interface CharacterCard {
@@ -118,13 +119,13 @@ export function CharacterCardImageModal({
       }}
     >
       <Fade in={isModalOpen}>
-        <Box className="top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl h-full bg-gray-900 text-white shadow-xl rounded-xl p-6 overflow-y-auto relative">
-          <button
+        <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl h-full bg-gray-900 text-white shadow-xl rounded-xl p-6 overflow-y-auto">
+          <IconButton
             onClick={() => setModalOpen(false)}
             className="absolute top-4 right-4 p-2 bg-gray-800 rounded-full"
           >
-            <X className="w-6 h-6 text-white" />
-          </button>
+            <CloseIcon className="text-white" />
+          </IconButton>
           <Typography
             variant="h6"
             className="text-center text-lg font-semibold mb-6"

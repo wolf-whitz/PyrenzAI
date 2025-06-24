@@ -82,13 +82,17 @@ export function Footer() {
           rel="noopener noreferrer"
           variant="text"
           startIcon={<FaDiscord size={30} />}
-          style={{
+          sx={{
             color: '#fff',
             fontSize: '1.25rem',
             fontWeight: '600',
             display: 'flex',
             alignItems: 'center',
             gap: '0.75rem',
+            backgroundColor: 'transparent',
+            '&:hover': {
+              backgroundColor: 'transparent',
+            },
           }}
         >
           {t('buttons.joinDiscord')}

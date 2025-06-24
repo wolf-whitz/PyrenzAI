@@ -2,7 +2,7 @@ import { useChatStore } from '~/store';
 import { Character, Message } from '@shared-types';
 import * as Sentry from '@sentry/react';
 import { supabase } from '~/Utility/supabaseClient';
-import { getChatData } from '@components';
+import { getChatData, GetUserData } from '@components';
 
 interface ChatMessageWithId {
   id: string;
@@ -20,23 +20,22 @@ interface FetchChatDataResult {
 }
 
 export const fetchChatData = async (
-  chat_uuid: string,
-  avatar_url: string
+  chat_uuid: string
 ): Promise<FetchChatDataResult> => {
   if (!chat_uuid) {
     return { is_error: true, error: 'Missing chat_uuid' };
   }
 
   try {
-    const characterData = await getChatData(chat_uuid);
+    const userData = await GetUserData();
+    if ('error' in userData) {
+      return { is_error: true, error: userData.error };
+    }
 
+    const characterData = await getChatData(chat_uuid);
     if ('error' in characterData) {
       return { is_error: true, error: characterData.error };
     }
-
-    const tags = Array.isArray(characterData.tags)
-      ? JSON.stringify(characterData.tags)
-      : characterData.tags;
 
     const { data, error } = await supabase
       .from('chat_messages')
@@ -58,9 +57,9 @@ export const fetchChatData = async (
         if (msg.user_message) {
           messages.push({
             id: `${msg.id}`,
-            name: characterData.name || 'Anon',
+            name: userData.username || 'Anon',
             text: msg.user_message,
-            profile_image: avatar_url || '',
+            profile_image: userData.user_avatar || '',
             type: 'user',
             chat_uuid,
           });
@@ -81,7 +80,6 @@ export const fetchChatData = async (
         return messages;
       }
     );
-
     useChatStore.getState().setMessages(formattedMessages);
 
     return {

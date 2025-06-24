@@ -72,7 +72,7 @@ export function ChatPage() {
     const getChatData = async () => {
       if (!chat_uuid || !userUuid || !user) return;
 
-      const result = await fetchChatData(chat_uuid, user.user_avatar || '');
+      const result = await fetchChatData(chat_uuid);
 
       if (result.is_error) {
         console.error('Error fetching chat data:', result.error);
