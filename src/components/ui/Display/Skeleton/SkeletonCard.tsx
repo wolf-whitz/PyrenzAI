@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box } from '@mui/material';
+import { motion } from 'framer-motion';
 
 export function SkeletonCard() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -11,41 +12,48 @@ export function SkeletonCard() {
 
   return (
     <Box sx={{ mb: 4 }}>
-      <Box
-        className={`w-full min-h-[360px] rounded-lg shadow-md border border-gray-600 bg-gray-800 overflow-hidden
-          ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-700`}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isLoaded ? 1 : 0 }}
+        transition={{ duration: 0.7 }}
+        className="w-full min-h-[360px] rounded-lg shadow-md border border-gray-600 bg-gray-800 overflow-hidden"
       >
-        <Box
-          className={`w-full h-48 bg-gray-600 rounded-t-lg
-            ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity delay-200 duration-500`}
-        ></Box>
-
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isLoaded ? 1 : 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+          className="w-full h-48 bg-gray-600 rounded-t-lg"
+        ></motion.div>
         <Box sx={{ p: 3 }}>
-          <Box
-            className={`h-6 bg-gray-500 w-3/4 mb-2 rounded
-              ${isLoaded ? 'w-3/4' : 'w-0'} transition-all delay-400 duration-500`}
-          ></Box>
-
-          <Box
-            className={`h-4 bg-gray-500 w-full mb-2 rounded
-              ${isLoaded ? 'w-full' : 'w-0'} transition-all delay-600 duration-500`}
-          ></Box>
-
-          <Box
-            className={`h-4 bg-gray-500 w-2/3 mb-2 rounded
-              ${isLoaded ? 'w-2/3' : 'w-0'} transition-all delay-800 duration-500`}
-          ></Box>
-
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: isLoaded ? '75%' : 0 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+            className="h-6 bg-gray-500 mb-2 rounded"
+          ></motion.div>
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: isLoaded ? '100%' : 0 }}
+            transition={{ delay: 0.6, duration: 0.5 }}
+            className="h-4 bg-gray-500 w-full mb-2 rounded"
+          ></motion.div>
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: isLoaded ? '66.66%' : 0 }}
+            transition={{ delay: 0.8, duration: 0.5 }}
+            className="h-4 bg-gray-500 mb-2 rounded"
+          ></motion.div>
           <Box sx={{ mt: 3, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
             {[...Array(3)].map((_, index) => (
-              <Box
+              <motion.div
                 key={index}
-                className={`h-6 bg-gray-500 w-16 rounded-full
-                  ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity delay-[${1 + index * 0.2}s] duration-500`}
-              ></Box>
+                initial={{ opacity: 0 }}
+                animate={{ opacity: isLoaded ? 1 : 0 }}
+                transition={{ delay: 1 + index * 0.2, duration: 0.5 }}
+                className="h-6 bg-gray-500 w-16 rounded-full"
+              ></motion.div>
             ))}
           </Box>
-
           <Box
             sx={{
               mt: 4,
@@ -55,25 +63,29 @@ export function SkeletonCard() {
               fontSize: '12px',
             }}
           >
-            <Box
-              className={`h-5 w-12 bg-gray-500 rounded
-                ${isLoaded ? 'w-12' : 'w-0'} transition-all delay-[1.6s] duration-500`}
-            ></Box>
-            <Box
-              sx={{ ml: 'auto', display: 'flex', alignItems: 'center', gap: 2 }}
-            >
-              <Box
-                className={`h-5 w-5 bg-gray-500 rounded-full
-                  ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity delay-[1.8s] duration-500`}
-              ></Box>
-              <Box
-                className={`h-5 w-5 bg-gray-500 rounded-full
-                  ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity delay-[2s] duration-500`}
-              ></Box>
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: isLoaded ? '48px' : 0 }}
+              transition={{ delay: 1.6, duration: 0.5 }}
+              className="h-5 bg-gray-500 rounded"
+            ></motion.div>
+            <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center', gap: 2 }}>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: isLoaded ? 1 : 0 }}
+                transition={{ delay: 1.8, duration: 0.5 }}
+                className="h-5 w-5 bg-gray-500 rounded-full"
+              ></motion.div>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: isLoaded ? 1 : 0 }}
+                transition={{ delay: 2, duration: 0.5 }}
+                className="h-5 w-5 bg-gray-500 rounded-full"
+              ></motion.div>
             </Box>
           </Box>
         </Box>
-      </Box>
+      </motion.div>
     </Box>
   );
 }

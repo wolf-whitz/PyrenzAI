@@ -56,7 +56,12 @@ export function CustomButton({
       }}
     >
       {visibleButtons.map((btn, index) => (
-        <motion.div key={index}>
+        <motion.div
+          key={index}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: index * 0.1 }}
+        >
           <PyrenzBlueButton
             variant="contained"
             startIcon={React.createElement(btn.icon, { size: 18 })}
@@ -76,7 +81,11 @@ export function CustomButton({
           </PyrenzBlueButton>
         </motion.div>
       ))}
-      <motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: visibleButtons.length * 0.1 }}
+      >
         <PyrenzBlueButton
           variant="contained"
           onClick={() => setIsModalOpen(true)}

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import {
   AppBar,
   Toolbar,
@@ -77,41 +78,22 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
   }
 
   return (
-    <AppBar position="static" elevation={0} sx={{ backgroundColor: 'gray.900' }}>
-      <Toolbar className="flex justify-between items-center w-full max-w-screen-2xl mx-auto px-6" sx={{ overflowX: 'hidden' }}>
-        <div className="flex items-center space-x-4 cursor-pointer lg:ml-[60px]" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-          <img src="/favicon.png" alt={t('footer.pyrenzLogo')} className="h-8 w-8" />
-          <div className="text-2xl font-bold font-pyrenzfont hover:text-blue-500 transition-colors duration-300">
-            Pyrenz<span className="text-[#add8e6]">AI</span>
+    <motion.div initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+      <AppBar position="static" elevation={0} sx={{ backgroundColor: 'gray.900' }}>
+        <Toolbar className="flex justify-between items-center w-full max-w-screen-2xl mx-auto px-6" sx={{ overflowX: 'hidden' }}>
+          <div className="flex items-center space-x-4 cursor-pointer lg:ml-[60px]" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+            <img src="/favicon.png" alt={t('footer.pyrenzLogo')} className="h-8 w-8" />
+            <div className="text-2xl font-bold font-pyrenzfont hover:text-blue-500 transition-colors duration-300">
+              Pyrenz<span className="text-[#add8e6]">AI</span>
+            </div>
           </div>
-        </div>
 
-        {!isMediumOrSmaller && (
-          <div className="hidden md:flex items-center space-x-8">
-            {menuItems.map(({ name, icon, link, external }) => (
-              <PyrenzBlueButtonWithLoading
-                key={name}
-                startIcon={icon}
-                sx={{
-                  color: 'white',
-                  border: 'none',
-                  background: 'transparent',
-                  '&:hover': {
-                    background: 'transparent',
-                    border: 'none',
-                    color: 'blue',
-                  }
-                }}
-                className="font-pyrenzfont whitespace-nowrap"
-                onClick={() => external ? window.open(link, '_blank') : (window.location.href = link)}
-              >
-                {name}
-              </PyrenzBlueButtonWithLoading>
-            ))}
-            {!isLoggedIn && (
-              <>
+          {!isMediumOrSmaller && (
+            <div className="hidden md:flex items-center space-x-8">
+              {menuItems.map(({ name, icon, link, external }) => (
                 <PyrenzBlueButtonWithLoading
-                  startIcon={<LoginIcon />}
+                  key={name}
+                  startIcon={icon}
                   sx={{
                     color: 'white',
                     border: 'none',
@@ -123,110 +105,131 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
                     }
                   }}
                   className="font-pyrenzfont whitespace-nowrap"
-                  onClick={() => setShowLogin(true)}
+                  onClick={() => external ? window.open(link, '_blank') : (window.location.href = link)}
                 >
-                  {t('buttons.login')}
+                  {name}
                 </PyrenzBlueButtonWithLoading>
-                <PyrenzBlueButtonWithLoading
-                  startIcon={<PersonAddIcon />}
-                  sx={{
-                    color: 'white',
-                    border: 'none',
-                    background: 'transparent',
-                    '&:hover': {
-                      background: 'transparent',
+              ))}
+              {!isLoggedIn && (
+                <>
+                  <PyrenzBlueButtonWithLoading
+                    startIcon={<LoginIcon />}
+                    sx={{
+                      color: 'white',
                       border: 'none',
-                      color: 'blue',
-                    }
-                  }}
-                  className="font-pyrenzfont whitespace-nowrap"
-                  onClick={() => setShowRegister(true)}
-                >
-                  {t('buttons.signUp')}
-                </PyrenzBlueButtonWithLoading>
-              </>
-            )}
-          </div>
-        )}
+                      background: 'transparent',
+                      '&:hover': {
+                        background: 'transparent',
+                        border: 'none',
+                        color: 'blue',
+                      }
+                    }}
+                    className="font-pyrenzfont whitespace-nowrap"
+                    onClick={() => setShowLogin(true)}
+                  >
+                    {t('buttons.login')}
+                  </PyrenzBlueButtonWithLoading>
+                  <PyrenzBlueButtonWithLoading
+                    startIcon={<PersonAddIcon />}
+                    sx={{
+                      color: 'white',
+                      border: 'none',
+                      background: 'transparent',
+                      '&:hover': {
+                        background: 'transparent',
+                        border: 'none',
+                        color: 'blue',
+                      }
+                    }}
+                    className="font-pyrenzfont whitespace-nowrap"
+                    onClick={() => setShowRegister(true)}
+                  >
+                    {t('buttons.signUp')}
+                  </PyrenzBlueButtonWithLoading>
+                </>
+              )}
+            </div>
+          )}
 
-        {isMediumOrSmaller && (
-          <div>
-            <IconButton onClick={() => setMenuOpen(true)}>
-              <MenuIcon />
-            </IconButton>
-            <PyrenzStyledDrawer isOpen={menuOpen} onClose={() => setMenuOpen(false)}>
-              <Box
-                sx={{ width: 250 }}
-                role="presentation"
-                onClick={() => setMenuOpen(false)}
-                onKeyDown={() => setMenuOpen(false)}
-              >
-                <List>
-                  {menuItems.map(({ name, icon, link, external }) => (
-                    <ListItem
-                      key={name}
-                      component="button"
-                      onClick={() => external ? window.open(link, '_blank') : (window.location.href = link)}
-                      sx={{
-                        backgroundColor: 'transparent',
-                        color: 'white',
-                        '&:hover': {
-                          backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                          borderRadius: '50px',
-                          color: 'blue',
-                        },
-                      }}
-                    >
-                      <ListItemIcon sx={{ color: 'inherit' }}>{icon}</ListItemIcon>
-                      <ListItemText primary={name} />
-                    </ListItem>
-                  ))}
-                  {!isLoggedIn && (
-                    <>
+          {isMediumOrSmaller && (
+            <div>
+              <IconButton onClick={() => setMenuOpen(true)}>
+                <MenuIcon />
+              </IconButton>
+              <PyrenzStyledDrawer isOpen={menuOpen} onClose={() => setMenuOpen(false)}>
+                <Box
+                  sx={{ width: 250 }}
+                  role="presentation"
+                  onClick={() => setMenuOpen(false)}
+                  onKeyDown={() => setMenuOpen(false)}
+                >
+                  <List>
+                    {menuItems.map(({ name, icon, link, external }) => (
                       <ListItem
+                        key={name}
                         component="button"
-                        onClick={() => setShowLogin(true)}
+                        onClick={() => external ? window.open(link, '_blank') : (window.location.href = link)}
                         sx={{
                           backgroundColor: 'transparent',
-                          borderRadius: '50px',
                           color: 'white',
                           '&:hover': {
                             backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                            borderRadius: '50px',
                             color: 'blue',
                           },
                         }}
                       >
-                        <ListItemIcon sx={{ color: 'inherit' }}>
-                          <LoginIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={t('buttons.login')} />
+                        <ListItemIcon sx={{ color: 'inherit' }}>{icon}</ListItemIcon>
+                        <ListItemText primary={name} />
                       </ListItem>
-                      <ListItem
-                        component="button"
-                        onClick={() => setShowRegister(true)}
-                        sx={{
-                          backgroundColor: 'transparent',
-                          borderRadius: '50px',
-                          color: 'white',
-                          '&:hover': {
-                            backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                            color: 'blue',
-                          },
-                        }}
-                      >
-                        <ListItemIcon sx={{ color: 'inherit' }}>
-                          <PersonAddIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={t('buttons.signUp')} />
-                      </ListItem>
-                    </>
-                  )}
-                </List>
-              </Box>
-            </PyrenzStyledDrawer>
-          </div>
-        )}
-      </Toolbar>
-    </AppBar>
+                    ))}
+                    {!isLoggedIn && (
+                      <>
+                        <ListItem
+                          component="button"
+                          onClick={() => setShowLogin(true)}
+                          sx={{
+                            backgroundColor: 'transparent',
+                            borderRadius: '50px',
+                            color: 'white',
+                            '&:hover': {
+                              backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                              color: 'blue',
+                            },
+                          }}
+                        >
+                          <ListItemIcon sx={{ color: 'inherit' }}>
+                            <LoginIcon />
+                          </ListItemIcon>
+                          <ListItemText primary={t('buttons.login')} />
+                        </ListItem>
+                        <ListItem
+                          component="button"
+                          onClick={() => setShowRegister(true)}
+                          sx={{
+                            backgroundColor: 'transparent',
+                            borderRadius: '50px',
+                            color: 'white',
+                            '&:hover': {
+                              backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                              color: 'blue',
+                            },
+                          }}
+                        >
+                          <ListItemIcon sx={{ color: 'inherit' }}>
+                            <PersonAddIcon />
+                          </ListItemIcon>
+                          <ListItemText primary={t('buttons.signUp')} />
+                        </ListItem>
+                      </>
+                    )}
+                  </List>
+                </Box>
+              </PyrenzStyledDrawer>
+            </div>
+          )}
+        </Toolbar>
+      </AppBar>
+    </motion.div>
   );
 }
