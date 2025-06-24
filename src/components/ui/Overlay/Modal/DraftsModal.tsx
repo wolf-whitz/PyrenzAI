@@ -22,11 +22,44 @@ interface DraftsModalProps {
 }
 
 const SkeletonLoader = () => (
-  <Card className="bg-gray-800 p-4 rounded-lg mb-4 animate-pulse">
+  <Card sx={{ backgroundColor: 'background.paper', p: 4, mb: 4 }}>
     <CardContent>
-      <div className="h-6 bg-gray-700 rounded w-3/4 mb-2"></div>
-      <div className="h-4 bg-gray-700 rounded w-2/3 mb-2"></div>
-      <div className="h-4 bg-gray-700 rounded w-1/2"></div>
+      <Box
+        sx={{
+          height: 24,
+          backgroundColor: 'grey.700',
+          borderRadius: 1,
+          width: '75%',
+          mb: 2,
+          animation: 'pulse 1.5s ease-in-out infinite',
+          '@keyframes pulse': {
+            '0%, 100%': {
+              opacity: 1,
+            },
+            '50%': {
+              opacity: 0.5,
+            },
+          },
+        }}
+      />
+      <Box
+        sx={{
+          height: 16,
+          backgroundColor: 'grey.700',
+          borderRadius: 1,
+          width: '66%',
+          mb: 2,
+          animation: 'pulse 1.5s ease-in-out infinite',
+          '@keyframes pulse': {
+            '0%, 100%': {
+              opacity: 1,
+            },
+            '50%': {
+              opacity: 0.5,
+            },
+          },
+        }}
+      />
     </CardContent>
   </Card>
 );
@@ -161,7 +194,7 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
           <Typography
             variant="h5"
             component="h2"
-            className="text-center mb-4 text-white"
+            sx={{ textAlign: 'center', mb: 4, color: 'white' }}
           >
             Select a Draft
           </Typography>
@@ -172,7 +205,7 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
               <SkeletonLoader />
             </>
           ) : displayedDrafts.length === 0 ? (
-            <Typography variant="body1" className="text-center text-gray-300">
+            <Typography variant="body1" sx={{ textAlign: 'center', color: 'text.secondary' }}>
               No drafts available.
             </Typography>
           ) : (
@@ -180,14 +213,14 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
               {displayedDrafts.map((draft) => (
                 <Card
                   key={draft.id}
-                  className="mb-4"
                   sx={{
+                    mb: 4,
                     background: 'rgba(255, 255, 255, 0.05)',
                     border: '1px solid rgba(255, 255, 255, 0.1)',
                     backdropFilter: 'blur(12px)',
                     WebkitBackdropFilter: 'blur(12px)',
                     borderRadius: '12px',
-                    color: '#fff',
+                    color: 'white',
                     cursor: 'pointer',
                     '&:hover': {
                       borderColor: 'rgba(255, 255, 255, 0.3)',
@@ -210,20 +243,20 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
                     <Typography variant="h6" sx={{ mb: 1 }}>
                       {draft.name || 'Untitled Draft'}
                     </Typography>
-                    <Typography variant="body2" sx={{ color: '#d1d5db', mb: 1 }}>
+                    <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
                       {draft.description || 'No description available.'}
                     </Typography>
-                    <Typography variant="caption" sx={{ color: '#9ca3af' }}>
+                    <Typography variant="caption" sx={{ color: 'text.disabled' }}>
                       Created at: {new Date(draft.created_at).toLocaleString()}
                     </Typography>
                   </CardContent>
                 </Card>
               ))}
-              <div className="flex justify-between mt-4">
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
                 <Button
                   onClick={handlePrevPage}
                   disabled={currentPage === 0}
-                  className="text-white p-2 rounded-lg bg-blue-500 hover:bg-blue-600 disabled:opacity-50"
+                  sx={{ color: 'white', p: 2, borderRadius: '8px', backgroundColor: 'primary.main', '&:hover': { backgroundColor: 'primary.dark' }, '&.Mui-disabled': { opacity: 0.5 } }}
                   startIcon={<ChevronLeftIcon />}
                 >
                   Previous
@@ -231,12 +264,12 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
                 <Button
                   onClick={handleNextPage}
                   disabled={(currentPage + 1) * 3 >= drafts.length}
-                  className="text-white p-2 rounded-lg bg-blue-500 hover:bg-blue-600 disabled:opacity-50"
+                  sx={{ color: 'white', p: 2, borderRadius: '8px', backgroundColor: 'primary.main', '&:hover': { backgroundColor: 'primary.dark' }, '&.Mui-disabled': { opacity: 0.5 } }}
                   endIcon={<ChevronRightIcon />}
                 >
                   Next
                 </Button>
-              </div>
+              </Box>
             </>
           )}
         </Box>
