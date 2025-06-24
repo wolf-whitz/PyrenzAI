@@ -1,5 +1,5 @@
 import { useDropzone, Accept } from 'react-dropzone';
-import PersonIcon from '@mui/icons-material/Person';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import { Box, Typography } from '@mui/material';
 import clsx from 'clsx';
 import { useState, useEffect } from 'react';
@@ -35,12 +35,10 @@ export function Dropzone({
           showAlert('Please upload an image file.', 'Alert');
           return;
         }
-
         if (file.size > 1024 * 1024) {
           showAlert('File size exceeds 1 MB. Please choose a smaller file.', 'Alert');
           return;
         }
-
         const reader = new FileReader();
         reader.onloadend = () => {
           const base64data = reader.result as string;
@@ -51,13 +49,23 @@ export function Dropzone({
       }
     },
     accept: {
-      'image/*': ['.jpeg', '.png'],
+      'image/*': ['.jpeg', '.png', '.gif'],
     } as Accept,
     multiple: false,
   });
 
   return (
-    <Box {...getRootProps()} className={clsx('w-full cursor-pointer transition-all duration-200', className)}>
+    <Box
+      {...getRootProps()}
+      className={clsx('w-full cursor-pointer', className)}
+      sx={{
+        '&:hover': {
+          bgcolor: 'rgba(0, 0, 0, 0.7)',
+          transform: 'scale(1.02)',
+        },
+        transition: 'transform 0.3s ease, background-color 0.3s ease',
+      }}
+    >
       <input {...getInputProps()} />
       {bannerImagePreview ? (
         <img
@@ -76,9 +84,10 @@ export function Dropzone({
             borderRadius: '16px',
             p: 4,
             bgcolor: isDragActive ? 'rgba(0, 0, 0, 0.7)' : 'rgba(0, 0, 0, 0.5)',
+            transition: 'background-color 0.3s ease',
           }}
         >
-          <PersonIcon sx={{ fontSize: '3rem', color: '#ccc' }} />
+          <PersonOutlineIcon sx={{ fontSize: '3rem', color: '#ccc' }} />
           <Typography variant="body2" sx={{ color: '#ccc', mt: 1, textAlign: 'center' }}>
             {label}
           </Typography>
