@@ -3,7 +3,6 @@ import { supabase } from '~/Utility/supabaseClient';
 import { GetUserUUID } from '@components';
 import { Character, User } from '@shared-types';
 import { useUserStore } from '~/store';
-import { Utils } from '~/Utility/Utility';
 
 interface FilteredCharactersResponse {
   characters: Character[];
@@ -26,119 +25,86 @@ export const GetUserCreatedCharacters = (
 ): UseUserCreatedCharactersResponse => {
   const [characters, setCharacters] = useState<Character[]>([]);
   const [userData, setUserData] = useState<User | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [isOwner, setIsOwner] = useState<boolean>(false);
-  const [maxPage, setMaxPage] = useState<number>(1);
+  const [loading, setLoading] = useState(true);
+  const [isOwner, setIsOwner] = useState(false);
+  const [maxPage, setMaxPage] = useState(1);
 
   useEffect(() => {
-    const fetchData = async (uuid: string) => {
-      try {
-        const userData = await fetchUserDataByUuid(uuid);
-        if (!userData || !userData.user_uuid) {
-          setLoading(false);
-          return;
-        }
-
-        const currentUserUuid = await GetUserUUID();
-        if (!currentUserUuid) {
-          setLoading(false);
-          return;
-        }
-
-        const ownerStatus = userData.user_uuid === currentUserUuid;
-        setIsOwner(ownerStatus);
-
-        const { characters, max_page } = await fetchCharacters(
-          userData.user_uuid,
-          page,
-          itemsPerPage
-        );
-
-        if (userData) {
-          setUserData({ ...userData, isOwner: ownerStatus });
-        }
-
-        if (characters) {
-          setCharacters(characters);
-          setMaxPage(max_page);
-        }
-      } catch (error) {
-        console.error('Error:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const getCreatorUuid = async (): Promise<string | null> => {
-      const {
-        data: { user },
-        error,
-      } = await supabase.auth.getUser();
-
-      if (error || !user) {
-        console.error('Error fetching user:', error);
-        return null;
-      }
-
-      return user.id;
-    };
-
-    const fetchUserDataByUuid = async (uuid: string): Promise<User | null> => {
-      const { data, error } = await supabase
-        .from('user_data')
-        .select('username, avatar_url, user_uuid')
-        .eq('user_uuid', uuid)
-        .maybeSingle();
-
-      if (error || !data) {
-        console.error('Error fetching user data:', error);
-        return null;
-      }
-      return {
-        username: data.username,
-        user_avatar: data.avatar_url,
-        user_uuid: data.user_uuid,
-      };
-    };
-
-    const fetchCharacters = async (
-      creatorUUID: string,
-      page: number,
-      itemsPerPage: number
-    ) => {
+    const fetchCharacters = async (uuid: string) => {
       const { show_nsfw } = useUserStore.getState();
-
       const { data, error } = await supabase
         .rpc('get_filtered_characters', {
           search: null,
-          show_nsfw: show_nsfw,
+          show_nsfw,
           blocked_tags: [],
           gender_filter: null,
           tag: [],
-          creatoruuid: creatorUUID,
+          creatoruuid: uuid,
           items_per_page: itemsPerPage,
-          page: page,
+          page,
         })
         .single<FilteredCharactersResponse>();
 
       if (error || !data) {
-        console.error('Error fetching characters:', error);
-        return { characters: null, max_page: 1 };
+        console.error('Character fetch error:', error);
+        return { characters: [], max_page: 1 };
       }
 
       return { characters: data.characters, max_page: data.max_page };
     };
 
-    const resolveUuid = async () => {
-      const uuid = creatorUUID || (await getCreatorUuid());
-      if (uuid) {
-        await fetchData(uuid);
-      } else {
-        setLoading(false);
+    const fetchUserDataByUuid = async (uuid: string): Promise<User | null> => {
+      const { data: user, error } = await supabase
+        .from('user_data')
+        .select('username, avatar_url, user_uuid')
+        .eq('user_uuid', uuid)
+        .maybeSingle();
+
+      if (error || !user) {
+        console.error('User data error:', error);
+        return null;
       }
+
+      const { data: sub, error: subError } = await supabase
+        .from('subscription_plan')
+        .select('is_subscribed, subscription_plan')
+        .eq('user_uuid', uuid)
+        .maybeSingle();
+
+      if (subError || !sub) {
+        console.error('Subscription fetch error:', subError);
+        return { ...user, user_avatar: user.avatar_url, is_subscribed: false, subscription_plan: undefined  };
+      }
+
+      return {
+        username: user.username,
+        user_avatar: user.avatar_url,
+        user_uuid: user.user_uuid, 
+        is_subscribed: sub.is_subscribed,
+        subscription_plan: sub.subscription_plan,
+      };
     };
 
-    resolveUuid();
+    const fetchData = async () => {
+      setLoading(true);
+      const uuid = creatorUUID || (await supabase.auth.getUser()).data.user?.id;
+      if (!uuid) return setLoading(false);
+
+      const user = await fetchUserDataByUuid(uuid);
+      const currentUserUUID = await GetUserUUID();
+
+      if (user) {
+        const { characters, max_page } = await fetchCharacters(uuid);
+        setUserData(user);
+        setIsOwner(user.user_uuid === currentUserUUID);
+        setCharacters(characters);
+        setMaxPage(max_page);
+      }
+
+      setLoading(false);
+    };
+
+    fetchData();
   }, [creatorUUID, page, itemsPerPage]);
 
   return { characters, userData, loading, isOwner, maxPage };

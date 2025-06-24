@@ -21,6 +21,8 @@ export const UserSchema = z.object({
   user_avatar: z.string(),
   user_uuid: z.string(),
   isOwner: z.boolean().optional(),
+  subscription_plan: z.enum(['Melon', 'Durian', 'Pineapple']).optional(),
+  is_subscribed: z.boolean().optional(),
 });
 
 export const ChatContainerPropsSchema = z.object({
