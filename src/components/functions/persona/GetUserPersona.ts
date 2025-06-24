@@ -14,8 +14,8 @@ interface ApiResponse {
     tier: string;
     max_token: number;
     model: string[];
-    max_persona: string | number;
   };
+  persona_name?: string;
 }
 
 function isApiResponse(response: any): response is ApiResponse {
@@ -36,7 +36,7 @@ export async function GetUserData(): Promise<ApiResponse | { error: string }> {
       return { error: 'Failed to fetch user data' };
     }
 
-    const personaName = response.username || 'Anon';
+    const personaName = response.persona_name || '';
     const avatarUrl = response.user_avatar || '';
     const aiCustomization = response.ai_customization || {};
     const customProvider = response.custom_provider || {};
@@ -52,10 +52,12 @@ export async function GetUserData(): Promise<ApiResponse | { error: string }> {
       setPreferredModel,
       setInferenceSettings,
       setIsAdmin,
+      setPersonaName,
     } = useUserStore.getState();
 
     setUserUUID(user_uuid);
     setUsername(personaName);
+    setPersonaName(personaName);
     setUserIcon(avatarUrl);
     setIsAdmin(isAdmin);
     setSubscriptionPlan([subscriptionPlan.trim()]);
@@ -78,28 +80,24 @@ export async function GetUserData(): Promise<ApiResponse | { error: string }> {
             tier: 'MELON',
             max_token: 300,
             model: models,
-            max_persona: 3,
           };
         case 'PINEAPPLE':
           return {
             tier: 'PINEAPPLE',
             max_token: 500,
             model: models,
-            max_persona: 20,
           };
         case 'DURIAN':
           return {
             tier: 'DURIAN',
             max_token: 1000,
             model: models,
-            max_persona: 'unlimited',
           };
         default:
           return {
             tier: 'MELON',
             max_token: 200,
             model: models,
-            max_persona: 3,
           };
       }
     };
@@ -115,6 +113,7 @@ export async function GetUserData(): Promise<ApiResponse | { error: string }> {
       preferred_model: preferredModel,
       is_admin: isAdmin,
       subscription_data: subscriptionData,
+      persona_name: personaName,
     };
   } catch (error) {
     return { error: 'An error occurred while fetching user data' };

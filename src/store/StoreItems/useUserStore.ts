@@ -26,6 +26,7 @@ interface Customization {
 interface UserStore {
   userUUID: string | null;
   username: string | null;
+  personaName: string | null;
   userIcon: string | null;
   is_login: boolean;
   is_deleted: boolean;
@@ -41,6 +42,7 @@ interface UserStore {
   blocked_tags: string[];
   setUserUUID: (uuid: string) => void;
   setUsername: (name: string) => void;
+  setPersonaName: (name: string) => void;
   setUserIcon: (icon: string) => void;
   setIsLogin: (isLogin: boolean) => void;
   setIsDeleted: (isDeleted: boolean) => void;
@@ -61,6 +63,7 @@ export const useUserStore = create<UserStore>()(
     (set) => ({
       userUUID: null,
       username: null,
+      personaName: null,
       userIcon: null,
       is_login: false,
       is_deleted: false,
@@ -89,6 +92,7 @@ export const useUserStore = create<UserStore>()(
       blocked_tags: [],
       setUserUUID: (uuid) => set({ userUUID: uuid }),
       setUsername: (name) => set({ username: name }),
+      setPersonaName: (name) => set({ personaName: name }),
       setUserIcon: (icon) => set({ userIcon: icon }),
       setIsLogin: (isLogin) => set({ is_login: isLogin }),
       setIsDeleted: (isDeleted) => set({ is_deleted: isDeleted }),

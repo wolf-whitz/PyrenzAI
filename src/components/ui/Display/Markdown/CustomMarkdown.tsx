@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Typography, Box } from '@mui/material';
-import { supabase } from '~/Utility/supabaseClient';
-import { useUserStore, useChatStore } from '~/store';
+import { useUserStore } from '~/store';
 
 interface CustomMarkdownProps {
   text?: string;
@@ -19,29 +18,7 @@ export function CustomMarkdown({
   dataState,
 }: CustomMarkdownProps) {
   const [replacedText, setReplacedText] = useState<string>(text);
-  const { customization, username, userUUID } = useUserStore();
-  const { personaName, setPersonaName } = useChatStore();
-
-  useEffect(() => {
-    const fetchPersonaData = async () => {
-      if (!userUUID) return;
-
-      if (!personaName) {
-        const { data: personaData } = await supabase
-          .from('personas')
-          .select('persona_name')
-          .eq('user_uuid', userUUID)
-          .eq('is_selected', true)
-          .single();
-
-        if (personaData) {
-          setPersonaName(personaData.persona_name);
-        }
-      }
-    };
-
-    fetchPersonaData();
-  }, [userUUID, personaName, setPersonaName]);
+  const { customization, username, personaName } = useUserStore();
 
   useEffect(() => {
     const replacePlaceholders = (content: string) =>
@@ -56,8 +33,8 @@ export function CustomMarkdown({
 
   const getColor = (
     type: 'text' | 'italic' | 'quote',
-    state?: 'user' | 'char'
-  ): string => {
+    state: 'user' | 'char' | undefined
+  ) => {
     if (!customization || !state) return 'inherit';
 
     const colorMap = {
@@ -73,7 +50,7 @@ export function CustomMarkdown({
       },
     };
 
-    return colorMap[state]?.[type] || 'inherit';
+    return colorMap[state][type] || 'inherit';
   };
 
   return (

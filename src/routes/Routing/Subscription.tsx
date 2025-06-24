@@ -27,8 +27,8 @@ const subscriptionPlans: Plan[] = [
     plan_identifier: 'melon',
     descriptions: [
       '### Unlimited Free Messages\nNo subscription, no stress.\n#4CAF50',
-      '### Top-Tier Free Models\nTap into our top-tier free models anytime. Upto 15K context!\n#4CAF50',
-      '### Multiple Personas\nCreate up to 3 unique personas.\n#4CAF50',
+      '### Top-Tier Free Models\nAccess our top-tier free models anytime — up to 15K context!\n#4CAF50',
+      '### Multiple Personas\nCreate an unlimited number of unique personas.\n#4CAF50',
     ],
     color: '#4CAF50',
     backgroundImage:
@@ -40,9 +40,9 @@ const subscriptionPlans: Plan[] = [
     price_count_yearly: '$150/Year',
     plan_identifier: 'pineapple',
     descriptions: [
-      '### Top-Tier Models\nExperience top-tier models, featuring 15K–20K context windows designed for advanced memory retention.\n#2196F3',
-      '### Rich, Extended Responses\nEnjoy rich, extended responses perfect for deep roleplay sessions.\n#2196F3',
-      '### Expanded Lore Support\nEnhance your stories with expanded lore support for deeper worldbuilding.\n#2196F3',
+      '### Top-Tier Models\nExperience premium models with 15K–20K context windows, designed for advanced memory retention.\n#2196F3',
+      '### Rich, Extended Responses\nEnjoy extended, high-quality responses perfect for immersive roleplay.\n#2196F3',
+      '### Better Models\nEnjoy access to up to 10 of the best free and paid models!\n#2196F3',
     ],
     color: '#2196F3',
     backgroundImage:
@@ -54,9 +54,9 @@ const subscriptionPlans: Plan[] = [
     price_count_yearly: '$200/Year',
     plan_identifier: 'durian',
     descriptions: [
-      '### Richer, More Immersive Chats\nTry out Nyra for richer, more immersive chats with a beefy 20K–30K context window!\n#FF5722',
-      '### Expansive, Detailed Responses\nReceive expansive, detailed responses tailored for immersive roleplay.\n#FF5722',
-      '### Unlimited Personalities\nUnlock unlimited personalities to keep your conversations fresh.\n#FF5722',
+      '### Richer, More Immersive Chats\nDive into deeper conversations with a robust 20K–30K context window!\n#FF5722',
+      '### Expansive, Detailed Responses\nReceive highly detailed responses tailored for rich roleplay.\n#FF5722',
+      '### Full Model Access\nEnjoy the benefits of full access to all available models and upcoming ones!\n#FF5722',
     ],
     color: '#FF5722',
     backgroundImage:
