@@ -26,7 +26,6 @@ export function Archive() {
   const [itemsToShow, setItemsToShow] = useState<number>(30);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleClose = () => {
     setOpen(false);
@@ -105,7 +104,7 @@ export function Archive() {
                       isPinned={chat.is_pinned}
                     >
                       <Typography variant="body2" color="text.secondary">
-                        {isSmallScreen
+                        {isMobile
                           ? truncateMessage(chat.preview_message, 50)
                           : chat.preview_message}
                       </Typography>
