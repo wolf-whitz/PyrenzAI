@@ -44,15 +44,17 @@ export function GlobalMeta() {
 
       <meta property="og:title" content="PyrenzAI" />
       <meta property="og:site_name" content="PyrenzAI" />
-      <meta property="og:image" content="/Banner.png" />
+      <meta property="og:image" content="https://pyrenzai.com/Banner.png" />
       <meta property="og:description" content="PyrenzAI is a full-on AI chat app where you can talk to endless anime characters anytime you want and create fully immersive stories between you and the characters!" />
-      <meta property="og:url" content="https://pyrenzai.com/Home" />
+      <meta property="og:url" content="https://pyrenzai.com/" />
       <meta property="og:type" content="website" />
 
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:image" content="/Banner.png" />
+      <meta name="twitter:image" content="https://pyrenzai.com/Banner.png" />
       <meta name="twitter:title" content="PyrenzAI" />
       <meta name="twitter:description" content="PyrenzAI is a full-on AI chat app where you can talk to endless anime characters anytime you want and create fully immersive stories between you and the characters!" />
+      <meta name="twitter:site" content="@PyrenzAI" />
+
 
       <link rel="preload" href="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif" as="image" type="image/avif" />
       <link rel="preload" href="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MascotCrying.avif" as="image" type="image/avif" />
