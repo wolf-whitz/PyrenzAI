@@ -5,8 +5,6 @@ import { motion } from 'framer-motion';
 import { Utils } from '~/Utility/Utility';
 import { Box, Typography, CircularProgress } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import AOS from 'aos';
-import 'aos/dist/aos.css';
 
 interface CaptchaVerificationResponse {
   success: boolean;
@@ -18,16 +16,6 @@ export function Auth() {
   const [isLoaded, setIsLoaded] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setIsLoaded(true);
-    }
-    AOS.init({
-      duration: 1000,
-      once: true,
-    });
-  }, []);
 
   const handleCaptcha = async (token: string) => {
     try {
