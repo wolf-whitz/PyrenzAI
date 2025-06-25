@@ -5,11 +5,7 @@ export function GlobalMeta() {
     <Helmet>
       <meta charSet="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover" />
-      <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
-      <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains; preload" />
       <meta name="referrer" content="strict-origin-when-cross-origin" />
-      <meta http-equiv="Permissions-Policy" content="camera=(), geolocation=(), accelerometer=(), autoplay=(), gyroscope=(), magnetometer=(), usb=(), xr-spatial-tracking=()" />
-
       <link rel="icon" type="image/png" sizes="32x32" href="/Favicons/favicon-32x32.png" />
       <link rel="icon" type="image/png" sizes="16x16" href="/Favicons/favicon-16x16.png" />
       <link rel="icon" type="image/png" sizes="192x192" href="/Favicons/favicon-192x192.png" />
@@ -21,7 +17,6 @@ export function GlobalMeta() {
       <meta name="apple-mobile-web-app-title" content="PyrenzAI" />
 
       <title>PyrenzAI</title>
-
 
       <link rel="manifest" href="/manifest.json" />
 

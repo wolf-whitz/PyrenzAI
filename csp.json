@@ -1,4 +1,5 @@
 {
+  "upgrade-insecure-requests": null,
   "default-src": ["'self'"],
   "script-src": [
     "'self'",
