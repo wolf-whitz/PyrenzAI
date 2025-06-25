@@ -34,7 +34,8 @@
     "https://*.clerk.accounts.dev",
     "https://*.jsdelivr.net",
     "https://*.pollinations.ai",
-    "https://*.cloudflareinsights.com"
+    "https://*.cloudflareinsights.com",
+    "https://ipapi.co/"
   ],
   "media-src": ["'self'", "blob:"],
   "font-src": ["'self'", "*"],
@@ -48,9 +49,7 @@
     "https://*.hcaptcha.com",
     "https://*.google.com",
     "https://*.googleusercontent.com",
-    "https://*.googlesyndication.com",
-    "data:",
-    "blob:"
+    "https://*.googlesyndication.com"
   ],
   "manifest-src": ["'self'", "https://pyrenzai.com"],
   "worker-src": ["'self'", "blob:"],

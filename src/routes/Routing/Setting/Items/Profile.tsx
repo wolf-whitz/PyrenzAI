@@ -1,20 +1,21 @@
-import React, { useState, DragEvent, useEffect } from 'react';
-import { TextField, Typography, Box, Avatar } from '@mui/material';
+import React, { useState, useEffect, ChangeEvent } from 'react';
+import { TextField, Typography, Box, Avatar, CircularProgress } from '@mui/material';
 import { supabase } from '~/Utility/supabaseClient';
 import { GetUserUUID, Textarea } from '@components';
 import { PyrenzBlueButton, PyrenzFormControl } from '~/theme';
 import { usePyrenzAlert } from '~/provider';
 import { useNavigate } from 'react-router-dom';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useUserStore } from '~/store';
+import { v4 as uuidv4 } from 'uuid';
 
 export function Profile() {
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState<string>('');
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [userUUID, setUserUUID] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [tagsInput, setTagsInput] = useState('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isImageUploading, setIsImageUploading] = useState<boolean>(false);
+  const [tagsInput, setTagsInput] = useState<string>('');
   const showAlert = usePyrenzAlert();
   const navigate = useNavigate();
   const { setBlockedTags } = useUserStore();
@@ -48,43 +49,7 @@ export function Profile() {
     fetchUserData();
   }, []);
 
-  const handleDrop = (event: DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    const files = event.dataTransfer.files;
-    if (files.length > 0) {
-      const file = files[0];
-
-      if (!file.type.match('image.*')) {
-        showAlert('Only image files are accepted', 'alert');
-        return;
-      }
-
-      if (file.size > 1024 * 1024) {
-        showAlert('Profile image size should be within or below 1MB', 'alert');
-        return;
-      }
-
-      const img = new Image();
-      const objectURL = URL.createObjectURL(file);
-      img.src = objectURL;
-
-      img.onload = () => {
-        if (img.width !== 400 || img.height !== 400) {
-          showAlert(
-            'Profile image dimensions should be 400x400 pixels',
-            'alert'
-          );
-          URL.revokeObjectURL(objectURL);
-          return;
-        }
-
-        setProfileImage(file);
-        setImagePreview(objectURL);
-      };
-    }
-  };
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
 
@@ -93,8 +58,36 @@ export function Profile() {
         return;
       }
 
-      setProfileImage(file);
-      setImagePreview(URL.createObjectURL(file));
+      setIsImageUploading(true);
+      setImagePreview(null);
+
+      try {
+        const uniqueFileName = uuidv4();
+        const filePath = `user-profile/${uniqueFileName}`;
+
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('user-profile')
+          .upload(filePath, file);
+
+        if (uploadError) {
+          showAlert(`Error uploading profile image: ${uploadError.message}`, 'alert');
+          return;
+        }
+
+        const { data: urlData } = supabase.storage
+          .from('user-profile')
+          .getPublicUrl(filePath);
+
+        setImagePreview(urlData.publicUrl);
+        setProfileImage(file);
+      } catch (error) {
+        showAlert(
+          `Error during image upload: ${error instanceof Error ? error.message : String(error)}`,
+          'alert'
+        );
+      } finally {
+        setIsImageUploading(false);
+      }
     }
   };
 
@@ -107,7 +100,7 @@ export function Profile() {
     setIsLoading(true);
 
     try {
-      const updateData: any = { username };
+      const updateData: { username: string; blocked_tags?: string[] } = { username };
 
       const tagsArray = tagsInput
         .split(',')
@@ -115,30 +108,7 @@ export function Profile() {
         .filter((tag) => tag);
       updateData.blocked_tags = tagsArray;
 
-      if (profileImage) {
-        const filePath = `user-profile/${userUUID}`;
-
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from('user-profile')
-          .upload(filePath, profileImage);
-
-        if (uploadError) {
-          showAlert(
-            `Error uploading profile image: ${uploadError.message}`,
-            'alert'
-          );
-          setIsLoading(false);
-          return;
-        }
-
-        const { data: urlData } = supabase.storage
-          .from('user-profile')
-          .getPublicUrl(filePath);
-
-        updateData.avatar_url = urlData.publicUrl;
-      }
-
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('user_data')
         .update(updateData)
         .eq('user_uuid', userUUID);
@@ -163,10 +133,7 @@ export function Profile() {
   return (
     <Box sx={{ padding: '20px', maxWidth: '400px', margin: '0 auto' }}>
       <Box sx={{ marginBottom: '20px' }}>
-        <Typography
-          variant="subtitle1"
-          sx={{ fontWeight: 'bold', marginBottom: '8px' }}
-        >
+        <Typography variant="subtitle1" sx={{ fontWeight: 'bold', marginBottom: '8px' }}>
           Profile Image
         </Typography>
         <PyrenzFormControl>
@@ -190,22 +157,17 @@ export function Profile() {
             </PyrenzBlueButton>
           </label>
         </PyrenzFormControl>
-        {imagePreview && (
-          <Box sx={{ marginTop: '10px' }}>
-            <Avatar
-              src={imagePreview}
-              alt="Profile Preview"
-              sx={{ width: 100, height: 100 }}
-            />
-          </Box>
-        )}
+        <Box sx={{ marginTop: '10px', display: 'flex', alignItems: 'flex-start' }}>
+          {isImageUploading ? (
+            <CircularProgress size={24} />
+          ) : (
+            imagePreview && <Avatar src={imagePreview} alt="Profile Preview" sx={{ width: 100, height: 100, marginTop: '10px' }} />
+          )}
+        </Box>
       </Box>
 
       <Box sx={{ marginBottom: '20px' }}>
-        <Typography
-          variant="subtitle1"
-          sx={{ fontWeight: 'bold', marginBottom: '8px' }}
-        >
+        <Typography variant="subtitle1" sx={{ fontWeight: 'bold', marginBottom: '8px' }}>
           Username
         </Typography>
         <TextField
@@ -218,10 +180,7 @@ export function Profile() {
       </Box>
 
       <Box sx={{ marginBottom: '20px' }}>
-        <Typography
-          variant="subtitle1"
-          sx={{ fontWeight: 'bold', marginBottom: '8px' }}
-        >
+        <Typography variant="subtitle1" sx={{ fontWeight: 'bold', marginBottom: '8px' }}>
           Blocked Tags
         </Typography>
         <Textarea
@@ -239,9 +198,9 @@ export function Profile() {
           marginRight: '10px',
         }}
         onClick={handleSubmit}
-        dataState={isLoading ? 'loading' : undefined}
+        disabled={isLoading}
       >
-        Submit
+        {isLoading ? 'Loading...' : 'Submit'}
       </PyrenzBlueButton>
       <PyrenzBlueButton
         sx={{
@@ -251,7 +210,7 @@ export function Profile() {
         }}
         onClick={() => navigate('/Profile')}
       >
-        View Profile <ArrowForwardIcon />
+        View Profile
       </PyrenzBlueButton>
     </Box>
   );
