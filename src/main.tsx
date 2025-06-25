@@ -1,8 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
-import { GlobalMeta } from '~/layout';
-
 import './GlobalStyles.css';
 import { App } from './App';
 
@@ -41,7 +39,6 @@ if (rootElement) {
   createRoot(rootElement).render(
     <StrictMode>
       <HelmetProvider>
-        <GlobalMeta />
         <I18nextProvider i18n={i18n}>
           <ThemeProvider theme={theme}>
             <CssBaseline />
