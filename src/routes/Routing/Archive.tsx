@@ -62,8 +62,7 @@ export function Archive() {
     >
       <Box sx={{ display: 'flex', flex: 1 }}>
         {!isMobile && <Sidebar />}
-        {isMobile && <MobileNav setShowLoginModal={setShowLoginModal} />}
-        <Box sx={{ flex: 1, p: isMobile ? 2 : 4 }}>
+        <Box sx={{ flex: 1, p: isMobile ? 2 : 4, mb: isMobile ? '56px' : 0 }}>
           {isLoading ? (
             <Box
               display="flex"
@@ -144,6 +143,7 @@ export function Archive() {
           )}
         </Box>
       </Box>
+      {isMobile && <MobileNav setShowLoginModal={setShowLoginModal} />}
     </Box>
   );
 }

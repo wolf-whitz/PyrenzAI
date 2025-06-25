@@ -23,7 +23,6 @@ export function Setting() {
   const [loading, setLoading] = useState<boolean>(true);
 
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const isMedium = useMediaQuery(theme.breakpoints.between('sm', 'md'));
 
   useEffect(() => {
@@ -59,14 +58,6 @@ export function Setting() {
         />
       ));
 
-    const mutableTabs = [...tabs];
-
-    const chunkedTabs = isMobile
-      ? [mutableTabs.slice(0, 2), mutableTabs.slice(2)]
-      : isMedium
-        ? [mutableTabs.slice(0, 3), mutableTabs.slice(3)]
-        : [mutableTabs];
-
     return (
       <Box
         display="flex"
@@ -74,18 +65,15 @@ export function Setting() {
         alignItems="center"
         width="100%"
       >
-        {chunkedTabs.map((chunk, i) => (
-          <Tabs
-            key={i}
-            value={activeTab}
-            onChange={(_, val) => setActiveTab(val as (typeof tabs)[number])}
-            variant="scrollable"
-            scrollButtons="auto"
-            sx={{ width: 'fit-content' }}
-          >
-            {getTabs(chunk)}
-          </Tabs>
-        ))}
+        <Tabs
+          value={activeTab}
+          onChange={(_, val) => setActiveTab(val as (typeof tabs)[number])}
+          variant="scrollable"
+          scrollButtons="auto"
+          sx={{ width: 'fit-content' }}
+        >
+          {getTabs(tabs)}
+        </Tabs>
       </Box>
     );
   };
@@ -122,7 +110,7 @@ export function Setting() {
           transition={{ duration: 0.4, ease: 'easeOut' }}
           style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
         >
-          <Box maxWidth="md" width="100%">
+          <Box maxWidth="md" width="100%" mb={isMedium ? '56px' : 0}>
             {loading ? (
               <Box
                 display="flex"
@@ -149,7 +137,7 @@ export function Setting() {
           </Box>
         </motion.div>
       </Box>
-      {isMobile && <MobileNav setShowLoginModal={() => {}} />}
+      {isMedium && <MobileNav setShowLoginModal={() => {}} />}
     </Box>
   );
 }
