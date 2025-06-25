@@ -1,0 +1,66 @@
+import { Helmet } from 'react-helmet-async';
+
+export function GlobalMeta() {
+  return (
+    <Helmet>
+      <meta charSet="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover" />
+      <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
+      <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains; preload" />
+      <meta name="referrer" content="strict-origin-when-cross-origin" />
+      <meta http-equiv="Permissions-Policy" content="camera=(), geolocation=(), accelerometer=(), autoplay=(), gyroscope=(), magnetometer=(), usb=(), xr-spatial-tracking=()" />
+
+      <link rel="icon" type="image/png" sizes="32x32" href="/Favicons/favicon-32x32.png" />
+      <link rel="icon" type="image/png" sizes="16x16" href="/Favicons/favicon-16x16.png" />
+      <link rel="icon" type="image/png" sizes="192x192" href="/Favicons/favicon-192x192.png" />
+      <link rel="icon" type="image/png" sizes="96x96" href="/Favicons/favicon-96x96.png" />
+      <link rel="icon" type="image/svg+xml" href="/Favicons/Svg/favicon.svg" />
+      <link rel="shortcut icon" href="/Favicons/favicon-32x32.png" />
+
+      <link rel="apple-touch-icon" sizes="180x180" href="/Favicons/apple-touch-favicon-180x180.png" />
+      <meta name="apple-mobile-web-app-title" content="PyrenzAI" />
+
+      <title>PyrenzAI</title>
+
+
+      <link rel="manifest" href="/manifest.json" />
+
+      <meta name="theme-color" content="#14181f" media="(prefers-color-scheme: light)" />
+      <meta name="theme-color" content="#0f1117" media="(prefers-color-scheme: dark)" />
+      <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+      <meta name="mobile-web-app-capable" content="yes" />
+      <meta name="format-detection" content="telephone=no" />
+      <meta name="msapplication-TileColor" content="#14181f" />
+      <meta name="msapplication-TileImage" content="/Favicons/favicon-192x192.png" />
+
+      <meta name="robots" content="index, follow" />
+      <meta name="googlebot" content="index, follow" />
+
+      <meta name="description" content="PyrenzAI is a full-on AI chat app where you can talk to endless anime characters anytime you want and create fully immersive stories between you and the characters!" />
+
+      <meta name="keywords" content="PyrenAI, AI, roleplay, anime, best, tags, artificial intelligence, chatbots, AI characters, roleplaying, online roleplay, anime roleplay, digital companions, interactive AI, virtual assistants, anime characters, AI-powered, storytelling, creative writing, virtual worlds" />
+
+      <meta name="color-scheme" content="dark light" />
+
+      <meta property="og:title" content="PyrenzAI" />
+      <meta property="og:site_name" content="PyrenzAI" />
+      <meta property="og:image" content="/Banner.png" />
+      <meta property="og:description" content="PyrenzAI is a full-on AI chat app where you can talk to endless anime characters anytime you want and create fully immersive stories between you and the characters!" />
+      <meta property="og:url" content="https://pyrenzai.com/Home" />
+      <meta property="og:type" content="website" />
+
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:image" content="/Banner.png" />
+      <meta name="twitter:title" content="PyrenzAI" />
+      <meta name="twitter:description" content="PyrenzAI is a full-on AI chat app where you can talk to endless anime characters anytime you want and create fully immersive stories between you and the characters!" />
+
+      <link rel="preload" href="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif" as="image" type="image/avif" />
+      <link rel="preload" href="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MascotCrying.avif" as="image" type="image/avif" />
+      <link rel="preload" href="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/Support.avif" as="image" type="image/avif" />
+
+      <link rel="preconnect" href="https://fonts.gstatic.com" />
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://cqtbishpefnfvaxheyqu.supabase.co" />
+    </Helmet>
+  );
+}

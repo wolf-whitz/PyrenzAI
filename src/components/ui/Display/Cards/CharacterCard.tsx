@@ -5,7 +5,7 @@ import { Box, Typography, Fade } from '@mui/material';
 import {
   MessageOutlined as MessageIcon,
   PublicOutlined as PublicIcon,
-  LockOutlined as LockIcon
+  LockOutlined as LockIcon,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -55,11 +55,6 @@ export function CharacterCard({
 
   if (character.isLoading) return null;
 
-  const tagsArray =
-    typeof character.tags === 'string'
-      ? JSON.parse(character.tags)
-      : character.tags;
-
   return (
     <>
       <Fade in={isLoaded} timeout={1500}>
@@ -93,15 +88,32 @@ export function CharacterCard({
               }
             />
           </PyrenzCharacterCardImage>
+
           <PyrenzCharacterCardContent>
             <Box
               display="flex"
               justifyContent="space-between"
-              alignItems="center"
+              alignItems="flex-start"
+              mb={1}
             >
-              <PyrenzCharacterCardTitle>
-                {character.name}
-              </PyrenzCharacterCardTitle>
+              <Box display="flex" flexDirection="column">
+                <PyrenzCharacterCardTitle>
+                  {character.name}
+                </PyrenzCharacterCardTitle>
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  gap={1}
+                  sx={{
+                    cursor: 'pointer',
+                    '&:hover': { textDecoration: 'underline' },
+                  }}
+                  onClick={handleCreatorClick}
+                >
+                  <PyrenzAltTag>@{character.creator}</PyrenzAltTag>
+                </Box>
+              </Box>
+
               <Box
                 display={{ xs: 'none', md: 'flex' }}
                 alignItems="center"
@@ -112,20 +124,6 @@ export function CharacterCard({
                   {character.chat_messages_count}
                 </Typography>
               </Box>
-            </Box>
-
-            <Box
-              display="flex"
-              alignItems="center"
-              gap={1}
-              sx={{
-                cursor: 'pointer',
-                '&:hover': { textDecoration: 'underline' },
-                mt: 1,
-              }}
-              onClick={handleCreatorClick}
-            >
-              <PyrenzAltTag>@{character.creator}</PyrenzAltTag>
             </Box>
 
             <PyrenzCharacterCardDescription>
@@ -146,14 +144,9 @@ export function CharacterCard({
                   Private
                 </PyrenzCharacterCardTag>
               )}
-              {Array.isArray(tagsArray) &&
-                tagsArray
-                  .slice(0, 5)
-                  .map((tag, index) => (
-                    <PyrenzCharacterCardTag key={index}>
-                      {tag}
-                    </PyrenzCharacterCardTag>
-                  ))}
+              {character.tags.slice(0, 5).map((tag, index) => (
+                <PyrenzCharacterCardTag key={index}>{tag}</PyrenzCharacterCardTag>
+              ))}
             </PyrenzCharacterCardTags>
           </PyrenzCharacterCardContent>
         </PyrenzCharacterCard>

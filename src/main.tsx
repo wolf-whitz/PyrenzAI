@@ -18,6 +18,9 @@ import { DeviceTest } from '~/Utility/DeviceTest';
 
 import { AlertProvider } from '~/provider';
 
+import { HelmetProvider } from 'react-helmet-async';
+import { GlobalMeta } from '~/layout'; 
+
 const theme = GetTheme();
 const currentTheme = theme.palette.mode;
 
@@ -67,6 +70,7 @@ const Main = () => {
           },
         }}
       >
+        <GlobalMeta />
         <App />
       </Box>
     </Fade>
@@ -75,19 +79,21 @@ const Main = () => {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <I18nextProvider i18n={i18n}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <SentryProvider>
-          <AlertProvider>
-            <ErrorBoundary>
-              <Main />
-            </ErrorBoundary>
-          </AlertProvider>
-        </SentryProvider>
-        <Analytics />
-        <SpeedInsights />
-      </ThemeProvider>
-    </I18nextProvider>
+    <HelmetProvider>
+      <I18nextProvider i18n={i18n}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <SentryProvider>
+            <AlertProvider>
+              <ErrorBoundary>
+                <Main />
+              </ErrorBoundary>
+            </AlertProvider>
+          </SentryProvider>
+          <Analytics />
+          <SpeedInsights />
+        </ThemeProvider>
+      </I18nextProvider>
+    </HelmetProvider>
   </StrictMode>
 );

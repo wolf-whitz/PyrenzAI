@@ -166,10 +166,6 @@ export const useCharacterModalApi = ({
     }
   };
 
-  const tags = initialCharacter
-    ? ensureArray(initialCharacter.tags).slice(0, 5)
-    : [];
-
   return {
     isLoading,
     userUUID,
@@ -177,20 +173,5 @@ export const useCharacterModalApi = ({
     handleChatNow,
     handleEditCharacter,
     handleDeleteCharacter,
-    tags,
   };
-};
-
-const ensureArray = (tags: string | string[] | null | undefined) => {
-  if (!tags) return [];
-  if (Array.isArray(tags)) return tags;
-  if (typeof tags === 'string') {
-    try {
-      return JSON.parse(tags);
-    } catch (e) {
-      console.error('Error parsing tags:', e);
-      return [];
-    }
-  }
-  return [];
 };

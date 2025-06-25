@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useCharacterModalApi } from '@api';
 import { Character } from '@shared-types';
 import {
@@ -43,8 +44,13 @@ export function CharacterCardModal({
     handleChatNow,
     handleEditCharacter,
     handleDeleteCharacter,
-    tags,
   } = useCharacterModalApi({ character, isOwner, onClose });
+
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const toggleExpand = () => {
+    setIsExpanded(!isExpanded);
+  };
 
   if (!character) return null;
 
@@ -139,12 +145,15 @@ export function CharacterCardModal({
             <Typography
               variant="body2"
               color="white"
-              sx={{ mt: 2, opacity: 0.9 }}
+              sx={{ mt: 2, opacity: 0.9, cursor: 'pointer' }}
+              onClick={toggleExpand}
             >
-              {truncateText(
-                character.description || 'No description available.',
-                100
-              )}
+              {isExpanded
+                ? character.description || 'No description available.'
+                : truncateText(
+                    character.description || 'No description available.',
+                    100
+                  )}
             </Typography>
 
             <Box sx={{ display: 'flex', alignItems: 'center', mt: 3 }}>
@@ -193,7 +202,7 @@ export function CharacterCardModal({
                   )}
                 </motion.span>
               )}
-              {tags.map((tag: string, index: number) => (
+              {character.tags && character.tags.map((tag, index) => (
                 <motion.span
                   key={index}
                   className="text-xs font-semibold py-1 px-3 rounded-full"

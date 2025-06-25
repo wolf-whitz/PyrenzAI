@@ -60,12 +60,13 @@ export const PyrenzCharacterCardContent = styled(CardContent)(({ theme }) => ({
 export const PyrenzCharacterCardTitle = styled(Typography)(({ theme }) => ({
   fontSize: '1.25rem',
   fontWeight: 'bold',
-  marginBottom: '8px',
+  marginBottom: '4px',
   color: '#f8f9fa',
   [theme.breakpoints.down('sm')]: {
     fontSize: '1.1rem',
   },
 }));
+
 
 export const PyrenzCharacterCardDescription = styled(Typography)(
   ({ theme }) => ({

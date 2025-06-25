@@ -4,222 +4,19 @@
     <script>
       window.__PAGE_START_TIME__ = Date.now();
     </script>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"
-    />
-
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="upgrade-insecure-requests"
-    />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta
-      http-equiv="Strict-Transport-Security"
-      content="max-age=31536000; includeSubDomains; preload"
-    />
-    <meta name="referrer" content="strict-origin-when-cross-origin" />
-
-    <meta
-      http-equiv="Permissions-Policy"
-      content="
-    camera=(), 
-    geolocation=(), 
-    accelerometer=(), 
-    autoplay=(), 
-    gyroscope=(), 
-    magnetometer=(), 
-    usb=(), 
-    xr-spatial-tracking=(), 
-  "
-    />
-
-    <!-- Favicons -->
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="https://pyrenzai.com/Favicons/favicon-32x32.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="https://pyrenzai.com/Favicons/favicon-16x16.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="192x192"
-      href="https://pyrenzai.com/Favicons/favicon-192x192.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="96x96"
-      href="https://pyrenzai.com/Favicons/favicon-96x96.png"
-    />
-    <link
-      rel="icon"
-      type="image/svg+xml"
-      href="https://pyrenzai.com/Favicons/Svg/favicon.svg"
-    />
-    <link
-      rel="shortcut icon"
-      href="https://pyrenzai.com/Favicons/favicon-32x32.png"
-    />
-
-    <!-- Apple stuff -->
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="https://pyrenzai.com/Favicons/apple-touch-favicon-180x180.png"
-    />
-    <meta name="apple-mobile-web-app-title" content="PyrenzAI" />
-
-    <!-- Manifest -->
-    <link rel="manifest" href="https://pyrenzai.com/manifest.json" />
-
-    <title>PyrenzAI</title>
-
-    <!-- PWA -->
-    <meta
-      name="theme-color"
-      content="#14181f"
-      media="(prefers-color-scheme: light)"
-    />
-    <meta
-      name="theme-color"
-      content="#0f1117"
-      media="(prefers-color-scheme: dark)"
-    />
-    <meta
-      name="apple-mobile-web-app-status-bar-style"
-      content="black-translucent"
-    />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="format-detection" content="telephone=no" />
-    <meta name="HandheldFriendly" content="true" />
-    <meta name="msapplication-TileColor" content="#14181f" />
-    <meta
-      name="msapplication-TileImage"
-      content="https://pyrenzai.com/Favicons/favicon-192x192.png"
-    />
-
-    <!-- Bots -->
-    <meta name="robots" content="index, follow" />
-    <meta name="googlebot" content="index, follow" />
-
-    <!-- Meta Data -->
-    <meta name="title" content="PyrenzAI" />
-
-    <meta
-      name="description"
-      content="PyrenzAI is a full-on AI chat app where you can talk to endless anime characters anytime you want and create fully immersive stories between you and the characters!"
-    />
-    <meta
-      name="keywords"
-      content="PyrenAI, AI, roleplay, anime, best, tags, artificial intelligence, chatbots, AI characters, roleplaying, online roleplay, anime roleplay, digital companions, interactive AI, virtual assistants, anime characters, AI-powered, storytelling, creative writing, virtual worlds"
-    />
-    <meta
-      name="theme-color"
-      content="#14181f"
-      media="(prefers-color-scheme: light)"
-    />
-    <meta
-      name="theme-color"
-      content="#0f1117"
-      media="(prefers-color-scheme: dark)"
-    />
-    <meta name="color-scheme" content="dark light" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta
-      name="apple-mobile-web-app-status-bar-style"
-      content="black-translucent"
-    />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="format-detection" content="telephone=no" />
-    <meta name="author" content="PyrenzAI" />
-    <meta name="copyright" content="PyrenzAI" />
-    <meta name="revisit-after" content="1 days" />
-    <link rel="canonical" href="https://pyrenzai.com" />
-
-    <!-- Open Graph -->
-    <meta property="og:title" content="PyrenzAI" />
-    <meta property="og:site_name" content="PyrenzAI" />
-    <meta property="og:image" content="https://pyrenzai.com/Banner.png" />
-    <meta
-      property="og:description"
-      content="PyrenzAI is a full-on AI chat app where you can talk to endless anime characters anytime you want and create fully immersive stories between you and the characters!"
-    />
-    <meta property="og:url" content="https://pyrenzai.com" />
-    <meta property="og:type" content="website" />
-
-    <!-- Twitter Meta -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="https://pyrenzai.com/Banner.png" />
-    <meta name="twitter:title" content="PyrenzAI" />
-    <meta
-      name="twitter:description"
-      content="PyrenzAI is a full-on AI chat app where you can talk to endless anime characters anytime you want and create fully immersive stories between you and the characters!"
-    />
-
-    <!-- Preload Critical Assets -->
-    <link
-      rel="preload"
-      href="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif"
-      as="image"
-      type="image/avif"
-    />
-    <link
-      rel="preload"
-      href="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MascotCrying.avif"
-      as="image"
-      type="image/avif"
-    />
-    <link
-      rel="preload"
-      href="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/Support.avif"
-      as="image"
-      type="image/avif"
-    />
-
-    <!-- Preconnect -->
-    <link rel="preconnect" href="https://fonts.gstatic.com" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link
-      rel="preconnect"
-      href="https://o4509146215284736.ingest.us.sentry.io"
-    />
-    <link rel="preconnect" href="https://us-assets.i.posthog.com" />
-    <link rel="preconnect" href="https://cqtbishpefnfvaxheyqu.supabase.co" />
   </head>
-  <body
-    onload="
-        const t = Date.now() - window.__PAGE_START_TIME__;
-        console.log('I am alive! Page load time (s):', (t / 1000).toFixed(1));
-"
-  >
+  <body onload="const t = Date.now() - window.__PAGE_START_TIME__; console.log('I am alive! Page load time (s):', (t / 1000).toFixed(1));">
     <noscript>
       You need JavaScript to use this app. Please
-      <a
-        href="https://www.enable-javascript.com/"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
+      <a href="https://www.enable-javascript.com/" target="_blank" rel="noopener noreferrer">
         enable JavaScript
       </a>
       in your browser.
     </noscript>
 
-    <!-- Entry Point -->
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <!-- Entry Point End -->
 
-    <!-- JSONLD -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -247,19 +44,12 @@
       }
     </script>
 
-    <!-- Root Modals -->
     <div id="modal-root"></div>
     <div id="headers-root"></div>
     <div id="footer-root"></div>
     <div id="sidebar-root"></div>
     <div id="notification-root"></div>
 
-    <!-- Cloudflare Web Analytics -->
-    <script
-      defer
-      src="https://static.cloudflareinsights.com/beacon.min.js"
-      data-cf-beacon='{"token": "19a657eba1a24c31b24c936ec2b5641a"}'
-    ></script>
-    <!-- End Cloudflare Web Analytics -->
+    <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "19a657eba1a24c31b24c936ec2b5641a"}'></script>
   </body>
 </html>
