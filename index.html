@@ -4,6 +4,27 @@
     <script>
       window.__PAGE_START_TIME__ = Date.now();
     </script>
+
+    <meta property="og:title" content="PyrenzAI" />
+    <meta property="og:site_name" content="PyrenzAI" />
+    <meta property="og:image" content="https://pyrenzai.com/Banner.png" />
+    <meta property="og:description" content="PyrenzAI is a full-on AI chat app where you can talk to endless anime characters anytime you want and create fully immersive stories between you and the characters!" />
+    <meta property="og:url" content="https://pyrenzai.com/" />
+    <meta property="og:type" content="website" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://pyrenzai.com/Banner.png" />
+    <meta name="twitter:title" content="PyrenzAI" />
+    <meta name="twitter:description" content="PyrenzAI is a full-on AI chat app where you can talk to endless anime characters anytime you want and create fully immersive stories between you and the characters!" />
+    <meta name="twitter:site" content="@PyrenzAI" />
+
+    <link rel="preload" href="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif" as="image" type="image/avif" />
+    <link rel="preload" href="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MascotCrying.avif" as="image" type="image/avif" />
+    <link rel="preload" href="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/Support.avif" as="image" type="image/avif" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://cqtbishpefnfvaxheyqu.supabase.co" />
   </head>
   <body onload="const t = Date.now() - window.__PAGE_START_TIME__; console.log('I am alive! Page load time (s):', (t / 1000).toFixed(1));">
     <noscript>
@@ -34,22 +55,21 @@
             "url": "https://pyrenzai.com/Favicons/favicon-192x192.png",
             "width": 192,
             "height": 192
-          },
-          "potentialAction": {
-            "@type": "SearchAction",
-            "target": "https://pyrenzai.com/search?q={search_term_string}",
-            "query-input": "required name=search_term_string"
           }
+        },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://pyrenzai.com/search?q={search_term_string}",
+          "query-input": "required name=search_term_string"
         }
       }
-    </script>
+      </script>
+      
 
     <div id="modal-root"></div>
     <div id="headers-root"></div>
     <div id="footer-root"></div>
     <div id="sidebar-root"></div>
     <div id="notification-root"></div>
-
-    <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "19a657eba1a24c31b24c936ec2b5641a"}'></script>
   </body>
 </html>

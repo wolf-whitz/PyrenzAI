@@ -1,7 +1,10 @@
 import { StrictMode, useState, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
-import { App } from './App';
+
+import { GlobalMeta } from '~/layout';
+
 import './GlobalStyles.css';
+import { App } from './App';
 
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
@@ -17,9 +20,7 @@ import ErrorBoundary from './routes/ErrorBoundary';
 import { DeviceTest } from '~/Utility/DeviceTest';
 
 import { AlertProvider } from '~/provider';
-
 import { HelmetProvider } from 'react-helmet-async';
-import { GlobalMeta } from '~/layout'; 
 
 const theme = GetTheme();
 const currentTheme = theme.palette.mode;
@@ -79,7 +80,7 @@ const Main = () => {
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <HelmetProvider>
-     <GlobalMeta />
+      <GlobalMeta />
       <I18nextProvider i18n={i18n}>
         <ThemeProvider theme={theme}>
           <CssBaseline />

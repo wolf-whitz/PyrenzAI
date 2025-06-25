@@ -36,28 +36,6 @@ export function GlobalMeta() {
       <meta name="keywords" content="PyrenAI, AI, roleplay, anime, best, tags, artificial intelligence, chatbots, AI characters, roleplaying, online roleplay, anime roleplay, digital companions, interactive AI, virtual assistants, anime characters, AI-powered, storytelling, creative writing, virtual worlds" />
 
       <meta name="color-scheme" content="dark light" />
-
-      <meta property="og:title" content="PyrenzAI" />
-      <meta property="og:site_name" content="PyrenzAI" />
-      <meta property="og:image" content="https://pyrenzai.com/Banner.png" />
-      <meta property="og:description" content="PyrenzAI is a full-on AI chat app where you can talk to endless anime characters anytime you want and create fully immersive stories between you and the characters!" />
-      <meta property="og:url" content="https://pyrenzai.com/" />
-      <meta property="og:type" content="website" />
-
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:image" content="https://pyrenzai.com/Banner.png" />
-      <meta name="twitter:title" content="PyrenzAI" />
-      <meta name="twitter:description" content="PyrenzAI is a full-on AI chat app where you can talk to endless anime characters anytime you want and create fully immersive stories between you and the characters!" />
-      <meta name="twitter:site" content="@PyrenzAI" />
-
-
-      <link rel="preload" href="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif" as="image" type="image/avif" />
-      <link rel="preload" href="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MascotCrying.avif" as="image" type="image/avif" />
-      <link rel="preload" href="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/Support.avif" as="image" type="image/avif" />
-
-      <link rel="preconnect" href="https://fonts.gstatic.com" />
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="preconnect" href="https://cqtbishpefnfvaxheyqu.supabase.co" />
     </Helmet>
   );
 }
