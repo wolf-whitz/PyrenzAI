@@ -3,19 +3,6 @@ import { Helmet } from 'react-helmet-async';
 export function GlobalMeta() {
   return (
     <Helmet>
-      <meta charSet="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover" />
-      <meta name="referrer" content="strict-origin-when-cross-origin" />
-      <link rel="icon" type="image/png" sizes="32x32" href="/Favicons/favicon-32x32.png" />
-      <link rel="icon" type="image/png" sizes="16x16" href="/Favicons/favicon-16x16.png" />
-      <link rel="icon" type="image/png" sizes="192x192" href="/Favicons/favicon-192x192.png" />
-      <link rel="icon" type="image/png" sizes="96x96" href="/Favicons/favicon-96x96.png" />
-      <link rel="icon" type="image/svg+xml" href="/Favicons/Svg/favicon.svg" />
-      <link rel="shortcut icon" href="/Favicons/favicon-32x32.png" />
-
-      <link rel="apple-touch-icon" sizes="180x180" href="/Favicons/apple-touch-favicon-180x180.png" />
-      <meta name="apple-mobile-web-app-title" content="PyrenzAI" />
-
       <title>PyrenzAI</title>
 
       <link rel="manifest" href="/manifest.json" />
@@ -27,7 +14,9 @@ export function GlobalMeta() {
       <meta name="format-detection" content="telephone=no" />
       <meta name="msapplication-TileColor" content="#14181f" />
       <meta name="msapplication-TileImage" content="/Favicons/favicon-192x192.png" />
-
+      <link rel="apple-touch-icon" sizes="180x180" href="/Favicons/apple-touch-favicon-180x180.png" />
+      <meta name="apple-mobile-web-app-title" content="PyrenzAI" />
+      
       <meta name="robots" content="index, follow" />
       <meta name="googlebot" content="index, follow" />
 
