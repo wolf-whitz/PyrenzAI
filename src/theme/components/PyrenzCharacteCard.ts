@@ -92,10 +92,8 @@ export const PyrenzCharacterCardTags = styled(Box)(({ theme }) => ({
   maxHeight: 72,
   overflow: 'hidden',
   width: '100%',
-  [theme.breakpoints.down('sm')]: {
-    display: 'none',
-  },
 }));
+
 
 export const PyrenzCharacterCardTag = styled(Typography)({
   fontSize: '0.75rem',

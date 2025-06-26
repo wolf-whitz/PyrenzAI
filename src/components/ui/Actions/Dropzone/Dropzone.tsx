@@ -59,19 +59,30 @@ export function Dropzone({
       {...getRootProps()}
       className={clsx('w-full cursor-pointer', className)}
       sx={{
+        border: '2px dashed grey',
+        borderRadius: '16px',
+        p: 1,
+        bgcolor: isDragActive ? 'rgba(0, 0, 0, 0.7)' : 'transparent',
+        transition: 'transform 0.3s ease, background-color 0.3s ease',
         '&:hover': {
-          bgcolor: 'rgba(0, 0, 0, 0.7)',
+          bgcolor: 'rgba(0, 0, 0, 0.1)',
           transform: 'scale(1.02)',
         },
-        transition: 'transform 0.3s ease, background-color 0.3s ease',
       }}
     >
       <input {...getInputProps()} />
       {bannerImagePreview ? (
-        <img
+        <Box
+          component="img"
           src={bannerImagePreview}
           alt={label}
-          className="w-full h-auto object-cover"
+          sx={{
+            width: '100%',
+            height: 'auto',
+            borderRadius: '12px',
+            display: 'block',
+            objectFit: 'cover',
+          }}
         />
       ) : (
         <Box
@@ -80,15 +91,12 @@ export function Dropzone({
           alignItems="center"
           justifyContent="center"
           sx={{
-            border: '2px dashed grey',
-            borderRadius: '16px',
-            p: 4,
-            bgcolor: isDragActive ? 'rgba(0, 0, 0, 0.7)' : 'rgba(0, 0, 0, 0.5)',
-            transition: 'background-color 0.3s ease',
+            minHeight: '180px',
+            color: '#ccc',
           }}
         >
-          <PersonOutlineIcon sx={{ fontSize: '3rem', color: '#ccc' }} />
-          <Typography variant="body2" sx={{ color: '#ccc', mt: 1, textAlign: 'center' }}>
+          <PersonOutlineIcon sx={{ fontSize: '3rem' }} />
+          <Typography variant="body2" sx={{ mt: 1, textAlign: 'center' }}>
             {label}
           </Typography>
         </Box>

@@ -21,7 +21,6 @@ export function Persona() {
     personaData,
     loading,
     isAdmin,
-    creating,
     userUuid,
     fetchUserUuid,
     fetchPersona,
@@ -34,12 +33,8 @@ export function Persona() {
   const [isModalOpen, setModalOpen] = useState(false);
   const [newPersonaName, setNewPersonaName] = useState('');
   const [newPersonaDescription, setNewPersonaDescription] = useState('');
-  const [
-    isCreateCharacterCardImageModalOpen,
-    setCreateCharacterCardImageModalOpen,
-  ] = useState(false);
-  const [isCharacterCardImageModalOpen, setCharacterCardImageModalOpen] =
-    useState(false);
+  const [isCreateCharacterCardImageModalOpen, setCreateCharacterCardImageModalOpen] = useState(false);
+  const [isCharacterCardImageModalOpen, setCharacterCardImageModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [editingPersona, setEditingPersona] = useState<Persona | null>(null);
 
@@ -180,7 +175,6 @@ export function Persona() {
         newPersonaDescription={newPersonaDescription}
         setNewPersonaDescription={setNewPersonaDescription}
         handleCreatePersona={editingPersona ? editPersona : createPersona}
-        creating={creating}
         setCharacterCardImageModalOpen={setCharacterCardImageModalOpen}
         selectedImage={selectedImage}
         setSelectedImage={setSelectedImage}

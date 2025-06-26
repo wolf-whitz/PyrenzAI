@@ -7,6 +7,7 @@ import {
 import { TextareaForm } from './Childrens/TextareaForm';
 import { useNavigate } from 'react-router-dom';
 import { useCreateAPI } from '@api';
+import { Typography } from '@mui/material';
 
 interface CharacterFormProps {
   character_update: boolean;
@@ -37,9 +38,9 @@ export function CharacterForm({
         onSubmit={handleSubmit}
         className="bg-black p-8 rounded-lg shadow-lg w-full flex flex-col space-y-6"
       >
-        <h2 className="text-white text-xl font-bold">
+        <Typography variant="h6" sx={{ color: 'white', fontWeight: 'bold' }}>
           {character_update ? 'Update Mode' : 'Create Mode'}
-        </h2>
+        </Typography>
         <TextareaForm />
         <GenderDropdown />
         <VisibilityCheckboxes />

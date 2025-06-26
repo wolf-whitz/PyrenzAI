@@ -15,10 +15,7 @@ export const usePersonaAPI = () => {
   const [personaData, setPersonaData] = useState<PersonaCard[]>([]);
   const [loading, setLoading] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [creating, setCreating] = useState(false);
   const [userUuid, setUserUuid] = useState<string | null>(null);
-
-  const showAlert = usePyrenzAlert();
 
   const fetchUserUuid = useCallback(async () => {
     try {
@@ -36,9 +33,9 @@ export const usePersonaAPI = () => {
       setIsAdmin(userData.is_admin || false);
     } catch (error) {
       console.error('Failed to fetch user UUID or data', error);
-      showAlert('Failed to fetch user UUID or data.', 'alert');
+      usePyrenzAlert()('Failed to fetch user UUID or data.', 'alert');
     }
-  }, [showAlert]);
+  }, []);
 
   const fetchPersona = useCallback(async () => {
     if (!userUuid) return;
@@ -67,11 +64,11 @@ export const usePersonaAPI = () => {
       setPersonaData(mappedData);
     } catch (error) {
       console.error('Failed to fetch persona data', error);
-      showAlert('Failed to fetch persona data.', 'alert');
+      usePyrenzAlert()('Failed to fetch persona data.', 'alert');
     } finally {
       setLoading(false);
     }
-  }, [userUuid, showAlert]);
+  }, [userUuid]);
 
   const handleCreatePersona = useCallback(
     async (
@@ -85,7 +82,6 @@ export const usePersonaAPI = () => {
     ) => {
       if (!newPersonaName || !newPersonaDescription || !userUuid) return;
 
-      setCreating(true);
       try {
         const { data, error } = await supabase
           .from('personas')
@@ -119,12 +115,10 @@ export const usePersonaAPI = () => {
         }
       } catch (error) {
         console.error('Failed to create persona', error);
-        showAlert('Failed to create persona.', 'alert');
-      } finally {
-        setCreating(false);
+        usePyrenzAlert()('Failed to create persona.', 'alert');
       }
     },
-    [userUuid, showAlert]
+    [userUuid]
   );
 
   const handleSelectPersona = useCallback(
@@ -144,10 +138,10 @@ export const usePersonaAPI = () => {
         await fetchPersona();
       } catch (error) {
         console.error('Failed to update persona selection', error);
-        showAlert('Failed to update persona selection.', 'alert');
+        usePyrenzAlert()('Failed to update persona selection.', 'alert');
       }
     },
-    [userUuid, fetchPersona, showAlert]
+    [userUuid, fetchPersona]
   );
 
   const handleDeletePersona = useCallback(
@@ -157,10 +151,10 @@ export const usePersonaAPI = () => {
         await fetchPersona();
       } catch (error) {
         console.error('Failed to delete persona', error);
-        showAlert('Failed to delete persona.', 'alert');
+        usePyrenzAlert()('Failed to delete persona.', 'alert');
       }
     },
-    [fetchPersona, showAlert]
+    [fetchPersona]
   );
 
   const handleEditPersona = useCallback(
@@ -173,13 +167,10 @@ export const usePersonaAPI = () => {
       setNewPersonaDescription: React.Dispatch<React.SetStateAction<string>>,
       setSelectedImage: React.Dispatch<React.SetStateAction<string | null>>,
       setModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
-      setEditingPersona: React.Dispatch<
-        React.SetStateAction<PersonaCard | null>
-      >
+      setEditingPersona: React.Dispatch<React.SetStateAction<PersonaCard | null>>
     ) => {
       if (!newPersonaName || !newPersonaDescription || !userUuid) return;
 
-      setCreating(true);
       try {
         const { error } = await supabase
           .from('personas')
@@ -202,19 +193,16 @@ export const usePersonaAPI = () => {
         setEditingPersona(null);
       } catch (error) {
         console.error('Failed to edit persona', error);
-        showAlert('Failed to edit persona.', 'alert');
-      } finally {
-        setCreating(false);
+        usePyrenzAlert()('Failed to edit persona.', 'alert');
       }
     },
-    [userUuid, fetchPersona, showAlert]
+    [userUuid, fetchPersona]
   );
 
   return {
     personaData,
     loading,
     isAdmin,
-    creating,
     userUuid,
     fetchUserUuid,
     fetchPersona,

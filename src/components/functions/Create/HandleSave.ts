@@ -8,7 +8,7 @@ interface SaveDraftResponse {
 }
 
 export const handleSaveDraft = async (
-  Character: Character,
+  character: Character,
   userUuid: string
 ): Promise<SaveDraftResponse> => {
   try {
@@ -16,27 +16,14 @@ export const handleSaveDraft = async (
       return { success: false, error: 'User UUID is missing.' };
     }
 
-    const allowedCharacterData = {
+    const characterData = {
+      ...character,
       user_uuid: userUuid,
-      persona: Character.persona,
-      name: Character.name,
-      model_instructions: Character.model_instructions,
-      scenario: Character.scenario,
-      description: Character.description,
-      first_message: Character.first_message,
-      tags: Character.tags,
-      gender: Character.gender,
-      is_public: Character.is_public,
-      is_nsfw: Character.is_nsfw,
-      creator: Character.creator,
-      profile_image: Character.profile_image,
-      creator_uuid: Character.creator_uuid,
-      char_uuid: Character.char_uuid,
     };
 
     const { error } = await supabase
       .from('draft_characters')
-      .upsert(allowedCharacterData);
+      .upsert(characterData);
 
     if (error) {
       Sentry.captureException(error);

@@ -26,10 +26,7 @@ interface CharacterCardProps {
   isOwner?: boolean;
 }
 
-export function CharacterCard({
-  character,
-  isOwner = false,
-}: CharacterCardProps) {
+export function CharacterCard({ character, isOwner = false }: CharacterCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState<Character | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -83,12 +80,10 @@ export function CharacterCard({
                 character.is_nsfw && (e.currentTarget.style.filter = 'none')
               }
               onMouseOut={(e: React.MouseEvent<HTMLElement>) =>
-                character.is_nsfw &&
-                (e.currentTarget.style.filter = 'blur(4px)')
+                character.is_nsfw && (e.currentTarget.style.filter = 'blur(4px)')
               }
             />
           </PyrenzCharacterCardImage>
-
           <PyrenzCharacterCardContent>
             <Box
               display="flex"
@@ -113,7 +108,6 @@ export function CharacterCard({
                   <PyrenzAltTag>@{character.creator}</PyrenzAltTag>
                 </Box>
               </Box>
-
               <Box
                 display={{ xs: 'none', md: 'flex' }}
                 alignItems="center"
@@ -125,13 +119,11 @@ export function CharacterCard({
                 </Typography>
               </Box>
             </Box>
-
             <PyrenzCharacterCardDescription>
               {character.description?.length > 120
                 ? `${character.description.substring(0, 120)}...`
                 : character.description || 'No description available.'}
             </PyrenzCharacterCardDescription>
-
             <PyrenzCharacterCardTags>
               {character.is_public ? (
                 <PyrenzCharacterCardTag>
@@ -151,7 +143,6 @@ export function CharacterCard({
           </PyrenzCharacterCardContent>
         </PyrenzCharacterCard>
       </Fade>
-
       {isModalOpen && modalData && (
         <CharacterCardModal
           isOpen={isModalOpen}

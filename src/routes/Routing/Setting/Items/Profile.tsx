@@ -1,8 +1,8 @@
-import React, { useState, useEffect, ChangeEvent } from 'react';
-import { TextField, Typography, Box, Avatar, CircularProgress } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { TextField, Typography, Box } from '@mui/material';
 import { supabase } from '~/Utility/supabaseClient';
-import { GetUserUUID, Textarea } from '@components';
-import { PyrenzBlueButton, PyrenzFormControl } from '~/theme';
+import { GetUserUUID, Textarea, ImageUploader } from '@components';
+import { PyrenzBlueButton } from '~/theme';
 import { usePyrenzAlert } from '~/provider';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '~/store';
@@ -10,12 +10,12 @@ import { v4 as uuidv4 } from 'uuid';
 
 export function Profile() {
   const [username, setUsername] = useState<string>('');
-  const [profileImage, setProfileImage] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [userUUID, setUserUUID] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isImageUploading, setIsImageUploading] = useState<boolean>(false);
   const [tagsInput, setTagsInput] = useState<string>('');
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+
   const showAlert = usePyrenzAlert();
   const navigate = useNavigate();
   const { setBlockedTags } = useUserStore();
@@ -37,7 +37,7 @@ export function Profile() {
         } else {
           setUsername(data.username || '');
           if (data.avatar_url) {
-            setImagePreview(data.avatar_url);
+            setImageUrl(data.avatar_url);
           }
           if (data.blocked_tags) {
             setTagsInput(data.blocked_tags.join(', '));
@@ -49,58 +49,59 @@ export function Profile() {
     fetchUserData();
   }, []);
 
-  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      const file = event.target.files[0];
+  const handleImageSelect = (file: File | null) => {
+    if (!file) {
+      showAlert('No file was selected', 'alert');
+      return;
+    }
 
-      if (!file.type.match('image.*')) {
-        showAlert('Only image files are accepted', 'alert');
-        return;
+    if (!file.type.match('image.*')) {
+      showAlert('Only image files are accepted. Please upload an image.', 'alert');
+      return;
+    }
+
+    setSelectedImage(file);
+    setImageUrl(URL.createObjectURL(file));
+  };
+
+  const uploadImage = async (file: File) => {
+    try {
+      const uniqueFileName = uuidv4();
+      const filePath = `user-profile/${uniqueFileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('user-profile')
+        .upload(filePath, file);
+
+      if (uploadError) {
+        throw new Error(`Error uploading profile image: ${uploadError.message}`);
       }
 
-      setIsImageUploading(true);
-      setImagePreview(null);
+      const { data: urlData } = supabase.storage
+        .from('user-profile')
+        .getPublicUrl(filePath);
 
-      try {
-        const uniqueFileName = uuidv4();
-        const filePath = `user-profile/${uniqueFileName}`;
-
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from('user-profile')
-          .upload(filePath, file);
-
-        if (uploadError) {
-          showAlert(`Error uploading profile image: ${uploadError.message}`, 'alert');
-          return;
-        }
-
-        const { data: urlData } = supabase.storage
-          .from('user-profile')
-          .getPublicUrl(filePath);
-
-        setImagePreview(urlData.publicUrl);
-        setProfileImage(file);
-      } catch (error) {
-        showAlert(
-          `Error during image upload: ${error instanceof Error ? error.message : String(error)}`,
-          'alert'
-        );
-      } finally {
-        setIsImageUploading(false);
-      }
+      return urlData.publicUrl;
+    } catch (error) {
+      showAlert(
+        `Error during image upload: ${error instanceof Error ? error.message : String(error)}`,
+        'alert'
+      );
+      throw error;
     }
   };
 
   const handleSubmit = async () => {
-    if (!userUUID) {
-      showAlert('User UUID is not available', 'alert');
-      return;
-    }
-
-    setIsLoading(true);
-
     try {
-      const updateData: { username: string; blocked_tags?: string[] } = { username };
+      setIsLoading(true);
+      const updateData: { username: string; avatar_url?: string; blocked_tags?: string[] } = {
+        username,
+      };
+
+      if (selectedImage) {
+        const uploadedImageUrl = await uploadImage(selectedImage);
+        updateData.avatar_url = uploadedImageUrl;
+      }
 
       const tagsArray = tagsInput
         .split(',')
@@ -108,17 +109,19 @@ export function Profile() {
         .filter((tag) => tag);
       updateData.blocked_tags = tagsArray;
 
-      const { error } = await supabase
-        .from('user_data')
-        .update(updateData)
-        .eq('user_uuid', userUUID);
+      if (userUUID) {
+        const { error } = await supabase
+          .from('user_data')
+          .update(updateData)
+          .eq('user_uuid', userUUID);
 
-      if (error) {
-        showAlert(`Error updating profile: ${error.message}`, 'alert');
-      } else {
-        setBlockedTags(tagsArray);
-        showAlert('Profile and tags updated successfully', 'success');
-        navigate('/Profile');
+        if (error) {
+          showAlert(`Error updating profile: ${error.message}`, 'alert');
+        } else {
+          setBlockedTags(tagsArray);
+          showAlert('Profile and tags updated successfully', 'success');
+          navigate('/Profile');
+        }
       }
     } catch (error) {
       showAlert(
@@ -136,34 +139,7 @@ export function Profile() {
         <Typography variant="subtitle1" sx={{ fontWeight: 'bold', marginBottom: '8px' }}>
           Profile Image
         </Typography>
-        <PyrenzFormControl>
-          <input
-            type="file"
-            onChange={handleFileChange}
-            style={{ display: 'none' }}
-            id="file-upload"
-            accept="image/*"
-          />
-          <label htmlFor="file-upload">
-            <PyrenzBlueButton
-              component="span"
-              sx={{
-                backgroundColor: '#add8e6',
-                borderRadius: '20px',
-                color: 'black',
-              }}
-            >
-              Upload Image
-            </PyrenzBlueButton>
-          </label>
-        </PyrenzFormControl>
-        <Box sx={{ marginTop: '10px', display: 'flex', alignItems: 'flex-start' }}>
-          {isImageUploading ? (
-            <CircularProgress size={24} />
-          ) : (
-            imagePreview && <Avatar src={imagePreview} alt="Profile Preview" sx={{ width: 100, height: 100, marginTop: '10px' }} />
-          )}
-        </Box>
+        <ImageUploader onImageSelect={handleImageSelect} initialImage={imageUrl} />
       </Box>
 
       <Box sx={{ marginBottom: '20px' }}>

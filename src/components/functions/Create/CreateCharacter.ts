@@ -12,7 +12,7 @@ async function insertTags(
   char_uuid: string,
   user_uuid: string,
   tags: string[]
-) {
+): Promise<void> {
   if (!tags || tags.length === 0) return;
 
   for (const tag of tags) {
@@ -31,8 +31,34 @@ async function insertTags(
   }
 }
 
+async function uploadImage(file: File, char_uuid: string): Promise<string | null> {
+  try {
+    const fileName = `character-image/${char_uuid}-${file.name}`;
+    const { error } = await supabase.storage
+      .from('character-image')
+      .upload(fileName, file);
+
+    if (error) {
+      console.error('Error uploading image:', error);
+      Sentry.captureException(error);
+      return null;
+    }
+
+    const { data: publicUrlData } = supabase.storage
+      .from('character-image')
+      .getPublicUrl(fileName);
+
+    return publicUrlData?.publicUrl || null;
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    Sentry.captureException(error);
+    return null;
+  }
+}
+
 export const createCharacter = async (
-  character: Character
+  character: Character,
+  profileImageFile: File | null = null
 ): Promise<CreateCharacterResponse> => {
   try {
     if (!character.creator || character.creator.trim() === '')
@@ -41,19 +67,21 @@ export const createCharacter = async (
     const characterUuid = uuidv4();
     if (!characterUuid) throw new Error('Failed to generate UUID.');
 
-    const {
-      char_uuid,
-      tags,
-      creator_uuid: user_uuid,
-      is_public,
-      ...rest
-    } = character;
+    let profileImageUrl = character.profile_image;
+
+    if (profileImageFile) {
+      const uploadedUrl = await uploadImage(profileImageFile, characterUuid);
+      profileImageUrl = uploadedUrl || '';
+    }
+
+    const { char_uuid, tags, creator_uuid: user_uuid, is_public, profile_image, ...rest } = character;
 
     const insertData = {
       char_uuid: characterUuid,
       tags: tags || [],
       creator_uuid: user_uuid,
       is_public: is_public,
+      profile_image: profileImageUrl,
       ...rest,
     };
 
@@ -80,26 +108,30 @@ export const createCharacter = async (
 };
 
 export const updateCharacter = async (
-  character: Character
+  character: Character,
+  profileImageFile: File | null = null
 ): Promise<CreateCharacterResponse> => {
   try {
     if (!character.creator || character.creator.trim() === '')
       return { error: 'Creator is required.' };
 
-    const {
-      char_uuid,
-      tags,
-      creator_uuid: user_uuid,
-      is_public,
-      ...rest
-    } = character;
+    const { char_uuid, tags, creator_uuid: user_uuid, is_public, profile_image, ...rest } = character;
+
     if (!char_uuid)
       return { error: 'Character UUID is required for updating.' };
+
+    let profileImageUrl = character.profile_image;
+
+    if (profileImageFile) {
+      const uploadedUrl = await uploadImage(profileImageFile, char_uuid);
+      profileImageUrl = uploadedUrl || '';
+    }
 
     const updateData = {
       tags: tags,
       creator_uuid: user_uuid,
       is_public: is_public,
+      profile_image: profileImageUrl,
       ...rest,
     };
 

@@ -22,7 +22,6 @@ interface CreatePersonaModalProps {
   newPersonaDescription: string;
   setNewPersonaDescription: (description: string) => void;
   handleCreatePersona: () => void;
-  creating: boolean;
   setCharacterCardImageModalOpen: (open: boolean) => void;
   selectedImage: string | null;
   setSelectedImage: (image: string | null) => void;
@@ -38,7 +37,6 @@ export function CreatePersonaModal({
   newPersonaDescription,
   setNewPersonaDescription,
   handleCreatePersona,
-  creating,
   setCharacterCardImageModalOpen,
   selectedImage,
   setSelectedImage,
@@ -46,6 +44,7 @@ export function CreatePersonaModal({
   onDelete,
 }: CreatePersonaModalProps) {
   const [previewImage, setPreviewImage] = useState<string | null>(selectedImage);
+  const [isCreating, setIsCreating] = useState(false);
   const showAlert = usePyrenzAlert();
 
   useEffect(() => {
@@ -66,6 +65,7 @@ export function CreatePersonaModal({
 
       const fileName = `persona-image-${uuidv4()}.png`;
 
+      setIsCreating(true);
       const { data, error } = await supabase.storage
         .from('persona-image')
         .upload(fileName, file, {
@@ -83,6 +83,7 @@ export function CreatePersonaModal({
         setSelectedImage(publicUrl);
         setPreviewImage(publicUrl);
       }
+      setIsCreating(false);
     }
   };
 
@@ -146,10 +147,10 @@ export function CreatePersonaModal({
           <Box className="flex justify-center mt-8 gap-4">
             <PyrenzBlueButton
               onClick={handleCreatePersona}
-              disabled={creating}
+              disabled={isCreating}
               className="min-w-[120px] flex items-center justify-center gap-2"
             >
-              {creating ? (
+              {isCreating ? (
                 <CircularProgress size={20} className="text-white" />
               ) : (
                 <>

@@ -21,9 +21,8 @@ export function Setting() {
   const [activeTab, setActiveTab] = useState<(typeof tabs)[number]>('account');
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-
   const theme = useTheme();
-  const isMedium = useMediaQuery(theme.breakpoints.between('sm', 'md'));
+  const isMedium = useMediaQuery(theme.breakpoints.down('md'));
 
   useEffect(() => {
     const init = async () => {
@@ -34,13 +33,11 @@ export function Setting() {
         setLoading(false);
         return;
       }
-
       const { data: userData, error: userError } =
         await supabase.auth.getUser();
       if (!userError && userData?.user) setUser(userData.user);
       setLoading(false);
     };
-
     init();
   }, []);
 
@@ -58,24 +55,44 @@ export function Setting() {
         />
       ));
 
-    return (
-      <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        width="100%"
-      >
-        <Tabs
-          value={activeTab}
-          onChange={(_, val) => setActiveTab(val as (typeof tabs)[number])}
-          variant="scrollable"
-          scrollButtons="auto"
-          sx={{ width: 'fit-content' }}
-        >
-          {getTabs(tabs)}
-        </Tabs>
-      </Box>
-    );
+    if (isMedium) {
+      return (
+        <Box display="flex" flexDirection="column" alignItems="center" width="100%">
+          <Tabs
+            value={activeTab}
+            onChange={(_, val) => setActiveTab(val as (typeof tabs)[number])}
+            variant="scrollable"
+            scrollButtons="auto"
+            sx={{ width: 'fit-content' }}
+          >
+            {getTabs(tabs.slice(0, 2))}
+          </Tabs>
+          <Tabs
+            value={activeTab}
+            onChange={(_, val) => setActiveTab(val as (typeof tabs)[number])}
+            variant="scrollable"
+            scrollButtons="auto"
+            sx={{ width: 'fit-content', mt: 2 }}
+          >
+            {getTabs(tabs.slice(2))}
+          </Tabs>
+        </Box>
+      );
+    } else {
+      return (
+        <Box display="flex" flexDirection="column" alignItems="center" width="100%">
+          <Tabs
+            value={activeTab}
+            onChange={(_, val) => setActiveTab(val as (typeof tabs)[number])}
+            variant="scrollable"
+            scrollButtons="auto"
+            sx={{ width: 'fit-content' }}
+          >
+            {getTabs(tabs)}
+          </Tabs>
+        </Box>
+      );
+    }
   };
 
   const Content = () => {
@@ -141,3 +158,4 @@ export function Setting() {
     </Box>
   );
 }
+

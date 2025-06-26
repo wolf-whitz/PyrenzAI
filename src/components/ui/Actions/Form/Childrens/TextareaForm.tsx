@@ -7,7 +7,6 @@ import llamaTokenizer from 'llama-tokenizer-js';
 import { Box, Typography } from '@mui/material';
 
 const MemoizedTextarea = React.memo(Textarea);
-const MemoizedImageUploader = React.memo(ImageUploader);
 const MemoizedTagsMenu = React.memo(TagsMenu);
 
 export function TextareaForm() {
@@ -22,30 +21,35 @@ export function TextareaForm() {
     handleCloseDropdown,
     handleTagClick,
     handleChange,
-    handleImageSelect,
   } = useTextareaFormAPI();
 
-  const initialTags = Array.isArray(character.tags)
-    ? character.tags.join(', ')
-    : typeof character.tags === 'string'
-      ? character.tags
-      : '';
+  const [tagsInput, setTagsInput] = useState<string[]>([]);
 
-  const [tagsInput, setTagsInput] = useState<string>(initialTags);
+  const handleImageSelect = (file: File | null) => {
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setCharacter({ profile_image: imageUrl });
+    }
+  };
 
   const handleTagsChange = (
     e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => {
     const value = e.target.value;
-    setTagsInput(value);
-
     const tagsArray = value
       .split(',')
       .map((tag) => tag.trim())
       .filter((tag) => tag.length > 0);
 
+    setTagsInput(tagsArray);
     setCharacter({ tags: tagsArray });
   };
+
+  useEffect(() => {
+    if (imageBlobUrl) {
+      setCharacter({ profile_image: imageBlobUrl });
+    }
+  }, [imageBlobUrl, setCharacter]);
 
   useEffect(() => {
     const fieldsToCount = [
@@ -91,9 +95,9 @@ export function TextareaForm() {
           placeholder="Enter character name e.g., John Doe"
           maxLength={50}
         />
-        <MemoizedImageUploader
+        <ImageUploader
           onImageSelect={handleImageSelect}
-          initialImage={imageBlobUrl}
+          initialImage={character.profile_image}
         />
       </Box>
 
@@ -169,7 +173,7 @@ export function TextareaForm() {
         />
         <MemoizedTextarea
           name="tags"
-          value={tagsInput}
+          value={tagsInput.join(', ')}
           onChange={handleTagsChange}
           label="Tags"
           aria-label="Tags"
@@ -188,4 +192,3 @@ export function TextareaForm() {
     </>
   );
 }
-``;
