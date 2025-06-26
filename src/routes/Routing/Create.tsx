@@ -109,11 +109,16 @@ export function CreatePage() {
         width="100%"
         minHeight="100vh"
       >
-        <Box width={{ xs: '100%', sm: '256px' }}>
+        <Box component="aside" width={{ xs: '100%', sm: '256px' }}>
           <Sidebar />
         </Box>
 
-        <Box flex={1} display="flex" flexDirection="column">
+        <Box
+          component="main"
+          flex={1}
+          display="flex"
+          flexDirection="column"
+        >
           {!user ? (
             <Box
               display="flex"
@@ -140,7 +145,8 @@ export function CreatePage() {
         </Box>
 
         <Box
-          sx={{ display: { xs: 'none', sm: 'block' }, width: { sm: '256px' } }}
+          component="aside"
+          sx={{ display: { xs: 'none', sm: 'block' }, width: '256px' }}
         >
           <CommunityGuidelines />
         </Box>
