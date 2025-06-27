@@ -119,30 +119,36 @@ export function CharacterCard({ character, isOwner = false }: CharacterCardProps
                 </Typography>
               </Box>
             </Box>
+
             <PyrenzCharacterCardDescription>
               {character.description?.length > 120
                 ? `${character.description.substring(0, 120)}...`
                 : character.description || 'No description available.'}
             </PyrenzCharacterCardDescription>
+
             <PyrenzCharacterCardTags>
-              {character.is_public ? (
-                <PyrenzCharacterCardTag>
-                  <PublicIcon fontSize="small" />
-                  Public
-                </PyrenzCharacterCardTag>
-              ) : (
-                <PyrenzCharacterCardTag>
-                  <LockIcon fontSize="small" />
-                  Private
-                </PyrenzCharacterCardTag>
-              )}
-              {character.tags.slice(0, 5).map((tag, index) => (
+              <PyrenzCharacterCardTag>
+                {character.is_public ? (
+                  <>
+                    <PublicIcon fontSize="small" style={{ marginRight: 4 }} />
+                    Public
+                  </>
+                ) : (
+                  <>
+                    <LockIcon fontSize="small" style={{ marginRight: 4 }} />
+                    Private
+                  </>
+                )}
+              </PyrenzCharacterCardTag>
+
+              {character.tags.map((tag, index) => (
                 <PyrenzCharacterCardTag key={index}>{tag}</PyrenzCharacterCardTag>
               ))}
             </PyrenzCharacterCardTags>
           </PyrenzCharacterCardContent>
         </PyrenzCharacterCard>
       </Fade>
+
       {isModalOpen && modalData && (
         <CharacterCardModal
           isOpen={isModalOpen}

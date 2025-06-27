@@ -84,15 +84,15 @@ export const PyrenzCharacterCardDescription = styled(Typography)(
   })
 );
 
-export const PyrenzCharacterCardTags = styled(Box)(({ theme }) => ({
+export const PyrenzCharacterCardTags = styled(Box)({
   display: 'flex',
-  flexWrap: 'wrap',
+  flexWrap: 'wrap',      
   gap: 8,
   marginTop: 'auto',
-  maxHeight: 72,
-  overflow: 'hidden',
+  maxHeight: 100,         
+  overflow: 'hidden', 
   width: '100%',
-}));
+});
 
 
 export const PyrenzCharacterCardTag = styled(Typography)({
