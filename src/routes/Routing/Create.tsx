@@ -113,12 +113,7 @@ export function CreatePage() {
           <Sidebar />
         </Box>
 
-        <Box
-          component="main"
-          flex={1}
-          display="flex"
-          flexDirection="column"
-        >
+        <Box component="main" flex={1} display="flex" flexDirection="column">
           {!user ? (
             <Box
               display="flex"

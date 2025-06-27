@@ -1,10 +1,10 @@
 import React from 'react';
+import { Select, MenuItem, FormControl } from '@mui/material';
 import {
-  Select,
-  MenuItem,
-  FormControl,
-} from '@mui/material';
-import { PyrenzFormControl, PyrenzOutlinedInput, PyrenzInputLabel } from '~/theme';
+  PyrenzFormControl,
+  PyrenzOutlinedInput,
+  PyrenzInputLabel,
+} from '~/theme';
 import { useCharacterStore } from '~/store';
 
 export function GenderDropdown() {

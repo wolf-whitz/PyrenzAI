@@ -18,7 +18,9 @@ export function Dropzone({
   className,
   initialImage,
 }: DropzoneProps) {
-  const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(initialImage || null);
+  const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(
+    initialImage || null
+  );
   const showAlert = usePyrenzAlert();
 
   useEffect(() => {
@@ -36,7 +38,10 @@ export function Dropzone({
           return;
         }
         if (file.size > 1024 * 1024) {
-          showAlert('File size exceeds 1 MB. Please choose a smaller file.', 'Alert');
+          showAlert(
+            'File size exceeds 1 MB. Please choose a smaller file.',
+            'Alert'
+          );
           return;
         }
         const reader = new FileReader();

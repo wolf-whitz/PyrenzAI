@@ -24,7 +24,11 @@ interface AuthenticationModalProps {
   toggleMode: () => void;
 }
 
-export function AuthenticationModal({ mode, onClose, toggleMode }: AuthenticationModalProps) {
+export function AuthenticationModal({
+  mode,
+  onClose,
+  toggleMode,
+}: AuthenticationModalProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isAdult, setIsAdult] = useState(false);
@@ -105,7 +109,10 @@ export function AuthenticationModal({ mode, onClose, toggleMode }: Authenticatio
             position: 'relative',
           }}
         >
-          <Typography variant="h5" sx={{ mb: 3, textAlign: 'center', fontWeight: 700 }}>
+          <Typography
+            variant="h5"
+            sx={{ mb: 3, textAlign: 'center', fontWeight: 700 }}
+          >
             {mode === 'login' ? t('buttons.login') : t('buttons.createAccount')}
           </Typography>
 
@@ -128,7 +135,9 @@ export function AuthenticationModal({ mode, onClose, toggleMode }: Authenticatio
               }}
             >
               <Typography variant="button">
-                {mode === 'login' ? t('auth.loginWithGoogle') : t('auth.signUpWithGoogle')}
+                {mode === 'login'
+                  ? t('auth.loginWithGoogle')
+                  : t('auth.signUpWithGoogle')}
               </Typography>
             </Button>
 
@@ -145,7 +154,9 @@ export function AuthenticationModal({ mode, onClose, toggleMode }: Authenticatio
               }}
             >
               <Typography variant="button">
-                {mode === 'login' ? t('auth.loginWithDiscord') : t('auth.signUpWithDiscord')}
+                {mode === 'login'
+                  ? t('auth.loginWithDiscord')
+                  : t('auth.signUpWithDiscord')}
               </Typography>
             </Button>
           </Box>
@@ -156,7 +167,11 @@ export function AuthenticationModal({ mode, onClose, toggleMode }: Authenticatio
             </Typography>
           </Divider>
 
-          <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+          >
             <TextField
               label={t('auth.email')}
               type="email"
@@ -191,7 +206,9 @@ export function AuthenticationModal({ mode, onClose, toggleMode }: Authenticatio
                     }}
                   />
                 }
-                label={<Typography variant="body2">{t('auth.confirm18')}</Typography>}
+                label={
+                  <Typography variant="body2">{t('auth.confirm18')}</Typography>
+                }
                 sx={{ color: '#fff' }}
               />
             )}
@@ -209,18 +226,25 @@ export function AuthenticationModal({ mode, onClose, toggleMode }: Authenticatio
               {loading
                 ? `${mode === 'login' ? t('auth.loggingIn') : t('auth.signingUp')}...`
                 : mode === 'login'
-                ? t('buttons.login')
-                : t('buttons.signUp')}
+                  ? t('buttons.login')
+                  : t('buttons.signUp')}
             </Button>
           </Box>
 
-          <Typography variant="body2" sx={{ mt: 3, textAlign: 'center', color: '#aaa' }}>
+          <Typography
+            variant="body2"
+            sx={{ mt: 3, textAlign: 'center', color: '#aaa' }}
+          >
             By continuing, you agree to our{' '}
             <Typography
               component="span"
               variant="body2"
               onClick={() => navigate('/Policy')}
-              sx={{ color: '#3f51b5', cursor: 'pointer', textDecoration: 'underline' }}
+              sx={{
+                color: '#3f51b5',
+                cursor: 'pointer',
+                textDecoration: 'underline',
+              }}
             >
               Privacy Policy
             </Typography>
@@ -229,7 +253,10 @@ export function AuthenticationModal({ mode, onClose, toggleMode }: Authenticatio
 
           <Divider sx={{ my: 2, borderColor: 'rgba(255,255,255,0.1)' }} />
 
-          <Typography variant="body2" sx={{ textAlign: 'center', color: '#aaa' }}>
+          <Typography
+            variant="body2"
+            sx={{ textAlign: 'center', color: '#aaa' }}
+          >
             {mode === 'login'
               ? t('auth.dontHaveAccount')
               : t('auth.alreadyHaveAccount')}{' '}

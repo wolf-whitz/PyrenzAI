@@ -107,7 +107,11 @@ export function MoreButtonsModal({
               startAdornment: (
                 <InputAdornment position="start">
                   <IconButton edge="start">
-                    {isLoading ? <CircularProgress size={24} /> : <SearchIcon />}
+                    {isLoading ? (
+                      <CircularProgress size={24} />
+                    ) : (
+                      <SearchIcon />
+                    )}
                   </IconButton>
                 </InputAdornment>
               ),

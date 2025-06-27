@@ -16,7 +16,7 @@ import {
   DeleteOutlined as DeleteIcon,
   MessageOutlined as MessageIcon,
   PublicOutlined as PublicIcon,
-  LockOutlined as LockIcon
+  LockOutlined as LockIcon,
 } from '@mui/icons-material';
 import { ShimmerText } from 'react-shimmer-effects';
 
@@ -202,24 +202,25 @@ export function CharacterCardModal({
                   )}
                 </motion.span>
               )}
-              {character.tags && character.tags.map((tag, index) => (
-                <motion.span
-                  key={index}
-                  className="text-xs font-semibold py-1 px-3 rounded-full"
-                  style={{
-                    background: 'rgba(255, 255, 255, 0.1)',
-                    color: 'white',
-                  }}
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{
-                    opacity: 1,
-                    scale: 1,
-                    transition: { delay: (index + 1) * 0.05 },
-                  }}
-                >
-                  {tag}
-                </motion.span>
-              ))}
+              {character.tags &&
+                character.tags.map((tag, index) => (
+                  <motion.span
+                    key={index}
+                    className="text-xs font-semibold py-1 px-3 rounded-full"
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.1)',
+                      color: 'white',
+                    }}
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    animate={{
+                      opacity: 1,
+                      scale: 1,
+                      transition: { delay: (index + 1) * 0.05 },
+                    }}
+                  >
+                    {tag}
+                  </motion.span>
+                ))}
             </Box>
           </Box>
         </Box>

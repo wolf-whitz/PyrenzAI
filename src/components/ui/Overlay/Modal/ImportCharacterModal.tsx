@@ -38,19 +38,53 @@ interface AIOption {
 }
 
 const aiOptions: AIOption[] = [
-  { Website: 'SakuraFm', Placeholder: 'Link Example: https://www.sakura.fm/chat/...' },
-  { Website: 'Dopple', Placeholder: 'Link Example: https://beta.hiwaifu.com/chat/...' },
-  { Website: 'Character AI', Placeholder: 'Link Example: https://character.ai/chat/...' },
-  { Website: 'FlowGPT', Placeholder: 'Link Example: https://flowgpt.com/chat/...' },
-  { Website: 'SpicyChat', Placeholder: 'Link Example: https://spicychat.ai/chat/...' },
-  { Website: 'PepHopAi', Placeholder: 'Link Example: https://pephop.ai/characters/...' },
-  { Website: 'ChubAI', Placeholder: 'Link Example: https://chub.ai/characters/...' },
-  { Website: 'PolyAI', Placeholder: 'Link Example: https://www.polybuzz.ai/character/chat/...' },
-  { Website: 'CharSnap', Placeholder: 'Link Example: https://charsnap.ai/conversation/...' },
-  { Website: 'SpellBound', Placeholder: 'Link Example: https://www.tryspellbound.com/app/characters/...' },
+  {
+    Website: 'SakuraFm',
+    Placeholder: 'Link Example: https://www.sakura.fm/chat/...',
+  },
+  {
+    Website: 'Dopple',
+    Placeholder: 'Link Example: https://beta.hiwaifu.com/chat/...',
+  },
+  {
+    Website: 'Character AI',
+    Placeholder: 'Link Example: https://character.ai/chat/...',
+  },
+  {
+    Website: 'FlowGPT',
+    Placeholder: 'Link Example: https://flowgpt.com/chat/...',
+  },
+  {
+    Website: 'SpicyChat',
+    Placeholder: 'Link Example: https://spicychat.ai/chat/...',
+  },
+  {
+    Website: 'PepHopAi',
+    Placeholder: 'Link Example: https://pephop.ai/characters/...',
+  },
+  {
+    Website: 'ChubAI',
+    Placeholder: 'Link Example: https://chub.ai/characters/...',
+  },
+  {
+    Website: 'PolyAI',
+    Placeholder: 'Link Example: https://www.polybuzz.ai/character/chat/...',
+  },
+  {
+    Website: 'CharSnap',
+    Placeholder: 'Link Example: https://charsnap.ai/conversation/...',
+  },
+  {
+    Website: 'SpellBound',
+    Placeholder:
+      'Link Example: https://www.tryspellbound.com/app/characters/...',
+  },
 ];
 
-export function ImportCharacterModal({ onClose, onImport }: ImportCharacterModalProps) {
+export function ImportCharacterModal({
+  onClose,
+  onImport,
+}: ImportCharacterModalProps) {
   const [link, setLink] = useState('');
   const [selectedAI, setSelectedAI] = useState(aiOptions[2].Website);
   const [placeholder, setPlaceholder] = useState(aiOptions[2].Placeholder);
@@ -62,7 +96,9 @@ export function ImportCharacterModal({ onClose, onImport }: ImportCharacterModal
   };
 
   const handleAISelectionChange = (event: SelectChangeEvent<string>) => {
-    const selectedOption = aiOptions.find(option => option.Website === event.target.value);
+    const selectedOption = aiOptions.find(
+      (option) => option.Website === event.target.value
+    );
     if (selectedOption) {
       setSelectedAI(selectedOption.Website);
       setPlaceholder(selectedOption.Placeholder);
@@ -77,10 +113,13 @@ export function ImportCharacterModal({ onClose, onImport }: ImportCharacterModal
 
     setLoading(true);
     try {
-      const response = await Utils.post<ImportCharacterResponse>('/api/CharacterExtract', {
-        type: selectedAI,
-        url: link,
-      });
+      const response = await Utils.post<ImportCharacterResponse>(
+        '/api/CharacterExtract',
+        {
+          type: selectedAI,
+          url: link,
+        }
+      );
 
       if (response.success && response.data.error) {
         showAlert('Error importing character: ' + response.data.error, 'Alert');
@@ -99,7 +138,10 @@ export function ImportCharacterModal({ onClose, onImport }: ImportCharacterModal
             name: data.name,
             description: data.description,
             tags: data.tags,
-          }).filter(([_, value]) => value !== undefined && value !== null && value !== '')
+          }).filter(
+            ([_, value]) =>
+              value !== undefined && value !== null && value !== ''
+          )
         );
 
         onImport(extractedData);
@@ -107,7 +149,8 @@ export function ImportCharacterModal({ onClose, onImport }: ImportCharacterModal
         onClose();
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       showAlert('Error importing character: ' + errorMessage, 'Alert');
       Sentry.captureException(error);
     } finally {
@@ -143,7 +186,11 @@ export function ImportCharacterModal({ onClose, onImport }: ImportCharacterModal
             color: 'white',
           }}
         >
-          <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1 }} exit={{ scale: 0.8 }}>
+          <motion.div
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1 }}
+            exit={{ scale: 0.8 }}
+          >
             <div className="mt-4">
               <AISelectDropdown
                 options={aiOptions}
@@ -162,9 +209,7 @@ export function ImportCharacterModal({ onClose, onImport }: ImportCharacterModal
               />
             </div>
             <div className="flex justify-end mt-4 space-x-2">
-              <PyrenzBlueButton  onClick={onClose}>
-                Cancel
-              </PyrenzBlueButton>
+              <PyrenzBlueButton onClick={onClose}>Cancel</PyrenzBlueButton>
               <PyrenzBlueButton
                 variant="contained"
                 onClick={handleImport}

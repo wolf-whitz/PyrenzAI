@@ -11,7 +11,11 @@ import { useUserStore } from '~/store';
 
 type SetShowLoginModal = (show: boolean) => void;
 
-export function MobileNav({ setShowLoginModal }: { setShowLoginModal: SetShowLoginModal }) {
+export function MobileNav({
+  setShowLoginModal,
+}: {
+  setShowLoginModal: SetShowLoginModal;
+}) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const isLogin = useUserStore((state) => state.is_login);
@@ -55,7 +59,10 @@ export function MobileNav({ setShowLoginModal }: { setShowLoginModal: SetShowLog
   };
 
   return (
-    <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50 }} elevation={3}>
+    <Paper
+      sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50 }}
+      elevation={3}
+    >
       <BottomNavigation showLabels>
         {menuItems.map((item) => (
           <BottomNavigationAction

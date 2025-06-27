@@ -57,7 +57,12 @@ export function Setting() {
 
     if (isMedium) {
       return (
-        <Box display="flex" flexDirection="column" alignItems="center" width="100%">
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          width="100%"
+        >
           <Tabs
             value={activeTab}
             onChange={(_, val) => setActiveTab(val as (typeof tabs)[number])}
@@ -80,7 +85,12 @@ export function Setting() {
       );
     } else {
       return (
-        <Box display="flex" flexDirection="column" alignItems="center" width="100%">
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          width="100%"
+        >
           <Tabs
             value={activeTab}
             onChange={(_, val) => setActiveTab(val as (typeof tabs)[number])}
@@ -158,4 +168,3 @@ export function Setting() {
     </Box>
   );
 }
-

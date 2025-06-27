@@ -31,7 +31,10 @@ export function PreviousChat() {
   const [selectedChatUuid, setSelectedChatUuid] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, chatUuid: string) => {
+  const handleMenuOpen = (
+    event: React.MouseEvent<HTMLElement>,
+    chatUuid: string
+  ) => {
     setAnchorEl(event.currentTarget);
     setSelectedChatUuid(chatUuid);
   };
@@ -50,8 +53,13 @@ export function PreviousChat() {
   };
 
   return (
-    <Box component="aside" sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <Box sx={{ display: { xs: 'none', lg: 'flex' }, flex: 1, p: 2, width: 256 }}>
+    <Box
+      component="aside"
+      sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}
+    >
+      <Box
+        sx={{ display: { xs: 'none', lg: 'flex' }, flex: 1, p: 2, width: 256 }}
+      >
         <Box
           sx={{
             borderRadius: 2,
@@ -175,10 +183,12 @@ export function PreviousChat() {
               horizontal: 'right',
             }}
           >
-            <MenuItem onClick={() => {
-              setDialogOpen(true);
-              setAnchorEl(null);
-            }}>
+            <MenuItem
+              onClick={() => {
+                setDialogOpen(true);
+                setAnchorEl(null);
+              }}
+            >
               Delete
             </MenuItem>
           </Popover>

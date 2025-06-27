@@ -80,7 +80,7 @@ export function UserProfileHeader({ user }: UserProfileHeaderProps) {
                 borderRadius: '8px',
                 textTransform: 'uppercase',
                 border: 0,
-               }}
+              }}
             />
           )}
         </Box>

@@ -67,7 +67,10 @@ export const usePreviousChatAPI = () => {
     if (!chatUuid) return;
 
     try {
-      const { error } = await supabase.from('chats').delete().eq('chat_uuid', chatUuid);
+      const { error } = await supabase
+        .from('chats')
+        .delete()
+        .eq('chat_uuid', chatUuid);
 
       if (error) throw error;
 

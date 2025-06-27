@@ -7,7 +7,11 @@ import {
   Backdrop,
   Fade,
 } from '@mui/material';
-import { AddCircleOutline as PlusCircleIcon, EditOutlined as EditIcon, DeleteOutline as DeleteIcon } from '@mui/icons-material';
+import {
+  AddCircleOutline as PlusCircleIcon,
+  EditOutlined as EditIcon,
+  DeleteOutline as DeleteIcon,
+} from '@mui/icons-material';
 import { Textarea, Dropzone } from '@components';
 import { PyrenzBlueButton } from '~/theme';
 import { usePyrenzAlert } from '~/provider';
@@ -43,7 +47,9 @@ export function CreatePersonaModal({
   isEditing,
   onDelete,
 }: CreatePersonaModalProps) {
-  const [previewImage, setPreviewImage] = useState<string | null>(selectedImage);
+  const [previewImage, setPreviewImage] = useState<string | null>(
+    selectedImage
+  );
   const [isCreating, setIsCreating] = useState(false);
   const showAlert = usePyrenzAlert();
 
@@ -154,7 +160,11 @@ export function CreatePersonaModal({
                 <CircularProgress size={20} className="text-white" />
               ) : (
                 <>
-                  {isEditing ? <EditIcon fontSize="small" /> : <PlusCircleIcon fontSize="small" />}
+                  {isEditing ? (
+                    <EditIcon fontSize="small" />
+                  ) : (
+                    <PlusCircleIcon fontSize="small" />
+                  )}
                   <span>{isEditing ? 'Update' : 'Create'}</span>
                 </>
               )}

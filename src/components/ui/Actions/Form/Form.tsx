@@ -6,7 +6,7 @@ import {
   SaveOutlined as SaveIcon,
   DescriptionOutlined as DescriptionIcon,
   UploadFileOutlined as UploadFileIcon,
-  DeleteOutlined as DeleteIcon
+  DeleteOutlined as DeleteIcon,
 } from '@mui/icons-material';
 import { Character, Draft } from '@shared-types';
 import { PyrenzBlueButton } from '~/theme';
@@ -34,7 +34,8 @@ export function FormActions({
   character_update,
 }: FormActionsProps) {
   const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
-  const [isImportCharacterModalOpen, setIsImportCharacterModalOpen] = useState(false);
+  const [isImportCharacterModalOpen, setIsImportCharacterModalOpen] =
+    useState(false);
   const navigate = useNavigate();
 
   const handleOpenDraftModal = () => {

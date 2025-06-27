@@ -5,6 +5,7 @@ export const PyrenzCharacterCard = styled(Card)(({ theme }) => ({
   width: '100%',
   maxWidth: 360,
   height: 500,
+  marginBottom: '10px',
   display: 'flex',
   flexDirection: 'column',
   borderRadius: '16px',
@@ -12,6 +13,7 @@ export const PyrenzCharacterCard = styled(Card)(({ theme }) => ({
   overflow: 'hidden',
   transition: 'transform 0.5s ease, box-shadow 0.5s ease',
   backgroundColor: '#111827',
+  transformStyle: 'preserve-3d',
   '&:hover': {
     transform: 'translateY(-5px)',
     boxShadow: '0 6px 25px rgba(0, 0, 0, 0.15)',
@@ -42,6 +44,13 @@ export const PyrenzCharacterCardImageImg = styled('img')({
   userSelect: 'none',
   pointerEvents: 'auto',
   draggable: false,
+  transition: 'filter 0.3s ease',
+  '&.nsfw': {
+    filter: 'blur(4px)',
+  },
+  '&.nsfw:hover': {
+    filter: 'none',
+  },
 });
 
 export const PyrenzCharacterCardContent = styled(CardContent)(({ theme }) => ({
@@ -67,7 +76,6 @@ export const PyrenzCharacterCardTitle = styled(Typography)(({ theme }) => ({
   },
 }));
 
-
 export const PyrenzCharacterCardDescription = styled(Typography)(
   ({ theme }) => ({
     fontSize: '0.875rem',
@@ -86,14 +94,13 @@ export const PyrenzCharacterCardDescription = styled(Typography)(
 
 export const PyrenzCharacterCardTags = styled(Box)({
   display: 'flex',
-  flexWrap: 'wrap',      
+  flexWrap: 'wrap',
   gap: 8,
   marginTop: 'auto',
-  maxHeight: 100,         
-  overflow: 'hidden', 
+  maxHeight: 100,
+  overflow: 'hidden',
   width: '100%',
 });
-
 
 export const PyrenzCharacterCardTag = styled(Typography)({
   fontSize: '0.75rem',

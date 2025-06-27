@@ -25,15 +25,25 @@ export function ErrorPage() {
             maxWidth="sm"
           >
             <Box className="flex items-center justify-center mb-4">
-              <ErrorOutlineIcon style={{ fontSize: 40, color: '#FF5733', marginRight: '8px' }} />
+              <ErrorOutlineIcon
+                style={{ fontSize: 40, color: '#FF5733', marginRight: '8px' }}
+              />
               <Typography variant="h4" component="h2" className="font-bold">
                 Oops! This page doesn’t exist.
               </Typography>
             </Box>
-            <Typography variant="body1" component="div" className="text-xl mb-4">
+            <Typography
+              variant="body1"
+              component="div"
+              className="text-xl mb-4"
+            >
               The path <strong>{location.pathname}</strong> is not registered.
             </Typography>
-            <Typography variant="body1" component="div" className="text-lg mb-6">
+            <Typography
+              variant="body1"
+              component="div"
+              className="text-lg mb-6"
+            >
               Go back to{' '}
               <Button
                 href="/"

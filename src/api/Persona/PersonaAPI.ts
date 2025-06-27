@@ -167,7 +167,9 @@ export const usePersonaAPI = () => {
       setNewPersonaDescription: React.Dispatch<React.SetStateAction<string>>,
       setSelectedImage: React.Dispatch<React.SetStateAction<string | null>>,
       setModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
-      setEditingPersona: React.Dispatch<React.SetStateAction<PersonaCard | null>>
+      setEditingPersona: React.Dispatch<
+        React.SetStateAction<PersonaCard | null>
+      >
     ) => {
       if (!newPersonaName || !newPersonaDescription || !userUuid) return;
 

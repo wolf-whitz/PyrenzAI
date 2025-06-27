@@ -88,7 +88,12 @@ export const fetchChatData = async (
       firstMessage: characterData.first_message,
     };
   } catch (error) {
-    Sentry.captureException(error instanceof Error ? error : new Error(String(error)));
-    return { is_error: true, error: 'An error occurred while fetching chat data' };
+    Sentry.captureException(
+      error instanceof Error ? error : new Error(String(error))
+    );
+    return {
+      is_error: true,
+      error: 'An error occurred while fetching chat data',
+    };
   }
 };

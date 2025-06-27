@@ -69,7 +69,9 @@ export function SkeletonCard() {
               transition={{ delay: 1.6, duration: 0.5 }}
               className="h-5 bg-gray-500 rounded"
             ></motion.div>
-            <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Box
+              sx={{ ml: 'auto', display: 'flex', alignItems: 'center', gap: 2 }}
+            >
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: isLoaded ? 1 : 0 }}

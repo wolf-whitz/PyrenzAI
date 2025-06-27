@@ -21,18 +21,18 @@ export function Memory() {
         showAlert('Unknown Chat', 'alert');
         return;
       }
-  
+
       try {
         const { data, error } = await supabase
           .from('chats')
           .select('characters_memories')
           .eq('chat_uuid', chat_uuid)
           .single();
-  
+
         if (error) {
           throw error;
         }
-  
+
         if (data) {
           setTextValue(data.characters_memories || '');
         }
@@ -41,10 +41,9 @@ export function Memory() {
         showAlert('Failed to fetch memory. Please try again.', 'alert');
       }
     };
-  
+
     fetchMemory();
   }, [chat_uuid]);
-  
 
   useEffect(() => {
     setTokenCount(null);

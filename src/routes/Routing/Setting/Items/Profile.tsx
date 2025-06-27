@@ -56,7 +56,10 @@ export function Profile() {
     }
 
     if (!file.type.match('image.*')) {
-      showAlert('Only image files are accepted. Please upload an image.', 'alert');
+      showAlert(
+        'Only image files are accepted. Please upload an image.',
+        'alert'
+      );
       return;
     }
 
@@ -74,7 +77,9 @@ export function Profile() {
         .upload(filePath, file);
 
       if (uploadError) {
-        throw new Error(`Error uploading profile image: ${uploadError.message}`);
+        throw new Error(
+          `Error uploading profile image: ${uploadError.message}`
+        );
       }
 
       const { data: urlData } = supabase.storage
@@ -94,7 +99,11 @@ export function Profile() {
   const handleSubmit = async () => {
     try {
       setIsLoading(true);
-      const updateData: { username: string; avatar_url?: string; blocked_tags?: string[] } = {
+      const updateData: {
+        username: string;
+        avatar_url?: string;
+        blocked_tags?: string[];
+      } = {
         username,
       };
 
@@ -136,14 +145,23 @@ export function Profile() {
   return (
     <Box sx={{ padding: '20px', maxWidth: '400px', margin: '0 auto' }}>
       <Box sx={{ marginBottom: '20px' }}>
-        <Typography variant="subtitle1" sx={{ fontWeight: 'bold', marginBottom: '8px' }}>
+        <Typography
+          variant="subtitle1"
+          sx={{ fontWeight: 'bold', marginBottom: '8px' }}
+        >
           Profile Image
         </Typography>
-        <ImageUploader onImageSelect={handleImageSelect} initialImage={imageUrl} />
+        <ImageUploader
+          onImageSelect={handleImageSelect}
+          initialImage={imageUrl}
+        />
       </Box>
 
       <Box sx={{ marginBottom: '20px' }}>
-        <Typography variant="subtitle1" sx={{ fontWeight: 'bold', marginBottom: '8px' }}>
+        <Typography
+          variant="subtitle1"
+          sx={{ fontWeight: 'bold', marginBottom: '8px' }}
+        >
           Username
         </Typography>
         <TextField
@@ -156,7 +174,10 @@ export function Profile() {
       </Box>
 
       <Box sx={{ marginBottom: '20px' }}>
-        <Typography variant="subtitle1" sx={{ fontWeight: 'bold', marginBottom: '8px' }}>
+        <Typography
+          variant="subtitle1"
+          sx={{ fontWeight: 'bold', marginBottom: '8px' }}
+        >
           Blocked Tags
         </Typography>
         <Textarea

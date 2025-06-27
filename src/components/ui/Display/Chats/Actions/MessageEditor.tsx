@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   CheckOutlined as CheckOutlinedIcon,
-  CloseOutlined as CloseOutlinedIcon
+  CloseOutlined as CloseOutlinedIcon,
 } from '@mui/icons-material';
 import { TextField, Button, Box } from '@mui/material';
 
@@ -12,7 +12,11 @@ interface MessageEditorProps {
   onCancel: () => void;
 }
 
-export function MessageEditor({ initialText, onSave, onCancel }: MessageEditorProps) {
+export function MessageEditor({
+  initialText,
+  onSave,
+  onCancel,
+}: MessageEditorProps) {
   const [editedText, setEditedText] = useState(initialText);
 
   return (
@@ -22,16 +26,18 @@ export function MessageEditor({ initialText, onSave, onCancel }: MessageEditorPr
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
     >
-      <Box sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 2,
-        border: '1px solid rgba(255, 255, 255, 0.23)',
-        borderRadius: '8px',
-        p: 2,
-        bgcolor: 'background.paper',
-        color: 'text.primary'
-      }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
+          border: '1px solid rgba(255, 255, 255, 0.23)',
+          borderRadius: '8px',
+          p: 2,
+          bgcolor: 'background.paper',
+          color: 'text.primary',
+        }}
+      >
         <TextField
           value={editedText}
           onChange={(e) => setEditedText(e.target.value)}
@@ -61,14 +67,20 @@ export function MessageEditor({ initialText, onSave, onCancel }: MessageEditorPr
           <Button
             onClick={onCancel}
             startIcon={<CloseOutlinedIcon />}
-            sx={{ color: 'rgba(255, 255, 255, 0.7)', '&:hover': { color: '#ef5350' } }}
+            sx={{
+              color: 'rgba(255, 255, 255, 0.7)',
+              '&:hover': { color: '#ef5350' },
+            }}
           >
             Cancel
           </Button>
           <Button
             onClick={() => onSave(editedText)}
             startIcon={<CheckOutlinedIcon />}
-            sx={{ color: 'rgba(255, 255, 255, 0.7)', '&:hover': { color: '#66bb6a' } }}
+            sx={{
+              color: 'rgba(255, 255, 255, 0.7)',
+              '&:hover': { color: '#66bb6a' },
+            }}
           >
             Save
           </Button>

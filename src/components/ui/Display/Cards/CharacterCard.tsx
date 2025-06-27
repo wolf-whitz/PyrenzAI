@@ -26,7 +26,10 @@ interface CharacterCardProps {
   isOwner?: boolean;
 }
 
-export function CharacterCard({ character, isOwner = false }: CharacterCardProps) {
+export function CharacterCard({
+  character,
+  isOwner = false,
+}: CharacterCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState<Character | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -72,16 +75,7 @@ export function CharacterCard({ character, isOwner = false }: CharacterCardProps
             <PyrenzCharacterCardImageImg
               src={character.profile_image}
               alt={character.name}
-              style={{
-                filter: character.is_nsfw ? 'blur(4px)' : 'none',
-                transition: 'filter 0.3s ease',
-              }}
-              onMouseOver={(e: React.MouseEvent<HTMLElement>) =>
-                character.is_nsfw && (e.currentTarget.style.filter = 'none')
-              }
-              onMouseOut={(e: React.MouseEvent<HTMLElement>) =>
-                character.is_nsfw && (e.currentTarget.style.filter = 'blur(4px)')
-              }
+              className={character.is_nsfw ? 'nsfw' : ''}
             />
           </PyrenzCharacterCardImage>
           <PyrenzCharacterCardContent>
@@ -142,7 +136,9 @@ export function CharacterCard({ character, isOwner = false }: CharacterCardProps
               </PyrenzCharacterCardTag>
 
               {character.tags.map((tag, index) => (
-                <PyrenzCharacterCardTag key={index}>{tag}</PyrenzCharacterCardTag>
+                <PyrenzCharacterCardTag key={index}>
+                  {tag}
+                </PyrenzCharacterCardTag>
               ))}
             </PyrenzCharacterCardTags>
           </PyrenzCharacterCardContent>

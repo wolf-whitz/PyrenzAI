@@ -11,7 +11,11 @@ import {
   Backdrop,
   Fade,
 } from '@mui/material';
-import { ChevronLeftOutlined as ChevronLeftIcon, ChevronRightOutlined as ChevronRightIcon, DeleteOutlined as DeleteIcon } from '@mui/icons-material';
+import {
+  ChevronLeftOutlined as ChevronLeftIcon,
+  ChevronRightOutlined as ChevronRightIcon,
+  DeleteOutlined as DeleteIcon,
+} from '@mui/icons-material';
 import { supabase } from '~/Utility/supabaseClient';
 import { GetUserUUID } from '@components';
 import { Draft } from '@shared-types';
@@ -205,7 +209,10 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
               <SkeletonLoader />
             </>
           ) : displayedDrafts.length === 0 ? (
-            <Typography variant="body1" sx={{ textAlign: 'center', color: 'text.secondary' }}>
+            <Typography
+              variant="body1"
+              sx={{ textAlign: 'center', color: 'text.secondary' }}
+            >
               No drafts available.
             </Typography>
           ) : (
@@ -243,20 +250,35 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
                     <Typography variant="h6" sx={{ mb: 1 }}>
                       {draft.name || 'Untitled Draft'}
                     </Typography>
-                    <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
+                    <Typography
+                      variant="body2"
+                      sx={{ color: 'text.secondary', mb: 1 }}
+                    >
                       {draft.description || 'No description available.'}
                     </Typography>
-                    <Typography variant="caption" sx={{ color: 'text.disabled' }}>
+                    <Typography
+                      variant="caption"
+                      sx={{ color: 'text.disabled' }}
+                    >
                       Created at: {new Date(draft.created_at).toLocaleString()}
                     </Typography>
                   </CardContent>
                 </Card>
               ))}
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
+              <Box
+                sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}
+              >
                 <Button
                   onClick={handlePrevPage}
                   disabled={currentPage === 0}
-                  sx={{ color: 'white', p: 2, borderRadius: '8px', backgroundColor: 'primary.main', '&:hover': { backgroundColor: 'primary.dark' }, '&.Mui-disabled': { opacity: 0.5 } }}
+                  sx={{
+                    color: 'white',
+                    p: 2,
+                    borderRadius: '8px',
+                    backgroundColor: 'primary.main',
+                    '&:hover': { backgroundColor: 'primary.dark' },
+                    '&.Mui-disabled': { opacity: 0.5 },
+                  }}
                   startIcon={<ChevronLeftIcon />}
                 >
                   Previous
@@ -264,7 +286,14 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
                 <Button
                   onClick={handleNextPage}
                   disabled={(currentPage + 1) * 3 >= drafts.length}
-                  sx={{ color: 'white', p: 2, borderRadius: '8px', backgroundColor: 'primary.main', '&:hover': { backgroundColor: 'primary.dark' }, '&.Mui-disabled': { opacity: 0.5 } }}
+                  sx={{
+                    color: 'white',
+                    p: 2,
+                    borderRadius: '8px',
+                    backgroundColor: 'primary.main',
+                    '&:hover': { backgroundColor: 'primary.dark' },
+                    '&.Mui-disabled': { opacity: 0.5 },
+                  }}
                   endIcon={<ChevronRightIcon />}
                 >
                   Next

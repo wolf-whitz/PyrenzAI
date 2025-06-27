@@ -73,13 +73,18 @@ export const GetUserCreatedCharacters = (
 
       if (subError || !sub) {
         console.error('Subscription fetch error:', subError);
-        return { ...user, user_avatar: user.avatar_url, is_subscribed: false, subscription_plan: undefined  };
+        return {
+          ...user,
+          user_avatar: user.avatar_url,
+          is_subscribed: false,
+          subscription_plan: undefined,
+        };
       }
 
       return {
         username: user.username,
         user_avatar: user.avatar_url,
-        user_uuid: user.user_uuid, 
+        user_uuid: user.user_uuid,
         is_subscribed: sub.is_subscribed,
         subscription_plan: sub.subscription_plan,
       };

@@ -57,5 +57,5 @@ if (rootElement) {
     </StrictMode>
   );
 } else {
-  console.error("Root element not found");
+  console.error('Root element not found');
 }

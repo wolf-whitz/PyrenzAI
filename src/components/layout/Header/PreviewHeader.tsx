@@ -78,11 +78,29 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
   }
 
   return (
-    <motion.div initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-      <AppBar position="static" elevation={0} sx={{ backgroundColor: 'gray.900' }}>
-        <Toolbar className="flex justify-between items-center w-full max-w-screen-2xl mx-auto px-6" sx={{ overflowX: 'hidden' }}>
-          <div className="flex items-center space-x-4 cursor-pointer lg:ml-[60px]" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            <img src="/favicon.png" alt={t('footer.pyrenzLogo')} className="h-8 w-8" />
+    <motion.div
+      initial={{ opacity: 0, y: -50 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <AppBar
+        position="static"
+        elevation={0}
+        sx={{ backgroundColor: 'gray.900' }}
+      >
+        <Toolbar
+          className="flex justify-between items-center w-full max-w-screen-2xl mx-auto px-6"
+          sx={{ overflowX: 'hidden' }}
+        >
+          <div
+            className="flex items-center space-x-4 cursor-pointer lg:ml-[60px]"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          >
+            <img
+              src="/favicon.png"
+              alt={t('footer.pyrenzLogo')}
+              className="h-8 w-8"
+            />
             <div className="text-2xl font-bold font-pyrenzfont hover:text-blue-500 transition-colors duration-300">
               Pyrenz<span className="text-[#add8e6]">AI</span>
             </div>
@@ -102,10 +120,14 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
                       background: 'transparent',
                       border: 'none',
                       color: 'blue',
-                    }
+                    },
                   }}
                   className="font-pyrenzfont whitespace-nowrap"
-                  onClick={() => external ? window.open(link, '_blank') : (window.location.href = link)}
+                  onClick={() =>
+                    external
+                      ? window.open(link, '_blank')
+                      : (window.location.href = link)
+                  }
                 >
                   {name}
                 </PyrenzBlueButtonWithLoading>
@@ -122,7 +144,7 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
                         background: 'transparent',
                         border: 'none',
                         color: 'blue',
-                      }
+                      },
                     }}
                     className="font-pyrenzfont whitespace-nowrap"
                     onClick={() => setShowLogin(true)}
@@ -139,7 +161,7 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
                         background: 'transparent',
                         border: 'none',
                         color: 'blue',
-                      }
+                      },
                     }}
                     className="font-pyrenzfont whitespace-nowrap"
                     onClick={() => setShowRegister(true)}
@@ -156,7 +178,10 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
               <IconButton onClick={() => setMenuOpen(true)}>
                 <MenuIcon />
               </IconButton>
-              <PyrenzStyledDrawer isOpen={menuOpen} onClose={() => setMenuOpen(false)}>
+              <PyrenzStyledDrawer
+                isOpen={menuOpen}
+                onClose={() => setMenuOpen(false)}
+              >
                 <Box
                   sx={{ width: 250 }}
                   role="presentation"
@@ -168,7 +193,11 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
                       <ListItem
                         key={name}
                         component="button"
-                        onClick={() => external ? window.open(link, '_blank') : (window.location.href = link)}
+                        onClick={() =>
+                          external
+                            ? window.open(link, '_blank')
+                            : (window.location.href = link)
+                        }
                         sx={{
                           backgroundColor: 'transparent',
                           color: 'white',
@@ -179,7 +208,9 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
                           },
                         }}
                       >
-                        <ListItemIcon sx={{ color: 'inherit' }}>{icon}</ListItemIcon>
+                        <ListItemIcon sx={{ color: 'inherit' }}>
+                          {icon}
+                        </ListItemIcon>
                         <ListItemText primary={name} />
                       </ListItem>
                     ))}

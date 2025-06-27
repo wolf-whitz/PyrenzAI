@@ -1,5 +1,8 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { MoreVertOutlined as MoreVertIcon, SendOutlined as SendIcon } from '@mui/icons-material';
+import {
+  MoreVertOutlined as MoreVertIcon,
+  SendOutlined as SendIcon,
+} from '@mui/icons-material';
 import { CircularProgress, Box, IconButton } from '@mui/material';
 import { Menu } from '@components';
 import { Character } from '@shared-types';
@@ -107,8 +110,14 @@ export function ChatInput({
             aria-label="Send message"
             disabled={!message.trim() || isGenerating}
             sx={{
-              '&:hover': !isGenerating && message.trim() ? { transform: 'scale(1.05)' } : {},
-              '&:active': !isGenerating && message.trim() ? { transform: 'scale(0.95)' } : {},
+              '&:hover':
+                !isGenerating && message.trim()
+                  ? { transform: 'scale(1.05)' }
+                  : {},
+              '&:active':
+                !isGenerating && message.trim()
+                  ? { transform: 'scale(0.95)' }
+                  : {},
             }}
           >
             {isGenerating ? (
@@ -119,7 +128,9 @@ export function ChatInput({
           </IconButton>
         </Box>
       </Box>
-      {isMenuOpen && <Menu onClose={() => setIsMenuOpen(false)} char={char as Character} />}
+      {isMenuOpen && (
+        <Menu onClose={() => setIsMenuOpen(false)} char={char as Character} />
+      )}
     </>
   );
 }

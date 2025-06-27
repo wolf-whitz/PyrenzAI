@@ -31,7 +31,10 @@ async function insertTags(
   }
 }
 
-async function uploadImage(file: File, char_uuid: string): Promise<string | null> {
+async function uploadImage(
+  file: File,
+  char_uuid: string
+): Promise<string | null> {
   try {
     const fileName = `character-image/${char_uuid}-${file.name}`;
     const { error } = await supabase.storage
@@ -74,7 +77,14 @@ export const createCharacter = async (
       profileImageUrl = uploadedUrl || '';
     }
 
-    const { char_uuid, tags, creator_uuid: user_uuid, is_public, profile_image, ...rest } = character;
+    const {
+      char_uuid,
+      tags,
+      creator_uuid: user_uuid,
+      is_public,
+      profile_image,
+      ...rest
+    } = character;
 
     const insertData = {
       char_uuid: characterUuid,
@@ -115,7 +125,14 @@ export const updateCharacter = async (
     if (!character.creator || character.creator.trim() === '')
       return { error: 'Creator is required.' };
 
-    const { char_uuid, tags, creator_uuid: user_uuid, is_public, profile_image, ...rest } = character;
+    const {
+      char_uuid,
+      tags,
+      creator_uuid: user_uuid,
+      is_public,
+      profile_image,
+      ...rest
+    } = character;
 
     if (!char_uuid)
       return { error: 'Character UUID is required for updating.' };

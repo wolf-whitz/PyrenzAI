@@ -22,7 +22,9 @@ export function ImageUploader({
   onImageSelect,
   initialImage,
 }: ImageUploaderProps) {
-  const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(initialImage || null);
+  const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(
+    initialImage || null
+  );
   const [open, setOpen] = useState(false);
   const [textareaValue, setTextareaValue] = useState('');
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -92,7 +94,14 @@ export function ImageUploader({
   };
 
   return (
-    <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+    <Box
+      sx={{
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+      }}
+    >
       <Dropzone
         onDrop={handleDrop}
         label="Drop a banner image here (ᵕ—ᴗ—)"

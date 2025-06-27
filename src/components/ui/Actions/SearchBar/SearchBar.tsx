@@ -1,5 +1,11 @@
 import React, { useState, ChangeEvent, KeyboardEvent, useEffect } from 'react';
-import { TextField, InputAdornment, IconButton, CircularProgress, Box } from '@mui/material';
+import {
+  TextField,
+  InputAdornment,
+  IconButton,
+  CircularProgress,
+  Box,
+} from '@mui/material';
 import SearchIcon from '@mui/icons-material/SearchOutlined';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -10,7 +16,11 @@ interface SearchBarProps {
   setCurrentPage: (page: number) => void;
 }
 
-export function SearchBar({ search, setSearch, setCurrentPage }: SearchBarProps) {
+export function SearchBar({
+  search,
+  setSearch,
+  setCurrentPage,
+}: SearchBarProps) {
   const [inputValue, setInputValue] = useState(search);
   const [isLoading, setIsLoading] = useState(false);
   const { t } = useTranslation();
@@ -59,7 +69,9 @@ export function SearchBar({ search, setSearch, setCurrentPage }: SearchBarProps)
             fullWidth
             variant="outlined"
             value={inputValue}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value)}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setInputValue(e.target.value)
+            }
             onKeyDown={handleKeyDown}
             placeholder="Who do you want to chat with?"
             InputProps={{
@@ -70,7 +82,11 @@ export function SearchBar({ search, setSearch, setCurrentPage }: SearchBarProps)
                     edge="start"
                     sx={{ padding: '8px', color: 'grey' }}
                   >
-                    {isLoading ? <CircularProgress size={24} /> : <SearchIcon />}
+                    {isLoading ? (
+                      <CircularProgress size={24} />
+                    ) : (
+                      <SearchIcon />
+                    )}
                   </IconButton>
                 </InputAdornment>
               ),
