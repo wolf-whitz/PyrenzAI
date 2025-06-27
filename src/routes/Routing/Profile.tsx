@@ -25,7 +25,7 @@ export function ProfilePage() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  const { characters, userData, loading, isOwner, maxPage } =
+  const { characters = [], userData, loading, isOwner, maxPage } =
     GetUserCreatedCharacters(creator_uuid, page);
 
   const handlePreviousPage = () => {
