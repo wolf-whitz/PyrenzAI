@@ -1,12 +1,21 @@
+/** 
+ * This module tests the device's capabilities and gathers browser/device fingerprinting data 
+ * for testing purposes. It does NOT send data to any external server, except for 
+ * 
+ * This is mainly used for local testing or debugging, such as identifying device/browser info.
+ */
+
 import Bowser from 'bowser';
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
 
+/** Interface describing each component in the FingerprintJS result */
 interface FingerprintJSComponent {
   value: any;
   error?: unknown;
   duration?: number;
 }
 
+/** Interface describing the full result structure returned by FingerprintJS */
 interface FingerprintJSResult {
   visitorId: string;
   components: {
@@ -20,6 +29,18 @@ interface FingerprintJSResult {
     touchSupport: FingerprintJSComponent;
   };
 }
+
+/** 
+ * Asynchronous function to test device fingerprint and environment information.
+ * - Registers a service worker if supported.
+ * - Uses FingerprintJS to generate a unique ID and gather browser features.
+ * - Parses user agent using Bowser.
+ * - Fetches IP and geolocation info from ipapi.co.
+ * - Prints all collected data to the console.
+ * 
+ * NOTE: This function does not post any data to the server.
+ * It is intended for diagnostics and testing only.
+ */
 
 export const DeviceTest = async () => {
   if ('serviceWorker' in navigator) {
@@ -44,6 +65,7 @@ export const DeviceTest = async () => {
     });
   }
 
+  /** Helper function to detect unsupported (old) browsers */
   const isOldBrowser = (): boolean => {
     switch (true) {
       case typeof Promise === 'undefined':
@@ -63,6 +85,8 @@ export const DeviceTest = async () => {
   try {
     const fp = await FingerprintJS.load().then((fp) => fp.get());
     const { visitorId, components } = fp as FingerprintJSResult;
+
+    // Store the visitor ID in localStorage for sending to the server later
     localStorage.setItem('visitorId', visitorId);
 
     const userAgentValue = components.userAgent?.value || navigator.userAgent;
@@ -133,6 +157,7 @@ export const DeviceTest = async () => {
     };
 
     console.log(detailedInfo);
+
     return true;
   } catch (e) {
     console.error('Error in DeviceTest:', e);
