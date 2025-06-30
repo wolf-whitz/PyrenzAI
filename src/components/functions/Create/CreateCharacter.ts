@@ -39,7 +39,7 @@ async function uploadImage(
     const fileName = `character-image/${char_uuid}-${file.name}`;
     const { error } = await supabase.storage
       .from('character-image')
-      .upload(fileName, file);
+      .upload(fileName, file, { upsert: true });
 
     if (error) {
       console.error('Error uploading image:', error);
@@ -145,7 +145,6 @@ export const updateCharacter = async (
     }
 
     const updateData = {
-      tags: tags,
       creator_uuid: user_uuid,
       is_public: is_public,
       profile_image: profileImageUrl,
@@ -161,14 +160,6 @@ export const updateCharacter = async (
       console.error(`Error updating character:`, error);
       Sentry.captureException(error);
       return { error: error.message };
-    }
-
-    if (user_uuid) {
-      await supabase.from('tags').delete().eq('char_uuid', char_uuid);
-
-      if (tags) {
-        await insertTags(char_uuid, user_uuid, tags);
-      }
     }
 
     return { char_uuid };

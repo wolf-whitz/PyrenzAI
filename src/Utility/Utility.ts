@@ -6,12 +6,6 @@ type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 
 export const AuthTokenName = 'sb-cqtbishpefnfvaxheyqu-auth-token';
 
-const getCookie = (name: string) => {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop()?.split(';').shift();
-};
-
 const pendingRequests = new Map<string, Promise<any>>();
 
 const fetcher = async (url: string) => {
@@ -64,17 +58,12 @@ export const Utils = {
         session = sessionData.session;
       }
 
-      const captchaCookie = getCookie('captcha-cookie');
-      const visitorId = localStorage.getItem('visitorId');
-
       const headers: HeadersInit = {
         'Content-Type': 'application/json',
         Accept: isImageRequest ? 'image/png' : 'application/json',
       };
 
       if (session) headers.Authorization = `Bearer ${session.access_token}`;
-      if (captchaCookie) headers['captcha_key'] = captchaCookie;
-      if (visitorId) headers['visitor-id'] = visitorId;
 
       const options: RequestInit = {
         method,

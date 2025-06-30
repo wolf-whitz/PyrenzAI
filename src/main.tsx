@@ -15,7 +15,6 @@ import { SentryProvider } from './provider/SentryProvider';
 import * as Sentry from '@sentry/react';
 
 import ErrorBoundary from './routes/ErrorBoundary';
-import { DeviceTest } from '~/Utility/DeviceTest';
 
 import { AlertProvider } from '~/provider';
 import { HelmetProvider } from 'react-helmet-async';
@@ -30,8 +29,6 @@ Sentry.init({
   replaysSessionSampleRate: 0.1,
   replaysOnErrorSampleRate: 1.0,
 });
-
-DeviceTest();
 
 const rootElement = document.getElementById('root');
 

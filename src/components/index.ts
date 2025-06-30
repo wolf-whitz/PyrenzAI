@@ -6,3 +6,5 @@ export * from './functions';
 
 export * from './shared-types';
 export * from './docs';
+
+export * from './config';

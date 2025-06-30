@@ -5,9 +5,40 @@ import { useCharacterStore } from '~/store';
 import { Character } from '@shared-types';
 import llamaTokenizer from 'llama-tokenizer-js';
 import { Box, Typography } from '@mui/material';
+import { supabase } from '~/Utility/supabaseClient';
+import { v4 as uuidv4 } from 'uuid';
+import * as Sentry from '@sentry/react';
+import { textareasByCategory } from '@components';
 
 const MemoizedTextarea = React.memo(Textarea);
 const MemoizedTagsMenu = React.memo(TagsMenu);
+
+async function uploadImage(file: File): Promise<string | null> {
+  try {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${uuidv4()}.${fileExt}`;
+    const filePath = `character-image/${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('character-image')
+      .upload(filePath, file);
+
+    if (uploadError) {
+      throw uploadError;
+    }
+
+    const { data: urlData } = supabase
+      .storage
+      .from('character-image')
+      .getPublicUrl(filePath);
+
+    return urlData.publicUrl;
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    Sentry.captureException(error);
+    return null;
+  }
+}
 
 export function TextareaForm() {
   const character = useCharacterStore((state) => state) as Character;
@@ -16,19 +47,21 @@ export function TextareaForm() {
 
   const {
     anchorEl,
-    imageBlobUrl,
     handleOpenDropdown,
     handleCloseDropdown,
     handleTagClick,
     handleChange,
   } = useTextareaFormAPI();
 
-  const [tagsInput, setTagsInput] = useState<string[]>([]);
+  const [tagsInput, setTagsInput] = useState<string[]>(
+    character.tags || []
+  );
 
-  const handleImageSelect = (file: File | null) => {
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setCharacter({ profile_image: imageUrl });
+  const handleImageSelect = async (file: File | null) => {
+    if (!file) return;
+    const publicUrl = await uploadImage(file);
+    if (publicUrl) {
+      setCharacter({ profile_image: publicUrl });
     }
   };
 
@@ -44,12 +77,6 @@ export function TextareaForm() {
     setTagsInput(tagsArray);
     setCharacter({ tags: tagsArray });
   };
-
-  useEffect(() => {
-    if (imageBlobUrl) {
-      setCharacter({ profile_image: imageBlobUrl });
-    }
-  }, [imageBlobUrl, setCharacter]);
 
   useEffect(() => {
     const fieldsToCount = [
@@ -82,107 +109,50 @@ export function TextareaForm() {
 
   return (
     <>
-      <Box sx={{ marginBottom: 4 }}>
-        <Typography variant="h5" gutterBottom>
-          Basic Information
-        </Typography>
-        <MemoizedTextarea
-          name="name"
-          value={character.name}
-          onChange={handleChange}
-          label="Name"
-          aria-label="Name"
-          placeholder="Enter character name e.g., John Doe"
-          maxLength={50}
-        />
-        <ImageUploader
-          onImageSelect={handleImageSelect}
-          initialImage={character.profile_image}
-        />
-      </Box>
+      {textareasByCategory.map((section) => (
+        <Box key={section.category} sx={{ marginBottom: 4 }}>
+          <Typography variant="h5" gutterBottom>
+            {section.category}
+          </Typography>
 
-      <Box sx={{ marginBottom: 4 }}>
-        <Typography variant="h5" gutterBottom>
-          Character Details
-        </Typography>
-        <MemoizedTextarea
-          name="description"
-          value={character.description}
-          onChange={handleChange}
-          label="Description"
-          aria-label="Description"
-          placeholder="Describe the character e.g., A brave knight with a mysterious past"
-          showTokenizer
-        />
-        <MemoizedTextarea
-          name="persona"
-          value={character.persona}
-          onChange={handleChange}
-          label="Persona"
-          aria-label="Persona"
-          placeholder="Define the character's persona e.g., Adventurous and wise"
-          showTokenizer
-        />
-        <MemoizedTextarea
-          name="scenario"
-          value={character.scenario}
-          onChange={handleChange}
-          label="Scenario"
-          aria-label="Scenario"
-          placeholder="Describe a scenario involving the character e.g., Saving a village from a dragon"
-          showTokenizer
-        />
-      </Box>
+          {section.fields.map((field) => {
+            const value =
+              field.name === 'tags'
+                ? tagsInput.join(', ')
+                : (character as any)[field.name] || '';
 
-      <Box sx={{ marginBottom: 4 }}>
-        <Typography variant="h5" gutterBottom>
-          Interaction Settings
-        </Typography>
-        <MemoizedTextarea
-          name="model_instructions"
-          value={character.model_instructions}
-          onChange={handleChange}
-          label="Model Instructions"
-          aria-label="Model Instructions"
-          placeholder="Provide instructions for the model e.g., The character should always seek justice"
-          showTokenizer
-        />
-        <MemoizedTextarea
-          name="first_message"
-          value={character.first_message}
-          onChange={handleChange}
-          label="First Message"
-          aria-label="First Message"
-          placeholder="What is the first message the character says? e.g., Hello, traveler! What brings you here?"
-          showTokenizer
-        />
-      </Box>
+            const onChange =
+              field.name === 'tags' ? handleTagsChange : handleChange;
 
-      <Box sx={{ marginBottom: 4 }}>
-        <Typography variant="h5" gutterBottom>
-          Additional Information
-        </Typography>
-        <MemoizedTextarea
-          name="lorebook"
-          value={character.lorebook}
-          onChange={handleChange}
-          label="Lorebook"
-          aria-label="Lorebook"
-          placeholder="Enter lorebook details for the character e.g., Background story, world details, etc."
-          showTokenizer
-        />
-        <MemoizedTextarea
-          name="tags"
-          value={tagsInput.join(', ')}
-          onChange={handleTagsChange}
-          label="Tags"
-          aria-label="Tags"
-          placeholder="Add tags separated by commas e.g., hero, knight, adventure"
-          is_tag
-          maxLength={150}
-          onTagPressed={handleOpenDropdown}
-        />
-      </Box>
+            return (
+              <MemoizedTextarea
+                key={field.name}
+                name={field.name}
+                value={value}
+                onChange={onChange}
+                label={field.label}
+                aria-label={field.label}
+                placeholder={field.placeholder}
+                is_tag={field.is_tag}
+                maxLength={field.maxLength}
+                onTagPressed={
+                  field.name === 'tags' ? handleOpenDropdown : undefined
+                }
+                showTokenizer={
+                  field.name !== 'tags' && field.name !== 'name'
+                }
+              />
+            );
+          })}
+
+          {section.category === 'Basic Information' && (
+            <ImageUploader
+              onImageSelect={handleImageSelect}
+              initialImage={character.profile_image}
+            />
+          )}
+        </Box>
+      ))}
 
       <MemoizedTagsMenu
         anchorEl={anchorEl}
