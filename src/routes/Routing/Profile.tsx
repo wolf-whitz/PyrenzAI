@@ -22,16 +22,18 @@ export function ProfilePage() {
   const { creator_uuid } = useParams<{ creator_uuid: string }>();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [page, setPage] = useState(1);
+  const [refreshCharacters, setRefreshCharacters] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
+  const itemsPerPage = 20;
   const {
     characters = [],
     userData,
     loading,
     isOwner,
     maxPage,
-  } = GetUserCreatedCharacters(creator_uuid, page);
+  } = GetUserCreatedCharacters(creator_uuid, page, itemsPerPage, refreshCharacters);
 
   const handlePreviousPage = () => {
     if (page > 1) {
@@ -43,6 +45,10 @@ export function ProfilePage() {
     if (page < maxPage) {
       setPage(page + 1);
     }
+  };
+
+  const handleCharacterDeleted = () => {
+    setRefreshCharacters(!refreshCharacters);
   };
 
   if (loading) {
@@ -112,7 +118,11 @@ export function ProfilePage() {
             {characters.length > 0 ? (
               characters.map((character) => (
                 <Box key={character.id}>
-                  <CharacterCard character={character} isOwner={isOwner} />
+                  <CharacterCard
+                    character={character}
+                    isOwner={isOwner}
+                    onCharacterDeleted={handleCharacterDeleted}
+                  />
                 </Box>
               ))
             ) : (

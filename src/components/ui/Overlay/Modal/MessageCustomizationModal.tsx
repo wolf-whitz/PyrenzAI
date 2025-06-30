@@ -1,60 +1,64 @@
 import React, { useState } from 'react';
 import { Box, Typography, Modal, Stack } from '@mui/material';
-import { PyrenzBlueButton } from '~/theme';
+import { PyrenzBlueButton, PyrenzMessageBox, PyrenzColorPicker } from '~/theme';
 import { useUserStore } from '~/store';
-import { supabase } from '~/Utility/supabaseClient';
+
 interface MessageCustomizationModalProps {
   open: boolean;
   onClose: () => void;
 }
 
-export function MessageCustomizationModal({
-  open,
-  onClose,
-}: MessageCustomizationModalProps) {
+interface ColorCustomization {
+  userTextColor: string;
+  charTextColor: string;
+  userItalicColor: string;
+  charItalicColor: string;
+  userQuotedColor: string;
+  charQuotedColor: string;
+}
+
+const colorFields: { key: keyof ColorCustomization; label: string }[] = [
+  { key: 'userTextColor', label: 'User Text Color' },
+  { key: 'charTextColor', label: 'Character Text Color' },
+  { key: 'userItalicColor', label: 'User Italic Color' },
+  { key: 'charItalicColor', label: 'Character Italic Color' },
+  { key: 'userQuotedColor', label: 'User Quoted Color' },
+  { key: 'charQuotedColor', label: 'Character Quoted Color' },
+];
+
+export function MessageCustomizationModal({ open, onClose }: MessageCustomizationModalProps) {
   const { customization, setCustomization } = useUserStore();
 
-  const {
-    userTextColor,
-    charTextColor,
-    userItalicColor,
-    charItalicColor,
-    userQuotedColor,
-    charQuotedColor,
-  } = customization || {};
-
-  const [colors, setColors] = useState({
-    userTextColor,
-    charTextColor,
-    userItalicColor,
-    charItalicColor,
-    userQuotedColor,
-    charQuotedColor,
+  const [colors, setColors] = useState<ColorCustomization>({
+    userTextColor: customization?.userTextColor || '#FFFFFF',
+    charTextColor: customization?.charTextColor || '#FFFFFF',
+    userItalicColor: customization?.userItalicColor || '#999999',
+    charItalicColor: customization?.charItalicColor || '#999999',
+    userQuotedColor: customization?.userQuotedColor || '#AAAAAA',
+    charQuotedColor: customization?.charQuotedColor || '#93BEE6',
   });
 
-  const handleColorChange =
-    (colorType: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      setColors({
-        ...colors,
-        [colorType]: e.target.value,
-      });
-    };
-
-  const handleSave = () => {
-    setCustomization(colors);
-    onClose();
+  const handleColorChange = (key: keyof ColorCustomization, value: string) => {
+    const updated = { ...colors, [key]: value };
+    setColors(updated);
+    setCustomization(updated);
   };
 
   const handleReset = () => {
-    setColors({
+    const defaults: ColorCustomization = {
       userTextColor: '#FFFFFF',
       charTextColor: '#FFFFFF',
       userItalicColor: '#999999',
       charItalicColor: '#999999',
       userQuotedColor: '#AAAAAA',
       charQuotedColor: '#93BEE6',
-    });
+    };
+    setColors(defaults);
+    setCustomization(defaults);
   };
+
+  const userAvatarUrl = 'https://api.dicebear.com/8.x/thumbs/svg?seed=UserExample';
+  const charAvatarUrl = 'https://api.dicebear.com/8.x/thumbs/svg?seed=CharExample';
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -76,96 +80,37 @@ export function MessageCustomizationModal({
         </Typography>
 
         <Stack direction="column" spacing={2}>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Typography variant="body1" color="text.secondary">
-              User Text Color:
-            </Typography>
-            <input
-              type="color"
-              value={colors.userTextColor}
-              onChange={handleColorChange('userTextColor')}
-            />
-          </Stack>
-
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Typography variant="body1" color="text.secondary">
-              Character Text Color:
-            </Typography>
-            <input
-              type="color"
-              value={colors.charTextColor}
-              onChange={handleColorChange('charTextColor')}
-            />
-          </Stack>
-
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Typography variant="body1" color="text.secondary">
-              User Italic Color:
-            </Typography>
-            <input
-              type="color"
-              value={colors.userItalicColor}
-              onChange={handleColorChange('userItalicColor')}
-            />
-          </Stack>
-
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Typography variant="body1" color="text.secondary">
-              Character Italic Color:
-            </Typography>
-            <input
-              type="color"
-              value={colors.charItalicColor}
-              onChange={handleColorChange('charItalicColor')}
-            />
-          </Stack>
-
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Typography variant="body1" color="text.secondary">
-              User Quoted Color:
-            </Typography>
-            <input
-              type="color"
-              value={colors.userQuotedColor}
-              onChange={handleColorChange('userQuotedColor')}
-            />
-          </Stack>
-
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Typography variant="body1" color="text.secondary">
-              Character Quoted Color:
-            </Typography>
-            <input
-              type="color"
-              value={colors.charQuotedColor}
-              onChange={handleColorChange('charQuotedColor')}
-            />
-          </Stack>
+          {colorFields.map(({ key, label }) => (
+            <Stack key={key} direction="row" justifyContent="space-between" alignItems="center">
+              <Typography variant="body1" color="text.secondary">
+                {label}:
+              </Typography>
+              <PyrenzColorPicker
+                color={colors[key]}
+                onChange={(color) => handleColorChange(key, color)}
+              />
+            </Stack>
+          ))}
         </Stack>
+
+        <Box sx={{ mt: 2, p: 2, border: '1px solid #ccc', borderRadius: 1 }}>
+          <PyrenzMessageBox
+            dataState="char"
+            charAvatar={charAvatarUrl}
+            displayName="AI Character"
+            sx={{ color: colors.charTextColor }}
+          >
+            Character: Hello!
+          </PyrenzMessageBox>
+          <PyrenzMessageBox
+            dataState="user"
+            userAvatar={userAvatarUrl}
+            displayName="You"
+            sx={{ color: colors.userTextColor, mt: 1 }}
+          >
+            User: Hi there!
+          </PyrenzMessageBox>
+        </Box>
 
         <PyrenzBlueButton
           onClick={handleReset}
@@ -178,7 +123,7 @@ export function MessageCustomizationModal({
         </PyrenzBlueButton>
 
         <PyrenzBlueButton
-          onClick={handleSave}
+          onClick={onClose}
           variant="contained"
           color="primary"
           fullWidth

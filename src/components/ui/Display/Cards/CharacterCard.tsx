@@ -24,11 +24,13 @@ import {
 interface CharacterCardProps {
   character: Character;
   isOwner?: boolean;
+  onCharacterDeleted?: () => void;
 }
 
 export function CharacterCard({
   character,
   isOwner = false,
+  onCharacterDeleted = () => {},
 }: CharacterCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState<Character | null>(null);
@@ -151,6 +153,7 @@ export function CharacterCard({
           onClose={() => setIsModalOpen(false)}
           character={modalData}
           isOwner={isOwner}
+          onCharacterDeleted={onCharacterDeleted}
         />
       )}
     </>

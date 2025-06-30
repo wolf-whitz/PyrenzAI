@@ -16,14 +16,14 @@ export const handleSaveDraft = async (
       return { success: false, error: 'User UUID is missing.' };
     }
 
-    const characterData = {
+    const { user_uuid, ...filteredCharacter } = {
       ...character,
       user_uuid: userUuid,
     };
 
     const { error } = await supabase
       .from('draft_characters')
-      .upsert(characterData);
+      .upsert(filteredCharacter);
 
     if (error) {
       Sentry.captureException(error);

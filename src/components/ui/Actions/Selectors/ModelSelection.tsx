@@ -34,10 +34,11 @@ export function ModelSelection({
   const [popoverContent, setPopoverContent] = useState('');
 
   const handlePopoverOpen = (
-    event: React.MouseEvent<HTMLElement>,
+    event: React.MouseEvent<HTMLElement> | React.TouchEvent<HTMLElement>,
     description: string
   ) => {
-    setAnchorEl(event.currentTarget);
+    event.stopPropagation();
+    setAnchorEl(event.currentTarget as HTMLElement);
     setPopoverContent(description);
   };
 
@@ -77,8 +78,18 @@ export function ModelSelection({
                   </Typography>
                 </Box>
                 <IconButton
-                  onMouseEnter={(e) => handlePopoverOpen(e, option.description)}
-                  onMouseLeave={handlePopoverClose}
+                  onMouseEnter={(e) => {
+                    e.stopPropagation();
+                    handlePopoverOpen(e, option.description);
+                  }}
+                  onMouseLeave={(e) => {
+                    e.stopPropagation();
+                    handlePopoverClose();
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handlePopoverOpen(e, option.description);
+                  }}
                   size="small"
                 >
                   <HelpIcon fontSize="small" />
@@ -91,7 +102,9 @@ export function ModelSelection({
       <Popover
         open={open}
         anchorEl={anchorEl}
-        onClose={handlePopoverClose}
+        onClose={(_, __) => {
+          handlePopoverClose();
+        }}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'left',
@@ -103,6 +116,7 @@ export function ModelSelection({
         sx={{
           pointerEvents: 'none',
         }}
+        disableRestoreFocus
       >
         <Box p={2}>{popoverContent}</Box>
       </Popover>

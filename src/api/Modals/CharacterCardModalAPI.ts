@@ -10,12 +10,14 @@ interface UseCharacterModalApiProps {
   character: Character | null;
   isOwner: boolean;
   onClose: () => void;
+  onCharacterDeleted: () => void;
 }
 
 export const useCharacterModalApi = ({
   character: initialCharacter,
   isOwner,
   onClose,
+  onCharacterDeleted,
 }: UseCharacterModalApiProps) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -143,6 +145,7 @@ export const useCharacterModalApi = ({
       if (!publicDeleteError) {
         showAlert('Character deleted successfully!', 'Success');
         onClose();
+        onCharacterDeleted();
         return;
       }
 
@@ -157,6 +160,7 @@ export const useCharacterModalApi = ({
 
       showAlert('Character deleted successfully!', 'Success');
       onClose();
+      onCharacterDeleted();
     } catch (error) {
       console.error('Error deleting character:', error);
       Sentry.captureException(error);

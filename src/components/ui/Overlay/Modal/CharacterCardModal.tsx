@@ -25,6 +25,7 @@ interface CharacterCardModalProps {
   onClose: () => void;
   character: Character | null;
   isOwner: boolean;
+  onCharacterDeleted: () => void;
 }
 
 const truncateText = (text: string, maxLength: number) => {
@@ -37,6 +38,7 @@ export function CharacterCardModal({
   onClose,
   character,
   isOwner,
+  onCharacterDeleted,
 }: CharacterCardModalProps) {
   const {
     isLoading,
@@ -44,7 +46,7 @@ export function CharacterCardModal({
     handleChatNow,
     handleEditCharacter,
     handleDeleteCharacter,
-  } = useCharacterModalApi({ character, isOwner, onClose });
+  } = useCharacterModalApi({ character, isOwner, onClose, onCharacterDeleted });
 
   const [isExpanded, setIsExpanded] = useState(false);
 

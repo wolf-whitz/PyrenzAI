@@ -18,7 +18,7 @@ interface Plan {
   color?: string;
   backgroundImage?: string;
 }
-
+// To-Do: Change this to another file
 const subscriptionPlans: Plan[] = [
   {
     title: 'Solara (Strawberry)',

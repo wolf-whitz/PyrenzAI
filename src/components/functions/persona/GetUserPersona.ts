@@ -36,13 +36,14 @@ export async function GetUserData(): Promise<ApiResponse | { error: string }> {
       return { error: 'Failed to fetch user data' };
     }
 
+    const userName = response.username;
     const personaName = response.persona_name || '';
-    const avatarUrl = response.user_avatar || '';
-    const aiCustomization = response.ai_customization || {};
-    const customProvider = response.custom_provider || {};
-    const preferredModel = response.preferred_model || 'Default Model';
-    const isAdmin = response.is_admin || false;
-    const subscriptionPlan = response.subscription_data?.tier || 'MELON';
+    const avatarUrl = response.user_avatar;
+    const aiCustomization = response.ai_customization;
+    const customProvider = response.custom_provider;
+    const preferredModel = response.preferred_model || '';
+    const isAdmin = response.is_admin;
+    const subscriptionPlan = response.subscription_data?.tier || '';
 
     const {
       setUserUUID,
@@ -56,7 +57,7 @@ export async function GetUserData(): Promise<ApiResponse | { error: string }> {
     } = useUserStore.getState();
 
     setUserUUID(user_uuid);
-    setUsername(personaName);
+    setUsername(userName);
     setPersonaName(personaName);
     setUserIcon(avatarUrl);
     setIsAdmin(isAdmin);
@@ -105,7 +106,7 @@ export async function GetUserData(): Promise<ApiResponse | { error: string }> {
     const subscriptionData = getSubscriptionData(plan, modelsByPlan);
 
     return {
-      username: personaName,
+      username: userName,
       user_avatar: avatarUrl,
       user_uuid: user_uuid,
       ai_customization: aiCustomization,

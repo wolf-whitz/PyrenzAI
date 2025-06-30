@@ -21,7 +21,8 @@ interface UseUserCreatedCharactersResponse {
 export const GetUserCreatedCharacters = (
   creatorUUID?: string,
   page: number = 1,
-  itemsPerPage: number = 20
+  itemsPerPage: number = 20,
+  refreshCharacters: boolean = false
 ): UseUserCreatedCharactersResponse => {
   const [characters, setCharacters] = useState<Character[]>([]);
   const [userData, setUserData] = useState<User | null>(null);
@@ -110,7 +111,7 @@ export const GetUserCreatedCharacters = (
     };
 
     fetchData();
-  }, [creatorUUID, page, itemsPerPage]);
+  }, [creatorUUID, page, itemsPerPage, refreshCharacters]);
 
   return { characters, userData, loading, isOwner, maxPage };
 };

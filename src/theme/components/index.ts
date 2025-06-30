@@ -12,3 +12,5 @@ export * from './PyrenzRibbon';
 
 export * from './NsfwSwitch';
 export * from './PyrenzDialog';
+
+export * from './PyrenzColorPicker';
