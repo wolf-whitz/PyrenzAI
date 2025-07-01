@@ -54,7 +54,7 @@ export const textareasByCategory: TextareaCategory[] = [
       {
         name: 'model_instructions',
         label: 'Model Instructions',
-        placeholder: 'Provide instructions for the model...',
+        placeholder: 'Provide instructions for the model... (Never use \'you\' or \'your\' always use {{char}})',
         showTokenizer: true
       },
       {
