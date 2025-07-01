@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Box, Typography, Button } from '@mui/material';
+import { Button } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
 import { Textarea } from '@components';
 import { Utils } from '~/Utility/Utility';
-import { createPortal } from 'react-dom';
 import { usePyrenzAlert } from '~/provider';
+import { PyrenzModal, PyrenzModalContent, PyrenzBlueButton } from '~/theme';
 
 interface CreateCharacterCardImageModalProps {
   isModalOpen: boolean;
@@ -60,8 +60,6 @@ export function CreateCharacterCardImageModal({
           imageUrl: string;
         }>('/api/ProfileCardsUpload', data);
 
-        console.log('API Response:', response);
-
         if (response.message === 'Card uploaded') {
           setModalOpen(false);
           setName('');
@@ -86,12 +84,15 @@ export function CreateCharacterCardImageModal({
 
   if (!isModalOpen) return null;
 
-  return createPortal(
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <Box className="bg-black p-6 rounded-lg shadow-lg w-full max-w-md">
-        <Typography variant="h6" className="mb-4 text-white">
+  return (
+    <PyrenzModal
+      open={isModalOpen}
+      onClose={() => setModalOpen(false)}
+    >
+      <PyrenzModalContent>
+        <h2 className="mb-4 text-white">
           Create Character Card Image
-        </Typography>
+        </h2>
         <div
           {...getRootProps()}
           className="border-2 border-dashed border-gray-300 p-4 mb-4 text-center cursor-pointer"
@@ -120,7 +121,7 @@ export function CreateCharacterCardImageModal({
           onChange={(e) => setDescription(e.target.value)}
           className="mb-4"
         />
-        <Button
+        <PyrenzBlueButton
           variant="contained"
           color="primary"
           onClick={handleSubmit}
@@ -128,8 +129,8 @@ export function CreateCharacterCardImageModal({
           fullWidth
         >
           {loading ? 'Uploading...' : 'Submit'}
-        </Button>
-        <Button
+        </PyrenzBlueButton>
+        <PyrenzBlueButton
           variant="outlined"
           color="secondary"
           onClick={() => setModalOpen(false)}
@@ -137,9 +138,8 @@ export function CreateCharacterCardImageModal({
           className="mt-2"
         >
           Cancel
-        </Button>
-      </Box>
-    </div>,
-    document.getElementById('modal-root')!
+        </PyrenzBlueButton>
+      </PyrenzModalContent>
+    </PyrenzModal>
   );
 }

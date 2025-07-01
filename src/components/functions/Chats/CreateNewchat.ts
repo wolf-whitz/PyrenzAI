@@ -51,6 +51,7 @@ export async function CreateNewChat(
       description,
       profile_image,
       lorebook,
+      scenario, // Ensure scenario is included
     } = character;
 
     const { error: insertError } = await supabase.from('chats').insert([
@@ -64,6 +65,7 @@ export async function CreateNewChat(
         name,
         lorebook,
         persona,
+        scenario,
       },
     ]);
 

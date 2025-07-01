@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Box, Typography, Modal, Stack } from '@mui/material';
-import { PyrenzBlueButton, PyrenzMessageBox, PyrenzColorPicker } from '~/theme';
+import { Box, Typography, Stack } from '@mui/material';
+import { PyrenzBlueButton, PyrenzMessageBox, PyrenzColorPicker, PyrenzModal, PyrenzModalContent } from '~/theme';
 import { useUserStore } from '~/store';
 
 interface MessageCustomizationModalProps {
@@ -61,20 +61,8 @@ export function MessageCustomizationModal({ open, onClose }: MessageCustomizatio
   const charAvatarUrl = 'https://api.dicebear.com/8.x/thumbs/svg?seed=CharExample';
 
   return (
-    <Modal open={open} onClose={onClose}>
-      <Box
-        sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: 400,
-          bgcolor: 'background.paper',
-          boxShadow: 24,
-          p: 4,
-          borderRadius: 2,
-        }}
-      >
+    <PyrenzModal open={open} onClose={onClose}>
+      <PyrenzModalContent>
         <Typography variant="h6" gutterBottom>
           Chat Appearance
         </Typography>
@@ -131,7 +119,7 @@ export function MessageCustomizationModal({ open, onClose }: MessageCustomizatio
         >
           Save Changes
         </PyrenzBlueButton>
-      </Box>
-    </Modal>
+      </PyrenzModalContent>
+    </PyrenzModal>
   );
 }

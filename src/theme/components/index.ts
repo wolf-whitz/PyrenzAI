@@ -14,3 +14,4 @@ export * from './NsfwSwitch';
 export * from './PyrenzDialog';
 
 export * from './PyrenzColorPicker';
+export * from './PyrenzModal';

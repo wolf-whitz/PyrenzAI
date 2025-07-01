@@ -1,6 +1,5 @@
-import React from 'react';
-import { Modal, Box, Typography } from '@mui/material';
-import { PyrenzBlueButton } from '~/theme';
+import { Box, Typography } from '@mui/material';
+import { PyrenzBlueButton, PyrenzModal, PyrenzModalContent } from '~/theme';
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -28,25 +27,8 @@ export function PaymentModal({
     : plan?.price_count_yearly;
 
   return (
-    <Modal open={isOpen} onClose={onClose}>
-      <Box
-        sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: '90%',
-          maxWidth: 500,
-          bgcolor: 'rgba(255, 255, 255, 0.1)',
-          boxShadow: 24,
-          p: 4,
-          borderRadius: 2,
-          textAlign: 'center',
-          backdropFilter: 'blur(10px)',
-          WebkitBackdropFilter: 'blur(10px)',
-          border: '1px solid rgba(255, 255, 255, 0.3)',
-        }}
-      >
+    <PyrenzModal open={isOpen} onClose={onClose}>
+      <PyrenzModalContent>
         <Typography variant="h6" gutterBottom>
           Payment for {plan?.title}
         </Typography>
@@ -77,7 +59,7 @@ export function PaymentModal({
             Buy via Ko-fi
           </PyrenzBlueButton>
         </Box>
-      </Box>
-    </Modal>
+      </PyrenzModalContent>
+    </PyrenzModal>
   );
 }

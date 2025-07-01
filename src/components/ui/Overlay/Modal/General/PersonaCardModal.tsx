@@ -3,13 +3,13 @@ import {
   Box,
   Typography,
   CircularProgress,
-  Modal,
   IconButton,
   Menu,
   MenuItem,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { PyrenzModal, PyrenzModalContent } from '~/theme';
 
 interface PersonaCard {
   id: string;
@@ -43,9 +43,7 @@ export function PersonaModal({
   };
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedPersona, setSelectedPersona] = useState<PersonaCard | null>(
-    null
-  );
+  const [selectedPersona, setSelectedPersona] = useState<PersonaCard | null>(null);
 
   const handleMenuOpen = (
     event: React.MouseEvent<HTMLElement>,
@@ -75,21 +73,8 @@ export function PersonaModal({
   };
 
   return (
-    <Modal
-      open={isOpen}
-      onClose={onClose}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-      className="flex justify-center items-center"
-    >
-      <motion.div
-        onClick={(e) => e.stopPropagation()}
-        className="bg-gray-800 rounded-lg p-5 w-96"
-        initial={{ y: '-100vh', scale: 0.8 }}
-        animate={{ y: 0, scale: 1 }}
-        exit={{ y: '100vh', scale: 0.8 }}
-        transition={{ duration: 0.3 }}
-      >
+    <PyrenzModal open={isOpen} onClose={onClose}>
+      <PyrenzModalContent>
         <Box
           display="flex"
           justifyContent="space-between"
@@ -168,7 +153,7 @@ export function PersonaModal({
           <MenuItem onClick={handleSelect}>Select</MenuItem>
           <MenuItem onClick={handleDelete}>Delete</MenuItem>
         </Menu>
-      </motion.div>
-    </Modal>
+      </PyrenzModalContent>
+    </PyrenzModal>
   );
 }

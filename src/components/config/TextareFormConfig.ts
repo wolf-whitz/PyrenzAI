@@ -4,6 +4,7 @@ export interface TextareaField {
   placeholder: string;
   is_tag?: boolean;
   maxLength?: number;
+  showTokenizer?: boolean;
 }
 
 export interface TextareaCategory {
@@ -20,8 +21,9 @@ export const textareasByCategory: TextareaCategory[] = [
         label: 'Name',
         placeholder: 'Enter character name e.g., John Doe',
         maxLength: 50,
-      },
-    ],
+        showTokenizer: true
+      }
+    ]
   },
   {
     category: 'Character Details',
@@ -30,18 +32,21 @@ export const textareasByCategory: TextareaCategory[] = [
         name: 'description',
         label: 'Description',
         placeholder: 'Describe the character...',
+        showTokenizer: false
       },
       {
         name: 'persona',
         label: 'Persona',
         placeholder: 'Define the character\'s persona...',
+        showTokenizer: true
       },
       {
         name: 'scenario',
         label: 'Scenario',
         placeholder: 'Describe a scenario...',
-      },
-    ],
+        showTokenizer: true
+      }
+    ]
   },
   {
     category: 'Interaction Settings',
@@ -50,13 +55,15 @@ export const textareasByCategory: TextareaCategory[] = [
         name: 'model_instructions',
         label: 'Model Instructions',
         placeholder: 'Provide instructions for the model...',
+        showTokenizer: true
       },
       {
         name: 'first_message',
         label: 'First Message',
         placeholder: 'What is the first message...',
-      },
-    ],
+        showTokenizer: true
+      }
+    ]
   },
   {
     category: 'Additional Information',
@@ -65,6 +72,7 @@ export const textareasByCategory: TextareaCategory[] = [
         name: 'lorebook',
         label: 'Lorebook',
         placeholder: 'Enter lorebook details...',
+        showTokenizer: true
       },
       {
         name: 'tags',
@@ -72,7 +80,8 @@ export const textareasByCategory: TextareaCategory[] = [
         placeholder: 'Add tags separated by commas...',
         is_tag: true,
         maxLength: 150,
-      },
-    ],
-  },
+        showTokenizer: false
+      }
+    ]
+  }
 ];

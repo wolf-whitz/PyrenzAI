@@ -1,15 +1,7 @@
 import { useState } from 'react';
 import { useCharacterModalApi } from '@api';
 import { Character } from '@shared-types';
-import {
-  Modal,
-  Backdrop,
-  Fade,
-  Button,
-  Typography,
-  CircularProgress,
-  Box,
-} from '@mui/material';
+import { Button, Typography, CircularProgress, Box } from '@mui/material';
 import { motion } from 'framer-motion';
 import {
   EditOutlined as EditIcon,
@@ -19,6 +11,7 @@ import {
   LockOutlined as LockIcon,
 } from '@mui/icons-material';
 import { ShimmerText } from 'react-shimmer-effects';
+import { PyrenzModal, PyrenzModalContent, PyrenzBlueButton } from '~/theme';
 
 interface CharacterCardModalProps {
   isOpen: boolean;
@@ -57,38 +50,9 @@ export function CharacterCardModal({
   if (!character) return null;
 
   return (
-    <Modal
-      open={isOpen}
-      onClose={onClose}
-      aria-labelledby="character-card-modal"
-      aria-describedby="character-card-modal-description"
-      closeAfterTransition
-      BackdropComponent={Backdrop}
-      BackdropProps={{
-        timeout: 500,
-      }}
-    >
-      <Fade in={isOpen}>
-        <Box
-          sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            backgroundColor: 'rgba(40, 45, 55, 0.5)',
-            backdropFilter: 'blur(16px)',
-            WebkitBackdropFilter: 'blur(16px)',
-            borderRadius: '16px',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.6)',
-            color: 'white',
-            p: 4,
-            display: 'flex',
-            flexDirection: { xs: 'column', sm: 'row' },
-            alignItems: { xs: 'flex-start', sm: 'center' },
-            width: '90%',
-            maxWidth: '600px',
-          }}
-        >
+    <PyrenzModal open={isOpen} onClose={onClose}>
+      <PyrenzModalContent>
+        <Box display="flex" p={2}>
           <motion.img
             src={character.profile_image}
             alt={character.name}
@@ -105,39 +69,38 @@ export function CharacterCardModal({
             animate={{ scale: 1, transition: { delay: 0.1, duration: 0.3 } }}
           />
 
-          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Typography variant="h6" sx={{ mt: 1, fontWeight: 'bold' }}>
+          <Box flex={1} display="flex" flexDirection="column">
+            <Box display="flex" alignItems="center" justifyContent="space-between">
+              <Typography variant="h6" style={{ fontWeight: 'bold' }}>
                 {character.name}
               </Typography>
 
               {isOwner && (
-                <>
-                  <Button
+                <Box>
+                  <PyrenzBlueButton
                     onClick={handleEditCharacter}
                     startIcon={<EditIcon fontSize="small" />}
-                    sx={{ color: 'white', ml: 1, textTransform: 'none' }}
+                    style={{ color: 'white', marginLeft: '8px' }}
                   >
                     Edit
-                  </Button>
-                  <Button
+                  </PyrenzBlueButton>
+                  <PyrenzBlueButton
                     onClick={handleDeleteCharacter}
                     startIcon={<DeleteIcon fontSize="small" />}
-                    sx={{ color: 'white', ml: 1, textTransform: 'none' }}
+                    style={{ color: 'white', marginLeft: '8px' }}
                   >
                     Delete
-                  </Button>
-                </>
+                  </PyrenzBlueButton>
+                </Box>
               )}
             </Box>
 
             <Typography
               variant="caption"
-              color="white"
-              sx={{
-                mt: 0.5,
+              style={{
+                color: 'white',
+                marginTop: '4px',
                 cursor: 'pointer',
-                '&:hover': { textDecoration: 'underline' },
               }}
               onClick={handleCreatorClick}
             >
@@ -146,8 +109,7 @@ export function CharacterCardModal({
 
             <Typography
               variant="body2"
-              color="white"
-              sx={{ mt: 2, opacity: 0.9, cursor: 'pointer' }}
+              style={{ color: 'white', marginTop: '16px', opacity: 0.9, cursor: 'pointer' }}
               onClick={toggleExpand}
             >
               {isExpanded
@@ -158,29 +120,28 @@ export function CharacterCardModal({
                   )}
             </Typography>
 
-            <Box sx={{ display: 'flex', alignItems: 'center', mt: 3 }}>
-              <Button
+            <Box display="flex" alignItems="center" mt={3}>
+              <PyrenzBlueButton
                 variant="contained"
                 onClick={handleChatNow}
                 disabled={isLoading}
-                sx={{
+                style={{
                   flex: 1,
                   backgroundColor: '#3B82F6',
-                  '&:hover': { backgroundColor: '#2563EB' },
                 }}
                 startIcon={isLoading ? <CircularProgress size={20} /> : null}
               >
                 {isLoading ? <ShimmerText line={1} gap={10} /> : 'Chat Now'}
-              </Button>
-              <Box sx={{ display: 'flex', alignItems: 'center', ml: 2 }}>
-                <MessageIcon fontSize="small" sx={{ color: 'white' }} />
-                <Typography variant="caption" sx={{ ml: 0.5 }}>
+              </PyrenzBlueButton>
+              <Box display="flex" alignItems="center" ml={2}>
+                <MessageIcon fontSize="small" style={{ color: 'white' }} />
+                <Typography variant="caption" style={{ marginLeft: '4px' }}>
                   {character.chat_messages_count}
                 </Typography>
               </Box>
             </Box>
 
-            <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+            <Box mt={2} display="flex" flexWrap="wrap" gap={1}>
               {character.is_public !== undefined && (
                 <motion.span
                   className="text-xs font-semibold py-1 px-3 rounded-full flex items-center gap-1"
@@ -226,7 +187,7 @@ export function CharacterCardModal({
             </Box>
           </Box>
         </Box>
-      </Fade>
-    </Modal>
+      </PyrenzModalContent>
+    </PyrenzModal>
   );
 }

@@ -1,18 +1,11 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import {
-  SelectChangeEvent,
-  CircularProgress,
-  Box,
-  Modal,
-  Backdrop,
-  Fade,
-} from '@mui/material';
+import { SelectChangeEvent, CircularProgress, Box } from '@mui/material';
 import { Textarea, AISelectDropdown } from '~/components';
 import { Utils } from '~/Utility/Utility';
 import * as Sentry from '@sentry/react';
 import { usePyrenzAlert } from '~/provider';
-import { PyrenzBlueButton } from '~/theme';
+import { PyrenzBlueButton, PyrenzModal, PyrenzModalContent } from '~/theme';
 
 interface ImportCharacterModalProps {
   onClose: () => void;
@@ -159,72 +152,46 @@ export function ImportCharacterModal({
   };
 
   return (
-    <Modal
-      open={true}
-      onClose={onClose}
-      aria-labelledby="import-character-modal-title"
-      aria-describedby="import-character-modal-description"
-      closeAfterTransition
-      BackdropComponent={Backdrop}
-      BackdropProps={{ timeout: 500 }}
-    >
-      <Fade in={true}>
-        <Box
-          sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: '90vw',
-            maxWidth: 600,
-            p: 4,
-            borderRadius: '16px',
-            backgroundColor: 'rgba(255, 255, 255, 0.05)',
-            backdropFilter: 'blur(12px)',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.37)',
-            color: 'white',
-          }}
+    <PyrenzModal open={true} onClose={onClose}>
+      <PyrenzModalContent>
+        <motion.div
+          initial={{ scale: 0.8 }}
+          animate={{ scale: 1 }}
+          exit={{ scale: 0.8 }}
         >
-          <motion.div
-            initial={{ scale: 0.8 }}
-            animate={{ scale: 1 }}
-            exit={{ scale: 0.8 }}
-          >
-            <div className="mt-4">
-              <AISelectDropdown
-                options={aiOptions}
-                selectedAI={selectedAI}
-                placeholder={placeholder}
-                onAISelectionChange={handleAISelectionChange}
-              />
-              <Textarea
-                label="Import a character using link"
-                value={link}
-                onChange={handleLinkChange}
-                className="mt-2 w-full"
-                placeholder={placeholder || 'Enter link here'}
-                maxLength={100}
-                require_link={true}
-              />
-            </div>
-            <div className="flex justify-end mt-4 space-x-2">
-              <PyrenzBlueButton onClick={onClose}>Cancel</PyrenzBlueButton>
-              <PyrenzBlueButton
-                variant="contained"
-                onClick={handleImport}
-                disabled={loading || !link || !selectedAI}
-              >
-                {loading ? (
-                  <CircularProgress size={24} sx={{ color: 'white' }} />
-                ) : (
-                  'Import'
-                )}
-              </PyrenzBlueButton>
-            </div>
-          </motion.div>
-        </Box>
-      </Fade>
-    </Modal>
+          <div className="mt-4">
+            <AISelectDropdown
+              options={aiOptions}
+              selectedAI={selectedAI}
+              placeholder={placeholder}
+              onAISelectionChange={handleAISelectionChange}
+            />
+            <Textarea
+              label="Import a character using link"
+              value={link}
+              onChange={handleLinkChange}
+              className="mt-2 w-full"
+              placeholder={placeholder || 'Enter link here'}
+              maxLength={100}
+              require_link={true}
+            />
+          </div>
+          <div className="flex justify-end mt-4 space-x-2">
+            <PyrenzBlueButton onClick={onClose}>Cancel</PyrenzBlueButton>
+            <PyrenzBlueButton
+              variant="contained"
+              onClick={handleImport}
+              disabled={loading || !link || !selectedAI}
+            >
+              {loading ? (
+                <CircularProgress size={24} sx={{ color: 'white' }} />
+              ) : (
+                'Import'
+              )}
+            </PyrenzBlueButton>
+          </div>
+        </motion.div>
+      </PyrenzModalContent>
+    </PyrenzModal>
   );
 }

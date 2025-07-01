@@ -2,21 +2,19 @@ import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
-  Modal,
   CircularProgress,
   Card,
   CardMedia,
   CardContent,
   Skeleton,
   Button,
-  Backdrop,
-  Fade,
   IconButton,
 } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 import { supabase } from '~/Utility/supabaseClient';
 import * as Sentry from '@sentry/react';
 import { usePyrenzAlert } from '~/provider';
+import { PyrenzModal, PyrenzModalContent, PyrenzBlueButton } from '~/theme';
 
 interface CharacterCard {
   id: string;
@@ -109,34 +107,51 @@ export function CharacterCardImageModal({
   if (!isModalOpen) return null;
 
   return (
-    <Modal
-      open={isModalOpen}
-      onClose={() => setModalOpen(false)}
-      closeAfterTransition
-      BackdropComponent={Backdrop}
-      BackdropProps={{
-        timeout: 500,
-      }}
-    >
-      <Fade in={isModalOpen}>
-        <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl h-full bg-gray-900 text-white shadow-xl rounded-xl p-6 overflow-y-auto">
+    <PyrenzModal open={isModalOpen} onClose={() => setModalOpen(false)}>
+      <PyrenzModalContent>
+        <Box sx={{
+          position: 'relative',
+          width: '100%',
+          maxWidth: '4xl',
+          height: '100%',
+          bgcolor: 'gray.900',
+          color: 'white',
+          p: 6,
+          overflowY: 'auto'
+        }}>
           <IconButton
             onClick={() => setModalOpen(false)}
-            className="absolute top-4 right-4 p-2 bg-gray-800 rounded-full"
+            sx={{
+              position: 'absolute',
+              top: 16,
+              right: 16,
+              bgcolor: 'gray.800',
+              borderRadius: '50%',
+              p: 2
+            }}
           >
-            <CloseIcon className="text-white" />
+            <CloseIcon sx={{ color: 'white' }} />
           </IconButton>
           <Typography
             variant="h6"
-            className="text-center text-lg font-semibold mb-6"
+            sx={{
+              textAlign: 'center',
+              fontSize: '1.125rem',
+              fontWeight: 'semibold',
+              mb: 6
+            }}
           >
             Choose a Character Card
           </Typography>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <Box sx={{
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: '1fr 1fr 1fr' },
+            gap: 4
+          }}>
             {loading
               ? Array.from(new Array(5)).map((_, index) => (
-                  <Card key={index} className="bg-gray-800 text-white">
+                  <Card key={index} sx={{ bgcolor: 'gray.800', color: 'white' }}>
                     <Skeleton variant="rectangular" height={100} />
                     <CardContent>
                       <Skeleton variant="text" height={18} width="80%" />
@@ -147,7 +162,11 @@ export function CharacterCardImageModal({
               : characterCards.map((card) => (
                   <Card
                     key={card.id}
-                    className="bg-gray-800 text-white cursor-pointer"
+                    sx={{
+                      bgcolor: 'gray.800',
+                      color: 'white',
+                      cursor: 'pointer'
+                    }}
                     onClick={() => handleCardClick(card.card_image)}
                   >
                     <CardMedia
@@ -155,7 +174,7 @@ export function CharacterCardImageModal({
                       height="75"
                       image={card.card_image}
                       alt={card.card_name}
-                      className="object-cover"
+                      sx={{ objectFit: 'cover' }}
                       onError={() => handleImageError(card.id)}
                     />
                     <CardContent>
@@ -168,27 +187,27 @@ export function CharacterCardImageModal({
                     </CardContent>
                   </Card>
                 ))}
-          </div>
+          </Box>
 
           {hasMore && (
-            <div className="flex justify-center mt-4">
-              <Button
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+              <PyrenzBlueButton
                 variant="contained"
                 color="primary"
                 onClick={handleLoadMore}
                 disabled={loadMoreLoading}
-                className="bg-blue-600 hover:bg-blue-500 transition-colors"
+                sx={{ bgcolor: 'blue.600', '&:hover': { bgcolor: 'blue.500' } }}
               >
                 {loadMoreLoading ? (
-                  <CircularProgress size={24} className="text-white" />
+                  <CircularProgress size={24} sx={{ color: 'white' }} />
                 ) : (
                   'Show More'
                 )}
-              </Button>
-            </div>
+              </PyrenzBlueButton>
+            </Box>
           )}
         </Box>
-      </Fade>
-    </Modal>
+      </PyrenzModalContent>
+    </PyrenzModal>
   );
 }

@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { Modal, Box, Typography } from '@mui/material';
 import { Textarea } from '@components';
 import { supabase } from '~/Utility/supabaseClient';
 import { GetUserUUID } from '~/components/functions';
-import { PyrenzBlueButton } from '~/theme';
+import { PyrenzBlueButton, PyrenzModal, PyrenzModalContent } from '~/theme';
 import { usePyrenzAlert } from '~/provider';
 
 interface CreateProviderModalProps {
@@ -49,34 +48,17 @@ export function CreateProviderModal({
   };
 
   return (
-    <Modal
+    <PyrenzModal
       open={open}
       onClose={onClose}
       aria-labelledby="create-provider-modal-title"
       aria-describedby="create-provider-modal-description"
     >
-      <Box
-        sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: 400,
-          maxHeight: '80vh',
-          bgcolor: 'background.paper',
-          boxShadow: 24,
-          p: 4,
-          overflowY: 'auto',
-        }}
-      >
-        <Typography
-          id="create-provider-modal-title"
-          variant="h6"
-          component="h2"
-        >
+      <PyrenzModalContent>
+        <h2 id="create-provider-modal-title">
           Create New Provider
-        </Typography>
-        <Box sx={{ mt: 2 }}>
+        </h2>
+        <div style={{ marginTop: '16px' }}>
           <Textarea
             label="Provider Name"
             value={providerName}
@@ -97,9 +79,9 @@ export function CreateProviderModal({
             value={providerDescription}
             onChange={(e) => setProviderDescription(e.target.value)}
           />
-        </Box>
-        <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
-          <PyrenzBlueButton onClick={onClose} sx={{ mr: 1 }}>
+        </div>
+        <div style={{ marginTop: '16px', display: 'flex', justifyContent: 'flex-end' }}>
+          <PyrenzBlueButton onClick={onClose} style={{ marginRight: '8px' }}>
             Cancel
           </PyrenzBlueButton>
           <PyrenzBlueButton
@@ -109,8 +91,8 @@ export function CreateProviderModal({
           >
             Submit
           </PyrenzBlueButton>
-        </Box>
-      </Box>
-    </Modal>
+        </div>
+      </PyrenzModalContent>
+    </PyrenzModal>
   );
 }

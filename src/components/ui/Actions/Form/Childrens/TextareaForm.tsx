@@ -81,7 +81,6 @@ export function TextareaForm() {
   useEffect(() => {
     const fieldsToCount = [
       character.name,
-      character.description,
       character.persona,
       character.model_instructions,
       character.scenario,
@@ -98,7 +97,6 @@ export function TextareaForm() {
     setTokenTotal(totalTokens);
   }, [
     character.name,
-    character.description,
     character.persona,
     character.model_instructions,
     character.scenario,
@@ -138,9 +136,7 @@ export function TextareaForm() {
                 onTagPressed={
                   field.name === 'tags' ? handleOpenDropdown : undefined
                 }
-                showTokenizer={
-                  field.name !== 'tags' && field.name !== 'name'
-                }
+                showTokenizer={field.showTokenizer}
               />
             );
           })}
@@ -153,7 +149,6 @@ export function TextareaForm() {
           )}
         </Box>
       ))}
-
       <MemoizedTagsMenu
         anchorEl={anchorEl}
         onClose={handleCloseDropdown}
