@@ -14,3 +14,4 @@ export * from './Profile';
 export * from './Subscription';
 
 export * from './Setting/Setting';
+export * from './AdminPanel'

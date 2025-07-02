@@ -1,4 +1,3 @@
-import React from 'react';
 import { Route } from 'react-router-dom';
 import {
   Home,
@@ -12,6 +11,7 @@ import {
   ContentPolicy,
   DocPage,
   Policy,
+  AdminPanel
 } from './Routing';
 
 export const AppRoutes = (
@@ -30,6 +30,7 @@ export const AppRoutes = (
     <Route path="/ContentPolicy" element={<ContentPolicy />} />
     <Route path="/docs/:doc_name" element={<DocPage />} />
     <Route path="/docs" element={<DocPage />} />
+    <Route path="/Admin" element={<AdminPanel />} />
     <Route path="*" element={<ErrorPage />} />
   </>
 );

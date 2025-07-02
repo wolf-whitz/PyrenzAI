@@ -14,7 +14,6 @@ interface PersonaCard {
 export const usePersonaAPI = () => {
   const [personaData, setPersonaData] = useState<PersonaCard[]>([]);
   const [loading, setLoading] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [userUuid, setUserUuid] = useState<string | null>(null);
 
   const fetchUserUuid = useCallback(async () => {
@@ -29,8 +28,6 @@ export const usePersonaAPI = () => {
       if ('error' in userData) {
         throw new Error(userData.error);
       }
-
-      setIsAdmin(userData.is_admin || false);
     } catch (error) {
       console.error('Failed to fetch user UUID or data', error);
       usePyrenzAlert()('Failed to fetch user UUID or data.', 'alert');
@@ -204,7 +201,6 @@ export const usePersonaAPI = () => {
   return {
     personaData,
     loading,
-    isAdmin,
     userUuid,
     fetchUserUuid,
     fetchPersona,

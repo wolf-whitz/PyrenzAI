@@ -14,7 +14,7 @@ import i18n from '~/provider/TranslationProvider';
 import { SentryProvider } from './provider/SentryProvider';
 import * as Sentry from '@sentry/react';
 
-import ErrorBoundary from './routes/ErrorBoundary';
+import { ErrorBoundary } from './routes/ErrorBoundary';
 
 import { AlertProvider } from '~/provider';
 import { HelmetProvider } from 'react-helmet-async';

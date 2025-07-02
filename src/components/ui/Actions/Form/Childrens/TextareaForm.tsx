@@ -5,45 +5,18 @@ import { useCharacterStore } from '~/store';
 import { Character } from '@shared-types';
 import llamaTokenizer from 'llama-tokenizer-js';
 import { Box, Typography } from '@mui/material';
-import { supabase } from '~/Utility/supabaseClient';
-import { v4 as uuidv4 } from 'uuid';
-import * as Sentry from '@sentry/react';
+import { uploadImage } from '~/Utility/UploadImage';
 import { textareasByCategory } from '@components';
+import { usePyrenzAlert } from '~/provider';
 
 const MemoizedTextarea = React.memo(Textarea);
 const MemoizedTagsMenu = React.memo(TagsMenu);
-
-async function uploadImage(file: File): Promise<string | null> {
-  try {
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${uuidv4()}.${fileExt}`;
-    const filePath = `character-image/${fileName}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from('character-image')
-      .upload(filePath, file);
-
-    if (uploadError) {
-      throw uploadError;
-    }
-
-    const { data: urlData } = supabase
-      .storage
-      .from('character-image')
-      .getPublicUrl(filePath);
-
-    return urlData.publicUrl;
-  } catch (error) {
-    console.error('Error uploading image:', error);
-    Sentry.captureException(error);
-    return null;
-  }
-}
 
 export function TextareaForm() {
   const character = useCharacterStore((state) => state) as Character;
   const setCharacter = useCharacterStore((state) => state.setCharacter);
   const setTokenTotal = useCharacterStore((state) => state.setTokenTotal);
+  const showAlert = usePyrenzAlert();
 
   const {
     anchorEl,
@@ -59,9 +32,11 @@ export function TextareaForm() {
 
   const handleImageSelect = async (file: File | null) => {
     if (!file) return;
-    const publicUrl = await uploadImage(file);
-    if (publicUrl) {
-      setCharacter({ profile_image: publicUrl });
+    const { url, error } = await uploadImage('character-image', file);
+    if (error) {
+      showAlert(error, 'alert');
+    } else if (url) {
+      setCharacter({ profile_image: url });
     }
   };
 

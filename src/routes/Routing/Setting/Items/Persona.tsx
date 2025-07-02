@@ -1,12 +1,7 @@
 import { PyrenzBlueButton } from '~/theme';
 import React, { useEffect, useState, useCallback } from 'react';
 import { Box, Typography } from '@mui/material';
-import {
-  CreatePersonaModal,
-  CreateCharacterCardImageModal,
-  CharacterCardImageModal,
-  PersonaList,
-} from '@components';
+import { CreatePersonaModal, PersonaList } from '@components';
 import { usePersonaAPI } from '@api';
 
 interface Persona {
@@ -20,7 +15,6 @@ export function Persona() {
   const {
     personaData,
     loading,
-    isAdmin,
     userUuid,
     fetchUserUuid,
     fetchPersona,
@@ -33,12 +27,6 @@ export function Persona() {
   const [isModalOpen, setModalOpen] = useState(false);
   const [newPersonaName, setNewPersonaName] = useState('');
   const [newPersonaDescription, setNewPersonaDescription] = useState('');
-  const [
-    isCreateCharacterCardImageModalOpen,
-    setCreateCharacterCardImageModalOpen,
-  ] = useState(false);
-  const [isCharacterCardImageModalOpen, setCharacterCardImageModalOpen] =
-    useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [editingPersona, setEditingPersona] = useState<Persona | null>(null);
 
@@ -62,12 +50,7 @@ export function Persona() {
       setSelectedImage,
       setModalOpen
     );
-  }, [
-    newPersonaName,
-    newPersonaDescription,
-    selectedImage,
-    handleCreatePersona,
-  ]);
+  }, [newPersonaName, newPersonaDescription, selectedImage, handleCreatePersona]);
 
   const editPersona = useCallback(async () => {
     if (!editingPersona) return;
@@ -82,13 +65,7 @@ export function Persona() {
       setModalOpen,
       setEditingPersona
     );
-  }, [
-    editingPersona,
-    newPersonaName,
-    newPersonaDescription,
-    selectedImage,
-    handleEditPersona,
-  ]);
+  }, [editingPersona, newPersonaName, newPersonaDescription, selectedImage, handleEditPersona]);
 
   const handleDelete = useCallback(async () => {
     if (!editingPersona) return;
@@ -99,11 +76,11 @@ export function Persona() {
 
   if (!userUuid) {
     return (
-      <div className="flex flex-col gap-4">
-        <Typography variant="h6" className="text-white text-center">
+      <Box display="flex" flexDirection="column" gap={2}>
+        <Typography variant="h6" color="white" textAlign="center">
           Please log in to access your account settings.
         </Typography>
-      </div>
+      </Box>
     );
   }
 
@@ -133,8 +110,8 @@ export function Persona() {
   }));
 
   return (
-    <div className="flex flex-col gap-4">
-      <Typography variant="h6" className="text-white text-center">
+    <Box display="flex" flexDirection="column" gap={2}>
+      <Typography variant="h6" color="white" textAlign="center">
         My Personas
       </Typography>
 
@@ -145,31 +122,11 @@ export function Persona() {
           setEditingPersona(null);
           setModalOpen(true);
         }}
-        className="mx-auto mt-4 px-3 py-1 text-sm normal-case"
+        sx={{ mx: 'auto', mt: 2, px: 2, py: 1 }}
         size="small"
       >
         Create New Persona
       </PyrenzBlueButton>
-
-      {isAdmin && (
-        <PyrenzBlueButton
-          onClick={() => setCreateCharacterCardImageModalOpen(true)}
-          className="mx-auto mt-4 px-3 py-1 text-sm normal-case"
-          size="small"
-        >
-          Create Image Cards
-        </PyrenzBlueButton>
-      )}
-
-      {isAdmin && (
-        <PyrenzBlueButton
-          onClick={() => setCharacterCardImageModalOpen(true)}
-          className="mx-auto mt-4 px-3 py-1 text-sm normal-case"
-          size="small"
-        >
-          View Image Cards
-        </PyrenzBlueButton>
-      )}
 
       <CreatePersonaModal
         isModalOpen={isModalOpen}
@@ -179,28 +136,11 @@ export function Persona() {
         newPersonaDescription={newPersonaDescription}
         setNewPersonaDescription={setNewPersonaDescription}
         handleCreatePersona={editingPersona ? editPersona : createPersona}
-        setCharacterCardImageModalOpen={setCharacterCardImageModalOpen}
         selectedImage={selectedImage}
         setSelectedImage={setSelectedImage}
         isEditing={!!editingPersona}
         onDelete={editingPersona ? handleDelete : undefined}
       />
-
-      {isCreateCharacterCardImageModalOpen && (
-        <CreateCharacterCardImageModal
-          isModalOpen={isCreateCharacterCardImageModalOpen}
-          setModalOpen={setCreateCharacterCardImageModalOpen}
-        />
-      )}
-
-      {isCharacterCardImageModalOpen && (
-        <CharacterCardImageModal
-          isModalOpen={isCharacterCardImageModalOpen}
-          setModalOpen={setCharacterCardImageModalOpen}
-          setCreatePersonaModalOpen={setModalOpen}
-          setSelectedImage={setSelectedImage}
-        />
-      )}
-    </div>
+    </Box>
   );
 }

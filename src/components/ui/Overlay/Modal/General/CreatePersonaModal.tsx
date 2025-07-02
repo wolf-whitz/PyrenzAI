@@ -12,8 +12,7 @@ import {
 import { Textarea, Dropzone } from '@components';
 import { PyrenzBlueButton, PyrenzModal, PyrenzModalContent } from '~/theme';
 import { usePyrenzAlert } from '~/provider';
-import { supabase } from '~/Utility/supabaseClient';
-import { v4 as uuidv4 } from 'uuid';
+import { uploadImage } from '~/Utility/UploadImage';
 
 interface CreatePersonaModalProps {
   isModalOpen: boolean;
@@ -23,7 +22,6 @@ interface CreatePersonaModalProps {
   newPersonaDescription: string;
   setNewPersonaDescription: (description: string) => void;
   handleCreatePersona: () => void;
-  setCharacterCardImageModalOpen: (open: boolean) => void;
   selectedImage: string | null;
   setSelectedImage: (image: string | null) => void;
   isEditing: boolean;
@@ -38,7 +36,6 @@ export function CreatePersonaModal({
   newPersonaDescription,
   setNewPersonaDescription,
   handleCreatePersona,
-  setCharacterCardImageModalOpen,
   selectedImage,
   setSelectedImage,
   isEditing,
@@ -55,36 +52,19 @@ export function CreatePersonaModal({
   const onDrop = async (acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
       const file = acceptedFiles[0];
-
-      if (file.size > 1024 * 1024) {
-        showAlert('File is too large. Maximum size is 1MB.', 'alert');
-        return;
-      }
-
       const previewUrl = URL.createObjectURL(file);
       setPreviewImage(previewUrl);
 
-      const fileName = `persona-image-${uuidv4()}.png`;
-
       setIsCreating(true);
-      const { data, error } = await supabase.storage
-        .from('persona-image')
-        .upload(fileName, file, {
-          contentType: 'image/png',
-        });
+      const { url, error } = await uploadImage('persona-image', file);
+      setIsCreating(false);
 
       if (error) {
-        showAlert('Failed to upload image to Supabase Storage.', 'alert');
-        console.error('Error uploading image:', error);
-      } else {
-        const publicUrl = supabase.storage
-          .from('persona-image')
-          .getPublicUrl(fileName).data.publicUrl;
-
-        setSelectedImage(publicUrl);
-        setPreviewImage(publicUrl);
+        showAlert(error, 'alert');
+      } else if (url) {
+        setSelectedImage(url);
+        setPreviewImage(url);
       }
-      setIsCreating(false);
     }
   };
 
@@ -103,13 +83,6 @@ export function CreatePersonaModal({
           className="mb-4"
           initialImage={previewImage}
         />
-
-        <PyrenzBlueButton
-          onClick={() => setCharacterCardImageModalOpen(true)}
-          className="mb-4 w-full"
-        >
-          Choose Premade Images
-        </PyrenzBlueButton>
 
         <Textarea
           label="Name"
