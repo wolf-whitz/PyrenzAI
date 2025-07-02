@@ -13,9 +13,11 @@ export async function fetchCharacters(
   itemsPerPage: number = 10,
   search?: string,
   setMaxPage?: (maxPage: number) => void,
-  showNsfw?: boolean,
+  showNsfw: boolean = true,
   genderFilter?: string,
-  tags?: string[]
+  tags?: string[],
+  creatorUUID?: string,
+  sortBy: 'created_at' | 'chat_messages_count' = 'chat_messages_count'
 ): Promise<FetchCharactersResponse> {
   if (requestType !== 'character') {
     throw new Error(`Invalid request_type: ${requestType}`);
@@ -26,24 +28,27 @@ export async function fetchCharacters(
   const { data, error } = await supabase.rpc('get_filtered_characters', {
     page,
     items_per_page: itemsPerPage,
-    search: search && search.trim() !== '' ? search : null,
-    show_nsfw: showNsfw,
-    blocked_tags: blocked_tags.length > 0 ? blocked_tags : [],
-    gender_filter: genderFilter,
-    tag: tags && tags.length > 0 ? tags : [],
+    search: search?.trim() || null,
+    show_nsfw: showNsfw ?? true,
+    blocked_tags: blocked_tags?.length ? blocked_tags : [],
+    gender_filter: genderFilter?.trim() || null,
+    tag: tags?.length ? tags : [],
+    creatoruuid: creatorUUID?.trim() || null,
+    sort_by: sortBy,
   });
 
   if (error) {
     throw new Error(`Supabase RPC error: ${error.message}`);
   }
 
-  const rawCharacters = data.characters ?? [];
+  const rawCharacters = data?.characters ?? [];
+
   const characters: Character[] = rawCharacters.map((char: any) => ({
     ...char,
     id: String(char.id),
   }));
 
-  if (setMaxPage && data.max_page) {
+  if (setMaxPage && data?.max_page != null) {
     setMaxPage(data.max_page);
   }
 
@@ -59,9 +64,7 @@ export async function fetchCharacters(
     selectedCharacter =
       topCharacters.length === 1
         ? topCharacters[0]
-        : topCharacters.sort((a, b) =>
-            String(a.id).localeCompare(String(b.id))
-          )[0];
+        : topCharacters.sort((a, b) => String(a.id).localeCompare(String(b.id)))[0];
   }
 
   return {

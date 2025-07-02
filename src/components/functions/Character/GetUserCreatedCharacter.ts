@@ -22,7 +22,8 @@ export const GetUserCreatedCharacters = (
   creatorUUID?: string,
   page: number = 1,
   itemsPerPage: number = 20,
-  refreshCharacters: boolean = false
+  refreshCharacters: boolean = false,
+  sortBy: 'created_at' | 'chat_messages_count' = 'chat_messages_count'
 ): UseUserCreatedCharactersResponse => {
   const [characters, setCharacters] = useState<Character[]>([]);
   const [userData, setUserData] = useState<User | null>(null);
@@ -33,6 +34,7 @@ export const GetUserCreatedCharacters = (
   useEffect(() => {
     const fetchCharacters = async (uuid: string) => {
       const { show_nsfw } = useUserStore.getState();
+
       const { data, error } = await supabase
         .rpc('get_filtered_characters', {
           search: null,
@@ -43,6 +45,7 @@ export const GetUserCreatedCharacters = (
           creatoruuid: uuid,
           items_per_page: itemsPerPage,
           page,
+          sort_by: sortBy,
         })
         .single<FilteredCharactersResponse>();
 
@@ -111,7 +114,7 @@ export const GetUserCreatedCharacters = (
     };
 
     fetchData();
-  }, [creatorUUID, page, itemsPerPage, refreshCharacters]);
+  }, [creatorUUID, page, itemsPerPage, refreshCharacters, sortBy]);
 
   return { characters, userData, loading, isOwner, maxPage };
 };
