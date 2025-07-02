@@ -6,7 +6,7 @@ import { PyrenzBlueButton } from '~/theme';
 import { usePyrenzAlert } from '~/provider';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '~/store';
-import { v4 as uuidv4 } from 'uuid';
+import { uploadImage } from '~/Utility/UploadImage';
 
 export function Profile() {
   const [username, setUsername] = useState<string>('');
@@ -36,9 +36,7 @@ export function Profile() {
           console.error('Error fetching user data:', error);
         } else {
           setUsername(data.username || '');
-          if (data.avatar_url) {
-            setImageUrl(data.avatar_url);
-          }
+          setImageUrl(data.avatar_url);
           if (data.blocked_tags) {
             setTagsInput(data.blocked_tags.join(', '));
           }
@@ -67,49 +65,25 @@ export function Profile() {
     setImageUrl(URL.createObjectURL(file));
   };
 
-  const uploadImage = async (file: File) => {
-    try {
-      const uniqueFileName = uuidv4();
-      const filePath = `user-profile/${uniqueFileName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('user-profile')
-        .upload(filePath, file);
-
-      if (uploadError) {
-        throw new Error(
-          `Error uploading profile image: ${uploadError.message}`
-        );
-      }
-
-      const { data: urlData } = supabase.storage
-        .from('user-profile')
-        .getPublicUrl(filePath);
-
-      return urlData.publicUrl;
-    } catch (error) {
-      showAlert(
-        `Error during image upload: ${error instanceof Error ? error.message : String(error)}`,
-        'alert'
-      );
-      throw error;
-    }
-  };
-
   const handleSubmit = async () => {
     try {
       setIsLoading(true);
       const updateData: {
         username: string;
-        avatar_url?: string;
+        avatar_url?: string | null;
         blocked_tags?: string[];
       } = {
         username,
+        avatar_url: imageUrl,
       };
 
       if (selectedImage) {
-        const uploadedImageUrl = await uploadImage(selectedImage);
-        updateData.avatar_url = uploadedImageUrl;
+        const { url, error } = await uploadImage('user-profile', selectedImage);
+        if (error) {
+          showAlert(error, 'alert');
+          return;
+        }
+        updateData.avatar_url = url;
       }
 
       const tagsArray = tagsInput
@@ -153,7 +127,7 @@ export function Profile() {
         </Typography>
         <ImageUploader
           onImageSelect={handleImageSelect}
-          initialImage={imageUrl}
+          initialImage={imageUrl as string | undefined}
         />
       </Box>
 
