@@ -1,22 +1,29 @@
-import React, { useState, useEffect, ChangeEvent } from 'react';
-import { ImageUploader, Textarea, TagsMenu } from '@components';
-import { useTextareaFormAPI } from '@api';
-import { useCharacterStore } from '~/store';
-import { Character } from '@shared-types';
-import llamaTokenizer from 'llama-tokenizer-js';
-import { Box, Typography } from '@mui/material';
-import { uploadImage } from '~/Utility/UploadImage';
-import { textareasByCategory } from '@components';
-import { usePyrenzAlert } from '~/provider';
+import React, {
+  useState,
+  useEffect,
+  ChangeEvent,
+  useMemo,
+  useRef,
+} from 'react'
+import { ImageUploader, Textarea, TagsMenu } from '@components'
+import { useTextareaFormAPI } from '@api'
+import { useCharacterStore } from '~/store'
+import { Character } from '@shared-types'
+import llamaTokenizer from 'llama-tokenizer-js'
+import { Box, Typography } from '@mui/material'
+import { uploadImage } from '~/Utility/UploadImage'
+import { textareasByCategory } from '@components'
+import { usePyrenzAlert } from '~/provider'
+import debounce from 'lodash.debounce'
 
-const MemoizedTextarea = React.memo(Textarea);
-const MemoizedTagsMenu = React.memo(TagsMenu);
+const MemoizedTextarea = React.memo(Textarea)
+const MemoizedTagsMenu = React.memo(TagsMenu)
 
 export function TextareaForm() {
-  const character = useCharacterStore((state) => state) as Character;
-  const setCharacter = useCharacterStore((state) => state.setCharacter);
-  const setTokenTotal = useCharacterStore((state) => state.setTokenTotal);
-  const showAlert = usePyrenzAlert();
+  const character = useCharacterStore((state) => state) as Character
+  const setCharacter = useCharacterStore((state) => state.setCharacter)
+  const setTokenTotal = useCharacterStore((state) => state.setTokenTotal)
+  const showAlert = usePyrenzAlert()
 
   const {
     anchorEl,
@@ -24,34 +31,43 @@ export function TextareaForm() {
     handleCloseDropdown,
     handleTagClick,
     handleChange,
-  } = useTextareaFormAPI();
+  } = useTextareaFormAPI()
 
-  const [tagsInput, setTagsInput] = useState<string[]>(
-    character.tags || []
-  );
+  const [tagsInputRaw, setTagsInputRaw] = useState<string>(
+    (character.tags || []).join(', ')
+  )
 
-  const handleImageSelect = async (file: File | null) => {
-    if (!file) return;
-    const { url, error } = await uploadImage('character-image', file);
-    if (error) {
-      showAlert(error, 'alert');
-    } else if (url) {
-      setCharacter({ profile_image: url });
-    }
-  };
+  const debouncedSetCharacter = useMemo(
+    () =>
+      debounce((tagsArray: string[]) => {
+        setCharacter({ tags: tagsArray })
+      }, 300),
+    [setCharacter]
+  )
 
   const handleTagsChange = (
     e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => {
-    const value = e.target.value;
-    const tagsArray = value
-      .split(',')
-      .map((tag) => tag.trim())
-      .filter((tag) => tag.length > 0);
+    const raw = e.target.value
+    setTagsInputRaw(raw)
 
-    setTagsInput(tagsArray);
-    setCharacter({ tags: tagsArray });
-  };
+    const tagsArray = raw
+      .split(/[\s,]+/)
+      .map((tag) => tag.trim())
+      .filter((tag) => tag.length > 0)
+
+    debouncedSetCharacter(tagsArray)
+  }
+
+  const handleImageSelect = async (file: File | null) => {
+    if (!file) return
+    const { url, error } = await uploadImage('character-image', file)
+    if (error) {
+      showAlert(error, 'alert')
+    } else if (url) {
+      setCharacter({ profile_image: url })
+    }
+  }
 
   useEffect(() => {
     const fieldsToCount = [
@@ -61,15 +77,15 @@ export function TextareaForm() {
       character.scenario,
       character.first_message,
       character.lorebook,
-    ];
+    ]
 
     const totalTokens = fieldsToCount.reduce((sum, field) => {
-      if (!field || typeof field !== 'string') return sum;
-      const tokens = llamaTokenizer.encode(field);
-      return sum + tokens.length;
-    }, 0);
+      if (!field || typeof field !== 'string') return sum
+      const tokens = llamaTokenizer.encode(field)
+      return sum + tokens.length
+    }, 0)
 
-    setTokenTotal(totalTokens);
+    setTokenTotal(totalTokens)
   }, [
     character.name,
     character.persona,
@@ -78,7 +94,7 @@ export function TextareaForm() {
     character.first_message,
     character.lorebook,
     setTokenTotal,
-  ]);
+  ])
 
   return (
     <>
@@ -91,11 +107,11 @@ export function TextareaForm() {
           {section.fields.map((field) => {
             const value =
               field.name === 'tags'
-                ? tagsInput.join(', ')
-                : (character as any)[field.name] || '';
+                ? tagsInputRaw
+                : (character as any)[field.name] || ''
 
             const onChange =
-              field.name === 'tags' ? handleTagsChange : handleChange;
+              field.name === 'tags' ? handleTagsChange : handleChange
 
             return (
               <MemoizedTextarea
@@ -113,7 +129,7 @@ export function TextareaForm() {
                 }
                 showTokenizer={field.showTokenizer}
               />
-            );
+            )
           })}
 
           {section.category === 'Basic Information' && (
@@ -130,5 +146,5 @@ export function TextareaForm() {
         onTagClick={handleTagClick}
       />
     </>
-  );
+  )
 }
