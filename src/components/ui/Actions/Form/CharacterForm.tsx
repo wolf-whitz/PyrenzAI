@@ -27,7 +27,6 @@ export function CharacterForm({
     handleClear,
     handleSave,
     handleSelectDraft,
-    handleImportCharacter,
     handleSubmit,
     handleDelete,
   } = useCreateAPI(navigate, character_update, user_uuid, creator);
@@ -52,7 +51,6 @@ export function CharacterForm({
           loading={loading}
           saveLoading={saveLoading}
           onSelectDraft={handleSelectDraft}
-          onImportCharacter={handleImportCharacter}
           character_update={character_update}
         />
       </form>

@@ -1,7 +1,6 @@
 export * from './CreatePersonaModal'
 export * from './DraftsModal'
 
-export * from './ImportCharacterModal'
 export * from './LanguageModal'
 
 export * from './MessageCustomizationModal'

@@ -1,14 +1,13 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { CircularProgress, Typography, Link } from '@mui/material';
-import { CreateButton, DraftsModal, ImportCharacterModal } from '@components';
+import { CreateButton, DraftsModal } from '@components';
 import {
   SaveOutlined as SaveIcon,
   DescriptionOutlined as DescriptionIcon,
-  UploadFileOutlined as UploadFileIcon,
   DeleteOutlined as DeleteIcon,
 } from '@mui/icons-material';
-import { Character, Draft } from '@shared-types';
+import { Draft } from '@shared-types';
 import { PyrenzBlueButton } from '~/theme';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,7 +18,6 @@ interface FormActionsProps {
   loading: boolean;
   saveLoading: boolean;
   onSelectDraft: (draft: Draft) => void;
-  onImportCharacter: (data: Character | null) => void;
   character_update: boolean;
 }
 
@@ -30,12 +28,9 @@ export function FormActions({
   loading,
   saveLoading,
   onSelectDraft,
-  onImportCharacter,
   character_update,
 }: FormActionsProps) {
   const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
-  const [isImportCharacterModalOpen, setIsImportCharacterModalOpen] =
-    useState(false);
   const navigate = useNavigate();
 
   const handleOpenDraftModal = () => {
@@ -44,14 +39,6 @@ export function FormActions({
 
   const handleCloseDraftModal = () => {
     setIsDraftModalOpen(false);
-  };
-
-  const handleOpenImportCharacterModal = () => {
-    setIsImportCharacterModalOpen(true);
-  };
-
-  const handleCloseImportCharacterModal = () => {
-    setIsImportCharacterModalOpen(false);
   };
 
   const handleGuideClick = () => {
@@ -103,15 +90,6 @@ export function FormActions({
       >
         Drafts
       </PyrenzBlueButton>
-      <PyrenzBlueButton
-        variant="contained"
-        color="primary"
-        onClick={handleOpenImportCharacterModal}
-        className="w-full sm:w-auto"
-        startIcon={<UploadFileIcon />}
-      >
-        Import Character
-      </PyrenzBlueButton>
       {character_update && (
         <PyrenzBlueButton
           variant="contained"
@@ -130,12 +108,6 @@ export function FormActions({
       />
       {isDraftModalOpen && (
         <DraftsModal onClose={handleCloseDraftModal} onSelect={onSelectDraft} />
-      )}
-      {isImportCharacterModalOpen && (
-        <ImportCharacterModal
-          onClose={handleCloseImportCharacterModal}
-          onImport={onImportCharacter}
-        />
       )}
       <Typography
         variant="body1"

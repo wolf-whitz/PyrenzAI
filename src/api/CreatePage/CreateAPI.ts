@@ -28,7 +28,6 @@ interface UseCreateAPIReturn {
   handleSave: () => Promise<void>;
   handleDelete: () => Promise<void>;
   handleSelectDraft: (draft: Draft) => void;
-  handleImportCharacter: (data: Character | null) => void;
   handleSubmit: (e: React.FormEvent) => Promise<void>;
   formState: Character;
   handleImageSelect: (file: File | null) => void;
@@ -53,8 +52,8 @@ export const useCreateAPI = (
   const tags = Array.isArray(rawTags)
     ? rawTags
     : typeof rawTags === 'string'
-      ? rawTags.split(',').map((tag: string) => tag.trim())
-      : [];
+    ? rawTags.split(',').map((tag: string) => tag.trim())
+    : [];
 
   const handleImageSelect = (file: File | null) => {
     if (file) {
@@ -103,18 +102,6 @@ export const useCreateAPI = (
     showAlert('Draft selected successfully!', 'success');
   };
 
-  const handleImportCharacter = (data: Character | null) => {
-    if (!data) {
-      showAlert('No data provided to import character.', 'error');
-      return;
-    }
-    setCharacter({
-      ...data,
-      tags: tags,
-    });
-    showAlert('Character imported successfully!', 'success');
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     await handleSubmitCharacter(
       e,
@@ -146,7 +133,6 @@ export const useCreateAPI = (
     handleSave,
     handleDelete,
     handleSelectDraft,
-    handleImportCharacter,
     handleSubmit,
     formState,
     handleImageSelect,
