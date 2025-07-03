@@ -7,7 +7,13 @@ export const PyrenzModal = styled(Modal)({
   justifyContent: 'center',
 });
 
-const MotionBox = motion(Box);
+
+/**
+ * Bug 2: The `motion` part is depreciated in the latest versions of Framer Motion.
+ * To fix this, we can use `motion.create` to create a motion component from the
+ * MUI Box component.
+ */
+const MotionBox = motion.create(Box);
 
 export const PyrenzModalContent = styled(MotionBox)(({ theme }) => ({
   position: 'relative',

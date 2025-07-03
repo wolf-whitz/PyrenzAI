@@ -1,5 +1,6 @@
-import { Button, CircularProgress, styled } from '@mui/material';
-import { keyframes } from '@mui/system';
+import { Button, CircularProgress, Box, styled } from '@mui/material'
+import { keyframes } from '@mui/system'
+import type { ButtonProps } from '@mui/material'
 
 const zoomIn = keyframes`
   0% {
@@ -8,12 +9,15 @@ const zoomIn = keyframes`
   100% {
     transform: scale(1.05);
   }
-`;
+`
 
-export const PyrenzBlueButton = styled(Button)<{
-  dataState?: string;
-  component?: React.ElementType;
-}>({
+interface PyrenzButtonProps extends ButtonProps {
+  dataState?: 'loading' | string
+}
+
+export const PyrenzBlueButton = styled(Button, {
+  shouldForwardProp: (prop) => prop !== 'dataState',
+})<PyrenzButtonProps>(({ dataState }) => ({
   color: 'white',
   backgroundColor: 'black',
   transition: 'all 0.3s ease',
@@ -25,48 +29,40 @@ export const PyrenzBlueButton = styled(Button)<{
     backgroundColor: '#add8e6',
     color: 'black',
   },
-  '&[data-state="loading"]': {
+  ...(dataState === 'loading' && {
     opacity: 0.6,
     pointerEvents: 'none',
     userSelect: 'none',
     position: 'relative',
-  },
-  ...({ dataState }: { dataState?: string }) =>
-    dataState === 'loading'
-      ? {
-          '&::after': {
-            content: '""',
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-          },
-        }
-      : {},
-});
+    '&::after': {
+      content: '""',
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+    },
+  }),
+}))
 
 export const PyrenzBlueButtonWithLoading = ({
   dataState,
   ...props
-}: {
-  dataState?: string;
-  [key: string]: any;
-}) => {
+}: PyrenzButtonProps) => {
   return (
-    <div style={{ position: 'relative', display: 'inline-block' }}>
+    <Box position="relative" display="inline-block">
       <PyrenzBlueButton dataState={dataState} {...props} />
       {dataState === 'loading' && (
         <CircularProgress
           size={24}
-          style={{
+          sx={{
             position: 'absolute',
             top: '50%',
             left: '50%',
-            marginTop: -12,
-            marginLeft: -12,
+            mt: '-12px',
+            ml: '-12px',
           }}
         />
       )}
-    </div>
-  );
-};
+    </Box>
+  )
+}

@@ -22,9 +22,12 @@ interface SubscriptionCardsProps {
   onMouseLeave: () => void;
 }
 
-const MotionCard = motion(Card);
-const MotionTypography = motion(Typography);
-const MotionButton = motion(PyrenzBlueButton);
+/**
+ * Same as bug 2
+ */
+const MotionCard = motion.create(Card);
+const MotionTypography = motion.create(Typography);
+const MotionButton = motion.create(PyrenzBlueButton);
 
 const getRibbonText = (planIdentifier: string | undefined): string | null => {
   switch (planIdentifier) {
