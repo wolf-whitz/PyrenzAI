@@ -8,7 +8,6 @@ export * from './Fields';
 
 export * from './Form';
 export * from './ImageUploader/ImageUploader';
-export * from '../Overlay/Modal/General/ImportCharacterModal';
 
 export * from './SearchBar/SearchBar';
 export * from './Selectors/ModelSelection';
