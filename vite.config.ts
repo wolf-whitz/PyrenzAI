@@ -41,8 +41,7 @@ export default defineConfig({
   ],
 
   define: {
-    __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
-    __BUILD_DATE__: JSON.stringify(new Date().toISOString()),
+    'process.env.NODE_ENV': JSON.stringify('production'),
   },
 
   css: {
@@ -55,7 +54,6 @@ export default defineConfig({
   },
 
   publicDir: 'public',
-  cacheDir: 'node_modules/.vite_cache',
 
   build: {
     outDir: 'build',
