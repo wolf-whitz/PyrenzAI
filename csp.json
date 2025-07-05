@@ -30,8 +30,7 @@
     "https://*.googlesyndication.com",
     "https://*.jsdelivr.net",
     "https://*.pollinations.ai",
-    "https://*.cloudflareinsights.com",
-    "https://cloudflareinsights.com/cdn-cgi/rum"
+    "https://cloudflareinsights.com"
   ],
   "media-src": ["'self'", "blob:"],
   "font-src": ["'self'", "*"],
