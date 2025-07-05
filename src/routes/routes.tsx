@@ -11,7 +11,7 @@ import {
   ContentPolicy,
   DocPage,
   Policy,
-  AdminPanel
+  AdminPanel,
 } from './Routing';
 
 export const AppRoutes = (

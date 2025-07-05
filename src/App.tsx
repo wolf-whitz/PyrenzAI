@@ -1,9 +1,5 @@
 import React, { useEffect, useState, Suspense } from 'react';
-import {
-  BrowserRouter as Router,
-  Routes,
-  useNavigate,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Routes, useNavigate } from 'react-router-dom';
 import { AppRoutes } from '~/routes/routes';
 import { Spinner } from '@components';
 import { supabase } from './Utility/supabaseClient';

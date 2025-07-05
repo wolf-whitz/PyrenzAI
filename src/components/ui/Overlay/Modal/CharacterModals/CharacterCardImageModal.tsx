@@ -109,16 +109,18 @@ export function CharacterCardImageModal({
   return (
     <PyrenzModal open={isModalOpen} onClose={() => setModalOpen(false)}>
       <PyrenzModalContent>
-        <Box sx={{
-          position: 'relative',
-          width: '100%',
-          maxWidth: '4xl',
-          height: '100%',
-          bgcolor: 'gray.900',
-          color: 'white',
-          p: 6,
-          overflowY: 'auto'
-        }}>
+        <Box
+          sx={{
+            position: 'relative',
+            width: '100%',
+            maxWidth: '4xl',
+            height: '100%',
+            bgcolor: 'gray.900',
+            color: 'white',
+            p: 6,
+            overflowY: 'auto',
+          }}
+        >
           <IconButton
             onClick={() => setModalOpen(false)}
             sx={{
@@ -127,7 +129,7 @@ export function CharacterCardImageModal({
               right: 16,
               bgcolor: 'gray.800',
               borderRadius: '50%',
-              p: 2
+              p: 2,
             }}
           >
             <CloseIcon sx={{ color: 'white' }} />
@@ -138,20 +140,29 @@ export function CharacterCardImageModal({
               textAlign: 'center',
               fontSize: '1.125rem',
               fontWeight: 'semibold',
-              mb: 6
+              mb: 6,
             }}
           >
             Choose a Character Card
           </Typography>
 
-          <Box sx={{
-            display: 'grid',
-            gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: '1fr 1fr 1fr' },
-            gap: 4
-          }}>
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: {
+                xs: '1fr',
+                sm: '1fr 1fr',
+                md: '1fr 1fr 1fr',
+              },
+              gap: 4,
+            }}
+          >
             {loading
               ? Array.from(new Array(5)).map((_, index) => (
-                  <Card key={index} sx={{ bgcolor: 'gray.800', color: 'white' }}>
+                  <Card
+                    key={index}
+                    sx={{ bgcolor: 'gray.800', color: 'white' }}
+                  >
                     <Skeleton variant="rectangular" height={100} />
                     <CardContent>
                       <Skeleton variant="text" height={18} width="80%" />
@@ -165,7 +176,7 @@ export function CharacterCardImageModal({
                     sx={{
                       bgcolor: 'gray.800',
                       color: 'white',
-                      cursor: 'pointer'
+                      cursor: 'pointer',
                     }}
                     onClick={() => handleCardClick(card.card_image)}
                   >

@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Box,
-  Typography,
-  CircularProgress,
-} from '@mui/material';
+import { Box, Typography, CircularProgress } from '@mui/material';
 import {
   AddCircleOutline as PlusCircleIcon,
   EditOutlined as EditIcon,
@@ -41,7 +37,9 @@ export function CreatePersonaModal({
   isEditing,
   onDelete,
 }: CreatePersonaModalProps) {
-  const [previewImage, setPreviewImage] = useState<string | null>(selectedImage);
+  const [previewImage, setPreviewImage] = useState<string | null>(
+    selectedImage
+  );
   const [isCreating, setIsCreating] = useState(false);
   const showAlert = usePyrenzAlert();
 

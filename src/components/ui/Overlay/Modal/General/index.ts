@@ -1,10 +1,10 @@
-export * from './CreatePersonaModal'
-export * from './DraftsModal'
+export * from './CreatePersonaModal';
+export * from './DraftsModal';
 
-export * from './LanguageModal'
+export * from './LanguageModal';
 
-export * from './MessageCustomizationModal'
-export * from './MoreButtonsModal'
+export * from './MessageCustomizationModal';
+export * from './MoreButtonsModal';
 
-export * from './PaymentModal'
-export * from './PersonaCardModal'
+export * from './PaymentModal';
+export * from './PersonaCardModal';

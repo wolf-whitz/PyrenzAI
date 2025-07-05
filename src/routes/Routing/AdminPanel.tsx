@@ -4,7 +4,13 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '~/Utility/supabaseClient';
 import { useUserStore } from '~/store';
-import { Box, CircularProgress, Typography, useMediaQuery, useTheme } from '@mui/material';
+import {
+  Box,
+  CircularProgress,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import { Utils } from '~/Utility/Utility';
 import { PyrenzBlueButton } from '~/theme';
 import { Sidebar, MobileNav } from '@components';
@@ -17,7 +23,7 @@ export function AdminPanel() {
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [showLoginModal, setShowLoginModal] = useState(false);
-  
+
   const userUUID = useUserStore((state) => state.userUUID);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -55,7 +61,9 @@ export function AdminPanel() {
 
   const handleMaintenanceMode = async () => {
     try {
-      const response = await Utils.post('/api/Commands', { type: 'Maintenance' });
+      const response = await Utils.post('/api/Commands', {
+        type: 'Maintenance',
+      });
       console.log('Maintenance mode request sent:', response);
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -68,7 +76,12 @@ export function AdminPanel() {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100%"
+      >
         <CircularProgress />
       </Box>
     );
@@ -76,7 +89,12 @@ export function AdminPanel() {
 
   if (!isAdmin) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="52vh">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="52vh"
+      >
         <Typography variant="h6" color="textSecondary">
           Access Denied: Admins Only
         </Typography>
@@ -88,14 +106,18 @@ export function AdminPanel() {
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Box sx={{ display: 'flex', flex: 1 }}>
         {!isMobile && <Sidebar />}
-        <Box sx={{ flex: 1, p: isMobile ? 2 : 4, mb: isMobile ? '56px' : 0, textAlign: 'center' }}>
+        <Box
+          sx={{
+            flex: 1,
+            p: isMobile ? 2 : 4,
+            mb: isMobile ? '56px' : 0,
+            textAlign: 'center',
+          }}
+        >
           <Typography variant="h4" gutterBottom>
             Admin Panel
           </Typography>
-          <PyrenzBlueButton
-            onClick={handleMaintenanceMode}
-            sx={{ mt: 3 }}
-          >
+          <PyrenzBlueButton onClick={handleMaintenanceMode} sx={{ mt: 3 }}>
             Maintenance Mode
           </PyrenzBlueButton>
         </Box>

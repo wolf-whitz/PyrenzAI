@@ -1,1 +1,1 @@
-export * from './AdModal'
+export * from './AdModal';

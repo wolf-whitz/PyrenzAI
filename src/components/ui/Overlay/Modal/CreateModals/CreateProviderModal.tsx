@@ -55,9 +55,7 @@ export function CreateProviderModal({
       aria-describedby="create-provider-modal-description"
     >
       <PyrenzModalContent>
-        <h2 id="create-provider-modal-title">
-          Create New Provider
-        </h2>
+        <h2 id="create-provider-modal-title">Create New Provider</h2>
         <div style={{ marginTop: '16px' }}>
           <Textarea
             label="Provider Name"
@@ -80,7 +78,13 @@ export function CreateProviderModal({
             onChange={(e) => setProviderDescription(e.target.value)}
           />
         </div>
-        <div style={{ marginTop: '16px', display: 'flex', justifyContent: 'flex-end' }}>
+        <div
+          style={{
+            marginTop: '16px',
+            display: 'flex',
+            justifyContent: 'flex-end',
+          }}
+        >
           <PyrenzBlueButton onClick={onClose} style={{ marginRight: '8px' }}>
             Cancel
           </PyrenzBlueButton>

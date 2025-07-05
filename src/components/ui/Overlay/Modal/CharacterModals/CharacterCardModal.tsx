@@ -70,7 +70,11 @@ export function CharacterCardModal({
           />
 
           <Box flex={1} display="flex" flexDirection="column">
-            <Box display="flex" alignItems="center" justifyContent="space-between">
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+            >
               <Typography variant="h6" style={{ fontWeight: 'bold' }}>
                 {character.name}
               </Typography>
@@ -109,7 +113,12 @@ export function CharacterCardModal({
 
             <Typography
               variant="body2"
-              style={{ color: 'white', marginTop: '16px', opacity: 0.9, cursor: 'pointer' }}
+              style={{
+                color: 'white',
+                marginTop: '16px',
+                opacity: 0.9,
+                cursor: 'pointer',
+              }}
               onClick={toggleExpand}
             >
               {isExpanded

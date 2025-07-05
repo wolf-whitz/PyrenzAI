@@ -16,7 +16,7 @@ import {
 import { supabase } from '~/Utility/supabaseClient';
 import { GetUserUUID } from '@components';
 import { Draft } from '@shared-types';
-import { PyrenzModal, PyrenzModalContent } from '~/theme';  
+import { PyrenzModal, PyrenzModalContent } from '~/theme';
 
 interface DraftsModalProps {
   onClose: () => void;
@@ -228,10 +228,7 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
                   >
                     {draft.description || 'No description available.'}
                   </Typography>
-                  <Typography
-                    variant="caption"
-                    sx={{ color: 'text.disabled' }}
-                  >
+                  <Typography variant="caption" sx={{ color: 'text.disabled' }}>
                     Created at: {new Date(draft.created_at).toLocaleString()}
                   </Typography>
                 </CardContent>

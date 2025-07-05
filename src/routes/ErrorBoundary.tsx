@@ -1,11 +1,6 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import * as Sentry from '@sentry/react';
-import {
-  Typography,
-  Box,
-  Paper,
-  Container,
-} from '@mui/material';
+import { Typography, Box, Paper, Container } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { PyrenzBlueButton } from '~/theme';
 
@@ -71,7 +66,8 @@ export class ErrorBoundary extends Component<Props, State> {
         <Box
           sx={{
             minHeight: '100vh',
-            background: 'radial-gradient(ellipse at center, #0a0a0a 0%, #121212 100%)',
+            background:
+              'radial-gradient(ellipse at center, #0a0a0a 0%, #121212 100%)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -125,11 +121,9 @@ export class ErrorBoundary extends Component<Props, State> {
                 </Typography>
               )}
 
-              <Typography
-                variant="body2"
-                sx={{ color: '#ccc', mb: 3 }}
-              >
-                Please download the error details and send them to our team via Discord.
+              <Typography variant="body2" sx={{ color: '#ccc', mb: 3 }}>
+                Please download the error details and send them to our team via
+                Discord.
               </Typography>
 
               <Box
@@ -144,9 +138,7 @@ export class ErrorBoundary extends Component<Props, State> {
                   Download Error Details
                 </PyrenzBlueButton>
 
-                <PyrenzBlueButton
-                  onClick={() => window.location.reload()}
-                >
+                <PyrenzBlueButton onClick={() => window.location.reload()}>
                   Reload Page
                 </PyrenzBlueButton>
               </Box>

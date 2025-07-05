@@ -52,8 +52,8 @@ export const useCreateAPI = (
   const tags = Array.isArray(rawTags)
     ? rawTags
     : typeof rawTags === 'string'
-    ? rawTags.split(',').map((tag: string) => tag.trim())
-    : [];
+      ? rawTags.split(',').map((tag: string) => tag.trim())
+      : [];
 
   const handleImageSelect = (file: File | null) => {
     if (file) {

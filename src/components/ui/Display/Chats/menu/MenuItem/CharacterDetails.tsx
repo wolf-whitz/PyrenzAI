@@ -61,27 +61,33 @@ export function CharacterDetails({ char, onSubmit }: CharacterDetailsProps) {
     fetchCharacterDetails();
   }, [char.char_uuid]);
 
-  const handleChange = (field: keyof Character) => (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setCharacterDetails({
-      ...characterDetails,
-      [field]: e.target.value,
-    });
-  };
+  const handleChange =
+    (field: keyof Character) => (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setCharacterDetails({
+        ...characterDetails,
+        [field]: e.target.value,
+      });
+    };
 
   const handleSubmit = () => {
     onSubmit(characterDetails);
   };
 
   const textareaFields = [
-    { label: "Name", field: "name", maxLength: 50 },
-    { label: "Persona", field: "persona" },
-    { label: "Scenario", field: "scenario" },
-    { label: "Model Instructions", field: "model_instructions" },
+    { label: 'Name', field: 'name', maxLength: 50 },
+    { label: 'Persona', field: 'persona' },
+    { label: 'Scenario', field: 'scenario' },
+    { label: 'Model Instructions', field: 'model_instructions' },
   ];
 
   if (showDetails === null) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100%"
+      >
         <CircularProgress />
       </Box>
     );

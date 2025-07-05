@@ -1,1 +1,1 @@
-export * from './AuthenticationModal'
+export * from './AuthenticationModal';

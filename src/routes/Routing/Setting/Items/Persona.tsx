@@ -50,7 +50,12 @@ export function Persona() {
       setSelectedImage,
       setModalOpen
     );
-  }, [newPersonaName, newPersonaDescription, selectedImage, handleCreatePersona]);
+  }, [
+    newPersonaName,
+    newPersonaDescription,
+    selectedImage,
+    handleCreatePersona,
+  ]);
 
   const editPersona = useCallback(async () => {
     if (!editingPersona) return;
@@ -65,7 +70,13 @@ export function Persona() {
       setModalOpen,
       setEditingPersona
     );
-  }, [editingPersona, newPersonaName, newPersonaDescription, selectedImage, handleEditPersona]);
+  }, [
+    editingPersona,
+    newPersonaName,
+    newPersonaDescription,
+    selectedImage,
+    handleEditPersona,
+  ]);
 
   const handleDelete = useCallback(async () => {
     if (!editingPersona) return;

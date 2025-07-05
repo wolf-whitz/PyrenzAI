@@ -43,7 +43,9 @@ export function PersonaModal({
   };
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedPersona, setSelectedPersona] = useState<PersonaCard | null>(null);
+  const [selectedPersona, setSelectedPersona] = useState<PersonaCard | null>(
+    null
+  );
 
   const handleMenuOpen = (
     event: React.MouseEvent<HTMLElement>,

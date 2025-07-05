@@ -28,7 +28,10 @@ interface PyrenzColorPickerProps {
   onChange: (color: string) => void;
 }
 
-export const PyrenzColorPicker = ({ color, onChange }: PyrenzColorPickerProps) => {
+export const PyrenzColorPicker = ({
+  color,
+  onChange,
+}: PyrenzColorPickerProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [tempColor, setTempColor] = useState(color);
 
@@ -97,7 +100,7 @@ export const PyrenzColorPicker = ({ color, onChange }: PyrenzColorPickerProps) =
             default: {
               picker: {
                 background: 'transparent',
-                fontFamily: "Comic Neue, system-ui",
+                fontFamily: 'Comic Neue, system-ui',
                 padding: '8px',
               },
             },

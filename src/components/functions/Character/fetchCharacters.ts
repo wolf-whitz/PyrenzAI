@@ -64,7 +64,9 @@ export async function fetchCharacters(
     selectedCharacter =
       topCharacters.length === 1
         ? topCharacters[0]
-        : topCharacters.sort((a, b) => String(a.id).localeCompare(String(b.id)))[0];
+        : topCharacters.sort((a, b) =>
+            String(a.id).localeCompare(String(b.id))
+          )[0];
   }
 
   return {

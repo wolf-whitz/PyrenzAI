@@ -1,1 +1,1 @@
-export * from './TextareFormConfig'
+export * from './TextareFormConfig';

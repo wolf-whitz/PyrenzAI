@@ -11,7 +11,7 @@ import {
   Fade,
 } from '@mui/material';
 import { ExpandMore, ExpandLess } from '@mui/icons-material';
-import { PyrenzModal, PyrenzModalContent } from '~/theme';  
+import { PyrenzModal, PyrenzModalContent } from '~/theme';
 import { Customization, Cosmetic, CharacterDetails, Memory } from './MenuItem';
 import { useMenuAPI } from '@api';
 import { Character } from '@shared-types';

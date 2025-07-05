@@ -49,11 +49,7 @@ function updateVercelJson(cspString) {
     }
   }
 
-  fs.writeFileSync(
-    vercelPath,
-    JSON.stringify(vercelJson, null, 2),
-    'utf-8'
-  );
+  fs.writeFileSync(vercelPath, JSON.stringify(vercelJson, null, 2), 'utf-8');
 
   console.log('✅ Updated CSP in vercel.json');
 }

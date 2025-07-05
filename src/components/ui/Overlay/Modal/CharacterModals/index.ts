@@ -1,1 +1,1 @@
-export * from './CharacterCardModal'
+export * from './CharacterCardModal';

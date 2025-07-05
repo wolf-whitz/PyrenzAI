@@ -1,1 +1,1 @@
-export * from './CreateProviderModal'
+export * from './CreateProviderModal';

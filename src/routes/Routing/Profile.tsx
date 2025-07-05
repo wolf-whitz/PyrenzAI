@@ -1,11 +1,11 @@
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom';
 import {
   Sidebar,
   CharacterCard,
   UserProfileHeader,
   GetUserCreatedCharacters,
   MobileNav,
-} from '@components'
+} from '@components';
 import {
   Box,
   Typography,
@@ -13,50 +13,45 @@ import {
   useTheme,
   CircularProgress,
   IconButton,
-} from '@mui/material'
-import { useState } from 'react'
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
-import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+} from '@mui/material';
+import { useState } from 'react';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 export function ProfilePage() {
-  const { creator_uuid } = useParams<{ creator_uuid: string }>()
-  const [showLoginModal, setShowLoginModal] = useState(false)
-  const [page, setPage] = useState(1)
-  const [refreshCharacters, setRefreshCharacters] = useState(false)
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+  const { creator_uuid } = useParams<{ creator_uuid: string }>();
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [page, setPage] = useState(1);
+  const [refreshCharacters, setRefreshCharacters] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  const itemsPerPage = 20
-  const result = GetUserCreatedCharacters(
-    creator_uuid,
-    page,
-    itemsPerPage,
-    refreshCharacters
-  ) ?? {}
+  const itemsPerPage = 20;
+  const result =
+    GetUserCreatedCharacters(
+      creator_uuid,
+      page,
+      itemsPerPage,
+      refreshCharacters
+    ) ?? {};
 
-  const {
-    characters = [],
-    userData,
-    loading,
-    isOwner,
-    maxPage = 1,
-  } = result
+  const { characters = [], userData, loading, isOwner, maxPage = 1 } = result;
 
   const handlePreviousPage = () => {
     if (page > 1) {
-      setPage(page - 1)
+      setPage(page - 1);
     }
-  }
+  };
 
   const handleNextPage = () => {
     if (page < maxPage) {
-      setPage(page + 1)
+      setPage(page + 1);
     }
-  }
+  };
 
   const handleCharacterDeleted = () => {
-    setRefreshCharacters((prev) => !prev)
-  }
+    setRefreshCharacters((prev) => !prev);
+  };
 
   if (loading) {
     return (
@@ -76,7 +71,7 @@ export function ProfilePage() {
         </Box>
         {isMobile && <MobileNav setShowLoginModal={setShowLoginModal} />}
       </Box>
-    )
+    );
   }
 
   if (!userData) {
@@ -99,7 +94,7 @@ export function ProfilePage() {
         </Box>
         {isMobile && <MobileNav setShowLoginModal={setShowLoginModal} />}
       </Box>
-    )
+    );
   }
 
   return (
@@ -163,5 +158,5 @@ export function ProfilePage() {
       </Box>
       {isMobile && <MobileNav setShowLoginModal={setShowLoginModal} />}
     </Box>
-  )
+  );
 }

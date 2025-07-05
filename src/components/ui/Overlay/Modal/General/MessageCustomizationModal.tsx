@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { Box, Typography, Stack } from '@mui/material';
-import { PyrenzBlueButton, PyrenzMessageBox, PyrenzColorPicker, PyrenzModal, PyrenzModalContent } from '~/theme';
+import {
+  PyrenzBlueButton,
+  PyrenzMessageBox,
+  PyrenzColorPicker,
+  PyrenzModal,
+  PyrenzModalContent,
+} from '~/theme';
 import { useUserStore } from '~/store';
 
 interface MessageCustomizationModalProps {
@@ -26,7 +32,10 @@ const colorFields: { key: keyof ColorCustomization; label: string }[] = [
   { key: 'charQuotedColor', label: 'Character Quoted Color' },
 ];
 
-export function MessageCustomizationModal({ open, onClose }: MessageCustomizationModalProps) {
+export function MessageCustomizationModal({
+  open,
+  onClose,
+}: MessageCustomizationModalProps) {
   const { customization, setCustomization } = useUserStore();
 
   const [colors, setColors] = useState<ColorCustomization>({
@@ -57,8 +66,10 @@ export function MessageCustomizationModal({ open, onClose }: MessageCustomizatio
     setCustomization(defaults);
   };
 
-  const userAvatarUrl = 'https://api.dicebear.com/8.x/thumbs/svg?seed=UserExample';
-  const charAvatarUrl = 'https://api.dicebear.com/8.x/thumbs/svg?seed=CharExample';
+  const userAvatarUrl =
+    'https://api.dicebear.com/8.x/thumbs/svg?seed=UserExample';
+  const charAvatarUrl =
+    'https://api.dicebear.com/8.x/thumbs/svg?seed=CharExample';
 
   return (
     <PyrenzModal open={open} onClose={onClose}>
@@ -69,7 +80,12 @@ export function MessageCustomizationModal({ open, onClose }: MessageCustomizatio
 
         <Stack direction="column" spacing={2}>
           {colorFields.map(({ key, label }) => (
-            <Stack key={key} direction="row" justifyContent="space-between" alignItems="center">
+            <Stack
+              key={key}
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+            >
               <Typography variant="body1" color="text.secondary">
                 {label}:
               </Typography>

@@ -1,4 +1,4 @@
-/** 
+/**
  * Type alias for allowed database transaction modes.
  * 'readonly' - for reading data.
  * 'readwrite' - for inserting/updating/deleting data.

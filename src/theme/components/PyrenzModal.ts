@@ -1,13 +1,13 @@
-import { Modal, Box, styled, Backdrop } from '@mui/material'
-import { motion } from 'framer-motion'
+import { Modal, Box, styled, Backdrop } from '@mui/material';
+import { motion } from 'framer-motion';
 
 export const PyrenzModal = styled(Modal)({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-}) as typeof Modal
+}) as typeof Modal;
 
-const MotionBox = motion.create(Box)
+const MotionBox = motion.create(Box);
 
 export const PyrenzModalContent = styled(MotionBox)(({ theme }) => ({
   position: 'relative',
@@ -31,8 +31,9 @@ export const PyrenzModalContent = styled(MotionBox)(({ theme }) => ({
     inset: 0,
     borderRadius: 'inherit',
     padding: '1px',
-    background: 'linear-gradient(120deg, rgba(255,255,255,0.1), rgba(255,255,255,0))',
+    background:
+      'linear-gradient(120deg, rgba(255,255,255,0.1), rgba(255,255,255,0))',
     pointerEvents: 'none',
     zIndex: 1,
   },
-}))
+}));
