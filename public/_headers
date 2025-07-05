@@ -1,0 +1,16 @@
+/*
+
+  Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+  Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With
+  Access-Control-Allow-Credentials: true
+  X-Powered-By: PyrenzAI
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  X-XSS-Protection: 1; mode=block
+  Cache-Control: public, max-age=600, stale-while-revalidate=30
+  X-RateLimit-Limit: 100
+  X-RateLimit-Remaining: 99
+  X-RateLimit-Reset: 600
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://pyrenzai.com https://*.googletagmanager.com https://*.googlesyndication.com https://*.posthog.com https://*.vercel-scripts.com https://*.adtrafficquality.google https://*.hcaptcha.com https://*.google.com https://*.clerk.accounts.dev https://*.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://pyrenzai.com https://*.googleapis.com https://*.jsdelivr.net; connect-src 'self' https://*.posthog.com https://*.ingest.us.sentry.io https://*.adtrafficquality.google https://*.google.com https://*.hcaptcha.com https://*.supabase.co https://*.pyrenzai.com https://*.googlesyndication.com https://*.clerk.accounts.dev https://*.jsdelivr.net https://*.pollinations.ai https://*.cloudflareinsights.com https://ipapi.co/; media-src 'self' blob:; font-src 'self' *; img-src 'self' https://pyrenzai.com https://*.supabase.co https://*.githubusercontent.com https://*.googletagmanager.com https://*.adtrafficquality.google https://*.hcaptcha.com https://*.google.com https://*.googleusercontent.com https://*.googlesyndication.com blob: data:; manifest-src 'self' https://pyrenzai.com; worker-src 'self' blob:; object-src 'none'; frame-src 'self' https://*.doubleclick.net https://*.adtrafficquality.google https://*.google.com https://*.hcaptcha.com
+  Permissions-Policy: camera=(), geolocation=(), accelerometer=(), autoplay=(), gyroscope=(), magnetometer=(), usb=(), xr-spatial-tracking=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload

@@ -6,6 +6,7 @@ It ensures that the CSP header is added to the route that matches all paths ('/(
 */
 
 const fs = require('fs');
+const path = require('path');
 
 function jsonToCspString(cspJson) {
   return Object.entries(cspJson)
@@ -13,13 +14,11 @@ function jsonToCspString(cspJson) {
     .join('; ');
 }
 
-function main() {
-  const cspRaw = fs.readFileSync('./csp.json', 'utf-8');
-  const cspJson = JSON.parse(cspRaw);
+function updateVercelJson(cspString) {
+  const vercelPath = './vercel.json';
+  if (!fs.existsSync(vercelPath)) return;
 
-  const cspString = jsonToCspString(cspJson);
-
-  const vercelRaw = fs.readFileSync('./vercel.json', 'utf-8');
+  const vercelRaw = fs.readFileSync(vercelPath, 'utf-8');
   const vercelJson = JSON.parse(vercelRaw);
 
   const route = vercelJson.headers?.find((entry) => entry.source === '/(.*)');
@@ -36,9 +35,6 @@ function main() {
       ],
     });
   } else {
-    if (!Array.isArray(route.headers)) {
-      route.headers = [];
-    }
     const cspHeader = route.headers.find(
       (header) => header.key === 'Content-Security-Policy'
     );
@@ -54,12 +50,49 @@ function main() {
   }
 
   fs.writeFileSync(
-    './vercel.json',
+    vercelPath,
     JSON.stringify(vercelJson, null, 2),
     'utf-8'
   );
 
-  console.log('✅ Updated CSP header inside vercel.json with proper schema');
+  console.log('✅ Updated CSP in vercel.json');
+}
+
+function updateHeadersFile(cspString) {
+  const headersPath = path.join('public', '_headers');
+  let lines = [];
+
+  if (fs.existsSync(headersPath)) {
+    lines = fs.readFileSync(headersPath, 'utf-8').split('\n');
+  } else {
+    lines.push('/*');
+  }
+
+  const cspLine = `  Content-Security-Policy: ${cspString}`;
+
+  const cspIndex = lines.findIndex((line) =>
+    line.trim().startsWith('Content-Security-Policy:')
+  );
+
+  if (cspIndex !== -1) {
+    lines[cspIndex] = cspLine;
+  } else {
+    lines.push(cspLine);
+  }
+
+  fs.writeFileSync(headersPath, lines.join('\n'), 'utf-8');
+
+  console.log('✅ Updated CSP in public/_headers');
+}
+
+function main() {
+  const cspRaw = fs.readFileSync('./csp.json', 'utf-8');
+  const cspJson = JSON.parse(cspRaw);
+
+  const cspString = jsonToCspString(cspJson);
+
+  updateVercelJson(cspString);
+  updateHeadersFile(cspString);
 }
 
 main();
