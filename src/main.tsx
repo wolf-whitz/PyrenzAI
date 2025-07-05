@@ -4,9 +4,6 @@ import { createRoot } from 'react-dom/client';
 import './GlobalStyles.css';
 import { App } from './App';
 
-import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from '@vercel/speed-insights/react';
-
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import { I18nextProvider } from 'react-i18next';
 import { GetTheme } from '~/theme';
@@ -46,8 +43,6 @@ if (rootElement) {
                 </ErrorBoundary>
               </AlertProvider>
             </SentryProvider>
-            <Analytics />
-            <SpeedInsights />
           </ThemeProvider>
         </I18nextProvider>
       </HelmetProvider>
