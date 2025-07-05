@@ -6,12 +6,10 @@
     "https://pyrenzai.com",
     "https://*.googletagmanager.com",
     "https://*.googlesyndication.com",
-    "https://*.posthog.com",
     "https://*.vercel-scripts.com",
     "https://*.adtrafficquality.google",
     "https://*.hcaptcha.com",
     "https://*.google.com",
-    "https://*.clerk.accounts.dev",
     "https://*.cloudflareinsights.com"
   ],
   "style-src": [
@@ -23,7 +21,6 @@
   ],
   "connect-src": [
     "'self'",
-    "https://*.posthog.com",
     "https://*.ingest.us.sentry.io",
     "https://*.adtrafficquality.google",
     "https://*.google.com",
@@ -31,11 +28,10 @@
     "https://*.supabase.co",
     "https://*.pyrenzai.com",
     "https://*.googlesyndication.com",
-    "https://*.clerk.accounts.dev",
     "https://*.jsdelivr.net",
     "https://*.pollinations.ai",
     "https://*.cloudflareinsights.com",
-    "https://ipapi.co/"
+    "https://cloudflareinsights.com/cdn-cgi/rum"
   ],
   "media-src": ["'self'", "blob:"],
   "font-src": ["'self'", "*"],
