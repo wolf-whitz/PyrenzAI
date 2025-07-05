@@ -30,7 +30,6 @@ export const useChatPageAPI = (
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isAdModalOpen, setIsAdModalOpen] = useState(false);
   const generateMessage = useGenerateMessage();
-  const navigate = useNavigate();
   const { setMessages } = useChatStore();
 
   const toggleSettings = (): void => {
@@ -51,45 +50,42 @@ export const useChatPageAPI = (
         setIsGenerating
       );
 
-      if (response.isSubscribed) {
-        return;
-      }
-
-      if (response.remainingMessages === 0) {
-        setIsAdModalOpen(true);
-      }
+      if (response.isSubscribed) return;
+      if (response.remainingMessages === 0) setIsAdModalOpen(true);
     } catch (error) {
       console.error('Error:', error);
     }
   };
 
-  const handleGoHome = (): void => {
-    navigate('/home');
-  };
-
   const handleRemoveMessage = async (messageId: string): Promise<void> => {
     if (!messageId) return;
+
+    const index = previous_message.findIndex((msg) => msg.id === messageId);
+    if (index === -1) return;
+
+    const messagesToDelete = previous_message.slice(index).map((msg) => msg.id);
 
     try {
       const { error } = await supabase
         .from('chat_messages')
         .delete()
-        .eq('id', messageId);
+        .in('id', messagesToDelete);
 
       if (error) {
-        console.error('Error deleting message:', error);
+        console.error('Error deleting messages:', error);
       } else {
         setMessages((prevMessages) =>
-          prevMessages.filter((msg) => msg.id !== messageId)
+          prevMessages.filter((msg) => !messagesToDelete.includes(msg.id))
         );
       }
     } catch (error) {
-      console.error('Error deleting message:', error);
+      console.error('Error deleting messages:', error);
     }
   };
 
   const handleRegenerateMessage = async (messageId: string): Promise<void> => {
     if (!messageId) return;
+
     try {
       const userMessage = previous_message.find(
         (msg) => msg.id === messageId && msg.type === 'user'
@@ -98,7 +94,6 @@ export const useChatPageAPI = (
       if (!userMessage) return;
 
       await handleRemoveMessage(messageId);
-
       await handleSend(userMessage.text);
     } catch (error) {
       console.error('Error regenerating message:', error);
@@ -114,6 +109,7 @@ export const useChatPageAPI = (
 
     try {
       const columnName = type === 'user' ? 'user_message' : 'char_message';
+
       const { error } = await supabase
         .from('chat_messages')
         .update({ [columnName]: editedMessage })
@@ -124,7 +120,6 @@ export const useChatPageAPI = (
       if (error) {
         console.error('Error updating message:', error);
       } else {
-        console.log('Message updated successfully');
         setMessages((prevMessages) =>
           prevMessages.map((msg) =>
             msg.id === messageId && msg.type === type

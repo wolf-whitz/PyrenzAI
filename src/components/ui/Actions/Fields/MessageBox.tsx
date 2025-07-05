@@ -205,7 +205,7 @@ export const MessageBox = React.memo(function MessageBox({
         open={openDialog}
         onClose={handleCloseDialog}
         title="Confirm Deletion"
-        content="Are you sure you want to delete this message?"
+        content="Are you sure you want to delete this message? This will also remove all messages below it."
         onConfirm={handleConfirmDelete}
       />
     </Box>
