@@ -1,2 +1,4 @@
 name = "PyrenzAI"
 compatibility_date = "2025-07-05"
+
+pages_build_output_dir = "./build"
