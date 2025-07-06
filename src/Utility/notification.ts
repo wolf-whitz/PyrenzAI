@@ -17,30 +17,35 @@ export class NotificationManager {
     userName = '',
   }: NotificationOptions) {
     if (typeof window === 'undefined' || typeof document === 'undefined') return;
-
     if (document.visibilityState === 'visible') return;
 
     const parseTemplate = (text: string) =>
-      text
-        .replace(/{{char}}/gi, charName)
-        .replace(/{{user}}/gi, userName);
+      text.replace(/{{char}}/gi, charName).replace(/{{user}}/gi, userName);
 
     const parsedTitle = parseTemplate(title);
     const parsedBody = parseTemplate(body);
 
     if ('Notification' in window) {
-      if (Notification.permission === 'granted') {
-        new Notification(parsedTitle, { body: parsedBody, icon });
-      } else if (Notification.permission !== 'denied') {
-        const permission = await Notification.requestPermission();
-        if (permission === 'granted') {
+      try {
+        if (Notification.permission === 'granted') {
           new Notification(parsedTitle, { body: parsedBody, icon });
+        } else if (Notification.permission !== 'denied') {
+          const permission = await Notification.requestPermission();
+          if (permission === 'granted') {
+            new Notification(parsedTitle, { body: parsedBody, icon });
+          }
         }
+      } catch (err) {
+        console.error('[Notification Error]', err);
       }
     }
 
     if (vibrateIfPossible && 'vibrate' in navigator) {
-      navigator.vibrate(200);
+      try {
+        navigator.vibrate(200);
+      } catch (err) {
+        console.error('[Vibration Error]', err);
+      }
     }
   }
 }
