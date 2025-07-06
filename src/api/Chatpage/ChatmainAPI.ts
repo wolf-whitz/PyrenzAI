@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { supabase } from '~/Utility/supabaseClient';
 import { useGenerateMessage } from '@api';
 import { useChatStore } from '~/store';
@@ -63,7 +62,12 @@ export const useChatPageAPI = (
     const index = previous_message.findIndex((msg) => msg.id === messageId);
     if (index === -1) return;
 
-    const messagesToDelete = previous_message.slice(index).map((msg) => msg.id);
+    const messagesToDelete = previous_message
+      .slice(index)
+      .map((msg) => msg.id)
+      .filter((id): id is string => !!id);
+
+    if (!messagesToDelete.length) return;
 
     try {
       const { error } = await supabase
@@ -75,7 +79,9 @@ export const useChatPageAPI = (
         console.error('Error deleting messages:', error);
       } else {
         setMessages((prevMessages) =>
-          prevMessages.filter((msg) => !messagesToDelete.includes(msg.id))
+          prevMessages.filter(
+            (msg) => typeof msg.id === 'string' && !messagesToDelete.includes(msg.id)
+          )
         );
       }
     } catch (error) {

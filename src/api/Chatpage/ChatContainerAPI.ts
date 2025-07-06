@@ -1,9 +1,10 @@
 import { useCallback } from 'react';
 import { Utils } from '~/Utility/Utility';
 import { GenerateResponse, Message } from '@shared-types';
-import { GetUserUUID } from '@components';
+import { GetUserUUID, useTabFocus } from '@components';
 import { supabase } from '~/Utility/supabaseClient';
 import { usePyrenzAlert } from '~/provider';
+import { NotificationManager } from '~/Utility/notification';
 
 interface CustomError {
   error: string;
@@ -18,6 +19,7 @@ interface GenerateMessageResponse {
 
 export const useGenerateMessage = () => {
   const showAlert = usePyrenzAlert();
+  const isTabFocused = useTabFocus();
 
   const generateMessage = useCallback(
     async (
@@ -44,7 +46,7 @@ export const useGenerateMessage = () => {
 
       const charMessage: Message = {
         id: undefined,
-        name: char.character_name,
+        name: char.name || char.character_name || 'AI',
         text: '',
         profile_image: char.user_avatar,
         type: 'char',
@@ -65,8 +67,7 @@ export const useGenerateMessage = () => {
           .eq('user_uuid', user_uuid)
           .single();
 
-        if (userDataError)
-          throw new Error('Failed to fetch inference settings');
+        if (userDataError) throw new Error('Failed to fetch inference settings');
 
         const { inference_settings } = userData;
         const adWatchKey = localStorage.getItem('ad_watch_token');
@@ -88,8 +89,7 @@ export const useGenerateMessage = () => {
 
         const response = await Utils.post<GenerateResponse>(url, payload);
 
-        if (!response?.data?.content)
-          throw new Error('No valid response from API');
+        if (!response?.data?.content) throw new Error('No valid response from API');
 
         const responseId = response.id?.[0]?.MessageID;
 
@@ -103,24 +103,29 @@ export const useGenerateMessage = () => {
                   isGenerate: false,
                 }
               : msg.type === 'user' && msg.id === undefined
-                ? { ...msg, id: responseId }
-                : msg
+              ? { ...msg, id: responseId }
+              : msg
           )
         );
 
+        await NotificationManager.fire({
+          title: `{{char}}: replied!`,
+          body: response.data.content.slice(0, 100),
+          icon: char.user_avatar,
+          vibrateIfPossible: !isTabFocused,
+          charName: char.name || char.character_name || 'AI',
+          userName: user.username,
+        });
+
         if (response.remainingMessages === undefined) {
-          const { data: subscriptionData, error: subscriptionError } =
-            await supabase
-              .from('subscription_plan')
-              .select('is_subscribed')
-              .eq('user_uuid', user_uuid)
-              .single();
+          const { data: subscriptionData, error: subscriptionError } = await supabase
+            .from('subscription_plan')
+            .select('is_subscribed')
+            .eq('user_uuid', user_uuid)
+            .single();
 
           if (subscriptionError) {
-            console.error(
-              'Error fetching subscription status:',
-              subscriptionError
-            );
+            console.error('Error fetching subscription status:', subscriptionError);
             return { isSubscribed: false };
           }
 
@@ -134,11 +139,7 @@ export const useGenerateMessage = () => {
 
         if (error instanceof Error) {
           errorMessage = error.message;
-        } else if (
-          typeof error === 'object' &&
-          error !== null &&
-          'error' in error
-        ) {
+        } else if (typeof error === 'object' && error !== null && 'error' in error) {
           const customError = error as CustomError;
           errorMessage = customError.error;
           showAd = customError.show_ad || false;
@@ -165,7 +166,7 @@ export const useGenerateMessage = () => {
         setIsGenerating(false);
       }
     },
-    [showAlert]
+    [showAlert, isTabFocused]
   );
 
   return generateMessage;
