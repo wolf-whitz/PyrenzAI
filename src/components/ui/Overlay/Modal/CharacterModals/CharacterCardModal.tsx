@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useCharacterModalApi } from '@api';
 import { Character } from '@shared-types';
 import { Button, Typography, CircularProgress, Box } from '@mui/material';
-import { motion } from 'framer-motion';
 import {
   EditOutlined as EditIcon,
   DeleteOutlined as DeleteIcon,
@@ -21,10 +20,22 @@ interface CharacterCardModalProps {
   onCharacterDeleted: () => void;
 }
 
-const truncateText = (text: string, maxLength: number) => {
-  if (text.length <= maxLength) return text;
-  return text.substring(0, maxLength) + '...';
-};
+const renderButtons = [
+  {
+    key: 'edit',
+    icon: <EditIcon fontSize="small" />,
+    label: 'Edit',
+    showCondition: (isOwner: boolean) => isOwner,
+    onClickHandler: (handlers: any) => handlers.handleEditCharacter,
+  },
+  {
+    key: 'delete',
+    icon: <DeleteIcon fontSize="small" />,
+    label: 'Delete',
+    showCondition: (isOwner: boolean) => isOwner,
+    onClickHandler: (handlers: any) => handlers.handleDeleteCharacter,
+  },
+];
 
 export function CharacterCardModal({
   isOpen,
@@ -52,65 +63,47 @@ export function CharacterCardModal({
   return (
     <PyrenzModal open={isOpen} onClose={onClose}>
       <PyrenzModalContent>
-        <Box display="flex" p={2}>
-          <motion.img
+        <Box display="flex" flexDirection="column" p={2} width="100%">
+          <img
             src={character.profile_image}
             alt={character.name}
             style={{
-              width: '96px',
-              height: '128px',
+              width: '100%',
+              height: 'auto',
               objectFit: 'cover',
               borderRadius: '12px',
               border: '2px solid rgba(255, 255, 255, 0.2)',
-              marginRight: '16px',
+              marginBottom: '16px',
               boxShadow: '0 0 8px rgba(0,0,0,0.4)',
             }}
-            initial={{ scale: 0.8 }}
-            animate={{ scale: 1, transition: { delay: 0.1, duration: 0.3 } }}
           />
-
+          <Box display="flex" justifyContent="center" gap={2} mb={2}>
+            {renderButtons.map((button) =>
+              button.showCondition(isOwner) ? (
+                <PyrenzBlueButton
+                  key={button.key}
+                  onClick={() => button.onClickHandler({ handleEditCharacter, handleDeleteCharacter })}
+                  startIcon={button.icon}
+                  style={{ color: 'white' }}
+                >
+                  {button.label}
+                </PyrenzBlueButton>
+              ) : null
+            )}
+          </Box>
           <Box flex={1} display="flex" flexDirection="column">
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-            >
+            <Box display="flex" alignItems="center" justifyContent="space-between">
               <Typography variant="h6" style={{ fontWeight: 'bold' }}>
                 {character.name}
               </Typography>
-
-              {isOwner && (
-                <Box>
-                  <PyrenzBlueButton
-                    onClick={handleEditCharacter}
-                    startIcon={<EditIcon fontSize="small" />}
-                    style={{ color: 'white', marginLeft: '8px' }}
-                  >
-                    Edit
-                  </PyrenzBlueButton>
-                  <PyrenzBlueButton
-                    onClick={handleDeleteCharacter}
-                    startIcon={<DeleteIcon fontSize="small" />}
-                    style={{ color: 'white', marginLeft: '8px' }}
-                  >
-                    Delete
-                  </PyrenzBlueButton>
-                </Box>
-              )}
             </Box>
-
             <Typography
               variant="caption"
-              style={{
-                color: 'white',
-                marginTop: '4px',
-                cursor: 'pointer',
-              }}
+              style={{ color: 'white', marginTop: '4px', cursor: 'pointer' }}
               onClick={handleCreatorClick}
             >
               @{character.creator}
             </Typography>
-
             <Typography
               variant="body2"
               style={{
@@ -118,26 +111,22 @@ export function CharacterCardModal({
                 marginTop: '16px',
                 opacity: 0.9,
                 cursor: 'pointer',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                display: '-webkit-box',
+                WebkitLineClamp: isExpanded ? 'unset' : 3,
+                WebkitBoxOrient: 'vertical',
               }}
               onClick={toggleExpand}
             >
-              {isExpanded
-                ? character.description || 'No description available.'
-                : truncateText(
-                    character.description || 'No description available.',
-                    100
-                  )}
+              {character.description || 'No description available.'}
             </Typography>
-
             <Box display="flex" alignItems="center" mt={3}>
               <PyrenzBlueButton
                 variant="contained"
                 onClick={handleChatNow}
                 disabled={isLoading}
-                style={{
-                  flex: 1,
-                  backgroundColor: '#3B82F6',
-                }}
+                style={{ flex: 1, backgroundColor: '#3B82F6' }}
                 startIcon={isLoading ? <CircularProgress size={20} /> : null}
               >
                 {isLoading ? <ShimmerText line={1} gap={10} /> : 'Chat Now'}
@@ -149,17 +138,11 @@ export function CharacterCardModal({
                 </Typography>
               </Box>
             </Box>
-
             <Box mt={2} display="flex" flexWrap="wrap" gap={1}>
               {character.is_public !== undefined && (
-                <motion.span
+                <Box
                   className="text-xs font-semibold py-1 px-3 rounded-full flex items-center gap-1"
-                  style={{
-                    background: 'rgba(255, 255, 255, 0.1)',
-                    color: 'white',
-                  }}
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{ opacity: 1, scale: 1 }}
+                  sx={{ background: 'rgba(255, 255, 255, 0.1)', color: 'white' }}
                 >
                   {character.is_public ? (
                     <>
@@ -172,27 +155,17 @@ export function CharacterCardModal({
                       Private
                     </>
                   )}
-                </motion.span>
+                </Box>
               )}
-              {character.tags &&
-                character.tags.map((tag, index) => (
-                  <motion.span
-                    key={index}
-                    className="text-xs font-semibold py-1 px-3 rounded-full"
-                    style={{
-                      background: 'rgba(255, 255, 255, 0.1)',
-                      color: 'white',
-                    }}
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{
-                      opacity: 1,
-                      scale: 1,
-                      transition: { delay: (index + 1) * 0.05 },
-                    }}
-                  >
-                    {tag}
-                  </motion.span>
-                ))}
+              {character.tags && character.tags.map((tag, index) => (
+                <Box
+                  key={index}
+                  className="text-xs font-semibold py-1 px-3 rounded-full"
+                  sx={{ background: 'rgba(255, 255, 255, 0.1)', color: 'white' }}
+                >
+                  {tag}
+                </Box>
+              ))}
             </Box>
           </Box>
         </Box>
