@@ -2,7 +2,7 @@
   "extends": "./tsconfig.app.json",
   "compilerOptions": {
     "noEmit": true,
-    "outDir": "./build",
+    "outDir": "./dist",
     "rootDir": "./src"
   },
   "include": ["src"]

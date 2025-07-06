@@ -30,12 +30,6 @@ export default defineConfig({
         useShortDoctype: true,
         minifyCSS: true,
         minifyJS: true,
-        inject: {
-          data: {
-            APP_VERSION: process.env.npm_package_version,
-            BUILD_DATE: new Date().toISOString(),
-          },
-        },
       },
     }),
   ],
@@ -56,7 +50,7 @@ export default defineConfig({
   publicDir: 'public',
 
   build: {
-    outDir: 'build',
+    outDir: 'dist',
     assetsDir: 'assets',
     chunkSizeWarningLimit: 1024,
     minify: 'esbuild',
