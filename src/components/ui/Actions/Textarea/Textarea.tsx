@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import llamaTokenizer from 'llama-tokenizer-js';
 import { motion } from 'framer-motion';
 import {
@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import clsx from 'clsx';
 import { z } from 'zod';
+import debounce from 'lodash/debounce';
 
 interface TextareaProps {
   name?: string;
@@ -44,28 +45,43 @@ export function Textarea({
   );
   const [localTokenTotal, setLocalTokenTotal] = useState(0);
 
-  useEffect(() => {
-    const currentValue = Array.isArray(value) ? value.join(', ') : value;
-    setCharacterCount(currentValue.length);
-    if (showTokenizer) {
-      const tokens = llamaTokenizer.encode(currentValue);
-      setLocalTokenTotal(tokens.length);
-    }
-  }, [value, showTokenizer]);
-
   const urlSchema = z.string().url();
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
+
     if (require_link) {
       const validationResult = urlSchema.safeParse(newValue);
       setIsLinkValid(validationResult.success);
       if (!validationResult.success) return;
     }
+
     onChange(e);
   };
 
   const displayValue = Array.isArray(value) ? value.join(', ') : value;
+
+  const tokenize = useMemo(
+    () =>
+      debounce((input: string) => {
+        const tokens = llamaTokenizer.encode(input);
+        setLocalTokenTotal(tokens.length);
+      }, 250),
+    []
+  );
+
+  useEffect(() => {
+    const currentValue = Array.isArray(value) ? value.join(', ') : value;
+    setCharacterCount(currentValue.length);
+
+    if (showTokenizer) {
+      tokenize(currentValue);
+    }
+
+    return () => {
+      tokenize.cancel();
+    };
+  }, [value, showTokenizer]);
 
   return (
     <motion.div

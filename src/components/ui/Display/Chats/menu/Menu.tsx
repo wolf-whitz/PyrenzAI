@@ -8,11 +8,10 @@ import {
   Typography,
   Collapse,
   CircularProgress,
-  Fade,
 } from '@mui/material';
 import { ExpandMore, ExpandLess } from '@mui/icons-material';
 import { PyrenzModal, PyrenzModalContent } from '~/theme';
-import { Customization, Cosmetic, CharacterDetails, Memory } from './MenuItem';
+import { Customization, Cosmetic, CharacterDetails, Memory, ModelControl } from './MenuItem';
 import { useMenuAPI } from '@api';
 import { Character } from '@shared-types';
 
@@ -55,6 +54,8 @@ export function Menu({ onClose, char }: MenuProps) {
         );
       case 'Memory':
         return <Memory />;
+      case 'Model Control':
+        return <ModelControl />;
       default:
         return null;
     }
@@ -96,7 +97,6 @@ export function Menu({ onClose, char }: MenuProps) {
               >
                 <Typography>{selectedOption}</Typography>
               </Button>
-
               <Collapse in={isDropdownOpen}>
                 <Paper
                   elevation={3}
@@ -113,6 +113,7 @@ export function Menu({ onClose, char }: MenuProps) {
                       'AI Customization',
                       'Character Details',
                       'Memory',
+                      'Model Control',
                     ].map((option) => (
                       <MenuItem
                         key={option}
@@ -134,7 +135,6 @@ export function Menu({ onClose, char }: MenuProps) {
                 </Paper>
               </Collapse>
             </Box>
-
             <Box>{renderContent}</Box>
           </>
         )}
