@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Textarea, GetUserUUID } from '@components';
 import { PyrenzSlider, PyrenzBlueButton } from '~/theme';
 import { supabase } from '~/Utility/supabaseClient';
-import { applyTokenizer, decodeTokenizer } from "~/Utility/Tokenizer";
+import { applyTokenizer, decodeTokenizer } from '~/Utility/Tokenizer';
 import { Box, Typography, Tooltip, IconButton } from '@mui/material';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 export function ModelControl() {
   const [blockedWords, setBlockedWords] = useState('');
   const [encouragedWords, setEncouragedWords] = useState('');
+  const [presetInstruction, setPresetInstruction] = useState('');
   const [blockedFrequency, setBlockedFrequency] = useState(-100);
   const [encouragedFrequency, setEncouragedFrequency] = useState(100);
   const [userUUID, setUserUUID] = useState<string | null>(null);
@@ -18,16 +19,22 @@ export function ModelControl() {
       const uuid = await GetUserUUID();
       if (!uuid) return;
       setUserUUID(uuid);
+
       const { data, error } = await supabase
         .from('user_data')
-        .select('model_controls')
+        .select('model_controls, preset_instruction')
         .eq('user_uuid', uuid)
         .single();
+
       if (error) {
-        console.error('Error fetching model_controls:', error);
+        console.error('Error fetching user_data:', error);
         return;
       }
+
       const controls = data?.model_controls;
+      const instruction = data?.preset_instruction ?? '';
+      setPresetInstruction(instruction);
+
       if (!controls) return;
       if (Array.isArray(controls.blocked) && controls.blocked.length > 0) {
         const decoded = controls.blocked.map((tokens: number[]) => decodeTokenizer(tokens)).join(', ');
@@ -37,6 +44,7 @@ export function ModelControl() {
         const decoded = controls.encouraged.map((tokens: number[]) => decodeTokenizer(tokens)).join(', ');
         setEncouragedWords(decoded);
       }
+
       const controller = controls.controller ?? {};
       if (controller['Blocked Words Frequency']) {
         setBlockedFrequency(controller['Blocked Words Frequency']);
@@ -54,20 +62,22 @@ export function ModelControl() {
     const encouragedWordsArray = encouragedWords.split(',').map(word => word.trim()).filter(Boolean);
     const blockedTokens = blockedWordsArray.map(word => applyTokenizer(word));
     const encouragedTokens = encouragedWordsArray.map(word => applyTokenizer(word));
-    const data = {
-      model_controls: {
-        blocked: blockedTokens,
-        encouraged: encouragedTokens,
-        controller: {
-          "Blocked Words Frequency": blockedFrequency,
-          "Encouraged Word Frequency": encouragedFrequency,
-        },
-      },
-    };
+
     const { error } = await supabase
       .from('user_data')
-      .update(data)
+      .update({
+        model_controls: {
+          blocked: blockedTokens,
+          encouraged: encouragedTokens,
+          controller: {
+            "Blocked Words Frequency": blockedFrequency,
+            "Encouraged Word Frequency": encouragedFrequency,
+          },
+        },
+        preset_instruction: presetInstruction,
+      })
       .eq('user_uuid', userUUID);
+
     if (error) {
       console.error('Error submitting data:', error);
     } else {
@@ -91,6 +101,7 @@ export function ModelControl() {
           onChange={(e) => setBlockedWords(e.target.value)}
           placeholder="Enter blocked words separated by commas..."
         />
+
         <Box display="flex" alignItems="center">
           <Typography variant="h6">Encouraged Words</Typography>
           <Tooltip title="Words that the model will prefer using">
@@ -104,6 +115,21 @@ export function ModelControl() {
           onChange={(e) => setEncouragedWords(e.target.value)}
           placeholder="Enter encouraged words separated by commas..."
         />
+
+        <Box display="flex" alignItems="center">
+          <Typography variant="h6">Preset Instruction</Typography>
+          <Tooltip title="This instruction is sent with every message. Do not modify it unless you are certain of what you're doing, as it significantly affects the model's behavior.">
+            <IconButton>
+              <HelpOutlineIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        </Box>
+        <Textarea
+          value={presetInstruction}
+          onChange={(e) => setPresetInstruction(e.target.value)}
+          placeholder="Enter preset instruction..."
+        />
+
         <Box display="flex" alignItems="center">
           <Typography variant="subtitle1">Blocked Words Frequency: {blockedFrequency}</Typography>
           <Tooltip title="Adjust the frequency penalty for blocked words">
@@ -118,6 +144,7 @@ export function ModelControl() {
           min={-100}
           max={0}
         />
+
         <Box display="flex" alignItems="center">
           <Typography variant="subtitle1">Encouraged Word Frequency: {encouragedFrequency}</Typography>
           <Tooltip title="Adjust the frequency bonus for encouraged words">
@@ -133,6 +160,7 @@ export function ModelControl() {
           max={100}
         />
       </Box>
+
       <Box
         display="flex"
         justifyContent="center"
