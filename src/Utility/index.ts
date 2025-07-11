@@ -1,7 +1,7 @@
 export * from './Encrypt'
 export * from './IndexDB'
 
-export * from './SupabaseClient'
+export { supabase } from './SupabaseClient';
 export * from './Tokenizer'
 
 export * from './UploadImage'
