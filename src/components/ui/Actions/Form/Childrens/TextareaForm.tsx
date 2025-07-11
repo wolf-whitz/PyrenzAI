@@ -5,14 +5,12 @@ import React, {
   useMemo,
   useRef,
 } from 'react';
-import { ImageUploader, Textarea, TagsMenu } from '@components';
-import { useTextareaFormAPI } from '@api';
+import { ImageUploader, Textarea, TagsMenu, useTextareaFormAPI, textareasByCategory } from '@components';
 import { useCharacterStore } from '~/store';
 import { Character } from '@shared-types';
 import llamaTokenizer from 'llama-tokenizer-js';
 import { Box, Typography } from '@mui/material';
-import { uploadImage } from '~/Utility/UploadImage';
-import { textareasByCategory } from '@components';
+import { uploadImage } from '@utils';
 import { usePyrenzAlert } from '~/provider';
 import debounce from 'lodash.debounce';
 

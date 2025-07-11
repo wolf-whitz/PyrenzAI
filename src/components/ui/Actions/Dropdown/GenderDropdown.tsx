@@ -1,5 +1,4 @@
-import React from 'react';
-import { Select, MenuItem, FormControl } from '@mui/material';
+import { Select, MenuItem } from '@mui/material';
 import {
   PyrenzFormControl,
   PyrenzOutlinedInput,

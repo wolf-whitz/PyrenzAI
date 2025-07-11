@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { motion } from 'framer-motion';
-import { usePreviousChatAPI } from '@api';
+import { usePreviousChatAPI } from '@components';
 import { PyrenzDialog } from '~/theme';
 
 export function PreviousChat() {

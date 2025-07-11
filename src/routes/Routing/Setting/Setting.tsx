@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Sidebar, MobileNav } from '@components';
-import { supabase } from '~/Utility/supabaseClient';
+import { supabase } from '@utils';
 import type { User } from '@supabase/supabase-js';
 import {
   Box,
@@ -13,9 +13,9 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import { PyrenzBlueButton } from '~/theme';
-import { Account, Profile, Persona } from './Items';
+import { Account, Profile, Persona, Api } from './Items';
 
-const tabs = ['account', 'profile', 'persona'] as const;
+const tabs = ['account', 'profile', 'persona', 'api'] as const;
 
 export function Setting() {
   const [activeTab, setActiveTab] = useState<(typeof tabs)[number]>('account');
@@ -42,7 +42,11 @@ export function Setting() {
   }, []);
 
   const renderTabs = () => {
-    const getTabs = (arr: readonly (typeof tabs)[number][]) =>
+    if (!user) {
+      return null;
+    }
+
+    const getTabs = (arr: readonly string[]) =>
       arr.map((tab) => (
         <Tab
           key={tab}
@@ -65,7 +69,7 @@ export function Setting() {
         >
           <Tabs
             value={activeTab}
-            onChange={(_, val) => setActiveTab(val as (typeof tabs)[number])}
+            onChange={(_, val) => setActiveTab(val)}
             variant="scrollable"
             scrollButtons="auto"
             sx={{ width: 'fit-content' }}
@@ -74,7 +78,7 @@ export function Setting() {
           </Tabs>
           <Tabs
             value={activeTab}
-            onChange={(_, val) => setActiveTab(val as (typeof tabs)[number])}
+            onChange={(_, val) => setActiveTab(val)}
             variant="scrollable"
             scrollButtons="auto"
             sx={{ width: 'fit-content', mt: 2 }}
@@ -93,7 +97,7 @@ export function Setting() {
         >
           <Tabs
             value={activeTab}
-            onChange={(_, val) => setActiveTab(val as (typeof tabs)[number])}
+            onChange={(_, val) => setActiveTab(val)}
             variant="scrollable"
             scrollButtons="auto"
             sx={{ width: 'fit-content' }}
@@ -113,6 +117,8 @@ export function Setting() {
         return <Profile />;
       case 'persona':
         return <Persona />;
+      case 'api':
+        return <Api />;
       default:
         return null;
     }

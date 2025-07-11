@@ -11,7 +11,7 @@ import {
   IconButton,
 } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
-import { supabase } from '~/Utility/supabaseClient';
+import { supabase } from '@utils';
 import * as Sentry from '@sentry/react';
 import { usePyrenzAlert } from '~/provider';
 import { PyrenzModal, PyrenzModalContent, PyrenzBlueButton } from '~/theme';

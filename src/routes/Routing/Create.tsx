@@ -5,10 +5,10 @@ import {
   CommunityGuidelines,
   MobileNav,
   CreatePageLoader,
-  GetUserData,
 } from '@components';
+import {   GetUserData  } from '@function'
 import { useMediaQuery, useTheme, Box, Typography } from '@mui/material';
-import { supabase } from '~/Utility/supabaseClient';
+import { supabase } from '@utils';
 import { useParams } from 'react-router-dom';
 import { useCharacterStore, useUserStore } from '~/store';
 import { Character } from '@shared-types';

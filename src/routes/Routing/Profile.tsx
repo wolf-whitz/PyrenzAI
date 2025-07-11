@@ -3,9 +3,9 @@ import {
   Sidebar,
   CharacterCard,
   UserProfileHeader,
-  GetUserCreatedCharacters,
   MobileNav,
 } from '@components';
+import { getUserCreatedCharacters as GetUserCreatedCharacters } from '@function';
 import {
   Box,
   Typography,
@@ -25,16 +25,9 @@ export function ProfilePage() {
   const [refreshCharacters, setRefreshCharacters] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-
   const itemsPerPage = 20;
-  const result =
-    GetUserCreatedCharacters(
-      creator_uuid,
-      page,
-      itemsPerPage,
-      refreshCharacters
-    ) ?? {};
 
+  const result = GetUserCreatedCharacters(creator_uuid, page, itemsPerPage, refreshCharacters) ?? {};
   const { characters = [], userData, loading, isOwner, maxPage = 1 } = result;
 
   const handlePreviousPage = () => {
@@ -117,7 +110,7 @@ export function ProfilePage() {
             minHeight="50vh"
             pl={{ md: 10 }}
           >
-            {characters.length > 0 ? (
+            {characters && characters[0] ? (
               characters.map((character) => (
                 <Box key={character.id}>
                   <CharacterCard
@@ -136,7 +129,7 @@ export function ProfilePage() {
               </Typography>
             )}
           </Box>
-          {characters.length > 0 && maxPage > 1 && (
+          {characters && characters[0] && maxPage > 1 && (
             <Box
               display="flex"
               justifyContent="center"

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Textarea, GetUserUUID } from '@components';
 import { PyrenzSlider, PyrenzBlueButton } from '~/theme';
-import { supabase } from '~/Utility/supabaseClient';
-import { applyTokenizer, decodeTokenizer } from '~/Utility/Tokenizer';
+import { supabase } from '@utils';
+import { applyTokenizer, decodeTokenizer } from '@utils';
 import { Box, Typography, Tooltip, IconButton } from '@mui/material';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 

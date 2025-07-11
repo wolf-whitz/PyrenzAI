@@ -1,21 +1,9 @@
 import React, { useState } from 'react';
 import { Box, Typography } from '@mui/material';
-import {
-  CustomModelFields,
-  ModelSelection,
-  SliderComponent,
-} from '@components';
+import { ModelSelection, SliderComponent, useCustomizeAPI } from '@components';
 import InfoIcon from '@mui/icons-material/Info';
 import BuildIcon from '@mui/icons-material/Build';
 import { PyrenzBlueButton } from '~/theme';
-import { useCustomizeAPI } from '@api';
-
-interface ModelOption {
-  label: string;
-  name: string;
-  description: string;
-  subscription_plan: string;
-}
 
 interface CustomizationProps {
   customization: {
@@ -27,7 +15,6 @@ interface CustomizationProps {
     frequencyPenalty: number;
   } | null;
   subscriptionPlan: string | null;
-  modelOptions: ModelOption[];
 }
 
 const sliderDescriptions = {
@@ -41,14 +28,8 @@ const sliderDescriptions = {
     'Penalizes new tokens based on their frequency in the input. Higher values make the output less repetitive.',
 };
 
-export function Customization({
-  customization,
-  subscriptionPlan,
-  modelOptions,
-}: CustomizationProps) {
-  const [showPopover, setShowPopover] = useState<
-    keyof typeof sliderDescriptions | null
-  >(null);
+export function Customization({ customization, subscriptionPlan }: CustomizationProps) {
+  const [showPopover, setShowPopover] = useState<keyof typeof sliderDescriptions | null>(null);
 
   const {
     maxTokens,
@@ -61,27 +42,18 @@ export function Customization({
     maxTokenLimit,
     stateSetters,
     handleSubmit,
-  } = useCustomizeAPI({ customization, subscriptionPlan, modelOptions });
+    modelOptions,
+    privateModels,
+  } = useCustomizeAPI({ customization, subscriptionPlan });
 
   return (
     <Box>
       <ModelSelection
         preferredModel={preferredModel}
         setPreferredModel={setPreferredModel}
-        modelOptions={modelOptions.map((option) => ({
-          value: option.name,
-          label: option.label,
-          description: option.description,
-          subscription_plan: option.subscription_plan,
-        }))}
+        modelOptions={modelOptions}
+        privateModels={privateModels}
       />
-
-      {preferredModel === 'Custom' && (
-        <Box>
-          <CustomModelFields />
-        </Box>
-      )}
-
       <Box
         border={1}
         borderColor="grey.300"
@@ -105,7 +77,6 @@ export function Customization({
             frequencyPenalty,
           }[sliderKey];
           const stateSetter = stateSetters[sliderKey];
-
           let maxValue;
           switch (sliderKey) {
             case 'maxTokens':
@@ -126,7 +97,6 @@ export function Customization({
             default:
               maxValue = undefined;
           }
-
           return (
             <SliderComponent
               key={sliderKey}
@@ -144,7 +114,6 @@ export function Customization({
           );
         })}
       </Box>
-
       <PyrenzBlueButton
         variant="contained"
         onClick={handleSubmit}

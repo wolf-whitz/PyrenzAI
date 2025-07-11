@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Box, Button, Typography, Tooltip } from '@mui/material';
 import { Textarea } from '@components';
-import { supabase } from '~/Utility/supabaseClient';
+import { supabase } from '@utils';
 import { usePyrenzAlert } from '~/provider';
 import { useParams } from 'react-router-dom';
 import { LlamaTokenizer } from 'llama-tokenizer-js';

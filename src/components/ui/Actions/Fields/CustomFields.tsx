@@ -5,7 +5,7 @@ import {
   PyrenzOutlinedInput,
   PyrenzInputLabel,
 } from '~/theme';
-import { supabase } from '~/Utility/supabaseClient';
+import { supabase } from '@utils';
 import { GetUserUUID } from '@components';
 
 export function CustomModelFields() {

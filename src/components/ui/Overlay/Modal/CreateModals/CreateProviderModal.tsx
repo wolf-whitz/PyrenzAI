@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { Textarea } from '@components';
-import { supabase } from '~/Utility/supabaseClient';
-import { GetUserUUID } from '~/components/functions';
+import { Textarea, GetUserUUID } from '@components';
+import { supabase } from '@utils';
 import { PyrenzBlueButton, PyrenzModal, PyrenzModalContent } from '~/theme';
 import { usePyrenzAlert } from '~/provider';
 

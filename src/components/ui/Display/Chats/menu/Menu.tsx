@@ -11,8 +11,14 @@ import {
 } from '@mui/material';
 import { ExpandMore, ExpandLess } from '@mui/icons-material';
 import { PyrenzModal, PyrenzModalContent } from '~/theme';
-import { Customization, Cosmetic, CharacterDetails, Memory, ModelControl } from './MenuItem';
-import { useMenuAPI } from '@api';
+import {
+  Customization,
+  Cosmetic,
+  CharacterDetails,
+  Memory,
+  ModelControl,
+} from './MenuItem';
+import { useMenuAPI } from '@components';
 import { Character } from '@shared-types';
 
 interface MenuProps {
@@ -30,7 +36,6 @@ export function Menu({ onClose, char }: MenuProps) {
     handleCharacterDetailsSubmit,
     aiCustomization,
     subscriptionPlan,
-    modelOptions,
   } = useMenuAPI({ char });
 
   const renderContent = useMemo(() => {
@@ -42,7 +47,6 @@ export function Menu({ onClose, char }: MenuProps) {
           <Customization
             customization={aiCustomization}
             subscriptionPlan={subscriptionPlan}
-            modelOptions={modelOptions}
           />
         );
       case 'Character Details':
@@ -63,7 +67,6 @@ export function Menu({ onClose, char }: MenuProps) {
     selectedOption,
     aiCustomization,
     subscriptionPlan,
-    modelOptions,
     char,
     handleCharacterDetailsSubmit,
   ]);

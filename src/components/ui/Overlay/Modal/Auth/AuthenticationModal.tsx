@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FaDiscord } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
-import { handleLogin, handleOAuthSignIn, handleSignUp } from '~/api';
+import { handleLogin, handleOAuthSignIn, handleSignUp } from '@components';
 import * as Sentry from '@sentry/react';
 import { useTranslation } from 'react-i18next';
 import { useUserStore } from '~/store';

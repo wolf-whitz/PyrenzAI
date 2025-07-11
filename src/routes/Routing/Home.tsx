@@ -12,8 +12,8 @@ import {
   Pagination,
   Banner,
   AuthenticationModal,
+  useHomepageAPI
 } from '@components';
-import { useHomepageAPI } from '@api';
 
 export function Home() {
   const [showLogin, setShowLogin] = useState(false);

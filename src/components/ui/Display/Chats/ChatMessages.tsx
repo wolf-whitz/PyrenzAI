@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Box } from '@mui/material';
 import { ChatMessagesProps, Message, User } from '@shared-types';
-import { speakMessage } from '@api';
-import { MessageBox, Character } from '@components';
+import { MessageBox, Character, speakMessage } from '@components';
 
 interface ChatMessagesExtendedProps extends ChatMessagesProps {
   setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>;

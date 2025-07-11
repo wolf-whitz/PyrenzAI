@@ -1,8 +1,7 @@
 import { PyrenzBlueButton } from '~/theme';
 import React, { useEffect, useState, useCallback } from 'react';
 import { Box, Typography } from '@mui/material';
-import { CreatePersonaModal, PersonaList } from '@components';
-import { usePersonaAPI } from '@api';
+import { CreatePersonaModal, PersonaList, usePersonaAPI } from '@components';
 
 interface Persona {
   id: string;

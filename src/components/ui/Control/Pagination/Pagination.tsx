@@ -2,7 +2,7 @@ import { useHomeStore } from '~/store';
 import React, { useState } from 'react';
 import { Button, Box, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
-import { fetchCharacters } from '~/api';
+import { fetchCharacters } from '@function';
 import * as Sentry from '@sentry/react';
 import { usePyrenzAlert } from '~/provider';
 
@@ -23,15 +23,20 @@ export function Pagination({
   const showAlert = usePyrenzAlert();
   const setCharacters = useHomeStore((state) => state.setCharacters);
   const maxPage = useHomeStore((state) => state.maxPage);
-
   const [currentPage, setCurrentPageState] = useState(initialCurrentPage);
 
   const handlePageChange = async (newPage: number) => {
     if (isLoading || newPage < 1 || newPage > maxPage) return;
 
     setIsLoading(true);
+
     try {
-      const response = await fetchCharacters(newPage, itemsPerPage, search);
+      const response = await fetchCharacters({
+        currentPage: newPage,
+        itemsPerPage,
+        search,
+      });
+
       const { characters } = response;
 
       setCurrentPageState(newPage);

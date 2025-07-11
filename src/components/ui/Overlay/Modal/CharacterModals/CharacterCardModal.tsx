@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useCharacterModalApi } from '@api';
+import { useCharacterModalApi } from '@components';
 import { Character } from '@shared-types';
 import { Button, Typography, CircularProgress, Box } from '@mui/material';
 import {

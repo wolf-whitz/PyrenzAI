@@ -1,4 +1,4 @@
-import { supabase } from '~/Utility/supabaseClient';
+import { supabase } from '@utils';
 import useSWR from 'swr';
 import { SERVER_API_URL as BASE_URL } from '~/config';
 

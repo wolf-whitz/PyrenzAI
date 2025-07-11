@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion';
-import { LanguageModal } from '@components';
+import { LanguageModal, useAccountAPI } from '@components';
 import { Avatar, Button, Typography, Box } from '@mui/material';
-import { useAccountAPI } from '@api';
 import { PyrenzDialog } from '~/theme';
 import { useState } from 'react';
 import { ChevronLeftOutlined as ChevronLeftIcon } from '@mui/icons-material';

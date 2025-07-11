@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useChatStore } from '~/store';
-import { fetchChatData } from '@api';
 import {
   Sidebar,
   ChatContainer,
   PreviousChat,
+  fetchChatData,
   GetUserUUID,
-  GetUserData,
+  GetUserData, 
 } from '@components';
 import { Box, CircularProgress, Typography, Fade } from '@mui/material';
 import { Character } from '@shared-types';

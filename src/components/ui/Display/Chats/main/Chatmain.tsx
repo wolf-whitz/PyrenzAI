@@ -6,8 +6,8 @@ import {
   ChatMessages,
   ChatInput,
   ChatHeader,
+  useChatPageAPI
 } from '@components';
-import { useChatPageAPI } from '@api';
 import { Fade, Slide, Box } from '@mui/material';
 import { useChatStore } from '~/store';
 

@@ -8,9 +8,8 @@ import {
 } from '@mui/material';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import { useArchiveChatPageAPI } from '@api';
 import { PyrenzChatsCharacterCard, PyrenzBlueButton } from '~/theme';
-import { Sidebar, MobileNav } from '~/components';
+import { Sidebar, MobileNav, useArchiveChatPageAPI } from '@components';
 
 interface Chat {
   chat_uuid: string;

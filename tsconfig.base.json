@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+      "baseUrl": ".",
+      "paths": {
+        "~/*": ["src/*"],
+        "@public/*": ["public/*"],
+  
+        "@components": ["src/components"],
+        "@components/*": ["src/components/*"],
+  
+        "@shared-types": ["src/components"],
+        "@libs/*": ["src/lib/*"],
+        "@utils": ["src/Utility"],
+
+        "@function": ["src/components/service-function"]
+      }
+    }
+  }
+  

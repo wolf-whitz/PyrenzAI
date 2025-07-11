@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Menu, MenuItem, Typography, TextField, Box } from '@mui/material';
-import { supabase } from '~/Utility/supabaseClient';
+import { supabase } from '@utils';
 
 interface Tag {
   id: number;

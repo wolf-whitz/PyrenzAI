@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { saveImageToDB, getImageFromDB, openDB } from '~/Utility/IndexDB';
+import { saveImageToDB, getImageFromDB, openDB } from '@utils';
 import { Box, Typography } from '@mui/material';
 import { PyrenzBlueButton } from '~/theme';
 import { useUserStore } from '~/store';

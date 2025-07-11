@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import SearchIcon from '@mui/icons-material/Search';
-import { supabase } from '~/Utility/supabaseClient';
+import { supabase } from '@utils';
 import { PyrenzModal, PyrenzModalContent } from '~/theme';
 
 interface MoreButtonsModalProps {

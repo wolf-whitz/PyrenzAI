@@ -3,7 +3,7 @@ import { Box, Typography, CircularProgress, keyframes } from '@mui/material';
 import { Textarea } from '@components';
 import { Character } from '@shared-types';
 import { PyrenzBlueButton } from '~/theme';
-import { supabase } from '~/Utility/supabaseClient';
+import { supabase } from '@utils';
 import { styled } from '@mui/system';
 
 interface CharacterDetailsProps {
