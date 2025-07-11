@@ -1,4 +1,4 @@
-import { supabase } from '@utils';
+import { supabase } from '~/Utility';
 import { Character } from '@shared-types';
 
 type ChatDataResult = Character | { error: string };

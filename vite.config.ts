@@ -17,7 +17,7 @@ export default defineConfig({
     }),
 
     tsconfigPaths({
-      projects: ['tsconfig.app.json'],
+      projects: ['tsconfig.base.json'],
     }),
 
     createHtmlPlugin({

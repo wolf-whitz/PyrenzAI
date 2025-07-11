@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import * as Sentry from '@sentry/react';
 import { Character } from '@shared-types';
-import { NotificationManager, supabase } from '@utils';
+import { NotificationManager, supabase } from '~/Utility';
 
 interface CreateCharacterResponse {
   char_uuid?: string;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '@utils';
+import { supabase } from '~/Utility';
 
 type Chat = {
   chat_uuid: string;

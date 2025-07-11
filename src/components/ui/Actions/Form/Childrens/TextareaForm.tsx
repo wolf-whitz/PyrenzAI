@@ -10,7 +10,7 @@ import { useCharacterStore } from '~/store';
 import { Character } from '@shared-types';
 import llamaTokenizer from 'llama-tokenizer-js';
 import { Box, Typography } from '@mui/material';
-import { uploadImage } from '@utils';
+import { uploadImage } from '~/Utility';
 import { usePyrenzAlert } from '~/provider';
 import debounce from 'lodash.debounce';
 

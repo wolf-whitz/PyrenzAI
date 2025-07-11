@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { PersonOutline as PersonOutlineIcon } from '@mui/icons-material';
 import { Typography, Box, Button } from '@mui/material';
 import { PersonaModal } from '@components';
-import { supabase } from '@utils';
+import { supabase } from '~/Utility';
 
 interface PersonaCard {
   id: string;

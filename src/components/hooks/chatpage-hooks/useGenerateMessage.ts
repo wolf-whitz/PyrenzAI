@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { GenerateResponse, Message } from '@shared-types';
 import { GetUserUUID, useTabFocus } from '@components';
 import { usePyrenzAlert } from '~/provider';
-import { NotificationManager, supabase, Utils } from '@utils';
+import { NotificationManager, supabase, Utils } from '~/Utility';
 
 interface CustomError {
   error: string;

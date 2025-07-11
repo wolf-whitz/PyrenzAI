@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { supabase } from '@utils';
+import { supabase } from '~/Utility';
 import { useGenerateMessage } from '@components';
 import { useChatStore } from '~/store';
 import { Message, User, Character } from '@shared-types';

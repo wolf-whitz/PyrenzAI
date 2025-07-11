@@ -13,7 +13,7 @@ import {
   ChevronRightOutlined as ChevronRightIcon,
   DeleteOutlined as DeleteIcon,
 } from '@mui/icons-material';
-import { supabase } from '@utils';
+import { supabase } from '~/Utility';
 import { GetUserUUID } from '@components';
 import { Draft } from '@shared-types';
 import { PyrenzModal, PyrenzModalContent } from '~/theme';

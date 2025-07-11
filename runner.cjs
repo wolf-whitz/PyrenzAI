@@ -1,48 +1,34 @@
 const fs = require('fs');
 const path = require('path');
 
-// Folder where the source code lives
-const SRC_DIR = path.join(__dirname, 'src');
+const targetDir = path.resolve(__dirname, 'src'); // root of your codebase
+const fromImport = '@utils';
+const toImport = '~/Utility';
 
-// Match '~/Utility/anything' and replace with '@utils'
-const importRegex = /(['"])~\/Utility\/[^'"]*\1/g;
+function walkAndReplace(dir) {
+  const files = fs.readdirSync(dir);
 
-// Recursively find .ts and .tsx files
-function getAllTsFiles(dirPath, arrayOfFiles = []) {
-  const files = fs.readdirSync(dirPath);
-
-  files.forEach(file => {
-    const fullPath = path.join(dirPath, file);
+  for (const file of files) {
+    const fullPath = path.join(dir, file);
     const stat = fs.statSync(fullPath);
 
     if (stat.isDirectory()) {
-      getAllTsFiles(fullPath, arrayOfFiles);
-    } else if (file.endsWith('.ts') || file.endsWith('.tsx')) {
-      arrayOfFiles.push(fullPath);
+      walkAndReplace(fullPath);
+    } else if (stat.isFile() && /\.(ts|tsx|js|jsx)$/.test(file)) {
+      let content = fs.readFileSync(fullPath, 'utf8');
+
+      if (content.includes(fromImport)) {
+        const updated = content.replace(
+          new RegExp(`(['"\`])${fromImport}\\1`, 'g'),
+          `'${toImport}'`
+        );
+
+        fs.writeFileSync(fullPath, updated, 'utf8');
+        console.log(`✅ Updated: ${fullPath}`);
+      }
     }
-  });
-
-  return arrayOfFiles;
-}
-
-// Read, replace, and save each file
-function replaceImports(filePath) {
-  let content = fs.readFileSync(filePath, 'utf8');
-
-  const updated = content.replace(importRegex, (_, quote) => `${quote}@utils${quote}`);
-
-  if (content !== updated) {
-    fs.writeFileSync(filePath, updated, 'utf8');
-    console.log(`✅ Updated: ${filePath}`);
   }
 }
 
-// Run it
-function run() {
-  console.log('🔍 Scanning for imports to refactor...');
-  const files = getAllTsFiles(SRC_DIR);
-  files.forEach(replaceImports);
-  console.log('🎉 Done!');
-}
-
-run();
+walkAndReplace(targetDir);
+console.log('🎉 Done replacing @utils with ~/Utility');

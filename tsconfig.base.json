@@ -10,7 +10,6 @@
   
         "@shared-types": ["src/components"],
         "@libs/*": ["src/lib/*"],
-        "@utils": ["src/Utility"],
 
         "@function": ["src/components/service-function"]
       }

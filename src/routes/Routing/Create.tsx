@@ -8,7 +8,7 @@ import {
 } from '@components';
 import {   GetUserData  } from '@function'
 import { useMediaQuery, useTheme, Box, Typography } from '@mui/material';
-import { supabase } from '@utils';
+import { supabase } from '~/Utility';
 import { useParams } from 'react-router-dom';
 import { useCharacterStore, useUserStore } from '~/store';
 import { Character } from '@shared-types';

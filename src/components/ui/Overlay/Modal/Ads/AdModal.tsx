@@ -3,7 +3,7 @@ import { Typography, CircularProgress } from '@mui/material';
 import CoffeeIcon from '@mui/icons-material/Coffee';
 import Confetti from 'react-confetti';
 import { useNavigate } from 'react-router-dom';
-import { Utils } from '@utils';
+import { Utils } from '~/Utility';
 import { GetUserUUID } from '@components';
 import { PyrenzBlueButton } from '~/theme';
 

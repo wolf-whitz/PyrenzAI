@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '@utils';
+import { supabase } from '~/Utility';
 import { User } from '@supabase/supabase-js';
 import { useUserStore } from '~/store';
 

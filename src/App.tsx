@@ -2,7 +2,7 @@ import React, { useEffect, useState, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, useNavigate } from 'react-router-dom';
 import { AppRoutes } from '~/routes/routes';
 import { Spinner } from '@components';
-import { supabase } from '@utils';
+import { supabase } from '~/Utility';
 import { usePyrenzAlert } from '~/provider';
 import { useUserStore } from '~/store';
 import { Box, useTheme } from '@mui/material';

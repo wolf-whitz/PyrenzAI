@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { supabase } from '@utils';
+import { supabase } from '~/Utility';
 import { GetUserUUID, GetUserData } from '@components';
 import { usePyrenzAlert } from '~/provider';
 

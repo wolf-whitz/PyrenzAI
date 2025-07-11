@@ -2,7 +2,7 @@
  * AdminPanel.tsx this file does not work as of right now, it is a work in progress. In the future admins and mods can ban user generated content here.
  */
 import React, { useEffect, useState } from 'react';
-import { supabase } from '@utils';
+import { supabase } from '~/Utility';
 import { useUserStore } from '~/store';
 import {
   Box,
@@ -11,7 +11,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { Utils } from '@utils';
+import { Utils } from '~/Utility';
 import { PyrenzBlueButton } from '~/theme';
 import { Sidebar, MobileNav } from '@components';
 

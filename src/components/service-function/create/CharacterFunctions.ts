@@ -1,4 +1,4 @@
-import { supabase } from '@utils';
+import { supabase } from '~/Utility';
 import * as Sentry from '@sentry/react';
 import { Character, Draft } from '@shared-types';
 import { v4 as uuidv4 } from 'uuid';

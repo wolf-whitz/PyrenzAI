@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { TextField, Typography, Box } from '@mui/material';
-import { supabase } from '@utils';
+import { supabase } from '~/Utility';
 import { GetUserUUID, Textarea, ImageUploader } from '@components';
 import { PyrenzBlueButton } from '~/theme';
 import { usePyrenzAlert } from '~/provider';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '~/store';
-import { uploadImage } from '@utils';
+import { uploadImage } from '~/Utility';
 
 export function Profile() {
   const [username, setUsername] = useState<string>('');

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Typography, Select, MenuItem, Tooltip, IconButton, Card, CardContent } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Textarea, GetUserUUID } from '@components';
-import { supabase, encrypt } from '@utils';
+import { supabase, encrypt } from '~/Utility';
 import {
   PyrenzBlueButton,
   PyrenzFormControl,

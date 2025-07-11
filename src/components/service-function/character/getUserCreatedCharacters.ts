@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '@utils';
+import { supabase } from '~/Utility';
 import { GetUserUUID } from '@components';
 import { Character, User } from '@shared-types';
 import { useUserStore } from '~/store';

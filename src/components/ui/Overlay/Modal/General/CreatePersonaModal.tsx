@@ -8,7 +8,7 @@ import {
 import { Textarea, Dropzone } from '@components';
 import { PyrenzBlueButton, PyrenzModal, PyrenzModalContent } from '~/theme';
 import { usePyrenzAlert } from '~/provider';
-import { uploadImage } from '@utils';
+import { uploadImage } from '~/Utility';
 
 interface CreatePersonaModalProps {
   isModalOpen: boolean;

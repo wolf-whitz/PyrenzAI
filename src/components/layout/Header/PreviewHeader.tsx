@@ -23,7 +23,7 @@ import {
 } from '@mui/icons-material';
 import { FaDiscord } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
-import { supabase } from '@utils';
+import { supabase } from '~/Utility';
 import { PyrenzStyledDrawer, PyrenzBlueButtonWithLoading } from '~/theme';
 import { useUserStore } from '~/store';
 

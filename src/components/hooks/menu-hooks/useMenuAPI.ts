@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '@utils';
+import { supabase } from '~/Utility';
 import { Character } from '@shared-types';
 import { GetUserData } from '@components';
 import * as Sentry from '@sentry/react';

@@ -1,4 +1,4 @@
-import { supabase } from '@utils';
+import { supabase } from '~/Utility';
 import { useUserStore } from '~/store';
 
 export const GetUserUUID = async (): Promise<string | null> => {
