@@ -14,9 +14,18 @@ import {
   CircularProgress,
   IconButton,
 } from '@mui/material';
+import { Character, User } from '@shared-types';
 import { useState } from 'react';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+
+interface UserCharactersResult {
+  characters: Character[];
+  userData: any;
+  loading: boolean;
+  isOwner: boolean;
+  maxPage: number;
+}
 
 export function ProfilePage() {
   const { creator_uuid } = useParams<{ creator_uuid: string }>();
@@ -27,7 +36,19 @@ export function ProfilePage() {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const itemsPerPage = 20;
 
-  const result = GetUserCreatedCharacters(creator_uuid, page, itemsPerPage, refreshCharacters) ?? {};
+  const result: UserCharactersResult = GetUserCreatedCharacters(
+    creator_uuid,
+    page,
+    itemsPerPage,
+    refreshCharacters
+  ) ?? {
+    characters: [],
+    userData: null,
+    loading: false,
+    isOwner: false,
+    maxPage: 1,
+  };
+
   const { characters = [], userData, loading, isOwner, maxPage = 1 } = result;
 
   const handlePreviousPage = () => {

@@ -6,7 +6,7 @@ import { useUserStore } from '~/store';
 
 interface CustomMarkdownProps {
   text?: string;
-  char?: { name: string };
+  char: { name?: string };
   ai_message?: string;
   dataState?: 'user' | 'char';
 }

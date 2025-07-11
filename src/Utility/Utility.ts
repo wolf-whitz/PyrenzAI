@@ -19,13 +19,38 @@ const fetcher = async (url: string) => {
   return response.json();
 };
 
-export const Utils = {
-  async request<T>(
+interface UtilsType {
+  request<T>(
     method: RequestMethod,
     endpoint: string,
-    data: Record<string, any> | FormData = {},
-    params: Record<string, any> = {},
-    isImageRequest: boolean = false
+    data?: Record<string, any> | FormData,
+    params?: Record<string, any>,
+    isImageRequest?: boolean
+  ): Promise<T>;
+  useFetch<T>(
+    endpoint: string,
+    params?: Record<string, any>
+  ): { data: T | undefined; error: Error | undefined };
+  post<T>(
+    endpoint: string,
+    data?: Record<string, any>,
+    params?: Record<string, any>
+  ): Promise<T>;
+  patch<T>(
+    endpoint: string,
+    data?: Record<string, any>,
+    params?: Record<string, any>
+  ): Promise<T>;
+  delete<T>(endpoint: string, params?: Record<string, any>): Promise<T>;
+}
+
+export const Utils: UtilsType = {
+  async request<T>(
+    method,
+    endpoint,
+    data = {},
+    params = {},
+    isImageRequest = false
   ): Promise<T> {
     const url = new URL(`${BASE_URL}${endpoint}`);
 
@@ -110,10 +135,7 @@ export const Utils = {
     }
   },
 
-  useFetch<T>(
-    endpoint: string,
-    params: Record<string, any> = {}
-  ): { data: T | undefined; error: Error | undefined } {
+  useFetch<T>(endpoint, params = {}) {
     const url = new URL(`${BASE_URL}${endpoint}`);
 
     if (Object.keys(params).length) {
@@ -131,23 +153,15 @@ export const Utils = {
     return { data, error };
   },
 
-  post<T>(
-    endpoint: string,
-    data: Record<string, any> = {},
-    params: Record<string, any> = {}
-  ): Promise<T> {
-    return this.request<T>('POST', endpoint, data, params, false);
+  post<T>(endpoint, data = {}, params = {}) {
+    return Utils.request<T>('POST', endpoint, data, params, false);
   },
 
-  patch<T>(
-    endpoint: string,
-    data: Record<string, any> = {},
-    params: Record<string, any> = {}
-  ): Promise<T> {
-    return this.request<T>('PATCH', endpoint, data, params, false);
+  patch<T>(endpoint, data = {}, params = {}) {
+    return Utils.request<T>('PATCH', endpoint, data, params, false);
   },
 
-  delete<T>(endpoint: string, params: Record<string, any> = {}): Promise<T> {
-    return this.request<T>('DELETE', endpoint, {}, params, false);
+  delete<T>(endpoint, params = {}) {
+    return Utils.request<T>('DELETE', endpoint, {}, params, false);
   },
 };

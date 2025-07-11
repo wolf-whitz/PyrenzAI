@@ -5,13 +5,13 @@ import {
 } from '@mui/icons-material';
 import { CircularProgress, Box, IconButton } from '@mui/material';
 import { Menu } from '@components';
-import { Character } from '@shared-types';
+import { Character, User } from '@shared-types';
 
 interface ChatInputProps {
   className?: string;
   handleSend: (message: string) => void;
-  user: { username: string; user_avatar: string };
-  char: { name: string };
+  user: User;
+  char: Character;
   isGenerating: boolean;
 }
 
