@@ -181,7 +181,6 @@ export const useChatPageAPI = (
           user_uuid: user.user_uuid,
           chat_uuid: chat_uuid,
           char_message: newImageMessage.text,
-          user_message: prompt,
           is_image: true,
         });
 
