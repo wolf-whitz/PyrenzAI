@@ -6,11 +6,12 @@ import { useUserStore, useHomeStore } from '~/store';
 interface FetchCharactersProps {
   currentPage: number;
   itemsPerPage: number;
-  search: string;
+  search?: string;
+  charuuid?: string;
   showNsfw?: boolean;
   genderFilter?: string;
   tags?: string[];
-  creatorUUID?: string;
+  creatoruuid?: string;
   sortBy?: 'created_at' | 'chat_messages_count';
 }
 
@@ -20,13 +21,14 @@ interface FetchCharactersResponse {
 }
 
 export const fetchCharacters = async ({
-  currentPage,
-  itemsPerPage,
+  currentPage = 1,
+  itemsPerPage = 20,
   search,
+  charuuid,
   showNsfw = true,
   genderFilter,
-  tags,
-  creatorUUID,
+  tags = [],
+  creatoruuid,
   sortBy = 'chat_messages_count',
 }: FetchCharactersProps): Promise<FetchCharactersResponse> => {
   try {
@@ -37,33 +39,32 @@ export const fetchCharacters = async ({
       page: currentPage,
       items_per_page: itemsPerPage,
       search: search?.trim() || null,
+      charuuid: charuuid?.trim() || null,
       show_nsfw: showNsfw,
-      blocked_tags: blocked_tags?.length ? blocked_tags : [],
+      blocked_tags: blocked_tags || [],
       gender_filter: genderFilter?.trim() || null,
-      tag: tags?.length ? tags : [],
-      creatoruuid: creatorUUID?.trim() || null,
+      tag: tags || [],
+      creatoruuid: creatoruuid?.trim() || null,
       sort_by: sortBy,
     });
 
     if (error) throw new Error(`Supabase RPC error: ${error.message}`);
 
-    const rawCharacters = data?.characters ?? [];
-
+    const rawCharacters = data?.characters || [];
     const characters: Character[] = rawCharacters.map((char: any) => ({
       ...char,
       id: String(char.id),
     }));
 
-    setMaxPage(data?.max_page ?? 0);
+    setMaxPage(data?.max_page || 0);
 
     let selectedCharacter: Character | null = null;
-
     if (characters.length > 0) {
       const highestCount = Math.max(
-        ...characters.map((c) => c.chat_messages_count ?? 0)
+        ...characters.map((c) => c.chat_messages_count || 0)
       );
       const topCharacters = characters.filter(
-        (c) => (c.chat_messages_count ?? 0) === highestCount
+        (c) => c.chat_messages_count === highestCount
       );
       selectedCharacter =
         topCharacters.length === 1
@@ -71,8 +72,6 @@ export const fetchCharacters = async ({
           : topCharacters.sort((a, b) =>
               String(a.id).localeCompare(String(b.id))
             )[0];
-    } else {
-      console.log('No characters found in the API response.');
     }
 
     return {
@@ -82,13 +81,11 @@ export const fetchCharacters = async ({
   } catch (err) {
     const { setMaxPage } = useHomeStore.getState();
     setMaxPage(0);
-
     if (err instanceof Error) {
       Sentry.captureException(err);
     } else {
       Sentry.captureMessage('An unknown error occurred.');
     }
-
     return {
       character: null,
       characters: [],

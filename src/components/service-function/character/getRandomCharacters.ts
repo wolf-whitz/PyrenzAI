@@ -28,6 +28,7 @@ export async function getRandomCharacters(
     search: null,
     tag: [],
     creatoruuid: null,
+    charuuid: null,  
   });
 
   if (error) {

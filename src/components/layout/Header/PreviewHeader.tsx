@@ -69,7 +69,7 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
     },
   ];
 
-  if (subscriptionPlan && subscriptionPlan.includes('MELON')) {
+  if (subscriptionPlan && subscriptionPlan.includes('Melon')) {
     menuItems.push({
       name: 'Pyrenz+',
       icon: <PyrenzPlusIcon />,

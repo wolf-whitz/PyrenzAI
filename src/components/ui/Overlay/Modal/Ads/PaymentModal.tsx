@@ -22,6 +22,10 @@ export function PaymentModal({
     window.location.href = 'https://ko-fi.com/whitzscott/tiers';
   };
 
+  const handleGumroadClick = () => {
+    window.location.href = 'https://gumroad.com/your_gumroad_username';
+  };
+
   const price = isMonthly
     ? plan?.price_count_monthly
     : plan?.price_count_yearly;
@@ -57,6 +61,24 @@ export function PaymentModal({
               style={{ width: '20px', marginRight: '8px' }}
             />
             Buy via Ko-fi
+          </PyrenzBlueButton>
+          <PyrenzBlueButton
+            variant="contained"
+            onClick={handleGumroadClick}
+            sx={{
+              backgroundColor: '#36a9ae',
+              color: 'white',
+              '&:hover': {
+                backgroundColor: '#2a8890',
+              },
+            }}
+          >
+            <img
+              src="/Favicons/Gumroad.avif"
+              alt="Gumroad"
+              style={{ width: '20px', marginRight: '8px' }}
+            />
+            Buy via Gumroad
           </PyrenzBlueButton>
         </Box>
       </PyrenzModalContent>

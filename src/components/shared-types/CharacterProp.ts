@@ -8,14 +8,14 @@ export const CharacterSchema = z.object({
   description: z.string(),
   persona: z.string(),
 
-  model_instructions: z.string(),
+  model_instructions: z.string().optional(),
   scenario: z.string(),
   gender: z.string(),
 
   first_message: z.string(),
   creator: z.string(),
 
-  tags: z.array(z.string()),
+  tags: z.array(z.string()).default([]),
   profile_image: z.string(),
   chat_messages_count: z.number().optional(),
 

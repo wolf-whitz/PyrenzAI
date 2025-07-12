@@ -36,17 +36,19 @@ export const getUserCreatedCharacters = (
       const { show_nsfw } = useUserStore.getState();
 
       const { data, error } = await supabase
-        .rpc('get_filtered_characters', {
-          search: null,
-          show_nsfw,
-          blocked_tags: [],
-          gender_filter: null,
-          tag: [],
-          creatoruuid: uuid,
-          items_per_page: itemsPerPage,
-          page,
-          sort_by: sortBy,
-        })
+      .rpc('get_filtered_characters', {
+        search: null,
+        show_nsfw,
+        blocked_tags: [],
+        gender_filter: null,
+        tag: [],
+        creatoruuid: uuid,
+        items_per_page: itemsPerPage,
+        page,
+        sort_by: sortBy,
+        charuuid: null,  
+      })
+      
         .single<FilteredCharactersResponse>();
 
       if (error || !data) {

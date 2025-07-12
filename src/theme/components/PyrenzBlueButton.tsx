@@ -18,16 +18,20 @@ interface PyrenzButtonProps extends ButtonProps {
 export const PyrenzBlueButton = styled(Button, {
   shouldForwardProp: (prop) => prop !== 'dataState',
 })<PyrenzButtonProps>(({ dataState }) => ({
-  color: 'white',
-  backgroundColor: 'black',
-  transition: 'all 0.3s ease',
+  color: 'black',
+  backgroundColor: '#00bcd4',
+  transition: 'all 0.2s ease',
   borderRadius: 4,
   justifyContent: 'center',
+  transform: 'scale(1)',
   '&:hover': {
     animation: `${zoomIn} 0.3s ease forwards`,
-    boxShadow: 'none',
-    backgroundColor: '#add8e6',
+    backgroundColor: '#62efff',
     color: 'black',
+    boxShadow: 'none',
+  },
+  '&:active': {
+    transform: 'scale(0.96)',
   },
   ...(dataState === 'loading' && {
     opacity: 0.6,

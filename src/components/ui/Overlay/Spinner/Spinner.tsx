@@ -32,7 +32,7 @@ export const Spinner = () => (
   <SpinnerBase
     message={
       <>
-        Loading <span className="font-baloo text-blue-500">Pyrenz</span>, Open
+        Loading <span className="font-baloo text-blue-500">PyrenzAI</span>, Open
         Source, Free Alternative
       </>
     }
@@ -44,7 +44,7 @@ export const ChatPageSpinner = () => (
     message={
       <>
         Loading.. Please Wait While{' '}
-        <span className="font-baloo text-blue-500">Pyrenz</span> loads your
+        <span className="font-baloo text-blue-500">PyrenzAI</span> loads your
         chats.
       </>
     }
@@ -58,7 +58,7 @@ export const SettingsPageLoader = () => (
     message={
       <>
         Loading.. Please Wait While{' '}
-        <span className="font-baloo text-blue-500">Pyrenz</span> loads your
+        <span className="font-baloo text-blue-500">PyrenzAI</span> loads your
         settings.
       </>
     }
@@ -72,8 +72,22 @@ export const CreatePageLoader = () => (
     message={
       <>
         Loading.. Please Wait While{' '}
-        <span className="font-baloo text-blue-500">Pyrenz</span> loads the
+        <span className="font-baloo text-blue-500">PyrenzAI</span> loads the
         CreatePage.
+      </>
+    }
+    subMessage="It may take a few seconds."
+    no_bg
+  />
+);
+
+export const CharacterPageLoader = () => (
+  <SpinnerBase
+    message={
+      <>
+        Loading.. Please Wait While{' '}
+        <span className="font-baloo text-blue-500">PyrenzAI</span> loads the
+        CharacterPage.
       </>
     }
     subMessage="It may take a few seconds."
