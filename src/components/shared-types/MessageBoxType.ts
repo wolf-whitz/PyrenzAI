@@ -32,4 +32,5 @@ export interface MessageBoxProps {
   ) => void;
   onCancelEdit: () => void;
   setEditedMessage: (message: string) => void;
+  onGenerateImage: (messageId: string) => void;
 }

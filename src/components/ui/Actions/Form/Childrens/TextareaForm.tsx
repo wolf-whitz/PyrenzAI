@@ -3,7 +3,6 @@ import React, {
   useEffect,
   ChangeEvent,
   useMemo,
-  useRef,
 } from 'react';
 import { ImageUploader, Textarea, TagsMenu, useTextareaFormAPI, textareasByCategory } from '@components';
 import { useCharacterStore } from '~/store';

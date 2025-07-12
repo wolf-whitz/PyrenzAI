@@ -11,6 +11,7 @@ interface ChatMessagesExtendedProps extends ChatMessagesProps {
     type: 'user' | 'char'
   ) => void;
   firstMessage: string;
+  onGenerateImage: (messageId: string) => void;
 }
 
 export function ChatMessages({
@@ -23,6 +24,7 @@ export function ChatMessages({
   onEditMessage,
   setIsGenerating,
   firstMessage,
+  onGenerateImage,
 }: ChatMessagesExtendedProps) {
   const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
   const [editingMessageType, setEditingMessageType] = useState<
@@ -30,7 +32,6 @@ export function ChatMessages({
   >(null);
   const [editedMessage, setEditedMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -94,7 +95,6 @@ export function ChatMessages({
     <Box className="space-y-4 p-4 max-w-2xl mx-auto">
       {messages.map((msg: Message, index: number) => {
         const isLastMessage = index === messages.length - 1;
-
         return (
           <MessageBox
             key={`${msg.type}-${msg.id ?? `temp-${index}`}`}
@@ -117,6 +117,7 @@ export function ChatMessages({
             onSaveEdit={handleSaveEdit}
             onCancelEdit={handleCancelEdit}
             setEditedMessage={setEditedMessage}
+            onGenerateImage={onGenerateImage}
           />
         );
       })}

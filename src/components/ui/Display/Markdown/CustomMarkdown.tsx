@@ -21,13 +21,12 @@ export function CustomMarkdown({
   const { customization, username, personaName } = useUserStore();
 
   useEffect(() => {
-    const replacePlaceholders = (content: string) =>
+    const replacePlaceholders = (content) =>
       content
         .replace(/{{char}}/g, char?.name || 'Anon')
         .replace(/{{user}}/g, personaName || username || 'Anon')
         .replace(/{{you}}:/g, '')
         .replace(/{{ai_message}}/g, ai_message);
-
     setReplacedText(replacePlaceholders(text));
   }, [text, char, username, personaName, ai_message]);
 
@@ -36,7 +35,6 @@ export function CustomMarkdown({
     state: 'user' | 'char' | undefined
   ) => {
     if (!customization || !state) return 'inherit';
-
     const colorMap = {
       user: {
         text: customization.userTextColor,
@@ -49,7 +47,6 @@ export function CustomMarkdown({
         quote: customization.charQuotedColor,
       },
     };
-
     return colorMap[state][type] || 'inherit';
   };
 
@@ -105,6 +102,9 @@ export function CustomMarkdown({
             >
               {children}
             </Typography>
+          ),
+          img: ({ src, alt }) => (
+            <Box component="img" src={src} alt={alt || ''} sx={{ maxWidth: '100%', height: 'auto' }} />
           ),
           hr: () => null,
         }}

@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { Dropzone, Textarea } from '@components';
+import { Dropzone, Textarea, useImageGenerate } from '@components';
 import {
   Modal,
   Box,
@@ -7,10 +6,11 @@ import {
   CardMedia,
   Skeleton,
   CircularProgress,
+  MenuItem,
+  Select,
   Typography,
 } from '@mui/material';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
-import { usePyrenzAlert } from '~/provider';
 import { PyrenzBlueButton } from '~/theme';
 
 interface ImageUploaderProps {
@@ -18,97 +18,43 @@ interface ImageUploaderProps {
   initialImage?: string | null;
 }
 
-export function ImageUploader({
-  onImageSelect,
-  initialImage,
-}: ImageUploaderProps) {
-  const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(
-    initialImage || null
-  );
-  const [open, setOpen] = useState(false);
-  const [textareaValue, setTextareaValue] = useState('');
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const showAlert = usePyrenzAlert();
+export function ImageUploader({ onImageSelect, initialImage }: ImageUploaderProps) {
+  const {
+    bannerImagePreview,
+    open,
+    textareaValue,
+    modelInstruction,
+    additionalPrompt,
+    imageUrl,
+    isLoading,
+    isSubmitted,
+    imageType,
+    setTextareaValue,
+    setModelInstruction,
+    setAdditionalPrompt,
+    setImageType,
+    handleOpen,
+    handleClose,
+    handleClear,
+    handleDrop,
+    handleSubmit,
+  } = useImageGenerate({ initialImage, onImageSelect });
 
-  useEffect(() => {
-    if (initialImage) setBannerImagePreview(initialImage);
-  }, [initialImage]);
+  const defaultModelInstruction = `Create a highly vivid and visually rich scene. Describe the characters in third-person perspective using no names — refer to them only as "a man", "a woman", or their appropriate gender identity.
+Capture every detail: their pose, their expressions, their clothing, and emotional state.
+Paint the entire background with specific detail — lighting, atmosphere, weather, time of day, and any dynamic action happening.
+Ensure everything is cinematic and immersive.`;
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  const handleClear = () => {
-    setTextareaValue('');
-    setImageUrl(null);
-    setIsSubmitted(false);
-    setBannerImagePreview(null);
-  };
-
-  const handleDrop = (acceptedFiles: File[]) => {
-    const file = acceptedFiles[0] || null;
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setBannerImagePreview(imageUrl);
-      onImageSelect(file);
-    }
-  };
-
-  const handleSubmit = async () => {
-    if (!textareaValue.trim()) {
-      showAlert('Prompt cannot be empty', 'Alert');
-      return;
-    }
-
-    setIsLoading(true);
-    setIsSubmitted(true);
-
-    const prompt = `${textareaValue}`;
-    const model = 'turbo';
-    const nologo = 'true';
-    const enhance = 'true';
-
-    try {
-      const queryParams = `${prompt}&model=${model}&nologo=${nologo}&enhance=${enhance}`;
-      const url = `https://image.pollinations.ai/prompt/${queryParams}`;
-
-      const response = await fetch(url);
-      if (!response.ok) throw new Error('Image generation failed');
-
-      const blob = await response.blob();
-      const blobUrl = URL.createObjectURL(blob);
-      setImageUrl(blobUrl);
-
-      const file = new File([blob], 'generated-image.png', {
-        type: 'image/png',
-      });
-      onImageSelect(file);
-      setBannerImagePreview(blobUrl);
-    } catch (error) {
-      console.error('Image generation error:', error);
-      showAlert('Error creating image', 'Alert');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const defaultAdditionalPrompt = `complex background, Detailed Room, Detiled character, ((Cinematic pose)), ((cinematic up Shot)), cinematic lighting, masterpiece, ultra-detailed, best quality ,intricate details ,ai-generated, perfect anatomy, absurdres`;
 
   return (
-    <Box
-      sx={{
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'flex-start',
-      }}
-    >
+    <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
       <Dropzone
         onDrop={handleDrop}
         label="Drop a banner image here (ᵕ—ᴗ—)"
         initialImage={bannerImagePreview}
         className="w-full mb-4"
       />
-
       <PyrenzBlueButton
         variant="contained"
         startIcon={<AddPhotoAlternateIcon />}
@@ -117,7 +63,6 @@ export function ImageUploader({
       >
         Generate Image
       </PyrenzBlueButton>
-
       <Modal open={open} onClose={handleClose}>
         <Box
           sx={{
@@ -137,11 +82,42 @@ export function ImageUploader({
             overflow: 'auto',
           }}
         >
+          <Typography fontWeight={600} mb={1}>
+            Model Instruction
+          </Typography>
+          <Textarea
+            value={modelInstruction || defaultModelInstruction}
+            onChange={(e) => setModelInstruction(e.target.value)}
+            placeholder="Instruction for how the model should behave"
+          />
+
+          <Typography fontWeight={600} mt={2} mb={1}>
+            Scene Description
+          </Typography>
           <Textarea
             value={textareaValue}
             onChange={(e) => setTextareaValue(e.target.value)}
             placeholder="Enter a description to generate an image for your character ₍⑅ᐢ..ᐢ₎"
           />
+
+          <Typography fontWeight={600} mt={2} mb={1}>
+            Additional Prompt
+          </Typography>
+          <Textarea
+            value={additionalPrompt || defaultAdditionalPrompt}
+            onChange={(e) => setAdditionalPrompt(e.target.value)}
+            placeholder="Extra quality or aesthetic details"
+          />
+
+          <Select
+            value={imageType}
+            onChange={(e) => setImageType(e.target.value as 'anime' | 'realistic')}
+            fullWidth
+            sx={{ mt: 2 }}
+          >
+            <MenuItem value="anime">Anime</MenuItem>
+            <MenuItem value="realistic">Realistic</MenuItem>
+          </Select>
 
           {isSubmitted && (
             <Card
@@ -172,25 +148,13 @@ export function ImageUploader({
           )}
 
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 4 }}>
-            <PyrenzBlueButton
-              variant="contained"
-              onClick={handleClear}
-              sx={{ mr: 2 }}
-            >
+            <PyrenzBlueButton variant="contained" onClick={handleClear} sx={{ mr: 2 }}>
               Clear
             </PyrenzBlueButton>
             <PyrenzBlueButton variant="contained" onClick={handleSubmit}>
               Submit
             </PyrenzBlueButton>
           </Box>
-
-          <Typography
-            variant="caption"
-            display="block"
-            sx={{ mt: 2, textAlign: 'center', color: 'text.secondary' }}
-          >
-            Powered by Pollination AI image generation
-          </Typography>
         </Box>
       </Modal>
     </Box>

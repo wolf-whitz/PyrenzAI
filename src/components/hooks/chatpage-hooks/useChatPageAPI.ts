@@ -3,6 +3,17 @@ import { supabase } from '~/Utility';
 import { useGenerateMessage } from '@components';
 import { useChatStore } from '~/store';
 import { Message, User, Character } from '@shared-types';
+import { Utils } from '~/Utility';
+
+interface ImageGenerationResponse {
+  data: {
+    created: number;
+    model: string;
+    data: Array<{
+      url: string;
+    }>;
+  };
+}
 
 interface ChatPageAPI {
   isSettingsOpen: boolean;
@@ -17,6 +28,7 @@ interface ChatPageAPI {
     editedMessage: string,
     type: 'user' | 'char'
   ) => Promise<void>;
+  onGenerateImage: (messageId: string) => Promise<void>;
 }
 
 export const useChatPageAPI = (
@@ -38,7 +50,6 @@ export const useChatPageAPI = (
   const handleSend = async (message: string): Promise<void> => {
     const trimmedMessage = message.trim();
     if (!trimmedMessage) return;
-
     try {
       const response = await generateMessage(
         trimmedMessage,
@@ -48,7 +59,6 @@ export const useChatPageAPI = (
         setMessages,
         setIsGenerating
       );
-
       if (response.isSubscribed) return;
       if (response.remainingMessages === 0) setIsAdModalOpen(true);
     } catch (error) {
@@ -58,23 +68,18 @@ export const useChatPageAPI = (
 
   const handleRemoveMessage = async (messageId: string): Promise<void> => {
     if (!messageId) return;
-
     const index = previous_message.findIndex((msg) => msg.id === messageId);
     if (index === -1) return;
-
     const messagesToDelete = previous_message
       .slice(index)
       .map((msg) => msg.id)
       .filter((id): id is string => !!id);
-
     if (!messagesToDelete.length) return;
-
     try {
       const { error } = await supabase
         .from('chat_messages')
         .delete()
         .in('id', messagesToDelete);
-
       if (error) {
         console.error('Error deleting messages:', error);
       } else {
@@ -92,14 +97,11 @@ export const useChatPageAPI = (
 
   const handleRegenerateMessage = async (messageId: string): Promise<void> => {
     if (!messageId) return;
-
     try {
       const userMessage = previous_message.find(
         (msg) => msg.id === messageId && msg.type === 'user'
       );
-
       if (!userMessage) return;
-
       await handleRemoveMessage(messageId);
       await handleSend(userMessage.text);
     } catch (error) {
@@ -113,17 +115,14 @@ export const useChatPageAPI = (
     type: 'user' | 'char'
   ): Promise<void> => {
     if (!messageId || !editedMessage) return;
-
     try {
       const columnName = type === 'user' ? 'user_message' : 'char_message';
-
       const { error } = await supabase
         .from('chat_messages')
         .update({ [columnName]: editedMessage })
         .eq('id', messageId)
         .eq('user_uuid', user.user_uuid)
         .eq('chat_uuid', chat_uuid);
-
       if (error) {
         console.error('Error updating message:', error);
       } else {
@@ -146,6 +145,52 @@ export const useChatPageAPI = (
     }
   };
 
+  const onGenerateImage = async (messageId: string): Promise<void> => {
+    try {
+      const lastTenMessages = previous_message.slice(-10);
+      const prompt = lastTenMessages.map((msg) => {
+        const characterDescription = msg.type === 'user' ? 'A man' : 'A woman';
+        return `${characterDescription}, ${msg.text}. The expressions are vivid, capturing every nuance of the characters involved.`;
+      }).join(' ');
+
+      const response = await Utils.post('/api/ImageGen', {
+        type: 'Anime',
+        query: prompt,
+      });
+
+      const imageResponse = response as ImageGenerationResponse;
+
+      if (imageResponse.data && imageResponse.data.data && imageResponse.data.data.length > 0) {
+        const imageUrl = imageResponse.data.data[0].url;
+        const newImageMessage: Message = {
+          id: `image-${Date.now()}`,
+          type: 'char',
+          text: `Here is the image generated from our conversation: ![Generated Image](${imageUrl})`,
+          name: char.name,
+          profile_image: char.profile_image,
+        };
+
+        const { error } = await supabase
+          .from('chat_messages')
+          .insert({
+            user_uuid: user.user_uuid,
+            chat_uuid: chat_uuid,
+            char_message: newImageMessage.text,
+            user_message: prompt,
+            is_image: true,
+          });
+
+        if (error) {
+          console.error('Error inserting image message:', error);
+        } else {
+          setMessages((prevMessages) => [...prevMessages, newImageMessage]);
+        }
+      }
+    } catch (error) {
+      console.error('Error generating image:', error);
+    }
+  };
+
   return {
     isSettingsOpen,
     isAdModalOpen,
@@ -155,5 +200,6 @@ export const useChatPageAPI = (
     handleRemoveMessage,
     handleRegenerateMessage,
     handleEditMessage,
+    onGenerateImage,
   };
 };

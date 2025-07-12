@@ -1,10 +1,10 @@
-import React from 'react';
 import { Box, Button } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import EditIcon from '@mui/icons-material/Edit';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import ImageIcon from '@mui/icons-material/Image'; 
 
 interface MessageContextMenuProps {
   msg: {
@@ -22,6 +22,7 @@ interface MessageContextMenuProps {
     type: 'user' | 'char'
   ) => void;
   handleCopy: () => void;
+  onGenerateImage: (messageId: string) => void; 
   onClose: () => void;
 }
 
@@ -77,12 +78,17 @@ const menuConfig = {
         props.msg.id &&
         props.onEditClick(props.msg.id, props.msg.text || '', 'char'),
     },
+    {
+      icon: <ImageIcon />,
+      label: 'Generate Image',
+      action: (props: MessageContextMenuProps) => () =>
+        props.msg.id && props.onGenerateImage(props.msg.id),
+    },
   ],
 };
 
 export const MessageContextMenu = (props: MessageContextMenuProps) => {
   const { msg, onClose } = props;
-
   if (msg.error) return null;
 
   const handleAction = (

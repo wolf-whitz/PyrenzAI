@@ -37,6 +37,7 @@ export function ChatMain({
     handleRemoveMessage,
     handleRegenerateMessage,
     handleEditMessage,
+    onGenerateImage,
   } = useChatPageAPI(messages, user, char, chat_uuid, setIsGenerating);
 
   return (
@@ -45,7 +46,6 @@ export function ChatMain({
         <Box className="w-full max-w-6xl mx-auto pt-4">
           <ChatHeader char={char} toggleSettings={toggleSettings} />
         </Box>
-
         <Box className="flex-1 w-full max-w-6xl mx-auto overflow-y-auto pb-16 lg:pb-20 xl:pb-20 pl-0 lg:pl-12">
           <ChatMessages
             firstMessage={firstMessage}
@@ -57,9 +57,9 @@ export function ChatMain({
             onRegenerate={handleRegenerateMessage}
             onEditMessage={handleEditMessage}
             setIsGenerating={setIsGenerating}
+            onGenerateImage={onGenerateImage}
           />
         </Box>
-
         <Slide direction="up" in={true} timeout={500}>
           <Box className="w-full relative sm:relative">
             <ChatInput
@@ -70,12 +70,10 @@ export function ChatMain({
             />
           </Box>
         </Slide>
-
         <SettingsSidebar
           settingsOpen={isSettingsOpen}
           onClose={toggleSettings}
         />
-
         <AdModal
           isOpen={isAdModalOpen}
           onClose={() => setIsAdModalOpen(false)}

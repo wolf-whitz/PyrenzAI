@@ -24,6 +24,7 @@ export const MessageBox = React.memo(function MessageBox({
   onEditClick,
   onSaveEdit,
   onCancelEdit,
+  onGenerateImage, 
 }: MessageBoxProps) {
   const dataState = msg.type;
   const displayName =
@@ -32,7 +33,6 @@ export const MessageBox = React.memo(function MessageBox({
       : msg.name || char.name;
   const isEditingThisMessage =
     editingMessageId === msg.id && editingMessageType === dataState;
-
   const [localEditedMessage, setLocalEditedMessage] = useState(msg.text || '');
   const [debouncedValue, setDebouncedValue] = useState(localEditedMessage);
   const [openDialog, setOpenDialog] = useState(false);
@@ -43,11 +43,9 @@ export const MessageBox = React.memo(function MessageBox({
 
   useEffect(() => {
     if (!isEditingThisMessage) return;
-
     const handler = setTimeout(() => {
       setDebouncedValue(localEditedMessage);
     }, 500);
-
     return () => {
       clearTimeout(handler);
     };
@@ -76,13 +74,11 @@ export const MessageBox = React.memo(function MessageBox({
         handleCloseMenu();
       }
     };
-
     if (menuPosition) {
       document.addEventListener('mousedown', handleClickOutside);
     } else {
       document.removeEventListener('mousedown', handleClickOutside);
     }
-
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -175,7 +171,6 @@ export const MessageBox = React.memo(function MessageBox({
           )}
         </PyrenzMessageBox>
       </Box>
-
       {menuPosition && !isEditingThisMessage && index !== 0 && (
         <Box
           ref={menuRef}
@@ -196,11 +191,11 @@ export const MessageBox = React.memo(function MessageBox({
             handleSpeak={handleSpeak}
             onEditClick={onEditClick}
             handleCopy={handleCopy}
+            onGenerateImage={onGenerateImage}
             onClose={handleCloseMenu}
           />
         </Box>
       )}
-
       <PyrenzDialog
         open={openDialog}
         onClose={handleCloseDialog}

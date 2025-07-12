@@ -23,6 +23,27 @@ interface Customization {
   charQuotedColor: string;
 }
 
+interface ApiResponse {
+  username: string;
+  user_avatar: string;
+  user_uuid: string;
+  ai_customization: any;
+  preferred_model?: string;
+  is_admin: boolean;
+  subscription_data: {
+    tier: string;
+    max_token: number;
+    model: { [key: string]: ModelIdentifier };
+    private_models: { [key: string]: any };
+  };
+  persona_name?: string;
+}
+
+interface CachedUserData {
+  data: ApiResponse;
+  gotten_at: number;
+}
+
 interface UserStore {
   userUUID: string | null;
   username: string | null;
@@ -40,6 +61,8 @@ interface UserStore {
   customization: Customization;
   show_nsfw: boolean;
   blocked_tags: string[];
+  cachedUserData?: CachedUserData;
+
   setUserUUID: (uuid: string) => void;
   setUsername: (name: string) => void;
   setPersonaName: (name: string) => void;
@@ -56,6 +79,7 @@ interface UserStore {
   setCustomization: (customization: Partial<Customization>) => void;
   toggleShowNSFW: () => void;
   setBlockedTags: (tags: string[]) => void;
+  setCachedUserData: (cache: CachedUserData | undefined) => void;
 }
 
 export const useUserStore = create<UserStore>()(
@@ -90,6 +114,8 @@ export const useUserStore = create<UserStore>()(
       },
       show_nsfw: false,
       blocked_tags: [],
+      cachedUserData: undefined,
+
       setUserUUID: (uuid) => set({ userUUID: uuid }),
       setUsername: (name) => set({ username: name }),
       setPersonaName: (name) => set({ personaName: name }),
@@ -107,8 +133,10 @@ export const useUserStore = create<UserStore>()(
         set((state) => ({
           customization: { ...state.customization, ...customization },
         })),
-      toggleShowNSFW: () => set((state) => ({ show_nsfw: !state.show_nsfw })),
+      toggleShowNSFW: () =>
+        set((state) => ({ show_nsfw: !state.show_nsfw })),
       setBlockedTags: (tags) => set({ blocked_tags: tags }),
+      setCachedUserData: (cache) => set({ cachedUserData: cache }),
     }),
     {
       name: 'user-storage',
