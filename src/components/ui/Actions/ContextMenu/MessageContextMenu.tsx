@@ -4,7 +4,7 @@ import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import EditIcon from '@mui/icons-material/Edit';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import ImageIcon from '@mui/icons-material/Image'; 
+import ImageIcon from '@mui/icons-material/Image';
 
 interface MessageContextMenuProps {
   msg: {
@@ -22,7 +22,7 @@ interface MessageContextMenuProps {
     type: 'user' | 'char'
   ) => void;
   handleCopy: () => void;
-  onGenerateImage: (messageId: string) => void; 
+  onGenerateImage: (messageId: string) => void;
   onClose: () => void;
 }
 

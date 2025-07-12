@@ -24,7 +24,7 @@ export const MessageBox = React.memo(function MessageBox({
   onEditClick,
   onSaveEdit,
   onCancelEdit,
-  onGenerateImage, 
+  onGenerateImage,
 }: MessageBoxProps) {
   const dataState = msg.type;
   const displayName =

@@ -1,18 +1,17 @@
 {
-    "compilerOptions": {
-      "baseUrl": ".",
-      "paths": {
-        "~/*": ["src/*"],
-        "@public/*": ["public/*"],
-  
-        "@components": ["src/components"],
-        "@components/*": ["src/components/*"],
-  
-        "@shared-types": ["src/components"],
-        "@libs/*": ["src/lib/*"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["src/*"],
+      "@public/*": ["public/*"],
 
-        "@function": ["src/components/service-function"]
-      }
+      "@components": ["src/components"],
+      "@components/*": ["src/components/*"],
+
+      "@shared-types": ["src/components"],
+      "@libs/*": ["src/lib/*"],
+
+      "@function": ["src/components/service-function"]
     }
   }
-  
+}

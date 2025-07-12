@@ -26,7 +26,7 @@ export async function getLatestCharacter(
     search: null,
     tag: [],
     creatoruuid: null,
-    charuuid: null,  
+    charuuid: null,
   });
 
   if (error) {

@@ -12,7 +12,7 @@ import {
   Pagination,
   Banner,
   AuthenticationModal,
-  useHomepageAPI
+  useHomepageAPI,
 } from '@components';
 
 export function Home() {

@@ -30,7 +30,7 @@ export async function getCharacterWithTag(
     tag: tag?.trim() ? [tag.trim()] : [],
     creatoruuid: creatorUUID?.trim() || null,
     sort_by: sortBy,
-    charuuid: null,  
+    charuuid: null,
   });
 
   if (error) {

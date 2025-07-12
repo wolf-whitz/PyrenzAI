@@ -57,7 +57,7 @@ export function ErrorPage() {
         style={{
           marginTop: '2rem',
           textTransform: 'none',
-          padding: '10px 48px',  
+          padding: '10px 48px',
           fontSize: '1rem',
           fontWeight: 'bold',
         }}

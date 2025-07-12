@@ -41,7 +41,7 @@ function isApiResponse(response: any): response is ApiResponse {
   return response && typeof response.username !== 'undefined';
 }
 
-const CACHE_DURATION = 5 * 60 * 1000;  
+const CACHE_DURATION = 5 * 60 * 1000;
 let inFlightRequest: Promise<ApiResponse | { error: string }> | null = null;
 
 export async function GetUserData(): Promise<ApiResponse | { error: string }> {
@@ -80,15 +80,17 @@ export async function GetUserData(): Promise<ApiResponse | { error: string }> {
       store.setPreferredModel(response.preferred_model || '');
 
       if (response.ai_customization?.inference_settings) {
-        store.setInferenceSettings(response.ai_customization.inference_settings);
+        store.setInferenceSettings(
+          response.ai_customization.inference_settings
+        );
       }
 
-      const modelIdentifiers = Object.entries(response.subscription_data.model).map(
-        ([name, info]) => ({
-          name,
-          model_description: info.description,
-        })
-      );
+      const modelIdentifiers = Object.entries(
+        response.subscription_data.model
+      ).map(([name, info]) => ({
+        name,
+        model_description: info.description,
+      }));
 
       store.setModelIdentifiers(modelIdentifiers);
       store.setMaxTokenLimit(response.subscription_data.max_token);

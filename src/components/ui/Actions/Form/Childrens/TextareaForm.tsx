@@ -1,10 +1,11 @@
-import React, {
-  useState,
-  useEffect,
-  ChangeEvent,
-  useMemo,
-} from 'react';
-import { ImageUploader, Textarea, TagsMenu, useTextareaFormAPI, textareasByCategory } from '@components';
+import React, { useState, useEffect, ChangeEvent, useMemo } from 'react';
+import {
+  ImageUploader,
+  Textarea,
+  TagsMenu,
+  useTextareaFormAPI,
+  textareasByCategory,
+} from '@components';
 import { useCharacterStore } from '~/store';
 import { Character } from '@shared-types';
 import llamaTokenizer from 'llama-tokenizer-js';

@@ -82,7 +82,12 @@ export function CharacterCardModal({
               button.showCondition(isOwner) ? (
                 <PyrenzBlueButton
                   key={button.key}
-                  onClick={() => button.onClickHandler({ handleEditCharacter, handleDeleteCharacter })}
+                  onClick={() =>
+                    button.onClickHandler({
+                      handleEditCharacter,
+                      handleDeleteCharacter,
+                    })
+                  }
                   startIcon={button.icon}
                   style={{ color: 'white' }}
                 >
@@ -92,7 +97,11 @@ export function CharacterCardModal({
             )}
           </Box>
           <Box flex={1} display="flex" flexDirection="column">
-            <Box display="flex" alignItems="center" justifyContent="space-between">
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+            >
               <Typography variant="h6" style={{ fontWeight: 'bold' }}>
                 {character.name}
               </Typography>
@@ -142,7 +151,10 @@ export function CharacterCardModal({
               {character.is_public !== undefined && (
                 <Box
                   className="text-xs font-semibold py-1 px-3 rounded-full flex items-center gap-1"
-                  sx={{ background: 'rgba(255, 255, 255, 0.1)', color: 'white' }}
+                  sx={{
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    color: 'white',
+                  }}
                 >
                   {character.is_public ? (
                     <>
@@ -157,15 +169,19 @@ export function CharacterCardModal({
                   )}
                 </Box>
               )}
-              {character.tags && character.tags.map((tag, index) => (
-                <Box
-                  key={index}
-                  className="text-xs font-semibold py-1 px-3 rounded-full"
-                  sx={{ background: 'rgba(255, 255, 255, 0.1)', color: 'white' }}
-                >
-                  {tag}
-                </Box>
-              ))}
+              {character.tags &&
+                character.tags.map((tag, index) => (
+                  <Box
+                    key={index}
+                    className="text-xs font-semibold py-1 px-3 rounded-full"
+                    sx={{
+                      background: 'rgba(255, 255, 255, 0.1)',
+                      color: 'white',
+                    }}
+                  >
+                    {tag}
+                  </Box>
+                ))}
             </Box>
           </Box>
         </Box>

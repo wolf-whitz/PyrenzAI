@@ -148,10 +148,13 @@ export const useChatPageAPI = (
   const onGenerateImage = async (messageId: string): Promise<void> => {
     try {
       const lastTenMessages = previous_message.slice(-10);
-      const prompt = lastTenMessages.map((msg) => {
-        const characterDescription = msg.type === 'user' ? 'A man' : 'A woman';
-        return `${characterDescription}, ${msg.text}. The expressions are vivid, capturing every nuance of the characters involved.`;
-      }).join(' ');
+      const prompt = lastTenMessages
+        .map((msg) => {
+          const characterDescription =
+            msg.type === 'user' ? 'A man' : 'A woman';
+          return `${characterDescription}, ${msg.text}. The expressions are vivid, capturing every nuance of the characters involved.`;
+        })
+        .join(' ');
 
       const response = await Utils.post('/api/ImageGen', {
         type: 'Anime',
@@ -160,7 +163,11 @@ export const useChatPageAPI = (
 
       const imageResponse = response as ImageGenerationResponse;
 
-      if (imageResponse.data && imageResponse.data.data && imageResponse.data.data.length > 0) {
+      if (
+        imageResponse.data &&
+        imageResponse.data.data &&
+        imageResponse.data.data.length > 0
+      ) {
         const imageUrl = imageResponse.data.data[0].url;
         const newImageMessage: Message = {
           id: `image-${Date.now()}`,
@@ -170,15 +177,13 @@ export const useChatPageAPI = (
           profile_image: char.profile_image,
         };
 
-        const { error } = await supabase
-          .from('chat_messages')
-          .insert({
-            user_uuid: user.user_uuid,
-            chat_uuid: chat_uuid,
-            char_message: newImageMessage.text,
-            user_message: prompt,
-            is_image: true,
-          });
+        const { error } = await supabase.from('chat_messages').insert({
+          user_uuid: user.user_uuid,
+          chat_uuid: chat_uuid,
+          char_message: newImageMessage.text,
+          user_message: prompt,
+          is_image: true,
+        });
 
         if (error) {
           console.error('Error inserting image message:', error);

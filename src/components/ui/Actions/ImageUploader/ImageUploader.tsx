@@ -18,7 +18,10 @@ interface ImageUploaderProps {
   initialImage?: string | null;
 }
 
-export function ImageUploader({ onImageSelect, initialImage }: ImageUploaderProps) {
+export function ImageUploader({
+  onImageSelect,
+  initialImage,
+}: ImageUploaderProps) {
   const {
     bannerImagePreview,
     open,
@@ -48,7 +51,14 @@ Ensure everything is cinematic and immersive.`;
   const defaultAdditionalPrompt = `complex background, Detailed Room, Detiled character, ((Cinematic pose)), ((cinematic up Shot)), cinematic lighting, masterpiece, ultra-detailed, best quality ,intricate details ,ai-generated, perfect anatomy, absurdres`;
 
   return (
-    <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+    <Box
+      sx={{
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+      }}
+    >
       <Dropzone
         onDrop={handleDrop}
         label="Drop a banner image here (ᵕ—ᴗ—)"
@@ -111,7 +121,9 @@ Ensure everything is cinematic and immersive.`;
 
           <Select
             value={imageType}
-            onChange={(e) => setImageType(e.target.value as 'anime' | 'realistic')}
+            onChange={(e) =>
+              setImageType(e.target.value as 'anime' | 'realistic')
+            }
             fullWidth
             sx={{ mt: 2 }}
           >
@@ -148,7 +160,11 @@ Ensure everything is cinematic and immersive.`;
           )}
 
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 4 }}>
-            <PyrenzBlueButton variant="contained" onClick={handleClear} sx={{ mr: 2 }}>
+            <PyrenzBlueButton
+              variant="contained"
+              onClick={handleClear}
+              sx={{ mr: 2 }}
+            >
               Clear
             </PyrenzBlueButton>
             <PyrenzBlueButton variant="contained" onClick={handleSubmit}>

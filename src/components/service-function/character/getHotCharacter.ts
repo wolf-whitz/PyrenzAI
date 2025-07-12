@@ -26,7 +26,7 @@ export async function getHotCharacter(
     tag: [],
     creatoruuid: null,
     sort_by: sortBy,
-    charuuid: null,  
+    charuuid: null,
   });
 
   if (error) {

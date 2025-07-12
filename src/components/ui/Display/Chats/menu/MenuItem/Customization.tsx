@@ -28,8 +28,13 @@ const sliderDescriptions = {
     'Penalizes new tokens based on their frequency in the input. Higher values make the output less repetitive.',
 };
 
-export function Customization({ customization, subscriptionPlan }: CustomizationProps) {
-  const [showPopover, setShowPopover] = useState<keyof typeof sliderDescriptions | null>(null);
+export function Customization({
+  customization,
+  subscriptionPlan,
+}: CustomizationProps) {
+  const [showPopover, setShowPopover] = useState<
+    keyof typeof sliderDescriptions | null
+  >(null);
 
   const {
     maxTokens,

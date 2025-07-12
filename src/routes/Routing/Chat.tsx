@@ -7,7 +7,7 @@ import {
   PreviousChat,
   fetchChatData,
   GetUserUUID,
-  GetUserData, 
+  GetUserData,
 } from '@components';
 import { Box, CircularProgress, Typography, Fade } from '@mui/material';
 import { Character } from '@shared-types';

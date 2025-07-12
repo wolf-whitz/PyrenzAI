@@ -130,9 +130,7 @@ export function CharacterCard({
               )}
             </PyrenzCharacterCardTag>
             {(character.tags ?? []).map((tag, index) => (
-              <PyrenzCharacterCardTag key={index}>
-                {tag}
-              </PyrenzCharacterCardTag>
+              <PyrenzCharacterCardTag key={index}>{tag}</PyrenzCharacterCardTag>
             ))}
           </PyrenzCharacterCardTags>
         </PyrenzCharacterCardContent>

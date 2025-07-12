@@ -8,7 +8,10 @@ import {
   Typography,
   CircularProgress,
 } from '@mui/material';
-import { HelpOutlineOutlined as HelpIcon, Lock as LockIcon } from '@mui/icons-material';
+import {
+  HelpOutlineOutlined as HelpIcon,
+  Lock as LockIcon,
+} from '@mui/icons-material';
 import {
   PyrenzFormControl,
   PyrenzOutlinedInput,
@@ -31,12 +34,14 @@ interface ModelOption {
 interface ModelSelectionProps {
   preferredModel: string;
   setPreferredModel: (value: string) => void;
-  modelOptions: {
-    value: string;
-    label: string;
-    description: string;
-    subscription_plan: string;
-  }[] | null;
+  modelOptions:
+    | {
+        value: string;
+        label: string;
+        description: string;
+        subscription_plan: string;
+      }[]
+    | null;
   privateModels: { [key: string]: PrivateModel };
 }
 
@@ -80,7 +85,9 @@ export function ModelSelection({
   return (
     <Box sx={{ mt: 4 }}>
       <PyrenzFormControl fullWidth variant="outlined">
-        <PyrenzInputLabel id="preferred-model-label">Preferred Model</PyrenzInputLabel>
+        <PyrenzInputLabel id="preferred-model-label">
+          Preferred Model
+        </PyrenzInputLabel>
         <Select
           labelId="preferred-model-label"
           id="preferred-model"
@@ -102,8 +109,14 @@ export function ModelSelection({
                 >
                   <Box display="flex" alignItems="center">
                     <Typography>{option.label}</Typography>
-                    {option.isPrivate && <LockIcon fontSize="small" sx={{ ml: 1 }} />}
-                    <Typography variant="caption" color="textSecondary" sx={{ ml: 1 }}>
+                    {option.isPrivate && (
+                      <LockIcon fontSize="small" sx={{ ml: 1 }} />
+                    )}
+                    <Typography
+                      variant="caption"
+                      color="textSecondary"
+                      sx={{ ml: 1 }}
+                    >
                       Plan: {option.subscription_plan}
                     </Typography>
                   </Box>

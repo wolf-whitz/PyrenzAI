@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Select, MenuItem, Tooltip, IconButton, Card, CardContent } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Select,
+  MenuItem,
+  Tooltip,
+  IconButton,
+  Card,
+  CardContent,
+} from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Textarea, GetUserUUID } from '@components';
 import { supabase, encrypt } from '~/Utility';
@@ -103,7 +112,10 @@ export const Api = () => {
       ]);
       if (error) {
         console.error('Error inserting model:', error);
-        showAlert('Oops! Couldn’t save your model. Check the console.', 'Error');
+        showAlert(
+          'Oops! Couldn’t save your model. Check the console.',
+          'Error'
+        );
       } else {
         showAlert('Model saved successfully! 🎉', 'Success');
         setModelName('');
@@ -126,14 +138,18 @@ export const Api = () => {
   };
 
   return (
-    <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', height: '100%' }}>
+    <Box
+      sx={{ p: 3, display: 'flex', flexDirection: 'column', height: '100%' }}
+    >
       <Typography variant="h6" gutterBottom>
         API Settings
       </Typography>
       <Box component="form" onSubmit={handleSubmit} sx={{ flex: 1 }}>
         <Box mb={2}>
           <PyrenzFormControl fullWidth>
-            <PyrenzInputLabel id="provider-select-label">Select Provider</PyrenzInputLabel>
+            <PyrenzInputLabel id="provider-select-label">
+              Select Provider
+            </PyrenzInputLabel>
             <Select
               labelId="provider-select-label"
               id="provider-select"
@@ -144,7 +160,12 @@ export const Api = () => {
             >
               {providers.map((provider, index) => (
                 <MenuItem key={index} value={provider.provider_name}>
-                  <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    width="100%"
+                  >
                     <Typography>{provider.provider_name}</Typography>
                     <Tooltip title={provider.provider_description} arrow>
                       <IconButton size="small" edge="end">
@@ -191,9 +212,7 @@ export const Api = () => {
           />
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-          <PyrenzBlueButton type="submit">
-            Save Settings
-          </PyrenzBlueButton>
+          <PyrenzBlueButton type="submit">Save Settings</PyrenzBlueButton>
         </Box>
       </Box>
       <Box sx={{ mt: 4 }}>

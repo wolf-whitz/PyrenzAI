@@ -133,8 +133,7 @@ export const useUserStore = create<UserStore>()(
         set((state) => ({
           customization: { ...state.customization, ...customization },
         })),
-      toggleShowNSFW: () =>
-        set((state) => ({ show_nsfw: !state.show_nsfw })),
+      toggleShowNSFW: () => set((state) => ({ show_nsfw: !state.show_nsfw })),
       setBlockedTags: (tags) => set({ blocked_tags: tags }),
       setCachedUserData: (cache) => set({ cachedUserData: cache }),
     }),

@@ -7,7 +7,9 @@ interface EncryptionResponse {
 
 export const encrypt = async (plainText: string): Promise<string> => {
   try {
-    const response = await Utils.post('/api/Encrypt', { text: plainText }) as EncryptionResponse;
+    const response = (await Utils.post('/api/Encrypt', {
+      text: plainText,
+    })) as EncryptionResponse;
 
     if (!response.success) {
       throw new Error('Encryption was not successful');

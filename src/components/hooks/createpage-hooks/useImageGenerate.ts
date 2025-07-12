@@ -13,8 +13,13 @@ interface UseImageGenerateProps {
   onImageSelect: (file: File | null) => void;
 }
 
-export const useImageGenerate = ({ initialImage, onImageSelect }: UseImageGenerateProps) => {
-  const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(initialImage || null);
+export const useImageGenerate = ({
+  initialImage,
+  onImageSelect,
+}: UseImageGenerateProps) => {
+  const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(
+    initialImage || null
+  );
   const [open, setOpen] = useState(false);
   const [textareaValue, setTextareaValue] = useState('');
   const [modelInstruction, setModelInstruction] = useState('');

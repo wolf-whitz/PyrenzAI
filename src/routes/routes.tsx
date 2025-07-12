@@ -12,7 +12,7 @@ import {
   DocPage,
   Policy,
   AdminPanel,
-  CharacterPage
+  CharacterPage,
 } from './Routing';
 
 export const AppRoutes = (

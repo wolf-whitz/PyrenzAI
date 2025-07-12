@@ -104,7 +104,12 @@ export function CustomMarkdown({
             </Typography>
           ),
           img: ({ src, alt }) => (
-            <Box component="img" src={src} alt={alt || ''} sx={{ maxWidth: '100%', height: 'auto' }} />
+            <Box
+              component="img"
+              src={src}
+              alt={alt || ''}
+              sx={{ maxWidth: '100%', height: 'auto' }}
+            />
           ),
           hr: () => null,
         }}

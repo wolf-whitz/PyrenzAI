@@ -37,11 +37,18 @@ export function ModelControl() {
 
       if (!controls) return;
       if (Array.isArray(controls.blocked) && controls.blocked.length > 0) {
-        const decoded = controls.blocked.map((tokens: number[]) => decodeTokenizer(tokens)).join(', ');
+        const decoded = controls.blocked
+          .map((tokens: number[]) => decodeTokenizer(tokens))
+          .join(', ');
         setBlockedWords(decoded);
       }
-      if (Array.isArray(controls.encouraged) && controls.encouraged.length > 0) {
-        const decoded = controls.encouraged.map((tokens: number[]) => decodeTokenizer(tokens)).join(', ');
+      if (
+        Array.isArray(controls.encouraged) &&
+        controls.encouraged.length > 0
+      ) {
+        const decoded = controls.encouraged
+          .map((tokens: number[]) => decodeTokenizer(tokens))
+          .join(', ');
         setEncouragedWords(decoded);
       }
 
@@ -58,10 +65,18 @@ export function ModelControl() {
 
   const handleSubmit = async () => {
     if (!userUUID) return;
-    const blockedWordsArray = blockedWords.split(',').map(word => word.trim()).filter(Boolean);
-    const encouragedWordsArray = encouragedWords.split(',').map(word => word.trim()).filter(Boolean);
-    const blockedTokens = blockedWordsArray.map(word => applyTokenizer(word));
-    const encouragedTokens = encouragedWordsArray.map(word => applyTokenizer(word));
+    const blockedWordsArray = blockedWords
+      .split(',')
+      .map((word) => word.trim())
+      .filter(Boolean);
+    const encouragedWordsArray = encouragedWords
+      .split(',')
+      .map((word) => word.trim())
+      .filter(Boolean);
+    const blockedTokens = blockedWordsArray.map((word) => applyTokenizer(word));
+    const encouragedTokens = encouragedWordsArray.map((word) =>
+      applyTokenizer(word)
+    );
 
     const { error } = await supabase
       .from('user_data')
@@ -70,8 +85,8 @@ export function ModelControl() {
           blocked: blockedTokens,
           encouraged: encouragedTokens,
           controller: {
-            "Blocked Words Frequency": blockedFrequency,
-            "Encouraged Word Frequency": encouragedFrequency,
+            'Blocked Words Frequency': blockedFrequency,
+            'Encouraged Word Frequency': encouragedFrequency,
           },
         },
         preset_instruction: presetInstruction,
@@ -131,7 +146,9 @@ export function ModelControl() {
         />
 
         <Box display="flex" alignItems="center">
-          <Typography variant="subtitle1">Blocked Words Frequency: {blockedFrequency}</Typography>
+          <Typography variant="subtitle1">
+            Blocked Words Frequency: {blockedFrequency}
+          </Typography>
           <Tooltip title="Adjust the frequency penalty for blocked words">
             <IconButton>
               <HelpOutlineIcon fontSize="small" />
@@ -146,7 +163,9 @@ export function ModelControl() {
         />
 
         <Box display="flex" alignItems="center">
-          <Typography variant="subtitle1">Encouraged Word Frequency: {encouragedFrequency}</Typography>
+          <Typography variant="subtitle1">
+            Encouraged Word Frequency: {encouragedFrequency}
+          </Typography>
           <Tooltip title="Adjust the frequency bonus for encouraged words">
             <IconButton>
               <HelpOutlineIcon fontSize="small" />
@@ -167,10 +186,7 @@ export function ModelControl() {
         alignItems="flex-end"
         flexGrow={1}
       >
-        <PyrenzBlueButton
-          onClick={handleSubmit}
-          disabled={!userUUID}
-        >
+        <PyrenzBlueButton onClick={handleSubmit} disabled={!userUUID}>
           Submit
         </PyrenzBlueButton>
       </Box>

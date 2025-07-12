@@ -6,7 +6,7 @@ import {
   MobileNav,
   CreatePageLoader,
 } from '@components';
-import {   GetUserData  } from '@function'
+import { GetUserData } from '@function';
 import { useMediaQuery, useTheme, Box, Typography } from '@mui/material';
 import { supabase } from '~/Utility';
 import { useParams } from 'react-router-dom';
