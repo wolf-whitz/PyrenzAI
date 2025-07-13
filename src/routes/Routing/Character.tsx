@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -33,9 +33,19 @@ export const CharacterPage = () => {
   const { char_uuid } = useParams<{ char_uuid: string }>();
   const { character, notFound, handleDeleteCharacter } = useCharacterData(char_uuid);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [userUuid, setUserUuid] = useState<string | null>(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchUserUuid = async () => {
+      const { data } = await supabase.auth.getUser();
+      setUserUuid(data?.user?.id || null);
+    };
+
+    fetchUserUuid();
+  }, []);
 
   if (notFound) {
     return (
@@ -94,6 +104,8 @@ export const CharacterPage = () => {
   const handleEditCharacter = () => {
     navigate(`/create/${character.char_uuid}`);
   };
+
+  const isCreator = userUuid === character.creator_uuid;
 
   return (
     <Box
@@ -175,24 +187,29 @@ export const CharacterPage = () => {
                 >
                   Start Chat
                 </PyrenzBlueButton>
-                <PyrenzBlueButton
-                  variant="contained"
-                  sx={{ mt: 2, py: 1.5 }}
-                  fullWidth
-                  onClick={handleEditCharacter}
-                  startIcon={<EditIcon />}
-                >
-                  Edit Character
-                </PyrenzBlueButton>
-                <PyrenzBlueButton
-                  variant="contained"
-                  sx={{ mt: 2, py: 1.5, backgroundColor: 'error.main' }}
-                  fullWidth
-                  onClick={handleCharacterDeletion}
-                  startIcon={<DeleteIcon />}
-                >
-                  Delete Character
-                </PyrenzBlueButton>
+
+                {isCreator && (
+                  <>
+                    <PyrenzBlueButton
+                      variant="contained"
+                      sx={{ mt: 2, py: 1.5 }}
+                      fullWidth
+                      onClick={handleEditCharacter}
+                      startIcon={<EditIcon />}
+                    >
+                      Edit Character
+                    </PyrenzBlueButton>
+                    <PyrenzBlueButton
+                      variant="contained"
+                      sx={{ mt: 2, py: 1.5, backgroundColor: 'error.main' }}
+                      fullWidth
+                      onClick={handleCharacterDeletion}
+                      startIcon={<DeleteIcon />}
+                    >
+                      Delete Character
+                    </PyrenzBlueButton>
+                  </>
+                )}
               </CardContent>
             </Card>
           </Box>
