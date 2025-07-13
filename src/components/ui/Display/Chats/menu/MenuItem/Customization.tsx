@@ -13,7 +13,7 @@ interface CustomizationProps {
     topP: number;
     presencePenalty: number;
     frequencyPenalty: number;
-    modelMemoryLimit?: number;
+    modelMemoryLimit: number;
   } | null;
   subscriptionPlan: string | null;
 }
@@ -95,7 +95,7 @@ export function Customization({ customization, subscriptionPlan }: Customization
               maxValue = 50;
               break;
             default:
-              maxValue = undefined;
+              maxValue = 15;
           }
 
           return (
@@ -107,7 +107,7 @@ export function Customization({ customization, subscriptionPlan }: Customization
               sliderDescriptions={sliderDescriptions}
               setShowPopover={setShowPopover as React.Dispatch<React.SetStateAction<string | null>>}
               maxValue={maxValue}
-              step={sliderKey === 'modelMemoryLimit' ? 5 : undefined}
+              step={sliderKey === 'modelMemoryLimit' ? 5 : 0.1}
               marks={sliderKey === 'modelMemoryLimit' ? [
                 { value: 15, label: '15' },
                 { value: 20, label: '20' },

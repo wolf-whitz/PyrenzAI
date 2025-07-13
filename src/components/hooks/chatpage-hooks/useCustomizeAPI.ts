@@ -13,7 +13,7 @@ interface CustomizationProps {
     topP: number;
     presencePenalty: number;
     frequencyPenalty: number;
-    modelMemoryLimit?: number;
+    modelMemoryLimit: number;
   } | null;
   subscriptionPlan: string | null;
 }
@@ -102,11 +102,9 @@ export const useCustomizeAPI = ({ customization, subscriptionPlan }: Customizati
     const fetchUserData = async () => {
       try {
         const userData: GetUserDataResponse = await GetUserData();
-
         if ('error' in userData) {
           throw new Error(userData.error);
         }
-
         setMaxTokenLimit(userData.subscription_data.max_token);
         const models = userData.subscription_data.model || {};
         const options: ModelOption[] = Object.entries(models).map(
@@ -150,7 +148,6 @@ export const useCustomizeAPI = ({ customization, subscriptionPlan }: Customizati
         return;
       }
     }
-
     const inferenceSettings = {
       maxTokens,
       temperature,
@@ -158,7 +155,6 @@ export const useCustomizeAPI = ({ customization, subscriptionPlan }: Customizati
       presencePenalty,
       frequencyPenalty,
     };
-
     try {
       const userUUID: string = await GetUserUUID();
       const data = {
@@ -168,13 +164,10 @@ export const useCustomizeAPI = ({ customization, subscriptionPlan }: Customizati
         is_public: !isModelPrivate(preferredModel),
         modelMemoryLimit,
       };
-
       const response: ApiResponse = await Utils.post('/api/ModelSwitch', data);
-
       if (response.error) {
         throw new Error(response.error.message);
       }
-
       showAlert('Customization data submitted successfully!', 'Success');
     } catch (error) {
       Sentry.captureException(error);
@@ -185,26 +178,26 @@ export const useCustomizeAPI = ({ customization, subscriptionPlan }: Customizati
 
   return {
     maxTokens,
-    setMaxTokens,
     temperature,
-    setTemperature,
     topP,
-    setTopP,
     presencePenalty,
-    setPresencePenalty,
     frequencyPenalty,
-    setFrequencyPenalty,
     modelMemoryLimit,
-    setModelMemoryLimit,
     preferredModel,
-    setPreferredModel,
     modelId,
-    setModelId,
     maxTokenLimit,
-    setMaxTokenLimit,
     stateSetters,
     handleSubmit,
     modelOptions,
     privateModels,
+    setMaxTokens,
+    setTemperature,
+    setTopP,
+    setPresencePenalty,
+    setFrequencyPenalty,
+    setModelMemoryLimit,
+    setPreferredModel,
+    setModelId,
+    setMaxTokenLimit,
   };
 };

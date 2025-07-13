@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '~/Utility';
 import { Character } from '@shared-types';
 import { GetUserData } from '@components';
@@ -8,15 +8,25 @@ interface MenuAPIProps {
   char: Character;
 }
 
+interface AICustomization {
+  model: string;
+  maxTokens: number;
+  temperature: number;
+  topP: number;
+  presencePenalty: number;
+  frequencyPenalty: number;
+  modelMemoryLimit: number;
+}
+
 export const useMenuAPI = ({ char }: MenuAPIProps) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState('Cosmetic');
   const [bgImage, setBgImage] = useState<string | null>(null);
-  const [aiCustomization, setAiCustomization] = useState<any>(null);
+  const [aiCustomization, setAiCustomization] = useState<AICustomization | null>(null);
   const [subscriptionPlan, setSubscriptionPlan] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const handleCharacterDetailsSubmit = async (characterDetails: Character) => {
+  const handleCharacterDetailsSubmit = useCallback(async (characterDetails: Character) => {
     try {
       const { error } = await supabase
         .from('chats')
@@ -28,13 +38,12 @@ export const useMenuAPI = ({ char }: MenuAPIProps) => {
         .eq('char_uuid', char.char_uuid);
 
       if (error) throw error;
-
       console.log('Character details updated successfully');
     } catch (error) {
       console.error('Error updating character details:', error);
       Sentry.captureException(error);
     }
-  };
+  }, [char.char_uuid]);
 
   useEffect(() => {
     const savedBg = localStorage.getItem('bgImage');
@@ -42,30 +51,45 @@ export const useMenuAPI = ({ char }: MenuAPIProps) => {
       setBgImage(savedBg);
     }
 
+    let isMounted = true;
+
     const fetchData = async () => {
       try {
-        const userData = await GetUserData();
-        console.log(userData);
+        const result = await GetUserData();
+
+        if ('error' in result) {
+          console.error(result.error);
+          return;
+        }
+
+        const userData = result;
 
         if (userData && 'ai_customization' in userData) {
-          setAiCustomization(userData.ai_customization);
-          const plan = userData.subscription_data.tier;
+          const { modelMemoryLimit, ...restCustomization } = userData.ai_customization;
 
-          if (['MELON', 'PINEAPPLE', 'DURIAN'].includes(plan)) {
-            setSubscriptionPlan(plan);
-          } else {
-            setSubscriptionPlan(null);
+          if (isMounted) {
+            setAiCustomization({
+              ...restCustomization,
+              modelMemoryLimit: modelMemoryLimit ?? 15,
+            });
+
+            const plan = userData.subscription_data?.tier;
+            setSubscriptionPlan(['MELON', 'PINEAPPLE', 'DURIAN'].includes(plan) ? plan : null);
           }
         }
       } catch (error) {
         Sentry.captureException(error);
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
 
     fetchData();
-  }, []);
+
+    return () => {
+      isMounted = false;
+    };
+  }, []); 
 
   return {
     isDropdownOpen,
