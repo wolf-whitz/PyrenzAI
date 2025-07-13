@@ -27,7 +27,7 @@ export function ErrorPage() {
         variant="h1"
         style={{
           fontSize: '8rem',
-          color: 'orange',
+          color: '#2196f3', 
           fontWeight: 900,
         }}
       >
@@ -38,7 +38,7 @@ export function ErrorPage() {
         style={{
           marginTop: '1rem',
           fontWeight: 'bold',
-          color: 'orange',
+          color: '#2196f3',
         }}
       >
         Something went wrong :(
@@ -47,10 +47,10 @@ export function ErrorPage() {
         variant="body1"
         style={{
           marginTop: '0.5rem',
-          color: '#666',
+          color: '#90caf9', 
         }}
       >
-        Something went wrong...
+        We broke it. That’s on us.
       </Typography>
       <PyrenzBlueButton
         href="/"

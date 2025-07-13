@@ -9,16 +9,16 @@ interface SaveDraftResponse {
 
 export const handleSaveDraft = async (
   character: Character,
-  userUuid: string
+  creatorUuid: string
 ): Promise<SaveDraftResponse> => {
   try {
-    if (!userUuid) {
-      return { success: false, error: 'User UUID is missing.' };
+    if (!creatorUuid) {
+      return { success: false, error: 'Creator UUID is missing.' };
     }
 
-    const { user_uuid, ...filteredCharacter } = {
-      ...character,
-      user_uuid: userUuid,
+    const filteredCharacter = {
+      creator_uuid: creatorUuid,
+      ...character
     };
 
     const { error } = await supabase

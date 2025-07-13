@@ -79,7 +79,6 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
       const uuid = await GetUserUUID();
       setUserUuid(uuid);
     };
-
     fetchUserUuid();
   }, []);
 
@@ -87,12 +86,11 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
     const fetchDrafts = async () => {
       if (hasFetched.current || !userUuid) return;
       hasFetched.current = true;
-
       try {
         const { data, error } = await supabase
           .from('draft_characters')
           .select('*')
-          .eq('user_uuid', userUuid);
+          .eq('creator_uuid', userUuid);
 
         if (error) {
           console.error('Error fetching drafts:', error);

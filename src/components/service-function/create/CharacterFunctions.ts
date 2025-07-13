@@ -14,7 +14,7 @@ const requiredCharacterFields: Array<keyof Character> = [
   'tags',
   'gender',
   'creator',
-  'profile_image',
+  'profile_image'
 ];
 
 const validateCharacterData = (character: Character) => {
@@ -25,7 +25,7 @@ const validateCharacterData = (character: Character) => {
 
   return {
     isValid: missingFields.length === 0,
-    missingFields,
+    missingFields
   };
 };
 
@@ -58,7 +58,7 @@ export const handleClearCharacter = (setCharacter: any) => {
     creator: '',
     is_public: false,
     is_nsfw: false,
-    profile_image: '',
+    profile_image: ''
   });
 };
 
@@ -100,6 +100,7 @@ export const handleSaveCharacter = async (
   showAlert: any
 ) => {
   setSaveLoading(true);
+
   try {
     if (!userUuid) {
       showAlert('User UUID is missing.', 'Alert');
@@ -108,6 +109,7 @@ export const handleSaveCharacter = async (
     }
 
     const validation = validateCharacterData(character);
+
     if (!validation.isValid) {
       showAlert(
         `Missing or undefined fields: ${validation.missingFields.join(', ')}`,
@@ -120,7 +122,7 @@ export const handleSaveCharacter = async (
     const char_uuid = uuidv4();
     const characterWithUUID = {
       ...character,
-      char_uuid,
+      char_uuid
     };
 
     const response = await handleSaveDraft(characterWithUUID, userUuid);
@@ -158,6 +160,7 @@ export const handleSubmitCharacter = async (
     }
 
     const validation = validateCharacterData(character);
+
     if (!validation.isValid) {
       showAlert(
         `Missing or undefined fields: ${validation.missingFields.join(', ')}`,
@@ -168,6 +171,7 @@ export const handleSubmitCharacter = async (
     }
 
     let response;
+
     if (character_update) {
       response = await updateCharacter(character);
     } else {
@@ -183,14 +187,17 @@ export const handleSubmitCharacter = async (
       );
     } else {
       const characterUuid = response.char_uuid;
+
       if (characterUuid) {
         const chatResponse = await CreateNewChat(characterUuid, userUuid);
+
         if (chatResponse.error) {
           console.error('Error creating chat:', chatResponse.error);
           Sentry.captureException(new Error(chatResponse.error));
           showAlert(`Error creating chat: ${chatResponse.error}`, 'Alert');
         } else {
           const chatUuid = chatResponse.chat_uuid;
+
           if (chatUuid) {
             navigate(`/chat/${chatUuid}`);
           } else {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -12,12 +12,12 @@ import {
 import { useMediaQuery, useTheme } from '@mui/material';
 import { PyrenzBlueButton } from '~/theme';
 import {
-  CharacterSchema,
   CharacterPageLoader,
   Sidebar,
   MobileNav,
+  useCharacterData
 } from '~/components';
-import { fetchCharacters, CreateNewChat } from '@function';
+import { CreateNewChat } from '@function';
 import { supabase } from '~/Utility';
 import {
   PersonOutline as PersonIcon,
@@ -25,51 +25,17 @@ import {
   VisibilityOutlined as VisibilityIcon,
   ShieldOutlined as ShieldIcon,
   ArrowForward as ArrowForwardIcon,
+  Edit as EditIcon,
+  Delete as DeleteIcon,
 } from '@mui/icons-material';
 
 export const CharacterPage = () => {
   const { char_uuid } = useParams<{ char_uuid: string }>();
-  const [character, setCharacter] = useState<any>(null);
-  const [notFound, setNotFound] = useState(false);
+  const { character, notFound, handleDeleteCharacter } = useCharacterData(char_uuid);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchCharacterData = async () => {
-      try {
-        const response = await fetchCharacters({
-          currentPage: 1,
-          itemsPerPage: 1,
-          charuuid: char_uuid,
-          showNsfw: true,
-        });
-
-        if (response.characters && response.characters.length > 0) {
-          const transformedCharacter = {
-            ...response.characters[0],
-            id: response.characters[0].id
-              ? String(response.characters[0].id)
-              : undefined,
-            tags: response.characters[0].tags || [],
-            is_details_private:
-              response.characters[0].is_details_private ?? false,
-          };
-
-          const verifiedCharacter = CharacterSchema.parse(transformedCharacter);
-          setCharacter(verifiedCharacter);
-        } else {
-          setNotFound(true);
-        }
-      } catch (error) {
-        console.error('Failed to fetch character data:', error);
-        setNotFound(true);
-      }
-    };
-
-    fetchCharacterData();
-  }, [char_uuid]);
 
   if (notFound) {
     return (
@@ -114,8 +80,19 @@ export const CharacterPage = () => {
     }
   };
 
+  const handleCharacterDeletion = async () => {
+    const success = await handleDeleteCharacter();
+    if (success) {
+      navigate('/Home');
+    }
+  };
+
   const handleCreatorClick = () => {
     navigate(`/profile/${character.creator_uuid}`);
+  };
+
+  const handleEditCharacter = () => {
+    navigate(`/create/${character.char_uuid}`);
   };
 
   return (
@@ -197,6 +174,24 @@ export const CharacterPage = () => {
                   endIcon={<ArrowForwardIcon />}
                 >
                   Start Chat
+                </PyrenzBlueButton>
+                <PyrenzBlueButton
+                  variant="contained"
+                  sx={{ mt: 2, py: 1.5 }}
+                  fullWidth
+                  onClick={handleEditCharacter}
+                  startIcon={<EditIcon />}
+                >
+                  Edit Character
+                </PyrenzBlueButton>
+                <PyrenzBlueButton
+                  variant="contained"
+                  sx={{ mt: 2, py: 1.5, backgroundColor: 'error.main' }}
+                  fullWidth
+                  onClick={handleCharacterDeletion}
+                  startIcon={<DeleteIcon />}
+                >
+                  Delete Character
                 </PyrenzBlueButton>
               </CardContent>
             </Card>

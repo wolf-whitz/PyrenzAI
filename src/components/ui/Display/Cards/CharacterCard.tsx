@@ -22,15 +22,9 @@ import {
 
 interface CharacterCardProps {
   character: Character;
-  isOwner?: boolean;
-  onCharacterDeleted?: () => void;
 }
 
-export function CharacterCard({
-  character,
-  isOwner = false,
-  onCharacterDeleted = () => {},
-}: CharacterCardProps) {
+export function CharacterCard({ character }: CharacterCardProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const navigate = useNavigate();
 

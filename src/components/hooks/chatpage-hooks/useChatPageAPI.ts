@@ -148,11 +148,10 @@ export const useChatPageAPI = (
   const onGenerateImage = async (messageId: string): Promise<void> => {
     try {
       const lastTenMessages = previous_message.slice(-10);
+      const personaPrompt = `The character's persona is: ${char.persona}. `;
       const prompt = lastTenMessages
         .map((msg) => {
-          const characterDescription =
-            msg.type === 'user' ? 'A man' : 'A woman';
-          return `${characterDescription}, ${msg.text}. The expressions are vivid, capturing every nuance of the characters involved.`;
+          return `${personaPrompt}${msg.text}. The expressions are vivid, capturing every nuance of the characters involved.`;
         })
         .join(' ');
 
@@ -162,7 +161,6 @@ export const useChatPageAPI = (
       });
 
       const imageResponse = response as ImageGenerationResponse;
-
       if (
         imageResponse.data &&
         imageResponse.data.data &&
@@ -172,7 +170,7 @@ export const useChatPageAPI = (
         const newImageMessage: Message = {
           id: `image-${Date.now()}`,
           type: 'char',
-          text: `Here is the image generated from our conversation: ![Generated Image](${imageUrl})`,
+          text: `![Generated Image](${imageUrl})`,
           name: char.name,
           profile_image: char.profile_image,
         };

@@ -13,6 +13,7 @@ interface CustomizationProps {
     topP: number;
     presencePenalty: number;
     frequencyPenalty: number;
+    modelMemoryLimit?: number;
   } | null;
   subscriptionPlan: string | null;
 }
@@ -40,37 +41,44 @@ interface ApiResponse {
   };
 }
 
-export const useCustomizeAPI = ({
-  customization,
-  subscriptionPlan,
-}: CustomizationProps) => {
+interface UserData {
+  subscription_data: {
+    max_token: number;
+    model?: Record<string, { description: string; plan: string }>;
+    private_models?: PrivateModels;
+  };
+  preferred_model?: string;
+}
+
+type GetUserDataResponse = UserData | { error: string };
+
+export const useCustomizeAPI = ({ customization, subscriptionPlan }: CustomizationProps) => {
   const userStore = useUserStore();
-  const [maxTokens, setMaxTokens] = useState(
+  const [maxTokens, setMaxTokens] = useState<number>(
     customization?.maxTokens || userStore.inferenceSettings.maxTokens || 100
   );
-  const [temperature, setTemperature] = useState(
+  const [temperature, setTemperature] = useState<number>(
     customization?.temperature || userStore.inferenceSettings.temperature || 1
   );
-  const [topP, setTopP] = useState(
+  const [topP, setTopP] = useState<number>(
     customization?.topP || userStore.inferenceSettings.topP || 1
   );
-  const [presencePenalty, setPresencePenalty] = useState(
-    customization?.presencePenalty ||
-      userStore.inferenceSettings.presencePenalty ||
-      0
+  const [presencePenalty, setPresencePenalty] = useState<number>(
+    customization?.presencePenalty || userStore.inferenceSettings.presencePenalty || 0
   );
-  const [frequencyPenalty, setFrequencyPenalty] = useState(
-    customization?.frequencyPenalty ||
-      userStore.inferenceSettings.frequencyPenalty ||
-      0
+  const [frequencyPenalty, setFrequencyPenalty] = useState<number>(
+    customization?.frequencyPenalty || userStore.inferenceSettings.frequencyPenalty || 0
   );
-  const [preferredModel, setPreferredModel] = useState(
+  const [modelMemoryLimit, setModelMemoryLimit] = useState<number>(
+    customization?.modelMemoryLimit || 15
+  );
+  const [preferredModel, setPreferredModel] = useState<string>(
     customization?.model || userStore.preferredModel || 'Mango Ube'
   );
-  const [modelId, setModelId] = useState(
+  const [modelId, setModelId] = useState<string>(
     customization?.model || userStore.preferredModel || 'Mango Ube'
   );
-  const [maxTokenLimit, setMaxTokenLimit] = useState(
+  const [maxTokenLimit, setMaxTokenLimit] = useState<number>(
     customization?.maxTokens || userStore.maxTokenLimit || 1000
   );
   const [modelOptions, setModelOptions] = useState<ModelOption[]>([]);
@@ -79,44 +87,45 @@ export const useCustomizeAPI = ({
 
   const stateSetters = {
     maxTokens: (value: number) => setMaxTokens(Math.min(value, maxTokenLimit)),
-    temperature: (value: number) =>
-      setTemperature(Math.min(Math.max(value, 0), 2)),
+    temperature: (value: number) => setTemperature(Math.min(Math.max(value, 0), 2)),
     topP: (value: number) => setTopP(Math.min(Math.max(value, 0), 1)),
-    presencePenalty: (value: number) =>
-      setPresencePenalty(Math.min(Math.max(value, -2), 2)),
-    frequencyPenalty: (value: number) =>
-      setFrequencyPenalty(Math.min(Math.max(value, -2), 2)),
+    presencePenalty: (value: number) => setPresencePenalty(Math.min(Math.max(value, -2), 2)),
+    frequencyPenalty: (value: number) => setFrequencyPenalty(Math.min(Math.max(value, -2), 2)),
+    modelMemoryLimit: (value: number) => setModelMemoryLimit(value),
   };
 
-  const isModelPrivate = (modelName: string) => {
-    return privateModels && privateModels[modelName];
+  const isModelPrivate = (modelName: string): boolean => {
+    return privateModels && !!privateModels[modelName];
   };
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userData = await GetUserData();
-        if (userData && 'subscription_data' in userData) {
-          setMaxTokenLimit(userData.subscription_data.max_token);
-          const models = userData.subscription_data.model || {};
-          const options = Object.entries(models).map(
-            ([modelName, modelInfo]) => ({
-              value: modelName,
-              label: modelName,
-              name: modelName,
-              description: modelInfo.description,
-              subscription_plan: modelInfo.plan,
-            })
-          );
-          setModelOptions(options);
-          if (userData.subscription_data.private_models) {
-            setPrivateModels(userData.subscription_data.private_models);
-          }
-          if (userData.preferred_model) {
-            const preferredModelFromData = userData.preferred_model;
-            setPreferredModel(preferredModelFromData);
-            setModelId(preferredModelFromData);
-          }
+        const userData: GetUserDataResponse = await GetUserData();
+
+        if ('error' in userData) {
+          throw new Error(userData.error);
+        }
+
+        setMaxTokenLimit(userData.subscription_data.max_token);
+        const models = userData.subscription_data.model || {};
+        const options: ModelOption[] = Object.entries(models).map(
+          ([modelName, modelInfo]) => ({
+            value: modelName,
+            label: modelName,
+            name: modelName,
+            description: modelInfo.description,
+            subscription_plan: modelInfo.plan,
+          })
+        );
+        setModelOptions(options);
+        if (userData.subscription_data.private_models) {
+          setPrivateModels(userData.subscription_data.private_models);
+        }
+        if (userData.preferred_model) {
+          const preferredModelFromData = userData.preferred_model;
+          setPreferredModel(preferredModelFromData);
+          setModelId(preferredModelFromData);
         }
       } catch (error) {
         Sentry.captureException(error);
@@ -151,26 +160,25 @@ export const useCustomizeAPI = ({
     };
 
     try {
-      const userUUID = await GetUserUUID();
+      const userUUID: string = await GetUserUUID();
       const data = {
         user_uuid: userUUID,
         inference_settings: inferenceSettings,
         preferred_model: preferredModel,
         is_public: !isModelPrivate(preferredModel),
+        modelMemoryLimit,
       };
 
-      const response = (await Utils.post(
-        '/api/ModelSwitch',
-        data
-      )) as ApiResponse;
+      const response: ApiResponse = await Utils.post('/api/ModelSwitch', data);
+
       if (response.error) {
         throw new Error(response.error.message);
       }
+
       showAlert('Customization data submitted successfully!', 'Success');
     } catch (error) {
       Sentry.captureException(error);
-      const errorMessage =
-        error instanceof Error ? error.message : 'An unknown error occurred.';
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
       showAlert(errorMessage, 'Alert');
     }
   };
@@ -186,6 +194,8 @@ export const useCustomizeAPI = ({
     setPresencePenalty,
     frequencyPenalty,
     setFrequencyPenalty,
+    modelMemoryLimit,
+    setModelMemoryLimit,
     preferredModel,
     setPreferredModel,
     modelId,

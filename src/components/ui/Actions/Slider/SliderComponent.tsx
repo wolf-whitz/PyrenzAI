@@ -12,6 +12,8 @@ interface SliderComponentProps {
   sliderDescriptions: Record<string, string>;
   setShowPopover: (key: string | null) => void;
   maxValue?: number;
+  step?: number;
+  marks?: Array<{ value: number; label: string }>;
   className?: string;
 }
 
@@ -22,6 +24,8 @@ export function SliderComponent({
   sliderDescriptions,
   setShowPopover,
   maxValue,
+  step,
+  marks,
   className,
 }: SliderComponentProps) {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -91,13 +95,11 @@ export function SliderComponent({
         value={stateValue}
         onChange={(event, value) => stateSetter(value as number)}
         max={maxValue}
-        min={sliderKey.includes('Penalty') ? -2 : 0}
-        step={sliderKey === 'maxTokens' ? 1 : sliderKey === 'topP' ? 0.01 : 0.1}
+        min={sliderKey.includes('Penalty') ? -2 : sliderKey === 'modelMemoryLimit' ? 15 : 0}
+        step={step || (sliderKey === 'maxTokens' ? 1 : sliderKey === 'topP' ? 0.01 : 0.1)}
+        marks={marks}
         valueLabelDisplay="auto"
       />
-      <Typography variant="caption" color="text.secondary">
-        {stateValue}
-      </Typography>
     </Box>
   );
 }
