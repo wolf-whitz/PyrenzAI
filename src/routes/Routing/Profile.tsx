@@ -63,10 +63,6 @@ export function ProfilePage() {
     }
   };
 
-  const handleCharacterDeleted = () => {
-    setRefreshCharacters((prev) => !prev);
-  };
-
   if (loading) {
     return (
       <Box display="flex" flexDirection="column" minHeight="100vh">
@@ -136,8 +132,6 @@ export function ProfilePage() {
                 <Box key={character.id}>
                   <CharacterCard
                     character={character}
-                    isOwner={isOwner}
-                    onCharacterDeleted={handleCharacterDeleted}
                   />
                 </Box>
               ))
