@@ -1,4 +1,5 @@
 import { FaDiscord } from 'react-icons/fa';
+import { MdOutlineMonitorHeart } from 'react-icons/md';
 import { motion } from 'framer-motion';
 import { Button, Card, CardContent, Typography, Link } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -74,30 +75,55 @@ export function Footer() {
         </Card>
       </motion.div>
 
-      <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.3 }}>
-        <Button
-          component="a"
-          href="https://discord.gg/zTcyP4WB8h"
-          target="_blank"
-          rel="noopener noreferrer"
-          variant="text"
-          startIcon={<FaDiscord size={30} />}
-          sx={{
-            color: '#fff',
-            fontSize: '1.25rem',
-            fontWeight: '600',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.75rem',
-            backgroundColor: 'transparent',
-            '&:hover': {
+      <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+        <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.3 }}>
+          <Button
+            component="a"
+            href="https://discord.gg/zTcyP4WB8h"
+            target="_blank"
+            rel="noopener noreferrer"
+            variant="text"
+            startIcon={<FaDiscord size={28} />}
+            sx={{
+              color: '#fff',
+              fontSize: '1.1rem',
+              fontWeight: '600',
+              display: 'flex',
+              gap: '0.5rem',
               backgroundColor: 'transparent',
-            },
-          }}
-        >
-          {t('buttons.joinDiscord')}
-        </Button>
-      </motion.div>
+              '&:hover': {
+                backgroundColor: 'transparent',
+              },
+            }}
+          >
+            {t('buttons.joinDiscord')}
+          </Button>
+        </motion.div>
+
+        <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.3 }}>
+          <Button
+            component="a"
+            href="https://stats.uptimerobot.com/BCu4M0Cgjf"
+            target="_blank"
+            rel="noopener noreferrer"
+            variant="text"
+            startIcon={<MdOutlineMonitorHeart size={26} />}
+            sx={{
+              color: '#fff',
+              fontSize: '1.1rem',
+              fontWeight: '600',
+              display: 'flex',
+              gap: '0.5rem',
+              backgroundColor: 'transparent',
+              '&:hover': {
+                backgroundColor: 'transparent',
+              },
+            }}
+          >
+            Uptime Status
+          </Button>
+        </motion.div>
+      </div>
 
       <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
         <Link
