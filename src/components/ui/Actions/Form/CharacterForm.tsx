@@ -1,6 +1,6 @@
 import {
   GenderDropdown,
-  VisibilityCheckboxes,
+  VisibilityDropdown,
   TokenSummary,
   FormActions,
   useCreateAPI,
@@ -42,7 +42,7 @@ export function CharacterForm({
         </Typography>
         <TextareaForm />
         <GenderDropdown />
-        <VisibilityCheckboxes />
+        <VisibilityDropdown />
         <TokenSummary />
         <FormActions
           onClear={handleClear}
