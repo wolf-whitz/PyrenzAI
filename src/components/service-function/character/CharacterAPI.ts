@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { CharacterSchema, GetUserUUID } from '~/components';
-import { fetchCharacters } from '@function';
 import { supabase } from '~/Utility';
 
 export const useCharacterData = (char_uuid: string | undefined) => {
@@ -9,36 +8,41 @@ export const useCharacterData = (char_uuid: string | undefined) => {
 
   useEffect(() => {
     const fetchCharacterData = async () => {
+      if (!char_uuid) {
+        setNotFound(true);
+        return;
+      }
+
       try {
-        if (!char_uuid) {
-          setNotFound(true);
-          return;
-        }
+        const fetchFromTable = async (table: string) => {
+          const { data, error } = await supabase
+            .from(table)
+            .select('*')
+            .eq('char_uuid', char_uuid)
+            .maybeSingle();
 
-        const response = await fetchCharacters({
-          currentPage: 1,
-          itemsPerPage: 1,
-          charuuid: char_uuid,
-          showNsfw: true,
-        });
+          if (error) return null;
+          return data;
+        };
 
-        if (response.characters && response.characters.length > 0) {
+        let result = await fetchFromTable('public_characters');
+        if (!result) result = await fetchFromTable('private_characters');
+
+        if (result) {
           const transformedCharacter = {
-            ...response.characters[0],
-            id: response.characters[0].id
-              ? String(response.characters[0].id)
-              : undefined,
-            tags: response.characters[0].tags || [],
-            is_details_private:
-              response.characters[0].is_details_private ?? false,
+            ...result,
+            id: result.id ? String(result.id) : undefined,
+            tags: result.tags || [],
+            is_details_private: result.is_details_private ?? false,
+            is_nsfw: result.is_nsfw ?? false,
           };
+
           const verifiedCharacter = CharacterSchema.parse(transformedCharacter);
           setCharacter(verifiedCharacter);
         } else {
           setNotFound(true);
         }
-      } catch (error) {
-        console.error('Failed to fetch character data:', error);
+      } catch {
         setNotFound(true);
       }
     };
@@ -51,12 +55,11 @@ export const useCharacterData = (char_uuid: string | undefined) => {
 
     try {
       const user_uuid = await GetUserUUID();
-      if (!user_uuid) {
-        console.error('User UUID not found');
-        return false;
-      }
+      if (!user_uuid) return false;
 
-      const tableName = character.is_public ? 'public_characters' : 'private_characters';
+      const tableName = character?.is_public
+        ? 'public_characters'
+        : 'private_characters';
 
       const { error } = await supabase
         .from(tableName)
@@ -64,14 +67,10 @@ export const useCharacterData = (char_uuid: string | undefined) => {
         .eq('char_uuid', char_uuid)
         .eq('creator_uuid', user_uuid);
 
-      if (error) {
-        console.error('Failed to delete character:', error);
-        return false;
-      }
+      if (error) return false;
 
       return true;
-    } catch (error) {
-      console.error('Error deleting character:', error);
+    } catch {
       return false;
     }
   };

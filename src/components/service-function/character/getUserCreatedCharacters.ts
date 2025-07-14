@@ -4,12 +4,6 @@ import { GetUserUUID } from '@components';
 import { Character, User } from '@shared-types';
 import { useUserStore } from '~/store';
 
-interface FilteredCharactersResponse {
-  characters: Character[];
-  character_count: number;
-  max_page: number;
-}
-
 interface UseUserCreatedCharactersResponse {
   characters: Character[];
   userData: User | null;
@@ -35,28 +29,32 @@ export const getUserCreatedCharacters = (
     const fetchCharacters = async (uuid: string) => {
       const { show_nsfw } = useUserStore.getState();
 
-      const { data, error } = await supabase
-        .rpc('get_filtered_characters', {
-          search: null,
-          show_nsfw,
-          blocked_tags: [],
-          gender_filter: null,
-          tag: [],
-          creatoruuid: uuid,
-          items_per_page: itemsPerPage,
-          page,
-          sort_by: sortBy,
-          charuuid: null,
-        })
+      const fetchFromTable = async (table: string) => {
+        const { data, error } = await supabase
+          .from(table)
+          .select('*')
+          .eq('creator_uuid', uuid)
+          .order(sortBy, { ascending: false })
+          .range((page - 1) * itemsPerPage, page * itemsPerPage - 1);
 
-        .single<FilteredCharactersResponse>();
+        if (error) {
+          console.error(`Error fetching from ${table}:`, error);
+          return [];
+        }
 
-      if (error || !data) {
-        console.error('Character fetch error:', error);
-        return { characters: [], max_page: 1 };
-      }
+        return data as Character[];
+      };
 
-      return { characters: data.characters, max_page: data.max_page };
+      const [publicChars, privateChars] = await Promise.all([
+        fetchFromTable('public_characters'),
+        fetchFromTable('private_characters'),
+      ]);
+
+      const combinedChars = [...publicChars, ...privateChars];
+      return {
+        characters: combinedChars,
+        max_page: Math.ceil(combinedChars.length / itemsPerPage),  
+      };
     };
 
     const fetchUserDataByUuid = async (uuid: string): Promise<User | null> => {

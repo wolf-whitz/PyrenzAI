@@ -35,28 +35,44 @@ export const fetchCharacters = async ({
     const { blocked_tags } = useUserStore.getState();
     const { setMaxPage } = useHomeStore.getState();
 
-    const { data, error } = await supabase.rpc('get_filtered_characters', {
-      page: currentPage,
-      items_per_page: itemsPerPage,
-      search: search?.trim() || null,
-      charuuid: charuuid?.trim() || null,
-      show_nsfw: showNsfw,
-      blocked_tags: blocked_tags || [],
-      gender_filter: genderFilter?.trim() || null,
-      tag: tags || [],
-      creatoruuid: creatoruuid?.trim() || null,
-      sort_by: sortBy,
-    });
+    const buildQuery = (table: string) => {
+      let query = supabase.from(table).select('*', { count: 'exact' });
 
-    if (error) throw new Error(`Supabase RPC error: ${error.message}`);
+      if (search) query.ilike('name', `%${search.trim()}%`);
+      if (charuuid) query.eq('char_uuid', charuuid.trim());
+      if (!showNsfw) query.eq('is_nsfw', false);
+      if (genderFilter) query.eq('gender', genderFilter.trim());
+      if (tags.length > 0) query.overlaps('tags', tags);
+      if (creatoruuid) query.eq('creator_uuid', creatoruuid.trim());
+      if (blocked_tags && blocked_tags.length > 0) {
+        query.not('tags', 'overlaps', blocked_tags);
+      }
 
-    const rawCharacters = data?.characters || [];
-    const characters: Character[] = rawCharacters.map((char: any) => ({
+      query.order(sortBy, { ascending: false });
+
+      const from = (currentPage - 1) * itemsPerPage;
+      const to = from + itemsPerPage - 1;
+      query.range(from, to);
+
+      return query;
+    };
+
+    let { data, count, error } = await buildQuery('public_characters');
+
+    if (error || !data || data.length === 0) {
+      const fallback = await buildQuery('private_characters');
+      const fallbackRes = await fallback;
+      data = fallbackRes.data;
+      count = fallbackRes.count;
+      if (fallbackRes.error) throw fallbackRes.error;
+    }
+
+    const characters: Character[] = (data || []).map((char: any) => ({
       ...char,
       id: String(char.id),
     }));
 
-    setMaxPage(data?.max_page || 0);
+    setMaxPage(Math.ceil((count ?? 0) / itemsPerPage));
 
     let selectedCharacter: Character | null = null;
     if (characters.length > 0) {
