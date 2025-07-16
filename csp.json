@@ -47,7 +47,8 @@
     "https://*.googlesyndication.com",
     "blob:",
     "data:",
-    "https://*.shuttleai.com/"
+    "https://*.shuttleai.com/",
+    "https://*.onrender.com/"
   ],
   "manifest-src": ["'self'", "https://pyrenzai.com"],
   "worker-src": ["'self'", "blob:"],
