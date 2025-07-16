@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
@@ -8,139 +8,70 @@ import {
   IconButton,
   Card,
   CardContent,
+  Menu,
 } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { Textarea, GetUserUUID } from '@components';
-import { supabase, encrypt } from '~/Utility';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { Textarea, useApiSettings } from '@components';
 import {
   PyrenzBlueButton,
   PyrenzFormControl,
   PyrenzOutlinedInput,
   PyrenzInputLabel,
 } from '~/theme';
-import { usePyrenzAlert } from '~/provider';
-
-interface Provider {
-  provider_name: string;
-  provider_description: string;
-  provider_link: string;
-}
-
-interface UserModel {
-  model_name: string;
-  model_description: string;
-}
 
 export const Api = () => {
-  const [userUuid, setUserUuid] = useState<string | null>(null);
-  const [apiKey, setApiKey] = useState<string>('');
-  const [modelName, setModelName] = useState<string>('');
-  const [modelDescription, setModelDescription] = useState<string>('');
-  const [apiUrl, setApiUrl] = useState<string>('');
-  const [providers, setProviders] = useState<Provider[]>([]);
-  const [selectedProvider, setSelectedProvider] = useState<string>('');
-  const [userModels, setUserModels] = useState<UserModel[]>([]);
-  const showAlert = usePyrenzAlert();
+  const {
+    apiKey,
+    modelName,
+    modelDescription,
+    apiUrl,
+    providers,
+    selectedProvider,
+    userModels,
+    setApiKey,
+    setModelName,
+    setModelDescription,
+    setApiUrl,
+    handleProviderChange,
+    handleSubmit,
+    handleEdit,
+    handleDelete,
+  } = useApiSettings();
 
-  useEffect(() => {
-    const fetchUserUuid = async () => {
-      const uuid = await GetUserUUID();
-      setUserUuid(uuid);
-    };
-    fetchUserUuid();
-  }, []);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedModelIndex, setSelectedModelIndex] = useState<number | null>(null);
 
-  useEffect(() => {
-    const fetchProviders = async () => {
-      const { data, error } = await supabase
-        .from('providers')
-        .select('provider_name, provider_description, provider_link');
-      if (error) {
-        console.error('Error fetching providers:', error);
-      } else {
-        setProviders(data || []);
-      }
-    };
-    fetchProviders();
-  }, []);
-
-  useEffect(() => {
-    const fetchUserModels = async () => {
-      if (!userUuid) return;
-      const { data, error } = await supabase
-        .from('private_models')
-        .select('model_name, model_description')
-        .eq('user_uuid', userUuid);
-      if (error) {
-        console.error('Error fetching user models:', error);
-      } else {
-        setUserModels(data || []);
-      }
-    };
-    fetchUserModels();
-  }, [userUuid]);
-
-  const handleProviderChange = (event: any) => {
-    const providerName = event.target.value as string;
-    setSelectedProvider(providerName);
-    const provider = providers.find((p) => p.provider_name === providerName);
-    if (provider) {
-      setApiUrl(provider.provider_link);
-    }
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, index: number) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedModelIndex(index);
   };
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    if (!userUuid) {
-      showAlert('User not loaded yet, please try again 🤷‍♂️', 'Alert');
-      return;
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedModelIndex(null);
+  };
+
+  const handleEditClick = () => {
+    if (selectedModelIndex !== null) {
+      const model = userModels[selectedModelIndex];
+      setModelName(model.model_name);
+      setModelDescription(model.model_description);
+      handleEdit(model.id);
     }
-    if (!apiUrl.trim()) {
-      showAlert('API URL is required!', 'Error');
-      return;
+    handleMenuClose();
+  };
+
+  const handleDeleteClick = () => {
+    if (selectedModelIndex !== null) {
+      const model = userModels[selectedModelIndex];
+      handleDelete(model.id);
     }
-    try {
-      const encryptedApiKey = await encrypt(apiKey);
-      const { data, error } = await supabase.from('private_models').insert([
-        {
-          user_uuid: userUuid,
-          model_name: modelName,
-          model_url: apiUrl,
-          model_description: modelDescription,
-          model_api_key: encryptedApiKey,
-        },
-      ]);
-      if (error) {
-        console.error('Error inserting model:', error);
-        showAlert(
-          'Oops! Couldn’t save your model. Check the console.',
-          'Error'
-        );
-      } else {
-        showAlert('Model saved successfully! 🎉', 'Success');
-        setModelName('');
-        setModelDescription('');
-        setApiKey('');
-        setApiUrl('');
-        setSelectedProvider('');
-        const { data: updatedModels, error: fetchError } = await supabase
-          .from('private_models')
-          .select('model_name, model_description')
-          .eq('user_uuid', userUuid);
-        if (!fetchError) {
-          setUserModels(updatedModels || []);
-        }
-      }
-    } catch (encryptionError) {
-      console.error('Error encrypting API key:', encryptionError);
-      showAlert('Oops! Couldn’t encrypt your API key.', 'Error');
-    }
+    handleMenuClose();
   };
 
   return (
-    <Box
-      sx={{ p: 3, display: 'flex', flexDirection: 'column', height: '100%' }}
-    >
+    <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', height: '100%' }}>
       <Typography variant="h6" gutterBottom>
         API Settings
       </Typography>
@@ -223,13 +154,31 @@ export const Api = () => {
           {userModels.map((model, index) => (
             <Card key={index} sx={{ minWidth: 275 }}>
               <CardContent>
-                <Typography variant="h5" component="div">
-                  {model.model_name}
-                </Typography>
-                <Typography variant="body2">
-                  {model.model_description}
-                </Typography>
+                <Box display="flex" justifyContent="space-between" alignItems="center">
+                  <Typography variant="h5" component="div">
+                    {model.model_name}
+                  </Typography>
+                  <IconButton
+                    aria-label="more"
+                    aria-controls="long-menu"
+                    aria-haspopup="true"
+                    onClick={(event) => handleMenuOpen(event, index)}
+                  >
+                    <MoreVertIcon />
+                  </IconButton>
+                </Box>
+                <Typography variant="body2">{model.model_description}</Typography>
               </CardContent>
+              <Menu
+                id="long-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl) && selectedModelIndex === index}
+                onClose={handleMenuClose}
+              >
+                <MenuItem onClick={handleEditClick}>Edit</MenuItem>
+                <MenuItem onClick={handleDeleteClick}>Delete</MenuItem>
+              </Menu>
             </Card>
           ))}
         </Box>

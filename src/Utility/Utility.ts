@@ -12,8 +12,7 @@ const fetcher = async (url: string) => {
   const response = await fetch(url);
 
   if (!response.ok) {
-    const error = new Error('An error occurred while fetching the data.');
-    throw error;
+    throw new Error('An error occurred while fetching the data.');
   }
 
   return response.json();
@@ -77,9 +76,7 @@ export const Utils: UtilsType = {
       let session = null;
       const { data: sessionData, error } = await supabase.auth.getSession();
 
-      if (error) {
-        console.warn('Error fetching Supabase session:', error);
-      } else {
+      if (!error) {
         session = sessionData.session;
       }
 
@@ -88,7 +85,9 @@ export const Utils: UtilsType = {
         Accept: isImageRequest ? 'image/png' : 'application/json',
       };
 
-      if (session) headers.Authorization = `Bearer ${session.access_token}`;
+      if (session) {
+        headers.Authorization = `Bearer ${session.access_token}`;
+      }
 
       const options: RequestInit = {
         method,
@@ -97,33 +96,25 @@ export const Utils: UtilsType = {
 
       if (method !== 'GET' && Object.keys(data).length) {
         options.body = data instanceof FormData ? data : JSON.stringify(data);
+        if (data instanceof FormData) {
+          delete headers['Content-Type'];
+        }
       }
 
       const response = await fetch(url.toString(), options);
 
-      if (!response.ok) {
-        let errorMessage = `${response.status} ${response.statusText}`;
-        const contentType = response.headers.get('Content-Type');
-
-        if (contentType?.includes('application/json')) {
-          const errorData = await response.json();
-          errorMessage += ` - ${errorData.message || JSON.stringify(errorData)}`;
-        } else {
-          const rawError = await response.text();
-          if (rawError) errorMessage += ` - ${rawError}`;
-        }
-
-        throw new Error(errorMessage);
-      }
-
-      if (response.status === 204) return {} as T;
-
       const contentType = response.headers.get('Content-Type');
-      if (contentType?.includes('image/png')) {
+      let parsedResponse: any = null;
+
+      if (contentType?.includes('application/json')) {
+        parsedResponse = await response.json();
+      } else if (contentType?.includes('text/plain')) {
+        parsedResponse = await response.text();
+      } else if (contentType?.includes('image/png')) {
         return (await response.blob()) as T;
       }
 
-      return await response.json();
+      return parsedResponse as T;
     })();
 
     pendingRequests.set(cacheKey, fetchPromise);

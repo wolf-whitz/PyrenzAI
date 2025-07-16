@@ -41,7 +41,7 @@ Users are solely responsible for maintaining the confidentiality and security of
 If a user deletes their account and associated data, **PyrenzAI will not retain any personal information or content associated with that account**. Deletion is permanent and unrecoverable.
 
 ## 4. Refund Policy  
-Users are eligible to request a refund within five (5) calendar days of the original purchase date. Refund requests made after this period may not be honored. To initiate a refund, please contact our support team with proof of purchase.
+Users are eligible to request a refund within seven (7) calendar days of the original purchase date. Refund requests made after this period may not be honored. To initiate a refund, please contact our support team with proof of purchase.
 
 ## 5. Prohibited Content  
 The following content is strictly prohibited on PyrenzAI:

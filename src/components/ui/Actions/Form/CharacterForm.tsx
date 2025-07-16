@@ -8,6 +8,7 @@ import {
 import { TextareaForm } from './Childrens/TextareaForm';
 import { useNavigate } from 'react-router-dom';
 import { Typography } from '@mui/material';
+import { useCharacterStore } from '~/store';
 
 interface CharacterFormProps {
   character_update: boolean;
@@ -21,6 +22,8 @@ export function CharacterForm({
   creator,
 }: CharacterFormProps) {
   const navigate = useNavigate();
+  const error = useCharacterStore((state) => state.error);
+
   const {
     loading,
     saveLoading,
@@ -40,6 +43,13 @@ export function CharacterForm({
         <Typography variant="h6" sx={{ color: 'white', fontWeight: 'bold' }}>
           {character_update ? 'Update Mode' : 'Create Mode'}
         </Typography>
+
+        {error && (
+          <Typography variant="body2" sx={{ color: 'red', fontWeight: 'bold' }}>
+            {error}
+          </Typography>
+        )}
+
         <TextareaForm />
         <GenderDropdown />
         <VisibilityDropdown />
