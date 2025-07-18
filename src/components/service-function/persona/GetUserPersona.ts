@@ -3,6 +3,8 @@ import { useUserStore } from '~/store';
 import { GetUserUUID } from '@function';
 
 interface ModelInfo {
+  name: string;
+  model_description: string;
   plan: string;
   description: string;
 }
@@ -20,6 +22,7 @@ interface ApiResponse {
   username: string;
   user_avatar: string;
   user_uuid: string;
+  purchase_id: string | null;
   ai_customization: any;
   preferred_model?: string;
   is_admin: boolean;
@@ -47,8 +50,7 @@ let inFlightRequest: Promise<ApiResponse | { error: string }> | null = null;
 export async function GetUserData(): Promise<ApiResponse | { error: string }> {
   const store = useUserStore.getState();
   const now = Date.now();
-
-  const cached = (store as any).cachedUserData as CachedUserData | undefined;
+  const cached = store.cachedUserData as CachedUserData | undefined;
 
   if (cached && now - cached.gotten_at < CACHE_DURATION) {
     return cached.data;
@@ -65,29 +67,26 @@ export async function GetUserData(): Promise<ApiResponse | { error: string }> {
         return { error: 'User UUID not found' };
       }
 
-      const response = await Utils.post('/api/GetUserData', { user_uuid });
+      const response = await Utils.post<ApiResponse>('/api/GetUserData', { user_uuid });
 
       if (!isApiResponse(response)) {
         return { error: 'Failed to fetch user data' };
       }
 
-      store.setUserUUID(user_uuid);
+      store.setUserUUID(response.user_uuid);
       store.setUsername(response.username);
       store.setPersonaName(response.persona_name || '');
       store.setUserIcon(response.user_avatar);
       store.setIsAdmin(response.is_admin);
       store.setSubscriptionPlan([response.subscription_data.tier]);
       store.setPreferredModel(response.preferred_model || '');
+      store.setPurchaseId(response.purchase_id || '');
 
       if (response.ai_customization?.inference_settings) {
-        store.setInferenceSettings(
-          response.ai_customization.inference_settings
-        );
+        store.setInferenceSettings(response.ai_customization.inference_settings);
       }
 
-      const modelIdentifiers = Object.entries(
-        response.subscription_data.model
-      ).map(([name, info]) => ({
+      const modelIdentifiers = Object.entries(response.subscription_data.model).map(([name, info]) => ({
         name,
         model_description: info.description,
       }));
@@ -95,10 +94,10 @@ export async function GetUserData(): Promise<ApiResponse | { error: string }> {
       store.setModelIdentifiers(modelIdentifiers);
       store.setMaxTokenLimit(response.subscription_data.max_token);
 
-      (store as any).cachedUserData = {
+      store.setCachedUserData({
         data: response,
         gotten_at: Date.now(),
-      };
+      });
 
       return response;
     } catch (error) {

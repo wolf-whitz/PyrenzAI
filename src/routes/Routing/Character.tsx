@@ -29,11 +29,17 @@ import {
   Delete as DeleteIcon,
 } from '@mui/icons-material';
 
-export const CharacterPage = () => {
+export function CharacterPage() {
   const { char_uuid } = useParams<{ char_uuid: string }>();
   const { character, notFound, handleDeleteCharacter } = useCharacterData(char_uuid);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [userUuid, setUserUuid] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState({
+    startChat: false,
+    editCharacter: false,
+    deleteCharacter: false,
+  });
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const navigate = useNavigate();
@@ -43,7 +49,6 @@ export const CharacterPage = () => {
       const { data } = await supabase.auth.getUser();
       setUserUuid(data?.user?.id || null);
     };
-
     fetchUserUuid();
   }, []);
 
@@ -78,9 +83,13 @@ export const CharacterPage = () => {
   }
 
   const handleStartChat = async () => {
+    setIsLoading({ ...isLoading, startChat: true });
     const { data } = await supabase.auth.getUser();
     const user_uuid = data?.user?.id;
-    if (!character || !user_uuid) return;
+    if (!character || !user_uuid) {
+      setIsLoading({ ...isLoading, startChat: false });
+      return;
+    }
     const result = await CreateNewChat(character.char_uuid, user_uuid);
     if (result.error) {
       console.error('Failed to create chat:', result.error);
@@ -88,13 +97,16 @@ export const CharacterPage = () => {
       console.log('Chat created successfully:', result.chat_uuid);
       navigate(`/chat/${result.chat_uuid}`);
     }
+    setIsLoading({ ...isLoading, startChat: false });
   };
 
   const handleCharacterDeletion = async () => {
+    setIsLoading({ ...isLoading, deleteCharacter: true });
     const success = await handleDeleteCharacter();
     if (success) {
       navigate('/Home');
     }
+    setIsLoading({ ...isLoading, deleteCharacter: false });
   };
 
   const handleCreatorClick = () => {
@@ -102,7 +114,9 @@ export const CharacterPage = () => {
   };
 
   const handleEditCharacter = () => {
+    setIsLoading({ ...isLoading, editCharacter: true });
     navigate(`/create/${character.char_uuid}`);
+    setIsLoading({ ...isLoading, editCharacter: false });
   };
 
   const isCreator = userUuid === character.creator_uuid;
@@ -156,7 +170,7 @@ export const CharacterPage = () => {
                   sx={{ mb: 2 }}
                 >
                   <PersonIcon sx={{ mr: 1, color: 'white' }} />
-                  Created by:{' '}
+                  Created by:&nbsp;{' '}
                   <Typography
                     component="span"
                     sx={{
@@ -170,7 +184,7 @@ export const CharacterPage = () => {
                   </Typography>
                 </Typography>
                 <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                  {character.tags.map((tag: string) => (
+                  {character.tags.map((tag) => (
                     <Chip
                       key={tag}
                       label={tag}
@@ -183,11 +197,11 @@ export const CharacterPage = () => {
                   sx={{ mt: 3, py: 1.5 }}
                   fullWidth
                   onClick={handleStartChat}
+                  disabled={isLoading.startChat}
                   endIcon={<ArrowForwardIcon />}
                 >
-                  Start Chat
+                  {isLoading.startChat ? 'Loading...' : 'Start Chat'}
                 </PyrenzBlueButton>
-
                 {isCreator && (
                   <>
                     <PyrenzBlueButton
@@ -195,18 +209,20 @@ export const CharacterPage = () => {
                       sx={{ mt: 2, py: 1.5 }}
                       fullWidth
                       onClick={handleEditCharacter}
+                      disabled={isLoading.editCharacter}
                       startIcon={<EditIcon />}
                     >
-                      Edit Character
+                      {isLoading.editCharacter ? 'Loading...' : 'Edit Character'}
                     </PyrenzBlueButton>
                     <PyrenzBlueButton
                       variant="contained"
                       sx={{ mt: 2, py: 1.5, backgroundColor: 'error.main' }}
                       fullWidth
                       onClick={handleCharacterDeletion}
+                      disabled={isLoading.deleteCharacter}
                       startIcon={<DeleteIcon />}
                     >
-                      Delete Character
+                      {isLoading.deleteCharacter ? 'Loading...' : 'Delete Character'}
                     </PyrenzBlueButton>
                   </>
                 )}
@@ -284,4 +300,4 @@ export const CharacterPage = () => {
       </Box>
     </Box>
   );
-};
+}

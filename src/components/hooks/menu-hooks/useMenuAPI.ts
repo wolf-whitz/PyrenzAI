@@ -26,24 +26,28 @@ export const useMenuAPI = ({ char }: MenuAPIProps) => {
   const [subscriptionPlan, setSubscriptionPlan] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const handleCharacterDetailsSubmit = useCallback(async (characterDetails: Character) => {
-    try {
-      const { error } = await supabase
-        .from('chats')
-        .update({
-          name: characterDetails.name,
-          persona: characterDetails.persona,
-          model_instructions: characterDetails.model_instructions,
-        })
-        .eq('char_uuid', char.char_uuid);
+  const handleCharacterDetailsSubmit = useCallback(
+    async (characterDetails: Character) => {
+      try {
+        const { error } = await supabase
+          .from('chats')
+          .update({
+            name: characterDetails.name,
+            persona: characterDetails.persona,
+            model_instructions: characterDetails.model_instructions,
+          })
+          .eq('char_uuid', char.char_uuid);
 
-      if (error) throw error;
-      console.log('Character details updated successfully');
-    } catch (error) {
-      console.error('Error updating character details:', error);
-      Sentry.captureException(error);
-    }
-  }, [char.char_uuid]);
+        if (error) throw error;
+
+        console.log('Character details updated successfully');
+      } catch (error) {
+        console.error('Error updating character details:', error);
+        Sentry.captureException(error);
+      }
+    },
+    [char.char_uuid]
+  );
 
   useEffect(() => {
     const savedBg = localStorage.getItem('bgImage');
@@ -74,7 +78,9 @@ export const useMenuAPI = ({ char }: MenuAPIProps) => {
             });
 
             const plan = userData.subscription_data?.tier;
-            setSubscriptionPlan(['MELON', 'PINEAPPLE', 'DURIAN'].includes(plan) ? plan : null);
+            setSubscriptionPlan(
+              ['MELON', 'PINEAPPLE', 'DURIAN'].includes(plan) ? plan : null
+            );
           }
         }
       } catch (error) {
@@ -89,7 +95,7 @@ export const useMenuAPI = ({ char }: MenuAPIProps) => {
     return () => {
       isMounted = false;
     };
-  }, []); 
+  }, []);
 
   return {
     isDropdownOpen,
@@ -97,6 +103,7 @@ export const useMenuAPI = ({ char }: MenuAPIProps) => {
     selectedOption,
     setSelectedOption,
     bgImage,
+    setBgImage,
     aiCustomization,
     subscriptionPlan,
     loading,

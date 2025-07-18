@@ -81,8 +81,8 @@ export const useCustomizeAPI = ({ customization, subscriptionPlan }: Customizati
   const [maxTokenLimit, setMaxTokenLimit] = useState<number>(
     customization?.maxTokens || userStore.maxTokenLimit || 1000
   );
-  const [modelOptions, setModelOptions] = useState<ModelOption[]>([]);
   const [privateModels, setPrivateModels] = useState<PrivateModels>({});
+
   const showAlert = usePyrenzAlert();
 
   const stateSetters = {
@@ -106,17 +106,6 @@ export const useCustomizeAPI = ({ customization, subscriptionPlan }: Customizati
           throw new Error(userData.error);
         }
         setMaxTokenLimit(userData.subscription_data.max_token);
-        const models = userData.subscription_data.model || {};
-        const options: ModelOption[] = Object.entries(models).map(
-          ([modelName, modelInfo]) => ({
-            value: modelName,
-            label: modelName,
-            name: modelName,
-            description: modelInfo.description,
-            subscription_plan: modelInfo.plan,
-          })
-        );
-        setModelOptions(options);
         if (userData.subscription_data.private_models) {
           setPrivateModels(userData.subscription_data.private_models);
         }
@@ -130,24 +119,11 @@ export const useCustomizeAPI = ({ customization, subscriptionPlan }: Customizati
         showAlert('Error fetching user data. Please try again.', 'Alert');
       }
     };
+
     fetchUserData();
   }, []);
 
   const handleSubmit = async () => {
-    if (
-      subscriptionPlan &&
-      modelOptions.some(
-        (option) => option.subscription_plan === subscriptionPlan
-      )
-    ) {
-      if (!modelOptions.find((option) => option.name === preferredModel)) {
-        showAlert(
-          `This model is currently limited to users with Pyrenz+ ${preferredModel}, please use another model.`,
-          'Alert'
-        );
-        return;
-      }
-    }
     const inferenceSettings = {
       maxTokens,
       temperature,
@@ -155,6 +131,7 @@ export const useCustomizeAPI = ({ customization, subscriptionPlan }: Customizati
       presencePenalty,
       frequencyPenalty,
     };
+
     try {
       const userUUID: string = await GetUserUUID();
       const data = {
@@ -164,6 +141,7 @@ export const useCustomizeAPI = ({ customization, subscriptionPlan }: Customizati
         is_public: !isModelPrivate(preferredModel),
         modelMemoryLimit,
       };
+
       const response: ApiResponse = await Utils.post('/api/ModelSwitch', data);
       if (response.error) {
         throw new Error(response.error.message);
@@ -188,8 +166,6 @@ export const useCustomizeAPI = ({ customization, subscriptionPlan }: Customizati
     maxTokenLimit,
     stateSetters,
     handleSubmit,
-    modelOptions,
-    privateModels,
     setMaxTokens,
     setTemperature,
     setTopP,

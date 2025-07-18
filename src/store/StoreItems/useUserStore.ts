@@ -61,8 +61,8 @@ interface UserStore {
   customization: Customization;
   show_nsfw: boolean;
   blocked_tags: string[];
+  purchase_id: string | null; 
   cachedUserData?: CachedUserData;
-
   setUserUUID: (uuid: string) => void;
   setUsername: (name: string) => void;
   setPersonaName: (name: string) => void;
@@ -79,6 +79,7 @@ interface UserStore {
   setCustomization: (customization: Partial<Customization>) => void;
   toggleShowNSFW: () => void;
   setBlockedTags: (tags: string[]) => void;
+  setPurchaseId: (purchaseId: string) => void; 
   setCachedUserData: (cache: CachedUserData | undefined) => void;
 }
 
@@ -114,8 +115,8 @@ export const useUserStore = create<UserStore>()(
       },
       show_nsfw: false,
       blocked_tags: [],
+      purchase_id: null, 
       cachedUserData: undefined,
-
       setUserUUID: (uuid) => set({ userUUID: uuid }),
       setUsername: (name) => set({ username: name }),
       setPersonaName: (name) => set({ personaName: name }),
@@ -135,6 +136,7 @@ export const useUserStore = create<UserStore>()(
         })),
       toggleShowNSFW: () => set((state) => ({ show_nsfw: !state.show_nsfw })),
       setBlockedTags: (tags) => set({ blocked_tags: tags }),
+      setPurchaseId: (purchaseId) => set({ purchase_id: purchaseId }),
       setCachedUserData: (cache) => set({ cachedUserData: cache }),
     }),
     {

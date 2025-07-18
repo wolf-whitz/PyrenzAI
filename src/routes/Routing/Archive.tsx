@@ -44,39 +44,20 @@ export function Archive() {
   } = useArchiveChatPageAPI(open, handleClose, itemsToShow);
 
   const truncateMessage = (message: string, length: number) => {
-    return message.length > length
-      ? `${message.substring(0, length)}...`
-      : message;
+    return message.length > length ? `${message.substring(0, length)}...` : message;
   };
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        minHeight: '100vh',
-        backgroundColor: 'background.default',
-      }}
-    >
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: 'background.default' }}>
       <Box sx={{ display: 'flex', flex: 1 }}>
         {!isMobile && <Sidebar />}
         <Box sx={{ flex: 1, p: isMobile ? 2 : 4, mb: isMobile ? '56px' : 0 }}>
           {isLoading ? (
-            <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              height="100%"
-            >
+            <Box display="flex" justifyContent="center" alignItems="center" height="100%">
               <CircularProgress />
             </Box>
           ) : chats.length === 0 ? (
-            <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              height="52vh"
-            >
+            <Box display="flex" justifyContent="center" alignItems="center" height="52vh">
               <Typography variant="h6" color="textSecondary">
                 No chats left, maybe start a new one? {'(⸝⸝> ᴗ•⸝⸝)'}
               </Typography>
@@ -88,8 +69,7 @@ export function Archive() {
                   <Box key={chat.chat_uuid} mx={2} mb={4} position="relative">
                     <PyrenzChatsCharacterCard
                       sx={{
-                        transition:
-                          'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
+                        transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
                         '&:hover': {
                           transform: 'scale(1.05)',
                           boxShadow: 6,
@@ -103,24 +83,23 @@ export function Archive() {
                       isPinned={chat.is_pinned}
                     >
                       <Typography variant="body2" color="text.secondary">
-                        {isMobile
-                          ? truncateMessage(chat.preview_message, 50)
-                          : chat.preview_message}
+                        {isMobile ? truncateMessage(chat.preview_message, 50) : chat.preview_message}
                       </Typography>
                     </PyrenzChatsCharacterCard>
                   </Box>
                 ))}
               </Box>
-              <Box
-                display="flex"
-                justifyContent="center"
-                mt={2}
-                alignItems="center"
-              >
+              <Box display="flex" justifyContent="center" mt={2} alignItems="center">
                 <PyrenzBlueButton
                   onClick={goToPreviousPage}
                   disabled={currentPage === 0}
-                  sx={{ backgroundColor: 'transparent' }}
+                  sx={{
+                    backgroundColor: 'transparent',
+                    color: 'white',
+                    '&:hover': {
+                      backgroundColor: 'transparent',
+                    }
+                  }}
                 >
                   <NavigateBeforeIcon />
                 </PyrenzBlueButton>
@@ -132,7 +111,13 @@ export function Archive() {
                 <PyrenzBlueButton
                   onClick={goToNextPage}
                   disabled={currentPage >= totalPages - 1}
-                  sx={{ backgroundColor: 'transparent' }}
+                  sx={{
+                    backgroundColor: 'transparent',
+                    color: 'white',
+                    '&:hover': {
+                      backgroundColor: 'transparent',
+                    }
+                  }}
                 >
                   <NavigateNextIcon />
                 </PyrenzBlueButton>
