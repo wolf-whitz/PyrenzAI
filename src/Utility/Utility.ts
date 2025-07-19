@@ -15,8 +15,11 @@ const fetcher = async (url: string) => {
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
     user_uuid: userUUID || '',
-    purchase_id: purchase_id || '',
   };
+
+  if (purchase_id) {
+    headers.purchase_id = purchase_id;
+  }
 
   const response = await fetch(url, { headers });
   const contentType = response.headers.get('Content-Type') ?? '';
@@ -73,8 +76,11 @@ async function request<T>(
     const headers: HeadersInit = {
       Accept: isImageRequest ? 'image/png' : 'application/json',
       user_uuid: userUUID || '',
-      purchase_id: purchase_id || '',
     };
+
+    if (purchase_id) {
+      headers.purchase_id = purchase_id;
+    }
 
     if (!(data instanceof FormData)) {
       headers['Content-Type'] = 'application/json';
