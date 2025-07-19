@@ -96,6 +96,43 @@ class SupabaseUtil {
     if (error) throw error;
     return result as T;
   };
+
+  selectFirstAvailable = async <T>(
+    tables: string[],
+    match: { [key: string]: any } = {},
+    columns: string = '*',
+    countOption: 'exact' | 'planned' | 'estimated' | null = null
+  ): Promise<{ data: T | null; table: string | null }> => {
+    const results = await Promise.allSettled(
+      tables.map((table) =>
+        this.select<T>(table, columns, countOption, match).then((res) => ({
+          table,
+          data: res.data,
+        }))
+      )
+    );
+
+    for (const result of results) {
+      if (
+        result.status === 'fulfilled' &&
+        Array.isArray(result.value.data) &&
+        result.value.data.length > 0
+      ) {
+        const cleaned = result.value.data.filter(
+          (item) => item != null && item !== undefined
+        );
+
+        if (cleaned.length > 0) {
+          return {
+            data: cleaned[0],
+            table: result.value.table,
+          };
+        }
+      }
+    }
+
+    return { data: null, table: null };
+  };
 }
 
 export const db = new SupabaseUtil(supabase);

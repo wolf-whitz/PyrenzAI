@@ -5,48 +5,47 @@ import { Utils } from '~/Utility';
 export const useCharacterData = (char_uuid: string | undefined) => {
   const [character, setCharacter] = useState<any>(null);
   const [notFound, setNotFound] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchCharacterData = async () => {
       if (!char_uuid) {
         setNotFound(true);
+        setLoading(false);
         return;
       }
 
       try {
-        const fetchFromTable = async (table: string) => {
-          const { data } = await Utils.db.select<any>(table, '*', null, {
-            char_uuid,
+        const { data: foundCharacter } = await Utils.db.selectFirstAvailable<any>(
+          ['public_characters', 'private_characters'],
+          { char_uuid }
+        );
+
+        if (foundCharacter) {
+          const verifiedCharacter = CharacterSchema.parse({
+            ...foundCharacter,
+            id: foundCharacter.id ? String(foundCharacter.id) : undefined,
+            tags: foundCharacter.tags || [],
+            is_details_private: foundCharacter.is_details_private ?? false,
+            is_nsfw: foundCharacter.is_nsfw ?? false,
           });
-          return data[0] ?? null;
-        };
 
-        let result = await fetchFromTable('public_characters');
-        if (!result) result = await fetchFromTable('private_characters');
-
-        if (result) {
-          const transformedCharacter = {
-            ...result,
-            id: result.id ? String(result.id) : undefined,
-            tags: result.tags || [],
-            is_details_private: result.is_details_private ?? false,
-            is_nsfw: result.is_nsfw ?? false,
-          };
-
-          const verifiedCharacter = CharacterSchema.parse(transformedCharacter);
           setCharacter(verifiedCharacter);
         } else {
           setNotFound(true);
         }
-      } catch {
+      } catch (err) {
+        console.error('💥 Error fetching character:', err);
         setNotFound(true);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchCharacterData();
   }, [char_uuid]);
 
-  const handleDeleteCharacter = async () => {
+  const handleDeleteCharacter = async (): Promise<boolean> => {
     if (!char_uuid) return false;
 
     try {
@@ -63,10 +62,11 @@ export const useCharacterData = (char_uuid: string | undefined) => {
       });
 
       return deleted.length > 0;
-    } catch {
+    } catch (err) {
+      console.error('🚫 Failed to delete character:', err);
       return false;
     }
   };
 
-  return { character, notFound, handleDeleteCharacter };
+  return { character, notFound, loading, handleDeleteCharacter };
 };
