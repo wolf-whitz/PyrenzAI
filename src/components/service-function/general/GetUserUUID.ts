@@ -1,9 +1,10 @@
-import { supabase } from '~/Utility';
+import { Utils as utils } from '~/Utility';
 import { useUserStore } from '~/store';
 
 export const GetUserUUID = async (): Promise<string | null> => {
   try {
-    const { data, error } = await supabase.auth.getSession();
+    const { data, error } = await utils.db.client.auth.getSession();
+
     if (error) {
       console.error('Error fetching user session:', error);
       return null;

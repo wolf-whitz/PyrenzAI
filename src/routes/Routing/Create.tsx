@@ -5,12 +5,13 @@ import {
   CommunityGuidelines,
   MobileNav,
   CreatePageLoader,
+  GetUserUUID
 } from '@components';
 import { GetUserData } from '@function';
 import { useMediaQuery, useTheme, Box, Typography } from '@mui/material';
-import { supabase } from '~/Utility';
+import { Utils } from '~/Utility';
 import { useParams } from 'react-router-dom';
-import { useCharacterStore, useUserStore } from '~/store';
+import { useCharacterStore } from '~/store';
 import { Character } from '@shared-types';
 import { User } from '@supabase/supabase-js';
 
@@ -20,86 +21,75 @@ export function CreatePage() {
   const [characterUpdate, setCharacterUpdate] = useState(false);
   const [creatorName, setCreatorName] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
+  const [userUUID, setUserUUID] = useState<string | null>(null);
 
   const setCharacter = useCharacterStore((state) => state.setCharacter);
-  const user_uuid = useUserStore((state) => state.userUUID);
-
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { char_uuid } = useParams();
 
   useEffect(() => {
-    const checkUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setUser(user);
-    };
+    const init = async () => {
+      const fetchedUUID = await GetUserUUID();
+      setUserUUID(fetchedUUID);
 
-    checkUser();
+      const userResult = await Utils.db.client.auth.getUser();
+      setUser(userResult.data.user ?? null);
 
-    const fetchData = async () => {
       const userData = await GetUserData();
       if ('username' in userData) {
         setCreatorName(userData.username);
-      } else {
-        console.error('Error fetching user data:', userData.error);
+      }
+
+      if (!fetchedUUID) {
+        setIsDataLoaded(true);
+        return;
       }
 
       if (char_uuid) {
         try {
-          let { data, error } = await supabase
-            .from('public_characters')
-            .select('*')
-            .eq('char_uuid', char_uuid)
-            .single();
+          const { data: publicData } = await Utils.db.select<Character>(
+            'public_characters',
+            '*',
+            null,
+            { char_uuid }
+          );
 
-          if (error) {
-            const privateResponse = await supabase
-              .from('private_characters')
-              .select('*')
-              .eq('char_uuid', char_uuid)
-              .eq('creator_uuid', user_uuid)
-              .single();
+          let character: Character | null = publicData?.[0] ?? null;
 
-            if (privateResponse.error) {
-              console.error(
-                'Error fetching character data:',
-                privateResponse.error
-              );
-            } else if (privateResponse.data) {
-              data = privateResponse.data;
-            }
+          if (!character) {
+            const { data: privateData } = await Utils.db.select<Character>(
+              'private_characters',
+              '*',
+              null,
+              { char_uuid, creator_uuid: fetchedUUID }
+            );
+
+            character = privateData?.[0] ?? null;
           }
 
-          if (data) {
-            if (data.tags && !Array.isArray(data.tags)) {
-              data.tags = data.tags.split(',').map((tag: string) => tag.trim());
+          if (character) {
+            if (character.tags && !Array.isArray(character.tags)) {
+              character.tags = (character.tags as string)
+                .split(',')
+                .map((tag) => tag.trim());
             }
 
-            setCharacter(data as Character);
+            setCharacter(character);
             setCharacterUpdate(true);
           }
-        } catch (error) {
-          console.error('Error fetching character data:', error);
+        } catch (e) {
+          console.error('Error loading character:', e);
         }
       }
 
       setIsDataLoaded(true);
     };
 
-    if (!user_uuid) {
-      console.error('User UUID not found');
-      setIsDataLoaded(true);
-      return;
-    }
+    init();
+  }, [char_uuid, setCharacter]);
 
-    fetchData();
-  }, [char_uuid, setCharacter, user_uuid]);
-
-  if (!isDataLoaded) {
-    return <CreatePageLoader />;
-  }
+  if (!isDataLoaded) return <CreatePageLoader />;
 
   return (
     <Suspense fallback={<CreatePageLoader />}>
@@ -128,7 +118,7 @@ export function CreatePage() {
               <Box flex={1} overflow="auto">
                 <CharacterForm
                   character_update={characterUpdate}
-                  user_uuid={user_uuid}
+                  user_uuid={userUUID}
                   creator={creatorName}
                 />
               </Box>

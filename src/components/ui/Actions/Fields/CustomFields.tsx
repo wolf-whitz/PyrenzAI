@@ -5,8 +5,14 @@ import {
   PyrenzOutlinedInput,
   PyrenzInputLabel,
 } from '~/theme';
-import { supabase } from '~/Utility';
+import { Utils } from '~/Utility';
 import { GetUserUUID } from '@components';
+
+interface CustomProvider {
+  api_key: string;
+  custom_model_name: string;
+  provider_url: string;
+}
 
 export function CustomModelFields() {
   const [apiKey, setApiKey] = useState('');
@@ -17,31 +23,23 @@ export function CustomModelFields() {
     const fetchCustomProvider = async () => {
       try {
         const userUUID = await GetUserUUID();
-        const { data, error } = await supabase
-          .from('user_data')
-          .select('custom_provider')
-          .eq('user_uuid', userUUID)
-          .single();
 
-        if (error) {
-          throw error;
-        }
+        const { data } = await Utils.db.select<{
+          custom_provider: CustomProvider;
+        }>('user_data', 'custom_provider', null, {
+          user_uuid: userUUID,
+        });
 
-        if (data) {
-          const provider = data.custom_provider;
+        const firstRecord = data?.[0];
+
+        if (firstRecord?.custom_provider) {
+          const provider = firstRecord.custom_provider;
           setApiKey(provider.api_key || '');
           setCustomModelName(provider.custom_model_name || '');
           setProviderUrl(provider.provider_url || '');
         }
       } catch (err) {
-        if (err instanceof Error) {
-          console.error(
-            'Error fetching custom provider settings:',
-            err.message
-          );
-        } else {
-          console.error('An unknown error occurred:', err);
-        }
+        console.error('Error fetching custom provider settings:', err);
       }
     };
 
@@ -55,30 +53,23 @@ export function CustomModelFields() {
   };
 
   const handleSubmit = async () => {
-    const updatedProvider = {
-      api_key: apiKey,
-      custom_model_name: customModelName,
-      provider_url: providerUrl,
-    };
-
     try {
       const userUUID = await GetUserUUID();
-      const { error } = await supabase
-        .from('user_data')
-        .update({ custom_provider: updatedProvider })
-        .eq('user_uuid', userUUID);
+      const updatedProvider: CustomProvider = {
+        api_key: apiKey,
+        custom_model_name: customModelName,
+        provider_url: providerUrl,
+      };
 
-      if (error) {
-        throw error;
-      }
+      await Utils.db.update(
+        'user_data',
+        { custom_provider: updatedProvider },
+        { user_uuid: userUUID }
+      );
 
-      console.log('Custom provider settings updated successfully');
+      console.log('Custom provider settings updated successfully ✅');
     } catch (err) {
-      if (err instanceof Error) {
-        console.error('Error updating custom provider settings:', err.message);
-      } else {
-        console.error('An unknown error occurred:', err);
-      }
+      console.error('Error updating custom provider settings:', err);
     }
   };
 

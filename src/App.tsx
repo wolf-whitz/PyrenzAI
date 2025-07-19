@@ -2,7 +2,7 @@ import React, { useEffect, useState, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, useNavigate } from 'react-router-dom';
 import { AppRoutes } from '~/routes/routes';
 import { Spinner } from '@components';
-import { supabase } from '~/Utility';
+import { Utils as utils } from '~/Utility';
 import { usePyrenzAlert } from '~/provider';
 import { useUserStore } from '~/store';
 import { Box, useTheme } from '@mui/material';
@@ -11,45 +11,57 @@ const AppContent = () => {
   const navigate = useNavigate();
   const showAlert = usePyrenzAlert();
   const [loading, setLoading] = useState(true);
+
+  const isDeleted = useUserStore((state) => state.is_deleted);
   const setIsDeleted = useUserStore((state) => state.setIsDeleted);
   const theme = useTheme();
   const currentTheme = theme.palette.mode;
 
   useEffect(() => {
     const checkUserStatus = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+      if (typeof isDeleted === 'boolean') {
+        setLoading(false);
+        return;
+      }
 
-      if (user) {
-        const { data, error } = await supabase
-          .from('user_data')
-          .select('is_deleted')
-          .eq('user_uuid', user.id)
-          .single();
+      try {
+        const {
+          data: { user },
+        } = await utils.db.client.auth.getUser();
 
-        if (error) {
-          console.error('Error fetching user data:', error);
-          setLoading(false);
-          return;
-        }
-
-        if (data?.is_deleted) {
-          showAlert(
-            'Your account is deleted. Please contact an admin to immediately open your account.',
-            'alert'
+        if (user) {
+          const result = await utils.db.select<{ is_deleted: boolean }>(
+            'user_data',
+            'is_deleted',
+            null,
+            { user_uuid: user.id }
           );
-          setIsDeleted(true);
-          await supabase.auth.signOut();
+
+          const data = result?.data?.[0];
+
+          if (data?.is_deleted) {
+            showAlert(
+              'Your account is deleted. Please contact an admin to immediately open your account.',
+              'alert'
+            );
+            setIsDeleted(true);
+            await utils.db.client.auth.signOut();
+          } else {
+            setIsDeleted(false);
+          }
         } else {
           setIsDeleted(false);
         }
+      } catch (err) {
+        console.error('Error fetching user data:', err);
+        setIsDeleted(false);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     checkUserStatus();
-  }, [navigate, showAlert, setIsDeleted]);
+  }, [isDeleted, setIsDeleted, showAlert]);
 
   if (loading) {
     return <Spinner />;

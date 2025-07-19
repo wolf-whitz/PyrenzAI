@@ -7,4 +7,4 @@ export * from './getLatestCharacter';
 export * from './getRandomCharacters';
 export * from './getUserCreatedCharacters';
 
-export * from './CharacterAPI'
+export * from './CharacterAPI';

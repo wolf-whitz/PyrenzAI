@@ -1,4 +1,4 @@
-import { supabase } from '~/Utility';
+import { Utils } from '~/Utility';
 import * as Sentry from '@sentry/react';
 import { Character } from '@shared-types';
 import { useUserStore, useHomeStore } from '~/store';
@@ -35,36 +35,36 @@ export const fetchCharacters = async ({
     const { blocked_tags } = useUserStore.getState();
     const { setMaxPage } = useHomeStore.getState();
 
-    const buildQuery = (table: string) => {
-      let query = supabase.from(table).select('*', { count: 'exact' });
+    const buildQuery = async (table: string) => {
+      let query = Utils.db.client.from(table).select('*', { count: 'exact' });
 
-      if (search) query.ilike('name', `%${search.trim()}%`);
-      if (charuuid) query.eq('char_uuid', charuuid.trim());
-      if (!showNsfw) query.eq('is_nsfw', false);
-      if (genderFilter) query.eq('gender', genderFilter.trim());
-      if (tags.length > 0) query.overlaps('tags', tags);
-      if (creatoruuid) query.eq('creator_uuid', creatoruuid.trim());
+      if (search) query = query.ilike('name', `%${search.trim()}%`);
+      if (charuuid) query = query.eq('char_uuid', charuuid.trim());
+      if (!showNsfw) query = query.eq('is_nsfw', false);
+      if (genderFilter) query = query.eq('gender', genderFilter.trim());
+      if (tags.length > 0) query = query.overlaps('tags', tags);
+      if (creatoruuid) query = query.eq('creator_uuid', creatoruuid.trim());
       if (blocked_tags && blocked_tags.length > 0) {
-        query.not('tags', 'overlaps', blocked_tags);
+        query = query.not('tags', 'overlaps', blocked_tags);
       }
 
-      query.order(sortBy, { ascending: false });
+      query = query.order(sortBy, { ascending: false });
 
       const from = (currentPage - 1) * itemsPerPage;
       const to = from + itemsPerPage - 1;
-      query.range(from, to);
+      query = query.range(from, to);
 
-      return query;
+      const { data, error, count } = await query;
+      return { data, error, count };
     };
 
     let { data, count, error } = await buildQuery('public_characters');
 
     if (error || !data || data.length === 0) {
       const fallback = await buildQuery('private_characters');
-      const fallbackRes = await fallback;
-      data = fallbackRes.data;
-      count = fallbackRes.count;
-      if (fallbackRes.error) throw fallbackRes.error;
+      data = fallback.data;
+      count = fallback.count;
+      if (fallback.error) throw fallback.error;
     }
 
     const characters: Character[] = (data || []).map((char: any) => ({

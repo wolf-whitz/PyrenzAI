@@ -27,7 +27,7 @@ export function ErrorPage() {
         variant="h1"
         style={{
           fontSize: '8rem',
-          color: '#2196f3', 
+          color: '#2196f3',
           fontWeight: 900,
         }}
       >
@@ -47,7 +47,7 @@ export function ErrorPage() {
         variant="body1"
         style={{
           marginTop: '0.5rem',
-          color: '#90caf9', 
+          color: '#90caf9',
         }}
       >
         We broke it. That’s on us.

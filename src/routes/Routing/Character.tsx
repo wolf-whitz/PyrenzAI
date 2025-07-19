@@ -15,10 +15,10 @@ import {
   CharacterPageLoader,
   Sidebar,
   MobileNav,
-  useCharacterData
+  useCharacterData,
 } from '~/components';
 import { CreateNewChat } from '@function';
-import { supabase } from '~/Utility';
+import { Utils } from '~/Utility';
 import {
   PersonOutline as PersonIcon,
   MessageOutlined as MessageIcon,
@@ -31,7 +31,8 @@ import {
 
 export function CharacterPage() {
   const { char_uuid } = useParams<{ char_uuid: string }>();
-  const { character, notFound, handleDeleteCharacter } = useCharacterData(char_uuid);
+  const { character, notFound, handleDeleteCharacter } =
+    useCharacterData(char_uuid);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [userUuid, setUserUuid] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState({
@@ -46,7 +47,7 @@ export function CharacterPage() {
 
   useEffect(() => {
     const fetchUserUuid = async () => {
-      const { data } = await supabase.auth.getUser();
+      const { data } = await Utils.db.client.auth.getUser();
       setUserUuid(data?.user?.id || null);
     };
     fetchUserUuid();
@@ -84,13 +85,13 @@ export function CharacterPage() {
 
   const handleStartChat = async () => {
     setIsLoading({ ...isLoading, startChat: true });
-    const { data } = await supabase.auth.getUser();
-    const user_uuid = data?.user?.id;
-    if (!character || !user_uuid) {
+    const { data } = await Utils.db.client.auth.getUser();
+    const currentUserUuid = data?.user?.id;
+    if (!character || !currentUserUuid) {
       setIsLoading({ ...isLoading, startChat: false });
       return;
     }
-    const result = await CreateNewChat(character.char_uuid, user_uuid);
+    const result = await CreateNewChat(character.char_uuid, currentUserUuid);
     if (result.error) {
       console.error('Failed to create chat:', result.error);
     } else {
@@ -212,7 +213,9 @@ export function CharacterPage() {
                       disabled={isLoading.editCharacter}
                       startIcon={<EditIcon />}
                     >
-                      {isLoading.editCharacter ? 'Loading...' : 'Edit Character'}
+                      {isLoading.editCharacter
+                        ? 'Loading...'
+                        : 'Edit Character'}
                     </PyrenzBlueButton>
                     <PyrenzBlueButton
                       variant="contained"
@@ -222,7 +225,9 @@ export function CharacterPage() {
                       disabled={isLoading.deleteCharacter}
                       startIcon={<DeleteIcon />}
                     >
-                      {isLoading.deleteCharacter ? 'Loading...' : 'Delete Character'}
+                      {isLoading.deleteCharacter
+                        ? 'Loading...'
+                        : 'Delete Character'}
                     </PyrenzBlueButton>
                   </>
                 )}

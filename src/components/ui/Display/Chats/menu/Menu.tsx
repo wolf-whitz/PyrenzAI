@@ -17,6 +17,7 @@ import {
   CharacterDetails,
   Memory,
   ModelControl,
+  Persona,
 } from './MenuItem';
 import { useMenuAPI } from '@components';
 import { Character } from '@shared-types';
@@ -60,6 +61,8 @@ export function Menu({ onClose, char }: MenuProps) {
         return <Memory />;
       case 'Model Control':
         return <ModelControl />;
+      case 'Persona': 
+        return <Persona />;
       default:
         return null;
     }
@@ -70,6 +73,15 @@ export function Menu({ onClose, char }: MenuProps) {
     char,
     handleCharacterDetailsSubmit,
   ]);
+
+  const menuOptions = [
+    'Cosmetic',
+    'AI Customization',
+    'Character Details',
+    'Memory',
+    'Model Control',
+    'Persona', 
+  ];
 
   return (
     <PyrenzModal open={true} onClose={onClose}>
@@ -111,13 +123,7 @@ export function Menu({ onClose, char }: MenuProps) {
                   }}
                 >
                   <MenuList>
-                    {[
-                      'Cosmetic',
-                      'AI Customization',
-                      'Character Details',
-                      'Memory',
-                      'Model Control',
-                    ].map((option) => (
+                    {menuOptions.map((option) => (
                       <MenuItem
                         key={option}
                         onClick={() => {

@@ -130,9 +130,7 @@ export function ProfilePage() {
             {characters && characters[0] ? (
               characters.map((character) => (
                 <Box key={character.id}>
-                  <CharacterCard
-                    character={character}
-                  />
+                  <CharacterCard character={character} />
                 </Box>
               ))
             ) : (

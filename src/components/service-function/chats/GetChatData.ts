@@ -1,42 +1,48 @@
-import { supabase } from '~/Utility';
+import { Utils as utils } from '~/Utility';
 import { Character } from '@shared-types';
 
 type ChatDataResult = Character | { error: string };
 
 export async function getChatData(chatId: string): Promise<ChatDataResult> {
-  const { data: chatData, error: chatError } = await supabase
-    .from('chats')
-    .select('char_uuid')
-    .eq('chat_uuid', chatId)
-    .single();
+  try {
+    const { data: chatData } = await utils.db.select<{ char_uuid: string }>(
+      'chats',
+      '*',
+      null,
+      { chat_uuid: chatId }
+    );
 
-  if (chatError || !chatData) {
-    return { error: 'Chat not found' };
-  }
+    if (!chatData || chatData.length === 0) {
+      return { error: 'Chat not found' };
+    }
 
-  const inputCharUuid = chatData.char_uuid;
+    const inputCharUuid = chatData[0].char_uuid;
 
-  const { data: publicCharacterData, error: publicCharacterError } =
-    await supabase
-      .from('public_characters')
-      .select('*')
-      .eq('char_uuid', inputCharUuid)
-      .single();
+    const { data: publicCharacterData } = await utils.db.select<Character>(
+      'public_characters',
+      '*',
+      null,
+      { char_uuid: inputCharUuid }
+    );
 
-  if (!publicCharacterError && publicCharacterData) {
-    return publicCharacterData;
-  }
+    if (publicCharacterData && publicCharacterData.length > 0) {
+      return publicCharacterData[0];
+    }
 
-  const { data: privateCharacterData, error: privateCharacterError } =
-    await supabase
-      .from('private_characters')
-      .select('*')
-      .eq('char_uuid', inputCharUuid)
-      .single();
+    const { data: privateCharacterData } = await utils.db.select<Character>(
+      'private_characters',
+      '*',
+      null,
+      { char_uuid: inputCharUuid }
+    );
 
-  if (privateCharacterError || !privateCharacterData) {
+    if (privateCharacterData && privateCharacterData.length > 0) {
+      return privateCharacterData[0];
+    }
+
     return { error: 'Character not found' };
+  } catch (error) {
+    console.error('Error fetching chat data:', error);
+    return { error: 'Unexpected error while fetching chat data' };
   }
-
-  return privateCharacterData;
 }

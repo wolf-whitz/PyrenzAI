@@ -5,3 +5,4 @@ export * from './Customization';
 export * from './Memory';
 
 export * from './ModelController';
+export * from './Persona'

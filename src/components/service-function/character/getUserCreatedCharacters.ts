@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '~/Utility';
 import { GetUserUUID } from '@components';
 import { Character, User } from '@shared-types';
 import { useUserStore } from '~/store';
+import { Utils } from '~/Utility';
 
 interface UseUserCreatedCharactersResponse {
   characters: Character[];
@@ -11,6 +11,8 @@ interface UseUserCreatedCharactersResponse {
   isOwner: boolean;
   maxPage: number;
 }
+
+type SubscriptionPlan = 'Melon' | 'Durian' | 'Pineapple';
 
 export const getUserCreatedCharacters = (
   creatorUUID?: string,
@@ -30,19 +32,19 @@ export const getUserCreatedCharacters = (
       const { show_nsfw } = useUserStore.getState();
 
       const fetchFromTable = async (table: string) => {
-        const { data, error } = await supabase
-          .from(table)
-          .select('*')
-          .eq('creator_uuid', uuid)
-          .order(sortBy, { ascending: false })
-          .range((page - 1) * itemsPerPage, page * itemsPerPage - 1);
-
-        if (error) {
-          console.error(`Error fetching from ${table}:`, error);
+        try {
+          const { data } = await Utils.db.select<Character>(
+            table,
+            '*',
+            null,
+            { creator_uuid: uuid },
+            { from: (page - 1) * itemsPerPage, to: page * itemsPerPage - 1 },
+            { column: sortBy, ascending: false }
+          );
+          return data || [];
+        } catch {
           return [];
         }
-
-        return data as Character[];
       };
 
       const [publicChars, privateChars] = await Promise.all([
@@ -53,51 +55,75 @@ export const getUserCreatedCharacters = (
       const combinedChars = [...publicChars, ...privateChars];
       return {
         characters: combinedChars,
-        max_page: Math.ceil(combinedChars.length / itemsPerPage),  
+        max_page: Math.ceil(combinedChars.length / itemsPerPage),
       };
     };
 
-    const fetchUserDataByUuid = async (uuid: string): Promise<User | null> => {
-      const { data: user, error } = await supabase
-        .from('user_data')
-        .select('username, avatar_url, user_uuid')
-        .eq('user_uuid', uuid)
-        .maybeSingle();
+    type UserDataFromDB = {
+      username?: string;
+      avatar_url?: string;
+      user_uuid?: string;
+    };
 
-      if (error || !user) {
-        console.error('User data error:', error);
+    type SubscriptionDataFromDB = {
+      is_subscribed?: boolean;
+      subscription_plan?: string;
+    };
+
+    const fetchUserDataByUuid = async (uuid: string): Promise<User | null> => {
+      try {
+        const { data: userDataArr } = await Utils.db.select<UserDataFromDB>(
+          'user_data',
+          'username, avatar_url, user_uuid',
+          null,
+          { user_uuid: uuid }
+        );
+        const user = userDataArr?.[0];
+        if (!user) return null;
+
+        const { data: subDataArr } =
+          await Utils.db.select<SubscriptionDataFromDB>(
+            'subscription_plan',
+            'is_subscribed, subscription_plan',
+            null,
+            { user_uuid: uuid }
+          );
+        const sub = subDataArr?.[0];
+
+        const validPlans: SubscriptionPlan[] = ['Melon', 'Durian', 'Pineapple'];
+        const plan = validPlans.includes(
+          sub?.subscription_plan as SubscriptionPlan
+        )
+          ? (sub?.subscription_plan as SubscriptionPlan)
+          : undefined;
+
+        return {
+          username: user.username,
+          user_avatar: user.avatar_url ?? '',
+          user_uuid: user.user_uuid,
+          is_subscribed: sub?.is_subscribed ?? false,
+          subscription_plan: plan,
+        };
+      } catch {
         return null;
       }
-
-      const { data: sub, error: subError } = await supabase
-        .from('subscription_plan')
-        .select('is_subscribed, subscription_plan')
-        .eq('user_uuid', uuid)
-        .maybeSingle();
-
-      if (subError || !sub) {
-        console.error('Subscription fetch error:', subError);
-        return {
-          ...user,
-          user_avatar: user.avatar_url,
-          is_subscribed: false,
-          subscription_plan: undefined,
-        };
-      }
-
-      return {
-        username: user.username,
-        user_avatar: user.avatar_url,
-        user_uuid: user.user_uuid,
-        is_subscribed: sub.is_subscribed,
-        subscription_plan: sub.subscription_plan,
-      };
     };
 
     const fetchData = async () => {
       setLoading(true);
-      const uuid = creatorUUID || (await supabase.auth.getUser()).data.user?.id;
-      if (!uuid) return setLoading(false);
+      let uuid = creatorUUID;
+      if (!uuid) {
+        try {
+          const userResponse = await Utils.db.client.auth.getUser();
+          uuid = userResponse.data.user?.id;
+        } catch {
+          uuid = undefined;
+        }
+      }
+      if (!uuid) {
+        setLoading(false);
+        return;
+      }
 
       const user = await fetchUserDataByUuid(uuid);
       const currentUserUUID = await GetUserUUID();
@@ -109,7 +135,6 @@ export const getUserCreatedCharacters = (
         setCharacters(characters);
         setMaxPage(max_page);
       }
-
       setLoading(false);
     };
 

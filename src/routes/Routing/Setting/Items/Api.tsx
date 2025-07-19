@@ -40,9 +40,14 @@ export const Api = () => {
   } = useApiSettings();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedModelIndex, setSelectedModelIndex] = useState<number | null>(null);
+  const [selectedModelIndex, setSelectedModelIndex] = useState<number | null>(
+    null
+  );
 
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, index: number) => {
+  const handleMenuOpen = (
+    event: React.MouseEvent<HTMLElement>,
+    index: number
+  ) => {
     setAnchorEl(event.currentTarget);
     setSelectedModelIndex(index);
   };
@@ -71,7 +76,9 @@ export const Api = () => {
   };
 
   return (
-    <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', height: '100%' }}>
+    <Box
+      sx={{ p: 3, display: 'flex', flexDirection: 'column', height: '100%' }}
+    >
       <Typography variant="h6" gutterBottom>
         API Settings
       </Typography>
@@ -154,7 +161,11 @@ export const Api = () => {
           {userModels.map((model, index) => (
             <Card key={index} sx={{ minWidth: 275 }}>
               <CardContent>
-                <Box display="flex" justifyContent="space-between" alignItems="center">
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
                   <Typography variant="h5" component="div">
                     {model.model_name}
                   </Typography>
@@ -167,7 +178,9 @@ export const Api = () => {
                     <MoreVertIcon />
                   </IconButton>
                 </Box>
-                <Typography variant="body2">{model.model_description}</Typography>
+                <Typography variant="body2">
+                  {model.model_description}
+                </Typography>
               </CardContent>
               <Menu
                 id="long-menu"

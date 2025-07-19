@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { supabase } from '~/Utility';
 import { useGenerateMessage } from '@components';
 import { useChatStore } from '~/store';
 import { Message, User, Character } from '@shared-types';
@@ -59,8 +58,10 @@ export const useChatPageAPI = (
         setMessages,
         setIsGenerating
       );
-      if (response.isSubscribed) return;
-      if (response.remainingMessages === 0) setIsAdModalOpen(true);
+
+      if (!response.isSubscribed && response.remainingMessages === 0) {
+        setIsAdModalOpen(true);
+      }
     } catch (error) {
       console.error('Error:', error);
     }
@@ -76,20 +77,15 @@ export const useChatPageAPI = (
       .filter((id): id is string => !!id);
     if (!messagesToDelete.length) return;
     try {
-      const { error } = await supabase
-        .from('chat_messages')
-        .delete()
-        .in('id', messagesToDelete);
-      if (error) {
-        console.error('Error deleting messages:', error);
-      } else {
-        setMessages((prevMessages) =>
-          prevMessages.filter(
-            (msg) =>
-              typeof msg.id === 'string' && !messagesToDelete.includes(msg.id)
-          )
-        );
-      }
+      await Utils.db.delete<{ id: string }>('chat_messages', {
+        id: messagesToDelete,
+      });
+      setMessages((prevMessages) =>
+        prevMessages.filter(
+          (msg) =>
+            typeof msg.id === 'string' && !messagesToDelete.includes(msg.id)
+        )
+      );
     } catch (error) {
       console.error('Error deleting messages:', error);
     }
@@ -117,29 +113,28 @@ export const useChatPageAPI = (
     if (!messageId || !editedMessage) return;
     try {
       const columnName = type === 'user' ? 'user_message' : 'char_message';
-      const { error } = await supabase
-        .from('chat_messages')
-        .update({ [columnName]: editedMessage })
-        .eq('id', messageId)
-        .eq('user_uuid', user.user_uuid)
-        .eq('chat_uuid', chat_uuid);
-      if (error) {
-        console.error('Error updating message:', error);
-      } else {
-        setMessages((prevMessages) =>
-          prevMessages.map((msg) =>
-            msg.id === messageId && msg.type === type
-              ? {
-                  ...msg,
-                  text: editedMessage,
-                  ...(type === 'user'
-                    ? { user_message: editedMessage }
-                    : { char_message: editedMessage }),
-                }
-              : msg
-          )
-        );
-      }
+      await Utils.db.update(
+        'chat_messages',
+        { [columnName]: editedMessage },
+        {
+          id: messageId,
+          user_uuid: user.user_uuid,
+          chat_uuid: chat_uuid,
+        }
+      );
+      setMessages((prevMessages) =>
+        prevMessages.map((msg) =>
+          msg.id === messageId && msg.type === type
+            ? {
+                ...msg,
+                text: editedMessage,
+                ...(type === 'user'
+                  ? { user_message: editedMessage }
+                  : { char_message: editedMessage }),
+              }
+            : msg
+        )
+      );
     } catch (error) {
       console.error('Error updating message:', error);
     }
@@ -175,18 +170,14 @@ export const useChatPageAPI = (
           profile_image: char.profile_image,
         };
 
-        const { error } = await supabase.from('chat_messages').insert({
+        await Utils.db.insert('chat_messages', {
           user_uuid: user.user_uuid,
           chat_uuid: chat_uuid,
           char_message: newImageMessage.text,
           is_image: true,
         });
 
-        if (error) {
-          console.error('Error inserting image message:', error);
-        } else {
-          setMessages((prevMessages) => [...prevMessages, newImageMessage]);
-        }
+        setMessages((prevMessages) => [...prevMessages, newImageMessage]);
       }
     } catch (error) {
       console.error('Error generating image:', error);

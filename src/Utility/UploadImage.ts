@@ -1,5 +1,5 @@
-import { supabase } from '~/Utility';
 import { v4 as uuidv4 } from 'uuid';
+import { Utils } from '~/Utility';
 import * as Sentry from '@sentry/react';
 
 interface UploadResult {
@@ -29,7 +29,7 @@ export async function uploadImage(
     const fileName = `${uuidv4()}.webp`;
     const filePath = fileName;
 
-    const { error: uploadError } = await supabase.storage
+    const { error: uploadError } = await Utils.db.client.storage
       .from(bucketName)
       .upload(filePath, webpBlob);
 
@@ -38,7 +38,7 @@ export async function uploadImage(
       return { url: null, error: uploadError.message };
     }
 
-    const { data: urlData } = supabase.storage
+    const { data: urlData } = Utils.db.client.storage
       .from(bucketName)
       .getPublicUrl(filePath);
 

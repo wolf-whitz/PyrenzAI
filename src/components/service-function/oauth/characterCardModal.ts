@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { usePyrenzAlert } from '~/provider';
 import { GetUserUUID, CreateNewChat } from '@components';
 import * as Sentry from '@sentry/react';
-import { supabase } from '~/Utility';
+import { Utils as utils } from '~/Utility';
 import { Character } from '@shared-types';
 
 interface UseCharacterModalApiProps {
@@ -40,31 +40,31 @@ export const useCharacterModalApi = ({
 
   const fetchCharacter = async (charUuid: string) => {
     try {
-      const { data: publicCharacter, error: publicError } = await supabase
-        .from('public_characters')
-        .select('*')
-        .eq('char_uuid', charUuid)
-        .single();
-
-      if (publicError && publicError.code !== 'PGRST116') {
-        throw publicError;
+      const { data: publicCharacter } = await utils.db.select<Character>(
+        'public_characters',
+        '*',
+        null,
+        {
+          char_uuid: charUuid,
+        }
+      );
+      if (publicCharacter?.length) {
+        return publicCharacter[0];
       }
 
-      if (publicCharacter) {
-        return publicCharacter;
+      const { data: privateCharacter } = await utils.db.select<Character>(
+        'private_characters',
+        '*',
+        null,
+        {
+          char_uuid: charUuid,
+        }
+      );
+      if (privateCharacter?.length) {
+        return privateCharacter[0];
       }
 
-      const { data: privateCharacter, error: privateError } = await supabase
-        .from('private_characters')
-        .select('*')
-        .eq('char_uuid', charUuid)
-        .single();
-
-      if (privateError) {
-        throw privateError;
-      }
-
-      return privateCharacter;
+      return null;
     } catch (error) {
       console.error('Error fetching character:', error);
       Sentry.captureException(error);
@@ -133,38 +133,35 @@ export const useCharacterModalApi = ({
 
     setIsLoading(true);
     try {
-      const { error: publicDeleteError } = await supabase
-        .from('public_characters')
-        .delete()
-        .eq('char_uuid', initialCharacter.char_uuid);
-
-      if (publicDeleteError && publicDeleteError.code !== 'PGRST116') {
-        throw publicDeleteError;
-      }
-
-      if (!publicDeleteError) {
-        showAlert('Character deleted successfully!', 'Success');
-        onClose();
-        onCharacterDeleted();
-        return;
-      }
-
-      const { error: privateDeleteError } = await supabase
-        .from('private_characters')
-        .delete()
-        .eq('char_uuid', initialCharacter.char_uuid);
-
-      if (privateDeleteError) {
-        throw privateDeleteError;
-      }
+      await utils.db.delete('public_characters', {
+        char_uuid: initialCharacter.char_uuid,
+      });
 
       showAlert('Character deleted successfully!', 'Success');
       onClose();
       onCharacterDeleted();
-    } catch (error) {
-      console.error('Error deleting character:', error);
-      Sentry.captureException(error);
-      showAlert('Error deleting character.', 'Alert');
+    } catch (publicError: any) {
+      if (publicError?.code !== 'PGRST116') {
+        console.error('Error deleting from public_characters:', publicError);
+        Sentry.captureException(publicError);
+        showAlert('Error deleting character.', 'Alert');
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        await utils.db.delete('private_characters', {
+          char_uuid: initialCharacter.char_uuid,
+        });
+
+        showAlert('Character deleted successfully!', 'Success');
+        onClose();
+        onCharacterDeleted();
+      } catch (privateError) {
+        console.error('Error deleting from private_characters:', privateError);
+        Sentry.captureException(privateError);
+        showAlert('Error deleting character.', 'Alert');
+      }
     } finally {
       setIsLoading(false);
     }

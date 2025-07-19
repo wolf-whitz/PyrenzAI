@@ -13,10 +13,10 @@ import {
   ChevronRightOutlined as ChevronRightIcon,
   DeleteOutlined as DeleteIcon,
 } from '@mui/icons-material';
-import { supabase } from '~/Utility';
 import { GetUserUUID } from '@components';
 import { Draft } from '@shared-types';
 import { PyrenzModal, PyrenzModalContent } from '~/theme';
+import { Utils } from '~/Utility';
 
 interface DraftsModalProps {
   onClose: () => void;
@@ -35,12 +35,8 @@ const SkeletonLoader = () => (
           mb: 2,
           animation: 'pulse 1.5s ease-in-out infinite',
           '@keyframes pulse': {
-            '0%, 100%': {
-              opacity: 1,
-            },
-            '50%': {
-              opacity: 0.5,
-            },
+            '0%, 100%': { opacity: 1 },
+            '50%': { opacity: 0.5 },
           },
         }}
       />
@@ -53,12 +49,8 @@ const SkeletonLoader = () => (
           mb: 2,
           animation: 'pulse 1.5s ease-in-out infinite',
           '@keyframes pulse': {
-            '0%, 100%': {
-              opacity: 1,
-            },
-            '50%': {
-              opacity: 0.5,
-            },
+            '0%, 100%': { opacity: 1 },
+            '50%': { opacity: 0.5 },
           },
         }}
       />
@@ -86,16 +78,14 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
     const fetchDrafts = async () => {
       if (hasFetched.current || !userUuid) return;
       hasFetched.current = true;
-      try {
-        const { data, error } = await supabase
-          .from('draft_characters')
-          .select('*')
-          .eq('creator_uuid', userUuid);
 
-        if (error) {
-          console.error('Error fetching drafts:', error);
-          return;
-        }
+      try {
+        const { data } = await Utils.db.select<Draft>(
+          'draft_characters',
+          '*',
+          null,
+          { creator_uuid: userUuid }
+        );
 
         const mappedDrafts: Draft[] = data.map((draft: any) => {
           const tags = Array.isArray(draft.tags)
@@ -109,7 +99,7 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
         setDrafts(mappedDrafts);
         setDisplayedDrafts(mappedDrafts.slice(0, 3));
       } catch (err) {
-        console.error('Unexpected error:', err);
+        console.error('Error fetching drafts:', err);
       } finally {
         setLoading(false);
       }
@@ -138,22 +128,15 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
 
   const handleRemoveDraft = async (draftId: number) => {
     try {
-      const { error } = await supabase
-        .from('draft_characters')
-        .delete()
-        .eq('id', draftId);
+      await Utils.db.delete('draft_characters', { id: draftId });
 
-      if (error) {
-        console.error('Error removing draft:', error);
-        return;
-      }
-
-      setDrafts(drafts.filter((draft) => draft.id !== draftId));
+      const updatedDrafts = drafts.filter((draft) => draft.id !== draftId);
+      setDrafts(updatedDrafts);
       setDisplayedDrafts(
-        displayedDrafts.filter((draft) => draft.id !== draftId)
+        updatedDrafts.slice(currentPage * 3, (currentPage + 1) * 3)
       );
     } catch (err) {
-      console.error('Unexpected error:', err);
+      console.error('Error removing draft:', err);
     }
   };
 
@@ -172,6 +155,7 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
         >
           Select a Draft
         </Typography>
+
         {loading ? (
           <>
             <SkeletonLoader />

@@ -50,7 +50,7 @@ interface UserStore {
   personaName: string | null;
   userIcon: string | null;
   is_login: boolean;
-  is_deleted: boolean;
+  is_deleted: boolean | undefined;
   is_admin: boolean;
   subscription_plan: string[] | null;
   imageURL: string | null;
@@ -61,14 +61,14 @@ interface UserStore {
   customization: Customization;
   show_nsfw: boolean;
   blocked_tags: string[];
-  purchase_id: string | null; 
+  purchase_id: string | null;
   cachedUserData?: CachedUserData;
   setUserUUID: (uuid: string) => void;
   setUsername: (name: string) => void;
   setPersonaName: (name: string) => void;
   setUserIcon: (icon: string) => void;
   setIsLogin: (isLogin: boolean) => void;
-  setIsDeleted: (isDeleted: boolean) => void;
+  setIsDeleted: (isDeleted: boolean | undefined) => void;
   setIsAdmin: (isAdmin: boolean) => void;
   setSubscriptionPlan: (plan: string[]) => void;
   setImageURL: (url: string | null) => void;
@@ -79,7 +79,7 @@ interface UserStore {
   setCustomization: (customization: Partial<Customization>) => void;
   toggleShowNSFW: () => void;
   setBlockedTags: (tags: string[]) => void;
-  setPurchaseId: (purchaseId: string) => void; 
+  setPurchaseId: (purchaseId: string) => void;
   setCachedUserData: (cache: CachedUserData | undefined) => void;
 }
 
@@ -91,7 +91,7 @@ export const useUserStore = create<UserStore>()(
       personaName: null,
       userIcon: null,
       is_login: false,
-      is_deleted: false,
+      is_deleted: undefined,
       is_admin: false,
       subscription_plan: null,
       imageURL: null,
@@ -115,7 +115,7 @@ export const useUserStore = create<UserStore>()(
       },
       show_nsfw: false,
       blocked_tags: [],
-      purchase_id: null, 
+      purchase_id: null,
       cachedUserData: undefined,
       setUserUUID: (uuid) => set({ userUUID: uuid }),
       setUsername: (name) => set({ username: name }),

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Textarea, GetUserUUID } from '@components';
 import { PyrenzSlider, PyrenzBlueButton } from '~/theme';
-import { supabase } from '~/Utility';
 import { applyTokenizer, decodeTokenizer } from '~/Utility';
 import { Box, Typography, Tooltip, IconButton } from '@mui/material';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import { db } from '~/Utility';
 
 export function ModelControl() {
   const [blockedWords, setBlockedWords] = useState('');
@@ -20,83 +20,110 @@ export function ModelControl() {
       if (!uuid) return;
       setUserUUID(uuid);
 
-      const { data, error } = await supabase
-        .from('user_data')
-        .select('model_controls, preset_instruction')
-        .eq('user_uuid', uuid)
-        .single();
+      try {
+        const { data } = await db.select<{
+          model_controls: {
+            blocked: number[][];
+            encouraged: number[][];
+            controller: {
+              'Blocked Words Frequency': number;
+              'Encouraged Word Frequency': number;
+            };
+          };
+          preset_instruction: string;
+        }>('user_data', 'model_controls, preset_instruction', null, {
+          user_uuid: uuid,
+        });
 
-      if (error) {
-        console.error('Error fetching user_data:', error);
-        return;
-      }
+        const controls = data?.[0]?.model_controls;
+        const instruction = data?.[0]?.preset_instruction ?? '';
+        setPresetInstruction(instruction);
 
-      const controls = data?.model_controls;
-      const instruction = data?.preset_instruction ?? '';
-      setPresetInstruction(instruction);
+        if (!controls) return;
 
-      if (!controls) return;
-      if (Array.isArray(controls.blocked) && controls.blocked.length > 0) {
-        const decoded = controls.blocked
-          .map((tokens: number[]) => decodeTokenizer(tokens))
-          .join(', ');
-        setBlockedWords(decoded);
-      }
-      if (
-        Array.isArray(controls.encouraged) &&
-        controls.encouraged.length > 0
-      ) {
-        const decoded = controls.encouraged
-          .map((tokens: number[]) => decodeTokenizer(tokens))
-          .join(', ');
-        setEncouragedWords(decoded);
-      }
+        if (Array.isArray(controls.blocked) && controls.blocked.length > 0) {
+          const decoded = controls.blocked
+            .map((tokens) => decodeTokenizer(tokens))
+            .join(', ');
+          setBlockedWords(decoded);
+        }
 
-      const controller = controls.controller ?? {};
-      if (controller['Blocked Words Frequency']) {
-        setBlockedFrequency(controller['Blocked Words Frequency']);
-      }
-      if (controller['Encouraged Word Frequency']) {
-        setEncouragedFrequency(controller['Encouraged Word Frequency']);
+        if (
+          Array.isArray(controls.encouraged) &&
+          controls.encouraged.length > 0
+        ) {
+          const decoded = controls.encouraged
+            .map((tokens) => decodeTokenizer(tokens))
+            .join(', ');
+          setEncouragedWords(decoded);
+        }
+
+        const controller = controls.controller ?? {};
+        if (controller['Blocked Words Frequency'] !== undefined) {
+          setBlockedFrequency(controller['Blocked Words Frequency']);
+        }
+        if (controller['Encouraged Word Frequency'] !== undefined) {
+          setEncouragedFrequency(controller['Encouraged Word Frequency']);
+        }
+      } catch (error) {
+        console.error('Error during initialization:', error);
       }
     };
+
     init();
   }, []);
 
   const handleSubmit = async () => {
     if (!userUUID) return;
+
     const blockedWordsArray = blockedWords
       .split(',')
       .map((word) => word.trim())
       .filter(Boolean);
+
     const encouragedWordsArray = encouragedWords
       .split(',')
       .map((word) => word.trim())
       .filter(Boolean);
+
     const blockedTokens = blockedWordsArray.map((word) => applyTokenizer(word));
     const encouragedTokens = encouragedWordsArray.map((word) =>
       applyTokenizer(word)
     );
 
-    const { error } = await supabase
-      .from('user_data')
-      .update({
-        model_controls: {
-          blocked: blockedTokens,
-          encouraged: encouragedTokens,
-          controller: {
-            'Blocked Words Frequency': blockedFrequency,
-            'Encouraged Word Frequency': encouragedFrequency,
-          },
+    try {
+      await db.update<
+        {
+          model_controls: {
+            blocked: number[][];
+            encouraged: number[][];
+            controller: {
+              'Blocked Words Frequency': number;
+              'Encouraged Word Frequency': number;
+            };
+          };
+          preset_instruction: string;
         },
-        preset_instruction: presetInstruction,
-      })
-      .eq('user_uuid', userUUID);
+        { user_uuid: string }
+      >(
+        'user_data',
+        {
+          model_controls: {
+            blocked: blockedTokens,
+            encouraged: encouragedTokens,
+            controller: {
+              'Blocked Words Frequency': blockedFrequency,
+              'Encouraged Word Frequency': encouragedFrequency,
+            },
+          },
+          preset_instruction: presetInstruction,
+        },
+        { user_uuid: userUUID }
+      );
 
-    if (error) {
-      console.error('Error submitting data:', error);
-    } else {
       console.log('Data submitted successfully');
+    } catch (error) {
+      console.error('Error submitting data:', error);
     }
   };
 
@@ -116,7 +143,6 @@ export function ModelControl() {
           onChange={(e) => setBlockedWords(e.target.value)}
           placeholder="Enter blocked words separated by commas..."
         />
-
         <Box display="flex" alignItems="center">
           <Typography variant="h6">Encouraged Words</Typography>
           <Tooltip title="Words that the model will prefer using">
@@ -130,7 +156,6 @@ export function ModelControl() {
           onChange={(e) => setEncouragedWords(e.target.value)}
           placeholder="Enter encouraged words separated by commas..."
         />
-
         <Box display="flex" alignItems="center">
           <Typography variant="h6">Preset Instruction</Typography>
           <Tooltip title="This instruction is sent with every message. Do not modify it unless you are certain of what you're doing, as it significantly affects the model's behavior.">
@@ -144,7 +169,6 @@ export function ModelControl() {
           onChange={(e) => setPresetInstruction(e.target.value)}
           placeholder="Enter preset instruction..."
         />
-
         <Box display="flex" alignItems="center">
           <Typography variant="subtitle1">
             Blocked Words Frequency: {blockedFrequency}
@@ -161,7 +185,6 @@ export function ModelControl() {
           min={-100}
           max={0}
         />
-
         <Box display="flex" alignItems="center">
           <Typography variant="subtitle1">
             Encouraged Word Frequency: {encouragedFrequency}
@@ -179,7 +202,6 @@ export function ModelControl() {
           max={100}
         />
       </Box>
-
       <Box
         display="flex"
         justifyContent="center"

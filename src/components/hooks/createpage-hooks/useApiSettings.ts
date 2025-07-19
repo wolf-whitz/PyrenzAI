@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { SelectChangeEvent } from '@mui/material/Select';
 import { GetUserUUID } from '@components';
-import { supabase, encrypt } from '~/Utility';
+import { encrypt, Utils } from '~/Utility';
 import { usePyrenzAlert } from '~/provider';
 
 interface Provider {
@@ -37,13 +37,14 @@ export const useApiSettings = () => {
 
   useEffect(() => {
     const fetchProviders = async () => {
-      const { data, error } = await supabase
-        .from('providers')
-        .select('provider_name, provider_description, provider_link');
-      if (error) {
-        console.error('Error fetching providers:', error);
-      } else {
+      try {
+        const { data } = await Utils.db.select<Provider>(
+          'providers',
+          'provider_name, provider_description, provider_link'
+        );
         setProviders(data || []);
+      } catch (error) {
+        console.error('Error fetching providers:', error);
       }
     };
     fetchProviders();
@@ -52,18 +53,35 @@ export const useApiSettings = () => {
   useEffect(() => {
     const fetchUserModels = async () => {
       if (!userUuid) return;
-      const { data, error } = await supabase
-        .from('private_models')
-        .select('id, model_name, model_description')
-        .eq('user_uuid', userUuid);
-      if (error) {
-        console.error('Error fetching user models:', error);
-      } else {
+      try {
+        const { data } = await Utils.db.select<UserModel>(
+          'private_models',
+          'id, model_name, model_description',
+          null,
+          {
+            user_uuid: userUuid,
+          }
+        );
         setUserModels(data || []);
+      } catch (error) {
+        console.error('Error fetching user models:', error);
       }
     };
     fetchUserModels();
   }, [userUuid]);
+
+  const refreshUserModels = async () => {
+    if (!userUuid) return;
+    const { data } = await Utils.db.select<UserModel>(
+      'private_models',
+      'id, model_name, model_description',
+      null,
+      {
+        user_uuid: userUuid,
+      }
+    );
+    setUserModels(data || []);
+  };
 
   const handleProviderChange = (event: SelectChangeEvent) => {
     const providerName = event.target.value;
@@ -86,34 +104,23 @@ export const useApiSettings = () => {
     }
     try {
       const encryptedApiKey = await encrypt(apiKey);
-      const { error } = await supabase.from('private_models').insert([{
+      await Utils.db.insert('private_models', {
         user_uuid: userUuid,
         model_name: modelName,
         model_url: apiUrl,
         model_description: modelDescription,
         model_api_key: encryptedApiKey,
-      }]);
-      if (error) {
-        console.error('Error inserting model:', error);
-        showAlert('Oops! Couldn’t save your model. Check the console.', 'Error');
-      } else {
-        showAlert('Model saved successfully! 🎉', 'Success');
-        setModelName('');
-        setModelDescription('');
-        setApiKey('');
-        setApiUrl('');
-        setSelectedProvider('');
-        const { data: updatedModels, error: fetchError } = await supabase
-          .from('private_models')
-          .select('id, model_name, model_description')
-          .eq('user_uuid', userUuid);
-        if (!fetchError) {
-          setUserModels(updatedModels || []);
-        }
-      }
-    } catch (encryptionError) {
-      console.error('Error encrypting API key:', encryptionError);
-      showAlert('Oops! Couldn’t encrypt your API key.', 'Error');
+      });
+      showAlert('Model saved successfully! 🎉', 'Success');
+      setModelName('');
+      setModelDescription('');
+      setApiKey('');
+      setApiUrl('');
+      setSelectedProvider('');
+      await refreshUserModels();
+    } catch (error) {
+      console.error('Error inserting model:', error);
+      showAlert('Oops! Couldn’t save your model. Check the console.', 'Error');
     }
   };
 
@@ -124,31 +131,24 @@ export const useApiSettings = () => {
     }
     try {
       const encryptedApiKey = await encrypt(apiKey);
-      const { error } = await supabase
-        .from('private_models')
-        .update({
+      await Utils.db.update(
+        'private_models',
+        {
           model_name: modelName,
           model_url: apiUrl,
           model_description: modelDescription,
           model_api_key: encryptedApiKey,
-        })
-        .eq('id', id);
-      if (error) {
-        console.error('Error updating model:', error);
-        showAlert('Oops! Couldn’t update your model. Check the console.', 'Error');
-      } else {
-        showAlert('Model updated successfully! 🎉', 'Success');
-        const { data: updatedModels, error: fetchError } = await supabase
-          .from('private_models')
-          .select('id, model_name, model_description')
-          .eq('user_uuid', userUuid);
-        if (!fetchError) {
-          setUserModels(updatedModels || []);
-        }
-      }
-    } catch (encryptionError) {
-      console.error('Error encrypting API key:', encryptionError);
-      showAlert('Oops! Couldn’t encrypt your API key.', 'Error');
+        },
+        { id }
+      );
+      showAlert('Model updated successfully! 🎉', 'Success');
+      await refreshUserModels();
+    } catch (error) {
+      console.error('Error updating model:', error);
+      showAlert(
+        'Oops! Couldn’t update your model. Check the console.',
+        'Error'
+      );
     }
   };
 
@@ -157,22 +157,16 @@ export const useApiSettings = () => {
       showAlert('User not loaded yet, please try again 🤷‍♂️', 'Alert');
       return;
     }
-    const { error } = await supabase
-      .from('private_models')
-      .delete()
-      .eq('id', id);
-    if (error) {
-      console.error('Error deleting model:', error);
-      showAlert('Oops! Couldn’t delete your model. Check the console.', 'Error');
-    } else {
+    try {
+      await Utils.db.delete('private_models', { id });
       showAlert('Model deleted successfully! 🎉', 'Success');
-      const { data: updatedModels, error: fetchError } = await supabase
-        .from('private_models')
-        .select('id, model_name, model_description')
-        .eq('user_uuid', userUuid);
-      if (!fetchError) {
-        setUserModels(updatedModels || []);
-      }
+      await refreshUserModels();
+    } catch (error) {
+      console.error('Error deleting model:', error);
+      showAlert(
+        'Oops! Couldn’t delete your model. Check the console.',
+        'Error'
+      );
     }
   };
 

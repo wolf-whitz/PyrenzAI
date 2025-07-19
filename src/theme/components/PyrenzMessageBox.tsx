@@ -127,14 +127,14 @@ export const PyrenzMessageBox = ({
               <PyrenzBlueButton
                 onClick={onSaveEdit}
                 disabled={isLoading}
-                sx={{ backgroundColor: 'transparent' }}
+                sx={{ backgroundColor: 'transparent', color: '#fff' }}
               >
                 {isLoading ? 'Saving...' : 'Submit'}
               </PyrenzBlueButton>
               <PyrenzBlueButton
                 onClick={onCancelEdit}
                 disabled={isLoading}
-                sx={{ backgroundColor: 'transparent' }}
+                sx={{ backgroundColor: 'transparent', color: '#fff' }}
               >
                 Cancel
               </PyrenzBlueButton>

@@ -12,7 +12,7 @@ import {
   Lock as LockIcon,
 } from '@mui/icons-material';
 import { PyrenzAccordionInput } from '~/theme';
-import { supabase } from '~/Utility';
+import { Utils } from '~/Utility';
 import { GetUserUUID } from '@components';
 
 interface PrivateModel {
@@ -33,11 +33,16 @@ interface ModelSelectionProps {
   setPreferredModel: (value: string) => void;
 }
 
-export function ModelSelection({ preferredModel, setPreferredModel }: ModelSelectionProps) {
+export function ModelSelection({
+  preferredModel,
+  setPreferredModel,
+}: ModelSelectionProps) {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [popoverContent, setPopoverContent] = useState('');
   const [modelOptions, setModelOptions] = useState<ModelOption[] | null>(null);
-  const [privateModels, setPrivateModels] = useState<{ [key: string]: PrivateModel }>({});
+  const [privateModels, setPrivateModels] = useState<
+    Record<string, PrivateModel>
+  >({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -45,42 +50,43 @@ export function ModelSelection({ preferredModel, setPreferredModel }: ModelSelec
       try {
         const userUUID = await GetUserUUID();
 
-        const { data: modelIdentifiers, error: modelError } = await supabase
-          .from('model_identifiers')
-          .select('name, subscription_plan, model_description');
+        const { data: modelIdentifiers } = await Utils.db.select<{
+          name: string;
+          subscription_plan: string;
+          model_description: string;
+        }>('model_identifiers', 'name, subscription_plan, model_description');
 
-        if (modelError) {
-          throw modelError;
-        }
+        const { data: privateModelsData } = await Utils.db.select<PrivateModel>(
+          'private_models',
+          'model_name, model_description',
+          null,
+          { user_uuid: userUUID } 
+        );
 
-        const { data: privateModelsData, error: privateModelsError } = await supabase
-          .from('private_models')
-          .select('model_name, model_description')
-          .eq('user_uuid', userUUID);
+        const formattedModelOptions: ModelOption[] = modelIdentifiers.map(
+          (model) => ({
+            value: model.name,
+            label: model.name,
+            description: model.model_description,
+            subscription_plan: model.subscription_plan,
+          })
+        );
 
-        if (privateModelsError) {
-          throw privateModelsError;
-        }
-
-        const formattedModelOptions = modelIdentifiers.map((model) => ({
-          value: model.name,
-          label: model.name,
-          description: model.model_description,
-          subscription_plan: model.subscription_plan,
-        }));
-
-        const formattedPrivateModels = privateModelsData.reduce((acc, model) => {
-          acc[model.model_name] = {
-            model_name: model.model_name,
-            model_description: model.model_description,
-          };
-          return acc;
-        }, {});
+        const formattedPrivateModels = privateModelsData.reduce(
+          (acc, model) => {
+            acc[model.model_name] = {
+              model_name: model.model_name,
+              model_description: model.model_description,
+            };
+            return acc;
+          },
+          {} as Record<string, PrivateModel>
+        );
 
         setModelOptions(formattedModelOptions);
         setPrivateModels(formattedPrivateModels);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error fetching model data:', error);
       } finally {
         setLoading(false);
       }
@@ -153,11 +159,7 @@ export function ModelSelection({ preferredModel, setPreferredModel }: ModelSelec
                     {option.isPrivate && (
                       <LockIcon fontSize="small" sx={{ ml: 1 }} />
                     )}
-                    <Typography
-                      variant="caption"
-                      color="gray"
-                      sx={{ ml: 2 }}
-                    >
+                    <Typography variant="caption" color="gray" sx={{ ml: 2 }}>
                       Plan: {option.subscription_plan}
                     </Typography>
                   </Box>

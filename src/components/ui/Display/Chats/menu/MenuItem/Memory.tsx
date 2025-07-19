@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Box, Button, Typography, Tooltip } from '@mui/material';
 import { Textarea } from '@components';
-import { supabase } from '~/Utility';
+import { Utils } from '~/Utility';
 import { usePyrenzAlert } from '~/provider';
 import { useParams } from 'react-router-dom';
 import { LlamaTokenizer } from 'llama-tokenizer-js';
@@ -23,18 +23,15 @@ export function Memory() {
       }
 
       try {
-        const { data, error } = await supabase
-          .from('chats')
-          .select('characters_memories')
-          .eq('chat_uuid', chat_uuid)
-          .single();
+        const { data } = await Utils.db.select<{ characters_memories: string }>(
+          'chats',
+          'characters_memories',
+          null,
+          { chat_uuid }
+        );
 
-        if (error) {
-          throw error;
-        }
-
-        if (data) {
-          setTextValue(data.characters_memories || '');
+        if (data?.[0]) {
+          setTextValue(data[0].characters_memories || '');
         }
       } catch (error) {
         console.error('Error fetching memory:', error);
@@ -43,7 +40,7 @@ export function Memory() {
     };
 
     fetchMemory();
-  }, [chat_uuid]);
+  }, [chat_uuid, showAlert]);
 
   useEffect(() => {
     setTokenCount(null);
@@ -60,20 +57,17 @@ export function Memory() {
   };
 
   const handleSubmit = async () => {
+    if (!chat_uuid) {
+      showAlert('Unknown Chat', 'alert');
+      return;
+    }
+
     try {
-      if (!chat_uuid) {
-        showAlert('Unknown Chat', 'alert');
-        return;
-      }
-
-      const { error } = await supabase
-        .from('chats')
-        .update({ characters_memories: textValue })
-        .eq('chat_uuid', chat_uuid);
-
-      if (error) {
-        throw error;
-      }
+      await Utils.db.update(
+        'chats',
+        { characters_memories: textValue },
+        { chat_uuid }
+      );
 
       showAlert('Memory updated successfully!', 'success');
     } catch (error) {
@@ -125,12 +119,7 @@ export function Memory() {
           </Typography>
         </Box>
       </Box>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleSubmit}
-        fullWidth
-      >
+      <Button variant="contained" color="primary" onClick={handleSubmit} fullWidth>
         Submit
       </Button>
     </Box>

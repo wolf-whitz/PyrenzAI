@@ -5,13 +5,11 @@ import {
 } from '@mui/icons-material';
 import { CircularProgress, Box, IconButton } from '@mui/material';
 import { Menu } from '@components';
-import { Character, User } from '@shared-types';
+import { useChatStore } from '~/store';
 
 interface ChatInputProps {
   className?: string;
   handleSend: (message: string) => void;
-  user: User;
-  char: Character;
   isGenerating: boolean;
 }
 
@@ -21,12 +19,13 @@ const MAX_TEXT_AREA_HEIGHT = 200;
 export function ChatInput({
   className,
   handleSend,
-  char,
   isGenerating,
 }: ChatInputProps) {
   const [message, setMessage] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const { char } = useChatStore();
 
   const sendMessage = useCallback(() => {
     const trimmedMessage = message.trim();
@@ -68,9 +67,7 @@ export function ChatInput({
           },
         }}
       >
-        <Box
-          className={`relative flex bg-gray-700 rounded-lg p-3 w-full ${className}`}
-        >
+        <Box className="relative flex bg-gray-700 rounded-lg p-3 w-full">
           <IconButton
             className="mr-2 text-gray-400 hover:text-white transition duration-200 p-2 rounded-full flex-shrink-0"
             onClick={() => setIsMenuOpen(true)}
@@ -83,6 +80,7 @@ export function ChatInput({
           >
             <MoreVertIcon fontSize="small" />
           </IconButton>
+
           <textarea
             ref={textareaRef}
             value={message}
@@ -100,6 +98,7 @@ export function ChatInput({
             disabled={isGenerating}
             style={{ maxHeight: `${MAX_TEXT_AREA_HEIGHT}px` }}
           />
+
           <IconButton
             onClick={sendMessage}
             className={`ml-2 flex items-center gap-1 text-gray-400 transition duration-200 p-2 rounded-full flex-shrink-0 ${
@@ -128,8 +127,9 @@ export function ChatInput({
           </IconButton>
         </Box>
       </Box>
-      {isMenuOpen && (
-        <Menu onClose={() => setIsMenuOpen(false)} char={char as Character} />
+
+      {isMenuOpen && char && (
+        <Menu onClose={() => setIsMenuOpen(false)} char={char} />
       )}
     </>
   );

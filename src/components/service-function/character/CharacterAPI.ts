@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { CharacterSchema, GetUserUUID } from '~/components';
-import { supabase } from '~/Utility';
+import { Utils } from '~/Utility';
 
 export const useCharacterData = (char_uuid: string | undefined) => {
   const [character, setCharacter] = useState<any>(null);
@@ -15,14 +15,10 @@ export const useCharacterData = (char_uuid: string | undefined) => {
 
       try {
         const fetchFromTable = async (table: string) => {
-          const { data, error } = await supabase
-            .from(table)
-            .select('*')
-            .eq('char_uuid', char_uuid)
-            .maybeSingle();
-
-          if (error) return null;
-          return data;
+          const { data } = await Utils.db.select<any>(table, '*', null, {
+            char_uuid,
+          });
+          return data[0] ?? null;
         };
 
         let result = await fetchFromTable('public_characters');
@@ -61,15 +57,12 @@ export const useCharacterData = (char_uuid: string | undefined) => {
         ? 'public_characters'
         : 'private_characters';
 
-      const { error } = await supabase
-        .from(tableName)
-        .delete()
-        .eq('char_uuid', char_uuid)
-        .eq('creator_uuid', user_uuid);
+      const deleted = await Utils.db.delete(tableName, {
+        char_uuid,
+        creator_uuid: user_uuid,
+      });
 
-      if (error) return false;
-
-      return true;
+      return deleted.length > 0;
     } catch {
       return false;
     }

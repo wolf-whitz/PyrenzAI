@@ -8,19 +8,15 @@ import {
   Fade,
   Container,
 } from '@mui/material';
-import { ArrowBack, SettingsOutlined } from '@mui/icons-material';
+import { ArrowBack } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { Character } from '@shared-types';
+import { useChatStore } from '~/store';
 
-interface ChatHeaderProps {
-  char: Character;
-  toggleSettings: () => void;
-}
-
-export function ChatHeader({ char, toggleSettings }: ChatHeaderProps) {
+export function ChatHeader() {
   const theme = useTheme();
   const isMdScreen = useMediaQuery(theme.breakpoints.up('lg'));
   const navigate = useNavigate();
+  const { char } = useChatStore();
 
   const handleArrowLeftClick = () => {
     navigate('/#');
@@ -57,28 +53,14 @@ export function ChatHeader({ char, toggleSettings }: ChatHeaderProps) {
               aria-label="Character profile"
             >
               <Avatar
-                alt={char.name || 'Anon'}
-                src={char.profile_image || ''}
+                alt={char?.name || 'Anon'}
+                src={char?.profile_image || ''}
                 sx={{ width: 40, height: 40 }}
               />
             </IconButton>
             <Typography variant="h6" sx={{ fontSize: '1rem' }}>
-              {char.name || 'Anon'}
+              {char?.name || 'Anon'}
             </Typography>
-            <IconButton
-              onClick={toggleSettings}
-              sx={{
-                color: 'grey',
-                transition: 'transform 0.3s ease, color 0.3s ease',
-                '&:hover': {
-                  transform: 'rotate(90deg)',
-                  color: 'white',
-                },
-              }}
-              aria-label="Settings"
-            >
-              <SettingsOutlined fontSize="small" />
-            </IconButton>
           </Box>
         </Box>
       </Container>

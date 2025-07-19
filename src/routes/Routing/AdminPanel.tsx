@@ -1,8 +1,4 @@
-/**
- * AdminPanel.tsx this file does not work as of right now, it is a work in progress. In the future admins and mods can ban user generated content here.
- */
 import React, { useEffect, useState } from 'react';
-import { supabase } from '~/Utility';
 import { useUserStore } from '~/store';
 import {
   Box,
@@ -32,7 +28,7 @@ export function AdminPanel() {
     const checkAdminStatus = async () => {
       try {
         setLoading(true);
-        const { data, error } = await supabase
+        const { data, error } = await Utils.db.client
           .from('admins')
           .select('is_admin')
           .eq('user_uuid', userUUID)

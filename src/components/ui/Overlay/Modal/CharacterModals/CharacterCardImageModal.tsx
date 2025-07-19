@@ -7,14 +7,13 @@ import {
   CardMedia,
   CardContent,
   Skeleton,
-  Button,
   IconButton,
 } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
-import { supabase } from '~/Utility';
 import * as Sentry from '@sentry/react';
-import { usePyrenzAlert } from '~/provider';
 import { PyrenzModal, PyrenzModalContent, PyrenzBlueButton } from '~/theme';
+import { Utils } from '~/Utility';
+import { usePyrenzAlert } from '~/provider';
 
 interface CharacterCard {
   id: string;
@@ -49,19 +48,21 @@ export function CharacterCardImageModal({
     setIsFetching(true);
     setLoading(page === 1);
     setLoadMoreLoading(page > 1);
+
     try {
-      const { data, error } = await supabase
-        .from('persona_cards')
-        .select('id, card_name, card_description, card_image')
-        .range((page - 1) * 5, page * 5 - 1);
+      const { data } = await Utils.db.select<CharacterCard>(
+        'persona_cards',
+        'id, card_name, card_description, card_image',
+        null,
+        {
+          range: {
+            from: (page - 1) * 5,
+            to: page * 5 - 1,
+          },
+        }
+      );
 
-      if (error) {
-        throw error;
-      }
-
-      if (data.length < 5) {
-        setHasMore(false);
-      }
+      if (data.length < 5) setHasMore(false);
 
       setCharacterCards((prevCards) => [
         ...prevCards,
@@ -89,7 +90,7 @@ export function CharacterCardImageModal({
 
   const handleLoadMore = () => {
     fetchCharacterCards(page + 1);
-    setPage((prevPage) => prevPage + 1);
+    setPage((prev) => prev + 1);
   };
 
   const handleCardClick = (cardImage: string) => {
@@ -99,9 +100,7 @@ export function CharacterCardImageModal({
   };
 
   const handleImageError = (cardId: string) => {
-    setCharacterCards((prevCards) =>
-      prevCards.filter((card) => card.id !== cardId)
-    );
+    setCharacterCards((prev) => prev.filter((card) => card.id !== cardId));
   };
 
   if (!isModalOpen) return null;

@@ -6,7 +6,7 @@ import {
   getLatestCharacter as GetLatestCharacters,
   getRandomCharacters as GetRandomCharacters,
   getCharacterWithTag as GetCharactersWithTags,
-  useFetchUserUUID,
+  GetUserUUID,
   useFetchCharacters,
 } from '@components';
 import { usePyrenzAlert } from '~/provider';
@@ -22,14 +22,11 @@ export const useHomepageAPI = () => {
     setLoading,
     setCharacters,
   } = useHomeStore();
-
   const { t } = useTranslation();
-  const userUUID = useFetchUserUUID();
+  const userUUID = GetUserUUID();
   const itemsPerPage = 20;
   const showAlert = usePyrenzAlert();
-
   const showNSFW = useUserStore((state) => state.show_nsfw);
-
   const { characters } = useFetchCharacters({
     currentPage,
     search,
@@ -47,10 +44,8 @@ export const useHomepageAPI = () => {
     searchQuery?: string
   ): Promise<any[]> => {
     setLoading(true);
-
     try {
       let rawCharacters: any[] = [];
-
       switch (type) {
         case 'hot':
           if (maxCharacter === undefined || page === undefined) {
@@ -89,14 +84,11 @@ export const useHomepageAPI = () => {
         default:
           throw new Error('Invalid type');
       }
-
       if (rawCharacters.length === 0) {
         setCharacters([]);
         return [];
       }
-
       const safeCharacters = rawCharacters.map((char) => char);
-
       setCharacters(safeCharacters);
       return safeCharacters;
     } catch (error) {

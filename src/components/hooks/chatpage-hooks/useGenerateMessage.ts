@@ -1,18 +1,18 @@
 import { useCallback } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import { GenerateResponse, Message } from '@shared-types';
 import { GetUserUUID, useTabFocus } from '@components';
 import { usePyrenzAlert } from '~/provider';
-import { NotificationManager, supabase, Utils } from '~/Utility';
-
-interface CustomError {
-  error: string;
-  show_ad?: boolean;
-}
+import { NotificationManager, Utils } from '~/Utility';
 
 interface GenerateMessageResponse {
   remainingMessages?: number;
   showAd?: boolean;
   isSubscribed?: boolean;
+}
+
+interface UserDataRow {
+  inference_settings: any;
 }
 
 export const useGenerateMessage = () => {
@@ -42,8 +42,10 @@ export const useGenerateMessage = () => {
         type: 'user',
       };
 
+      const charMessageId = uuidv4();
+
       const charMessage: Message = {
-        id: undefined,
+        id: charMessageId,
         name: char.name || char.character_name || 'AI',
         text: '',
         profile_image: char.user_avatar,
@@ -51,47 +53,36 @@ export const useGenerateMessage = () => {
         isGenerate: true,
       };
 
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        userMessage,
-        charMessage,
-      ]);
+      setMessages((prev) => [...prev, userMessage, charMessage]);
 
       try {
         const user_uuid = await GetUserUUID();
-        const { data: userData, error: userDataError } = await supabase
-          .from('user_data')
-          .select('inference_settings')
-          .eq('user_uuid', user_uuid)
-          .single();
+        const { data: userData } = await Utils.db.select<UserDataRow>(
+          'user_data',
+          'inference_settings',
+          null,
+          { user_uuid }
+        );
 
-        if (userDataError)
-          throw new Error('Failed to fetch inference settings');
-
-        const { inference_settings } = userData;
-        const adWatchKey = localStorage.getItem('ad_watch_token');
-        const connectionParams = new URLSearchParams();
-        connectionParams.append('user_uuid', user_uuid as string);
-
-        if (adWatchKey) {
-          connectionParams.append('ad_watch_key', adWatchKey);
-          localStorage.removeItem('ad_watch_token');
+        if (!userData?.[0]) {
+          throw new Error('Inference settings not found for this user');
         }
 
-        const url = `/api/Generate?${connectionParams.toString()}`;
+        const { inference_settings } = userData[0];
+
+        const url = `/api/Generate?user_uuid=${user_uuid}`;
         const payload = {
           Type: 'Generate',
           chat_uuid,
-          Message: { User: text },
+          query: text,
           inference_settings,
         };
 
-        const response = await Utils.post<GenerateResponse>(url, payload);
+        const data = await Utils.post<GenerateResponse>(url, payload);
 
-        if (!response?.data?.content)
-          throw new Error('No valid response from API');
+        if (!data?.content) throw new Error('No valid response from API');
 
-        const responseId = response.id?.[0]?.MessageID;
+        const responseId = data.MessageID;
 
         setMessages((prevMessages) =>
           prevMessages.map((msg) =>
@@ -99,77 +90,53 @@ export const useGenerateMessage = () => {
               ? {
                   ...msg,
                   id: responseId,
-                  text: response.data.content,
+                  text: data.content,
                   isGenerate: false,
                 }
               : msg.type === 'user' && msg.id === undefined
-                ? { ...msg, id: responseId }
-                : msg
+              ? { ...msg, id: responseId }
+              : msg
           )
         );
 
         await NotificationManager.fire({
-          title: `{{char}}: replied!`,
-          body: response.data.content.slice(0, 100),
+          title: `${char.name || char.character_name || 'AI'}: replied!`,
+          body: data.content.slice(0, 100),
           icon: char.user_avatar,
           vibrateIfPossible: !isTabFocused,
           charName: char.name || char.character_name || 'AI',
           userName: user.username,
         });
 
-        if (response.remainingMessages === undefined) {
-          const { data: subscriptionData, error: subscriptionError } =
-            await supabase
-              .from('subscription_plan')
-              .select('is_subscribed')
-              .eq('user_uuid', user_uuid)
-              .single();
-
-          if (subscriptionError) {
-            console.error(
-              'Error fetching subscription status:',
-              subscriptionError
-            );
-            return { isSubscribed: false };
-          }
-
-          return { isSubscribed: subscriptionData?.is_subscribed };
+        if (data.isSubscribed) {
+          return {
+            isSubscribed: true,
+            showAd: false,
+            remainingMessages: Number.MAX_SAFE_INTEGER,
+          };
         }
 
-        return { remainingMessages: response.remainingMessages || 0 };
+        if (data.remainingMessages === 0) {
+          return {
+            isSubscribed: false,
+            remainingMessages: 0,
+            showAd: true,
+          };
+        }
+
+        return {
+          isSubscribed: false,
+          remainingMessages: data.remainingMessages ?? 0,
+          showAd: false,
+        };
       } catch (error) {
-        let errorMessage = 'Failed to generate response.';
-        let showAd = false;
-
-        if (error instanceof Error) {
-          errorMessage = error.message;
-        } else if (
-          typeof error === 'object' &&
-          error !== null &&
-          'error' in error
-        ) {
-          const customError = error as CustomError;
-          errorMessage = customError.error;
-          showAd = customError.show_ad || false;
-        }
-
-        setMessages((prevMessages) =>
-          prevMessages.map((msg) =>
-            msg.isGenerate
-              ? {
-                  ...msg,
-                  id: undefined,
-                  text: errorMessage,
-                  isGenerate: false,
-                  error: true,
-                }
-              : msg
-          )
-        );
-
-        if (!showAd) showAlert(errorMessage, 'Alert');
-
-        return { remainingMessages: 0, showAd };
+        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+        showAlert(`Error occurred: ${errorMessage}`, 'Alert');
+        return {
+          isSubscribed: false,
+          remainingMessages: 0,
+          showAd: false,
+        };
       } finally {
         setIsGenerating(false);
       }

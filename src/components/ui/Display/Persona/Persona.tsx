@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { PersonOutline as PersonOutlineIcon } from '@mui/icons-material';
 import { Typography, Box, Button } from '@mui/material';
 import { PersonaModal } from '@components';
-import { supabase } from '~/Utility';
+import { Utils } from '~/Utility';
 
 interface PersonaCard {
   id: string;
@@ -23,30 +23,14 @@ export function Persona() {
   const fetchPersona = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
-        .from('personas')
-        .select(
-          'id, persona_name, persona_description, persona_profile, is_selected'
-        );
+      const { data } = await Utils.db.select<PersonaCard>(
+        'personas',
+        'id, persona_name, persona_description, persona_profile, is_selected'
+      );
 
-      if (error) {
-        throw error;
-      }
-
-      const mappedData = data.map((item) => ({
-        id: item.id,
-        persona_name: item.persona_name,
-        persona_description: item.persona_description,
-        persona_profile: item.persona_profile,
-        is_selected: item.is_selected,
-      }));
-
-      setPersonaData(mappedData);
-
-      const selected = mappedData.find((persona) => persona.is_selected);
-      if (selected) {
-        setSelectedPersona(selected);
-      }
+      setPersonaData(data);
+      const selected = data.find((persona) => persona.is_selected);
+      if (selected) setSelectedPersona(selected);
     } catch (error) {
       console.error('Failed to fetch persona data', error);
     } finally {
@@ -60,18 +44,23 @@ export function Persona() {
 
   const handleSelectPersona = async (persona: PersonaCard) => {
     try {
-      await supabase
-        .from('personas')
-        .update({ is_selected: false })
-        .eq('user_uuid', (await supabase.auth.getUser()).data.user?.id);
+      const {
+        data: { user },
+      } = await Utils.db.client.auth.getUser();
 
-      await supabase
-        .from('personas')
-        .update({ is_selected: true })
-        .eq('id', persona.id);
+      await Utils.db.update(
+        'personas',
+        { is_selected: false },
+        { user_uuid: user?.id }
+      );
+
+      await Utils.db.update(
+        'personas',
+        { is_selected: true },
+        { id: persona.id }
+      );
 
       await fetchPersona();
-
       setSelectedPersona(persona);
       setModalOpen(false);
     } catch (error) {
@@ -81,14 +70,7 @@ export function Persona() {
 
   const handleDeletePersona = async (personaId: string) => {
     try {
-      const { error } = await supabase
-        .from('personas')
-        .delete()
-        .eq('id', personaId);
-
-      if (error) {
-        throw error;
-      }
+      await Utils.db.delete('personas', { id: personaId });
 
       fetchPersona();
 

@@ -1,17 +1,10 @@
-import { supabase } from '~/Utility';
+import { Utils as utils } from '~/Utility';
 import { v4 as uuidv4 } from 'uuid';
 import { Character } from '@shared-types';
 
 interface CreateChatResponse {
   error?: string;
   chat_uuid?: string;
-}
-
-interface SupabaseError {
-  message: string;
-  details?: string;
-  hint?: string;
-  code?: string;
 }
 
 export async function CreateNewChat(
@@ -21,27 +14,30 @@ export async function CreateNewChat(
   const chatUuid = uuidv4();
 
   try {
-    let character;
-    const { data: publicCharacter, error: publicFetchError } = await supabase
-      .from('public_characters')
-      .select('*')
-      .eq('char_uuid', characterUuid)
-      .single<Character>();
+    let character: Character | undefined;
 
-    if (!publicFetchError && publicCharacter) {
-      character = publicCharacter;
+    const { data: publicCharacter } = await utils.db.select<Character>(
+      'public_characters',
+      '*',
+      null,
+      { char_uuid: characterUuid }
+    );
+
+    if (publicCharacter && publicCharacter.length > 0) {
+      character = publicCharacter[0];
     } else {
-      const { data: privateCharacter, error: privateFetchError } =
-        await supabase
-          .from('private_characters')
-          .select('*')
-          .eq('char_uuid', characterUuid)
-          .single<Character>();
+      const { data: privateCharacter } = await utils.db.select<Character>(
+        'private_characters',
+        '*',
+        null,
+        { char_uuid: characterUuid }
+      );
 
-      if (privateFetchError || !privateCharacter) {
-        throw privateFetchError || new Error('Character not found');
+      if (!privateCharacter || privateCharacter.length === 0) {
+        throw new Error('Character not found');
       }
-      character = privateCharacter;
+
+      character = privateCharacter[0];
     }
 
     const {
@@ -54,28 +50,22 @@ export async function CreateNewChat(
       scenario,
     } = character;
 
-    const { error: insertError } = await supabase.from('chats').insert([
-      {
-        chat_uuid: chatUuid,
-        char_uuid: characterUuid,
-        user_uuid: userUUID,
-        preview_image: profile_image,
-        preview_message: description,
-        model_instructions,
-        name,
-        lorebook,
-        persona,
-        scenario,
-      },
-    ]);
-
-    if (insertError) {
-      throw insertError;
-    }
+    await utils.db.insert('chats', {
+      chat_uuid: chatUuid,
+      char_uuid: characterUuid,
+      user_uuid: userUUID,
+      preview_image: profile_image,
+      preview_message: description,
+      model_instructions,
+      name,
+      lorebook,
+      persona,
+      scenario,
+    });
 
     return { chat_uuid: chatUuid };
-  } catch (error) {
-    const supabaseError = error as SupabaseError;
-    return { error: supabaseError.message };
+  } catch (error: any) {
+    console.error('Error creating new chat:', error);
+    return { error: error.message || 'An unexpected error occurred' };
   }
 }

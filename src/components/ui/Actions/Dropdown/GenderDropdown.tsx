@@ -3,7 +3,7 @@ import {
   PyrenzFormControl,
   PyrenzOutlinedInput,
   PyrenzInputLabel,
-  PyrenzAccordionInput
+  PyrenzAccordionInput,
 } from '~/theme';
 import { useCharacterStore } from '~/store';
 

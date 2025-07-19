@@ -10,18 +10,13 @@ interface CreateCharacterResponse {
   moderated_message?: string;
 }
 
-interface ApiResponse {
-  error?: string;
-  is_moderated?: boolean;
-  moderated_message?: string;
-}
-
 const notifySuccess = async (
   message: string,
   userName?: string,
   charName?: string
 ) => {
   if (typeof document === 'undefined' || document.visibilityState === 'visible') return;
+
   await NotificationManager.fire({
     title: 'Character Saved',
     body: message,
@@ -35,7 +30,7 @@ const postCharacter = async (
   type: 'create' | 'update',
   character: Character,
   profileImageFile: File | null
-): Promise<ApiResponse> => {
+): Promise<CreateCharacterResponse> => {
   const data = profileImageFile
     ? (() => {
         const formData = new FormData();
@@ -50,7 +45,8 @@ const postCharacter = async (
       };
 
   try {
-    return await Utils.post('/api/CreateCharacter', data);
+    const res = await Utils.post<CreateCharacterResponse>('/api/CreateCharacter', data);
+    return res;
   } catch (err) {
     Sentry.captureException(err);
     return { error: 'Failed to reach the server.' };
@@ -65,7 +61,7 @@ export const createCharacter = async (
     return { error: 'Creator is required.' };
   }
 
-  let characterUuid;
+  let characterUuid: string;
   try {
     characterUuid = uuidv4();
   } catch (err) {

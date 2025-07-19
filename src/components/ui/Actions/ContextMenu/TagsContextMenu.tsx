@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Menu, MenuItem, Typography, TextField, Box } from '@mui/material';
-import { supabase } from '~/Utility';
+import { Utils as utils } from '~/Utility';
 
 interface Tag {
   id: number;
@@ -21,19 +21,16 @@ export function TagsMenu({ anchorEl, onClose, onTagClick }: TagsMenuProps) {
   const [searchQuery, setSearchQuery] = useState('');
 
   const fetchTags = async () => {
-    const { data, error } = await supabase.from('tags').select('*');
-    if (data) {
-      setTags(data);
-    }
-    if (error) {
+    try {
+      const { data } = await utils.db.select<Tag>('tags', '*');
+      if (data) setTags(data);
+    } catch (error) {
       console.error('Error fetching tags:', error);
     }
   };
 
   useEffect(() => {
-    if (anchorEl) {
-      fetchTags();
-    }
+    if (anchorEl) fetchTags();
   }, [anchorEl]);
 
   const filteredTags = useMemo(() => {
@@ -44,14 +41,6 @@ export function TagsMenu({ anchorEl, onClose, onTagClick }: TagsMenuProps) {
         tag.tag_name.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [tags, searchQuery]);
-
-  useEffect(() => {
-    const timerId = setTimeout(() => {}, 500);
-
-    return () => {
-      clearTimeout(timerId);
-    };
-  }, [searchQuery]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);

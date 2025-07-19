@@ -1,8 +1,12 @@
-import { supabase } from '~/Utility';
+import { Utils } from '~/Utility';
 import { Character } from '@shared-types';
 import { useUserStore } from '~/store';
 
 type SortBy = 'created_at' | 'chat_messages_count';
+
+interface CharacterDataResponse {
+  characters: Character[];
+}
 
 export async function getLatestCharacter(
   type: string,
@@ -16,7 +20,7 @@ export async function getLatestCharacter(
 
   const { show_nsfw = true, blocked_tags = [] } = useUserStore.getState();
 
-  const { data, error } = await supabase.rpc('get_filtered_characters', {
+  const data = (await Utils.db.rpc('get_filtered_characters', {
     page,
     items_per_page: maxCharacter,
     show_nsfw,
@@ -27,13 +31,13 @@ export async function getLatestCharacter(
     tag: [],
     creatoruuid: null,
     charuuid: null,
-  });
+  })) as CharacterDataResponse;
 
-  if (error) {
-    throw new Error(`Failed to fetch latest characters: ${error.message}`);
+  if (!data) {
+    throw new Error('Failed to fetch latest characters');
   }
 
-  const characters: Character[] = (data?.characters ?? []).map((char: any) => ({
+  const characters = (data.characters ?? []).map((char: any) => ({
     ...char,
     id: String(char.id),
   }));

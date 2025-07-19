@@ -23,7 +23,7 @@ import {
 } from '@mui/icons-material';
 import { FaDiscord } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
-import { supabase } from '~/Utility';
+import { Utils } from '~/Utility';
 import { PyrenzStyledDrawer, PyrenzBlueButtonWithLoading } from '~/theme';
 import { useUserStore } from '~/store';
 
@@ -42,7 +42,7 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
 
   useEffect(() => {
     const checkUserSession = async () => {
-      const { data, error } = await supabase.auth.getSession();
+      const { data, error } = await Utils.db.client.auth.getSession();
       if (data.session) {
         setIsLoggedIn(true);
       } else if (error) {

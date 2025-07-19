@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '~/Utility';
+import { Utils } from '~/Utility';
 
 type Chat = {
   chat_uuid: string;
@@ -16,6 +16,12 @@ interface CharacterData {
   preview_image: string;
   is_pinned: boolean;
   character_name: string;
+}
+
+interface ChatTable {
+  chat_uuid: string;
+  is_pinned: boolean;
+  // Add other properties of the chat table here if necessary
 }
 
 interface UseArchiveChatPageAPIProps {
@@ -41,50 +47,56 @@ export const useArchiveChatPageAPI = (
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(0);
+
   const navigate = useNavigate();
 
   const fetchChats = async (page: number) => {
     setIsLoading(true);
-    const { data, error } = await supabase.rpc('get_chats', {
-      page,
-      per_page: chatsPerPage,
-    });
+    try {
+      const data = await Utils.db.rpc('get_chats', {
+        page,
+        per_page: chatsPerPage,
+      });
 
-    if (error) {
-      console.error('Error fetching chats via RPC:', error);
+      if (!data) {
+        throw new Error('No data returned from RPC');
+      }
+
+      const parsedData = typeof data === 'string' ? JSON.parse(data) : data;
+      const charactersObj = parsedData.Characters || {};
+
+      const chatEntries = Object.entries(charactersObj) as [
+        string,
+        CharacterData,
+      ][];
+
+      const chatList = chatEntries.map(([chat_uuid, chatData]) => ({
+        chat_uuid,
+        char_uuid: chatData.char_uuid,
+        preview_message: chatData.preview_message,
+        preview_image: chatData.preview_image,
+        is_pinned: chatData.is_pinned,
+      }));
+
+      const characterMap = chatEntries.reduce<Record<string, string>>(
+        (acc, [, chatData]) => {
+          acc[chatData.char_uuid] = chatData.character_name;
+          return acc;
+        },
+        {}
+      );
+
+      setChats(chatList);
+      setCharacters(characterMap);
+      setTotalPages(parsedData.TotalPages || 0);
+    } catch (error) {
+      console.error(
+        'Error fetching chats:',
+        error instanceof Error ? error.message : 'Unknown error'
+      );
+    } finally {
       setIsLoading(false);
-      return;
     }
-    if (!data) {
-      console.error('No data returned from RPC');
-      setIsLoading(false);
-      return;
-    }
-
-    const parsed = typeof data === 'string' ? JSON.parse(data) : data;
-    const charactersObj = parsed.Characters ?? {};
-    const chatEntries = Object.entries(charactersObj) as [
-      string,
-      CharacterData,
-    ][];
-
-    const chatList: Chat[] = chatEntries.map(([chat_uuid, chatData]) => ({
-      chat_uuid,
-      char_uuid: chatData.char_uuid,
-      preview_message: chatData.preview_message,
-      preview_image: chatData.preview_image,
-      is_pinned: chatData.is_pinned,
-    }));
-
-    const characterMap: Record<string, string> = {};
-    for (const [, chatData] of chatEntries) {
-      characterMap[chatData.char_uuid] = chatData.character_name;
-    }
-
-    setChats(chatList);
-    setCharacters(characterMap);
-    setTotalPages(parsed.TotalPages ?? 0);
-    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -95,31 +107,34 @@ export const useArchiveChatPageAPI = (
 
   const handleCardClick = (chatUuid: string): void => {
     navigate(`/chat/${chatUuid}`);
-    console.log('Navigating to chat:', chatUuid);
     onClose();
   };
 
   const handleDeleteChat = async (chatUuid: string): Promise<void> => {
-    const { error } = await supabase
-      .from('chats')
-      .delete()
-      .eq('chat_uuid', chatUuid);
-    if (error) {
-      console.error('Error deleting chat:', error);
-    } else {
-      fetchChats(currentPage);
+    try {
+      await Utils.db.delete('chats', { chat_uuid: chatUuid });
+      await fetchChats(currentPage);
+    } catch (error) {
+      console.error(
+        'Error deleting chat:',
+        error instanceof Error ? error.message : 'Unknown error'
+      );
     }
   };
 
   const handlePinChat = async (chatUuid: string): Promise<void> => {
-    const { error } = await supabase
-      .from('chats')
-      .update({ is_pinned: true })
-      .eq('chat_uuid', chatUuid);
-    if (error) {
-      console.error('Error pinning chat:', error);
-    } else {
-      fetchChats(currentPage);
+    try {
+      await Utils.db.update<ChatTable>(
+        'chats',
+        { is_pinned: true },
+        { chat_uuid: chatUuid }
+      );
+      await fetchChats(currentPage);
+    } catch (error) {
+      console.error(
+        'Error pinning chat:',
+        error instanceof Error ? error.message : 'Unknown error'
+      );
     }
   };
 

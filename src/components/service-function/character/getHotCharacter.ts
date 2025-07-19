@@ -1,8 +1,12 @@
-import { supabase } from '~/Utility';
+import { Utils } from '~/Utility';
 import { Character } from '@shared-types';
 import { useUserStore } from '~/store';
 
 type SortBy = 'chat_messages_count' | 'created_at';
+
+interface CharacterDataResponse {
+  characters: Character[];
+}
 
 export async function getHotCharacter(
   type: string,
@@ -16,7 +20,7 @@ export async function getHotCharacter(
 
   const { show_nsfw = true, blocked_tags = [] } = useUserStore.getState();
 
-  const { data, error } = await supabase.rpc('get_filtered_characters', {
+  const data = (await Utils.db.rpc('get_filtered_characters', {
     page,
     items_per_page: maxCharacter,
     show_nsfw: show_nsfw ?? true,
@@ -27,14 +31,13 @@ export async function getHotCharacter(
     creatoruuid: null,
     sort_by: sortBy,
     charuuid: null,
-  });
+  })) as CharacterDataResponse;
 
-  if (error) {
-    console.error('Supabase RPC Error:', error.message);
-    throw new Error(`Failed to fetch hot characters: ${error.message}`);
+  if (!data) {
+    throw new Error('Failed to fetch hot characters');
   }
 
-  const characters: Character[] = (data?.characters ?? []).map((char: any) => ({
+  const characters = (data.characters ?? []).map((char: any) => ({
     ...char,
     id: String(char.id),
   }));

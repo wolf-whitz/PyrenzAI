@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
-import { supabase } from '~/Utility';
 import { Character } from '@shared-types';
 import { GetUserData } from '@components';
+import { Utils } from '~/Utility';
 import * as Sentry from '@sentry/react';
 
 interface MenuAPIProps {
@@ -22,23 +22,23 @@ export const useMenuAPI = ({ char }: MenuAPIProps) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState('Cosmetic');
   const [bgImage, setBgImage] = useState<string | null>(null);
-  const [aiCustomization, setAiCustomization] = useState<AICustomization | null>(null);
+  const [aiCustomization, setAiCustomization] =
+    useState<AICustomization | null>(null);
   const [subscriptionPlan, setSubscriptionPlan] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   const handleCharacterDetailsSubmit = useCallback(
     async (characterDetails: Character) => {
       try {
-        const { error } = await supabase
-          .from('chats')
-          .update({
+        await Utils.db.update(
+          'chats',
+          {
             name: characterDetails.name,
             persona: characterDetails.persona,
             model_instructions: characterDetails.model_instructions,
-          })
-          .eq('char_uuid', char.char_uuid);
-
-        if (error) throw error;
+          },
+          { char_uuid: char.char_uuid }
+        );
 
         console.log('Character details updated successfully');
       } catch (error) {
@@ -51,9 +51,7 @@ export const useMenuAPI = ({ char }: MenuAPIProps) => {
 
   useEffect(() => {
     const savedBg = localStorage.getItem('bgImage');
-    if (savedBg) {
-      setBgImage(savedBg);
-    }
+    if (savedBg) setBgImage(savedBg);
 
     let isMounted = true;
 
@@ -69,7 +67,8 @@ export const useMenuAPI = ({ char }: MenuAPIProps) => {
         const userData = result;
 
         if (userData && 'ai_customization' in userData) {
-          const { modelMemoryLimit, ...restCustomization } = userData.ai_customization;
+          const { modelMemoryLimit, ...restCustomization } =
+            userData.ai_customization;
 
           if (isMounted) {
             setAiCustomization({

@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Box } from '@mui/material';
-import { ChatMessagesProps, Message, User } from '@shared-types';
-import { MessageBox, Character, speakMessage } from '@components';
+import { ChatMessagesProps, Message } from '@shared-types';
+import { MessageBox, speakMessage } from '@components';
+import { useChatStore } from '~/store';
 
-interface ChatMessagesExtendedProps extends ChatMessagesProps {
+interface ChatMessagesExtendedProps extends Omit<ChatMessagesProps, 'user' | 'char'> {
   setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>;
   onEditMessage: (
     messageId: string,
@@ -17,8 +18,6 @@ interface ChatMessagesExtendedProps extends ChatMessagesProps {
 export function ChatMessages({
   previous_message,
   isGenerating = false,
-  user,
-  char,
   onRegenerate,
   onRemove,
   onEditMessage,
@@ -27,12 +26,12 @@ export function ChatMessages({
   onGenerateImage,
 }: ChatMessagesExtendedProps) {
   const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
-  const [editingMessageType, setEditingMessageType] = useState<
-    'user' | 'char' | null
-  >(null);
+  const [editingMessageType, setEditingMessageType] = useState<'user' | 'char' | null>(null);
   const [editedMessage, setEditedMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  const { user, char } = useChatStore(); 
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -41,7 +40,7 @@ export function ChatMessages({
   const handleSpeak = async (text: string) => {
     setIsGenerating(true);
     try {
-      await speakMessage(text, char.gender as string, () => {
+      await speakMessage(text, char?.gender as string, () => {
         setIsGenerating(false);
       });
     } catch {
@@ -84,8 +83,8 @@ export function ChatMessages({
           id: 'first-message',
           type: 'char',
           text: firstMessage,
-          name: char.name,
-          profile_image: char.profile_image,
+          name: char?.name,
+          profile_image: char?.profile_image,
         },
         ...previous_message,
       ]
@@ -102,8 +101,8 @@ export function ChatMessages({
             index={index}
             isGenerating={isGenerating}
             isLastMessage={isLastMessage}
-            user={user as User}
-            char={char as Character}
+            user={user}
+            char={char}
             onRegenerate={onRegenerate}
             onRemove={onRemove}
             onEditMessage={onEditMessage}

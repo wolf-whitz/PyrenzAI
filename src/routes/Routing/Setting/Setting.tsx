@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Sidebar, MobileNav } from '@components';
-import { supabase } from '~/Utility';
+import { Utils } from '~/Utility';
 import type { User } from '@supabase/supabase-js';
 import {
   Box,
@@ -28,13 +28,13 @@ export function Setting() {
     const init = async () => {
       setLoading(true);
       const { data: sessionData, error: sessionError } =
-        await supabase.auth.getSession();
+        await Utils.db.client.auth.getSession();
       if (sessionError || !sessionData.session) {
         setLoading(false);
         return;
       }
       const { data: userData, error: userError } =
-        await supabase.auth.getUser();
+        await Utils.db.client.auth.getUser();
       if (!userError && userData?.user) setUser(userData.user);
       setLoading(false);
     };

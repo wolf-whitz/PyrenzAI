@@ -10,8 +10,8 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import SearchIcon from '@mui/icons-material/Search';
-import { supabase } from '~/Utility';
 import { PyrenzModal, PyrenzModalContent } from '~/theme';
+import { Utils } from '~/Utility';
 
 interface MoreButtonsModalProps {
   isOpen: boolean;
@@ -33,7 +33,7 @@ export function MoreButtonsModal({
   useEffect(() => {
     const fetchTags = async () => {
       setIsLoading(true);
-      let query = supabase.from('tags').select('tag_name');
+      let query = Utils.db.client.from('tags').select('tag_name');
 
       if (searchQuery) {
         query = query.ilike('tag_name', `%${searchQuery}%`);

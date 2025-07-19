@@ -1,24 +1,19 @@
 import { useEffect, useState, Suspense } from 'react';
 import { useChatStore, useUserStore } from '~/store';
-import { ChatContainerProps, Character, User } from '@shared-types';
 import { ChatPageSpinner, ChatMain } from '@components';
 import clsx from 'clsx';
 
-interface ChatContainerPropsExtended
-  extends Omit<ChatContainerProps, 'char' | 'firstMessage'> {
+interface ChatContainerProps {
   className?: string;
   chat_uuid: string;
 }
 
-export function ChatContainer({
-  className = '',
-  chat_uuid,
-}: ChatContainerPropsExtended) {
-  const { user, char } = useChatStore();
+export function ChatContainer({ className = '', chat_uuid }: ChatContainerProps) {
+  const { char, user } = useChatStore();
   const { imageURL } = useUserStore();
-  const [isGenerating, setIsGenerating] = useState<boolean>(false);
+  const [isGenerating, setIsGenerating] = useState(false);
   const [bgImage, setBgImage] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadImage = async () => {
@@ -26,7 +21,7 @@ export function ChatContainer({
       if (imageURL) {
         setBgImage(imageURL);
       } else if (char?.profile_image) {
-        setBgImage(char?.profile_image);
+        setBgImage(char.profile_image);
       }
       setIsLoading(false);
     };
@@ -40,9 +35,7 @@ export function ChatContainer({
         className={clsx(
           'flex justify-center items-center w-full h-full',
           className,
-          {
-            'bg-cover': !!bgImage,
-          }
+          { 'bg-cover': !!bgImage }
         )}
         style={{
           backgroundImage: bgImage
@@ -54,8 +47,6 @@ export function ChatContainer({
         {isLoading && <ChatPageSpinner />}
         {!isLoading && (
           <ChatMain
-            user={user as User}
-            char={char as Character}
             isGenerating={isGenerating}
             setIsGenerating={setIsGenerating}
             chat_uuid={chat_uuid}

@@ -1,4 +1,4 @@
-import { supabase } from '~/Utility';
+import { Utils as utils } from '~/Utility';
 import * as Sentry from '@sentry/react';
 import { Character } from '@shared-types';
 
@@ -18,22 +18,18 @@ export const handleSaveDraft = async (
 
     const filteredCharacter = {
       creator_uuid: creatorUuid,
-      ...character
+      ...character,
     };
 
-    const { error } = await supabase
-      .from('draft_characters')
-      .upsert(filteredCharacter);
-
-    if (error) {
-      Sentry.captureException(error);
-      return { success: false, error: error.message };
-    }
+    await utils.db.insert('draft_characters', filteredCharacter);
 
     return { success: true };
-  } catch (error) {
+  } catch (error: any) {
     console.error('Unexpected error:', error);
     Sentry.captureException(error);
-    return { success: false, error: 'An unexpected error occurred.' };
+    return {
+      success: false,
+      error: error.message || 'An unexpected error occurred.',
+    };
   }
 };

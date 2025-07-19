@@ -3,7 +3,7 @@ import { Box, Typography, CircularProgress, keyframes } from '@mui/material';
 import { Textarea } from '@components';
 import { Character } from '@shared-types';
 import { PyrenzBlueButton } from '~/theme';
-import { supabase } from '~/Utility';
+import { Utils } from '~/Utility';
 import { styled } from '@mui/system';
 
 interface CharacterDetailsProps {
@@ -34,19 +34,18 @@ export function CharacterDetails({ char, onSubmit }: CharacterDetailsProps) {
   useEffect(() => {
     const fetchCharacterDetails = async () => {
       const tables = ['public_characters', 'private_characters'];
+
       for (const table of tables) {
         try {
-          const { data, error } = await supabase
-            .from(table)
-            .select('is_details_private')
-            .eq('char_uuid', char.char_uuid)
-            .single();
+          const { data } = await Utils.db.select<{
+            is_details_private: boolean;
+          }>(table, 'is_details_private', null, {
+            char_uuid: char.char_uuid
+          });
 
-          if (!error) {
-            setShowDetails(!data.is_details_private);
+          if (data?.[0]) {
+            setShowDetails(!data[0].is_details_private);
             return;
-          } else {
-            throw error;
           }
         } catch (error) {
           console.error(
@@ -55,6 +54,7 @@ export function CharacterDetails({ char, onSubmit }: CharacterDetailsProps) {
           );
         }
       }
+
       setShowDetails(false);
     };
 

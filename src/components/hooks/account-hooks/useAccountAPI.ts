@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '~/Utility';
-import { User } from '@supabase/supabase-js';
 import { useUserStore } from '~/store';
+import { Utils } from '~/Utility';
+import { User } from '@supabase/supabase-js';
 
 export const useAccountAPI = () => {
   const [languages, setLanguages] = useState<{ code: string; name: string }[]>(
@@ -11,6 +11,7 @@ export const useAccountAPI = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
+
   const navigate = useNavigate();
   const setIsLogin = useUserStore((state) => state.setIsLogin);
 
@@ -27,12 +28,12 @@ export const useAccountAPI = () => {
 
     const fetchUser = async () => {
       const { data: sessionData, error: sessionError } =
-        await supabase.auth.getSession();
+        await Utils.db.client.auth.getSession();
       if (sessionError || !sessionData.session) {
         console.error('Error fetching session:', sessionError);
       } else {
         const { data: userData, error: userError } =
-          await supabase.auth.getUser();
+          await Utils.db.client.auth.getUser();
         if (userError) {
           console.error('Error fetching user:', userError);
         } else {
@@ -45,22 +46,19 @@ export const useAccountAPI = () => {
     fetchUser();
   }, []);
 
-  const toggleModal = () => {
-    setIsModalOpen((prev) => !prev);
-  };
+  const toggleModal = () => setIsModalOpen((prev) => !prev);
 
   const clearCookies = () => {
     const cookies = document.cookie.split(';');
-
     for (const cookie of cookies) {
       const eqPos = cookie.indexOf('=');
       const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-      document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
+      document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
     }
   };
 
   const confirmLogOut = async () => {
-    const { error } = await supabase.auth.signOut();
+    const { error } = await Utils.db.client.auth.signOut();
     if (error) {
       console.error('Error logging out:', error);
     } else {
@@ -74,17 +72,13 @@ export const useAccountAPI = () => {
   };
 
   const confirmDeleteAccount = async () => {
+    if (!user?.id) return;
     try {
-      const { error: updateError } = await supabase
-        .from('user_data')
-        .update({ is_deleted: true })
-        .eq('user_uuid', user?.id);
-
-      if (updateError) {
-        console.error('Error updating user:', updateError);
-        return;
-      }
-
+      await Utils.db.update(
+        'user_data',
+        { is_deleted: true },
+        { user_uuid: user.id }
+      );
       await confirmLogOut();
     } catch (error) {
       console.error('Error deleting account:', error);

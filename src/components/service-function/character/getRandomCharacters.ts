@@ -1,6 +1,10 @@
-import { supabase } from '~/Utility';
+import { Utils } from '~/Utility';
 import { Character } from '@shared-types';
 import { useUserStore } from '~/store';
+
+interface CharacterDataResponse {
+  characters: Character[];
+}
 
 type SortBy = 'created_at' | 'chat_messages_count' | null;
 
@@ -15,10 +19,9 @@ export async function getRandomCharacters(
   }
 
   const { show_nsfw = true, blocked_tags = [] } = useUserStore.getState();
-
   const fetchLimit = maxCharacter * 10;
 
-  const { data, error } = await supabase.rpc('get_filtered_characters', {
+  const data = (await Utils.db.rpc('get_filtered_characters', {
     page: 1,
     items_per_page: fetchLimit,
     show_nsfw,
@@ -29,13 +32,13 @@ export async function getRandomCharacters(
     tag: [],
     creatoruuid: null,
     charuuid: null,
-  });
+  })) as CharacterDataResponse;
 
-  if (error) {
-    throw new Error(`Failed to fetch random characters: ${error.message}`);
+  if (!data) {
+    throw new Error('Failed to fetch random characters');
   }
 
-  const characters = (data?.characters ?? []).map((char: any) => ({
+  const characters = (data.characters ?? []).map((char: Character) => ({
     ...char,
     id: String(char.id),
   }));
@@ -43,7 +46,6 @@ export async function getRandomCharacters(
   if (characters.length === 0) return [];
 
   const shuffledCharacters = characters.sort(() => 0.5 - Math.random());
-
   const startIndex = (page - 1) * maxCharacter;
   const endIndex = startIndex + maxCharacter;
 

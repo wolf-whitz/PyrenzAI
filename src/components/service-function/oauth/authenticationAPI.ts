@@ -1,10 +1,10 @@
-import { supabase } from '~/Utility';
 import * as Sentry from '@sentry/react';
 import { usePyrenzAlert } from '~/provider';
+import { Utils as utils } from '~/Utility';
 
 export const handleLogin = async (email: string, password: string) => {
   try {
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await utils.db.client.auth.signInWithPassword({
       email,
       password,
     });
@@ -21,7 +21,7 @@ export const handleLogin = async (email: string, password: string) => {
 
 export const handleOAuthSignIn = async (provider: 'google' | 'discord') => {
   try {
-    const { error } = await supabase.auth.signInWithOAuth({ provider });
+    const { error } = await utils.db.client.auth.signInWithOAuth({ provider });
 
     if (error) throw new Error(error.message);
 
@@ -45,7 +45,7 @@ export const handleSignUp = async (
       throw new Error('User must be an adult to sign up.');
     }
 
-    const { data, error } = await supabase.auth.signUp({
+    const { data, error } = await utils.db.client.auth.signUp({
       email,
       password,
       options: {

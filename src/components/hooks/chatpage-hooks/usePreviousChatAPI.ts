@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '~/Utility';
 import { GetUserUUID } from '@components';
+import { Utils } from '~/Utility';
 
 interface Chat {
   chat_uuid: string;
@@ -28,12 +28,13 @@ export const usePreviousChatAPI = () => {
         return;
       }
 
-      const { data, error } = await supabase.rpc('get_chats', {
-        page: pageNumber,
-        per_page: 5,
-      });
-
-      if (error) throw error;
+      const data = await Utils.db.rpc<{ Characters: Record<string, any> }>(
+        'get_chats',
+        {
+          page: pageNumber,
+          per_page: 5,
+        }
+      );
 
       if (data && data.Characters) {
         const formattedChats = Object.entries(data.Characters).map(
@@ -67,13 +68,7 @@ export const usePreviousChatAPI = () => {
     if (!chatUuid) return;
 
     try {
-      const { error } = await supabase
-        .from('chats')
-        .delete()
-        .eq('chat_uuid', chatUuid);
-
-      if (error) throw error;
-
+      await Utils.db.delete('chats', { chat_uuid: chatUuid });
       setChats(chats.filter((chat) => chat.chat_uuid !== chatUuid));
     } catch (err: any) {
       console.error('Failed to delete chat:', err);

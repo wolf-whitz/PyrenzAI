@@ -67,7 +67,9 @@ export async function GetUserData(): Promise<ApiResponse | { error: string }> {
         return { error: 'User UUID not found' };
       }
 
-      const response = await Utils.post<ApiResponse>('/api/GetUserData', { user_uuid });
+      const response = await Utils.post<ApiResponse>('/api/GetUserData', {
+        user_uuid,
+      });
 
       if (!isApiResponse(response)) {
         return { error: 'Failed to fetch user data' };
@@ -83,10 +85,14 @@ export async function GetUserData(): Promise<ApiResponse | { error: string }> {
       store.setPurchaseId(response.purchase_id || '');
 
       if (response.ai_customization?.inference_settings) {
-        store.setInferenceSettings(response.ai_customization.inference_settings);
+        store.setInferenceSettings(
+          response.ai_customization.inference_settings
+        );
       }
 
-      const modelIdentifiers = Object.entries(response.subscription_data.model).map(([name, info]) => ({
+      const modelIdentifiers = Object.entries(
+        response.subscription_data.model
+      ).map(([name, info]) => ({
         name,
         model_description: info.description,
       }));

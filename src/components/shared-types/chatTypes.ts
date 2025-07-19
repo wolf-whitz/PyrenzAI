@@ -45,17 +45,11 @@ export const ChatContainerPropsSchema = z.object({
 });
 
 export const GenerateResponseSchema = z.object({
-  data: z.object({
-    role: z.string(),
-    content: z.string(),
-  }),
-  Engine: z.string(),
-  id: z.array(
-    z.object({
-      MessageID: z.string(),
-    })
-  ),
+  role: z.string(),
+  content: z.string(),
+  MessageID: z.string(),
   remainingMessages: z.number(),
+  isSubscribed: z.boolean().optional(),
 });
 
 export const ChatSchema = z.object({
