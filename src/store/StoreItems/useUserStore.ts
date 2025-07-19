@@ -81,6 +81,7 @@ interface UserStore {
   setBlockedTags: (tags: string[]) => void;
   setPurchaseId: (purchaseId: string) => void;
   setCachedUserData: (cache: CachedUserData | undefined) => void;
+  clearCachedUserData: () => void;
 }
 
 export const useUserStore = create<UserStore>()(
@@ -138,9 +139,17 @@ export const useUserStore = create<UserStore>()(
       setBlockedTags: (tags) => set({ blocked_tags: tags }),
       setPurchaseId: (purchaseId) => set({ purchase_id: purchaseId }),
       setCachedUserData: (cache) => set({ cachedUserData: cache }),
+      clearCachedUserData: () => set({ cachedUserData: undefined }),
     }),
     {
       name: 'user-storage',
     }
   )
 );
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('beforeunload', () => {
+    const clear = useUserStore.getState().clearCachedUserData;
+    clear();
+  });
+}
