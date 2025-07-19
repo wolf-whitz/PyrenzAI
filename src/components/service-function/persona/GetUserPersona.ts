@@ -44,17 +44,10 @@ function isApiResponse(response: any): response is ApiResponse {
   return response && typeof response.username !== 'undefined';
 }
 
-const CACHE_DURATION = 60 * 1000;
 let inFlightRequest: Promise<ApiResponse | { error: string }> | null = null;
 
 export async function GetUserData(): Promise<ApiResponse | { error: string }> {
   const store = useUserStore.getState();
-  const now = Date.now();
-  const cached = store.cachedUserData as CachedUserData | undefined;
-
-  if (cached && now - cached.gotten_at < CACHE_DURATION) {
-    return cached.data;
-  }
 
   if (inFlightRequest) {
     return inFlightRequest;
