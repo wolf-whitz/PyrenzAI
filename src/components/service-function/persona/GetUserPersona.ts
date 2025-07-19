@@ -47,26 +47,22 @@ function isApiResponse(response: any): response is ApiResponse {
 let inFlightRequest: Promise<ApiResponse | { error: string }> | null = null;
 
 export async function GetUserData(): Promise<ApiResponse | { error: string }> {
-  const store = useUserStore.getState();
-
   if (inFlightRequest) {
     return inFlightRequest;
   }
 
   inFlightRequest = (async () => {
+    const store = useUserStore.getState();
+
     try {
       const user_uuid = await GetUserUUID();
-      if (!user_uuid) {
-        return { error: 'User UUID not found' };
-      }
+      if (!user_uuid) return { error: 'User UUID not found' };
 
       const response = await Utils.post<ApiResponse>('/api/GetUserData', {
         user_uuid,
       });
 
-      if (!isApiResponse(response)) {
-        return { error: 'Failed to fetch user data' };
-      }
+      if (!isApiResponse(response)) return { error: 'Failed to fetch user data' };
 
       store.setUserUUID(response.user_uuid);
       store.setUsername(response.username);
@@ -78,17 +74,15 @@ export async function GetUserData(): Promise<ApiResponse | { error: string }> {
       store.setPurchaseId(response.purchase_id || '');
 
       if (response.ai_customization?.inference_settings) {
-        store.setInferenceSettings(
-          response.ai_customization.inference_settings
-        );
+        store.setInferenceSettings(response.ai_customization.inference_settings);
       }
 
-      const modelIdentifiers = Object.entries(
-        response.subscription_data.model
-      ).map(([name, info]) => ({
-        name,
-        model_description: info.description,
-      }));
+      const modelIdentifiers = Object.entries(response.subscription_data.model).map(
+        ([name, info]) => ({
+          name,
+          model_description: info.description,
+        })
+      );
 
       store.setModelIdentifiers(modelIdentifiers);
       store.setMaxTokenLimit(response.subscription_data.max_token);
@@ -99,7 +93,7 @@ export async function GetUserData(): Promise<ApiResponse | { error: string }> {
       });
 
       return response;
-    } catch (error) {
+    } catch (err) {
       return { error: 'An error occurred while fetching user data' };
     } finally {
       inFlightRequest = null;
