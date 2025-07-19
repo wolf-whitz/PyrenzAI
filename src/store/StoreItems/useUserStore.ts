@@ -82,6 +82,7 @@ interface UserStore {
   setPurchaseId: (purchaseId: string) => void;
   setCachedUserData: (cache: CachedUserData | undefined) => void;
   clearCachedUserData: () => void;
+  clearData: () => void;
 }
 
 export const useUserStore = create<UserStore>()(
@@ -140,16 +141,43 @@ export const useUserStore = create<UserStore>()(
       setPurchaseId: (purchaseId) => set({ purchase_id: purchaseId }),
       setCachedUserData: (cache) => set({ cachedUserData: cache }),
       clearCachedUserData: () => set({ cachedUserData: undefined }),
+      clearData: () =>
+        set({
+          userUUID: null,
+          username: null,
+          personaName: null,
+          userIcon: null,
+          is_login: false,
+          is_deleted: undefined,
+          is_admin: false,
+          subscription_plan: null,
+          imageURL: null,
+          preferredModel: '',
+          inferenceSettings: {
+            maxTokens: 100,
+            temperature: 1,
+            topP: 1,
+            presencePenalty: 0,
+            frequencyPenalty: 0,
+          },
+          modelIdentifiers: [],
+          maxTokenLimit: 200,
+          customization: {
+            userTextColor: '#FFFFFF',
+            charTextColor: '#FFFFFF',
+            userItalicColor: '#999999',
+            charItalicColor: '#999999',
+            userQuotedColor: '#AAAAAA',
+            charQuotedColor: '#93BEE6',
+          },
+          show_nsfw: false,
+          blocked_tags: [],
+          purchase_id: null,
+          cachedUserData: undefined,
+        }),
     }),
     {
       name: 'user-storage',
     }
   )
 );
-
-if (typeof window !== 'undefined') {
-  window.addEventListener('beforeunload', () => {
-    const clear = useUserStore.getState().clearCachedUserData;
-    clear();
-  });
-}

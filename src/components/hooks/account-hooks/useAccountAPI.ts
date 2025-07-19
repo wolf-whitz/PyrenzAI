@@ -5,14 +5,14 @@ import { Utils } from '~/Utility';
 import { User } from '@supabase/supabase-js';
 
 export const useAccountAPI = () => {
-  const [languages, setLanguages] = useState<{ code: string; name: string }[]>(
-    []
-  );
+  const [languages, setLanguages] = useState<{ code: string; name: string }[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
 
   const navigate = useNavigate();
+
+  const clearData = useUserStore.getState().clearData;
   const setIsLogin = useUserStore((state) => state.setIsLogin);
 
   useEffect(() => {
@@ -27,13 +27,11 @@ export const useAccountAPI = () => {
     };
 
     const fetchUser = async () => {
-      const { data: sessionData, error: sessionError } =
-        await Utils.db.client.auth.getSession();
+      const { data: sessionData, error: sessionError } = await Utils.db.client.auth.getSession();
       if (sessionError || !sessionData.session) {
         console.error('Error fetching session:', sessionError);
       } else {
-        const { data: userData, error: userError } =
-          await Utils.db.client.auth.getUser();
+        const { data: userData, error: userError } = await Utils.db.client.auth.getUser();
         if (userError) {
           console.error('Error fetching user:', userError);
         } else {
@@ -52,7 +50,7 @@ export const useAccountAPI = () => {
     const cookies = document.cookie.split(';');
     for (const cookie of cookies) {
       const eqPos = cookie.indexOf('=');
-      const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+      const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
       document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
     }
   };
@@ -62,9 +60,10 @@ export const useAccountAPI = () => {
     if (error) {
       console.error('Error logging out:', error);
     } else {
-      console.log('Logged out successfully');
       localStorage.clear();
+      sessionStorage.clear();
       clearCookies();
+      clearData();
       setUser(null);
       setIsLogin(false);
       navigate('/');
