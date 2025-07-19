@@ -28,7 +28,9 @@ export function Persona() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [menuPersonaId, setMenuPersonaId] = useState<string | null>(null);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
-  const [personaToDelete, setPersonaToDelete] = useState<PersonaData | null>(null);
+  const [personaToDelete, setPersonaToDelete] = useState<PersonaData | null>(
+    null
+  );
 
   const openMenu = Boolean(anchorEl);
 
@@ -61,7 +63,10 @@ export function Persona() {
     fetchPersonas();
   }, []);
 
-  const handleMenuClick = (event: React.MouseEvent<HTMLElement>, personaId: string) => {
+  const handleMenuClick = (
+    event: React.MouseEvent<HTMLElement>,
+    personaId: string
+  ) => {
     setAnchorEl(event.currentTarget);
     setMenuPersonaId(personaId);
   };
@@ -116,7 +121,9 @@ export function Persona() {
   const handleDialogConfirm = async () => {
     if (!personaToDelete) return;
     try {
-      await Utils.db.delete<PersonaData>('personas', { id: personaToDelete.id });
+      await Utils.db.delete<PersonaData>('personas', {
+        id: personaToDelete.id,
+      });
       setPersonas((prev) => prev.filter((p) => p.id !== personaToDelete.id));
     } catch (error) {
       console.error('Error deleting persona:', error);
@@ -127,7 +134,12 @@ export function Persona() {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100%"
+      >
         <CircularProgress />
       </Box>
     );
@@ -149,7 +161,9 @@ export function Persona() {
                 borderRadius: '12px',
                 backgroundColor: '#2a2a2a',
                 color: '#fff',
-                border: persona.is_selected ? '2px solid #42a5f5' : '2px solid transparent',
+                border: persona.is_selected
+                  ? '2px solid #42a5f5'
+                  : '2px solid transparent',
               }}
             >
               <Avatar

@@ -55,7 +55,10 @@ export function ChatMain({
             <ChatInput handleSend={handleSend} isGenerating={isGenerating} />
           </Box>
         </Slide>
-        <AdModal isOpen={isAdModalOpen} onClose={() => setIsAdModalOpen(false)} />
+        <AdModal
+          isOpen={isAdModalOpen}
+          onClose={() => setIsAdModalOpen(false)}
+        />
       </Box>
     </Fade>
   );

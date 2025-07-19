@@ -4,7 +4,8 @@ import { ChatMessagesProps, Message } from '@shared-types';
 import { MessageBox, speakMessage } from '@components';
 import { useChatStore } from '~/store';
 
-interface ChatMessagesExtendedProps extends Omit<ChatMessagesProps, 'user' | 'char'> {
+interface ChatMessagesExtendedProps
+  extends Omit<ChatMessagesProps, 'user' | 'char'> {
   setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>;
   onEditMessage: (
     messageId: string,
@@ -26,12 +27,14 @@ export function ChatMessages({
   onGenerateImage,
 }: ChatMessagesExtendedProps) {
   const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
-  const [editingMessageType, setEditingMessageType] = useState<'user' | 'char' | null>(null);
+  const [editingMessageType, setEditingMessageType] = useState<
+    'user' | 'char' | null
+  >(null);
   const [editedMessage, setEditedMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  const { user, char } = useChatStore(); 
+  const { user, char } = useChatStore();
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });

@@ -40,7 +40,7 @@ export function CharacterDetails({ char, onSubmit }: CharacterDetailsProps) {
           const { data } = await Utils.db.select<{
             is_details_private: boolean;
           }>(table, 'is_details_private', null, {
-            char_uuid: char.char_uuid
+            char_uuid: char.char_uuid,
           });
 
           if (data?.[0]) {

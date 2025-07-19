@@ -61,7 +61,7 @@ export function Menu({ onClose, char }: MenuProps) {
         return <Memory />;
       case 'Model Control':
         return <ModelControl />;
-      case 'Persona': 
+      case 'Persona':
         return <Persona />;
       default:
         return null;
@@ -80,7 +80,7 @@ export function Menu({ onClose, char }: MenuProps) {
     'Character Details',
     'Memory',
     'Model Control',
-    'Persona', 
+    'Persona',
   ];
 
   return (

@@ -119,7 +119,12 @@ export function Memory() {
           </Typography>
         </Box>
       </Box>
-      <Button variant="contained" color="primary" onClick={handleSubmit} fullWidth>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleSubmit}
+        fullWidth
+      >
         Submit
       </Button>
     </Box>

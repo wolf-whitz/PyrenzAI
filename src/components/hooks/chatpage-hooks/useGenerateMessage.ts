@@ -94,8 +94,8 @@ export const useGenerateMessage = () => {
                   isGenerate: false,
                 }
               : msg.type === 'user' && msg.id === undefined
-              ? { ...msg, id: responseId }
-              : msg
+                ? { ...msg, id: responseId }
+                : msg
           )
         );
 
@@ -130,7 +130,8 @@ export const useGenerateMessage = () => {
           showAd: false,
         };
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+        const errorMessage =
+          error instanceof Error ? error.message : 'An unknown error occurred';
         showAlert(`Error occurred: ${errorMessage}`, 'Alert');
         return {
           isSubscribed: false,

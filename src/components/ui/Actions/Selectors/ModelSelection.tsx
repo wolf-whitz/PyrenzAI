@@ -60,7 +60,7 @@ export function ModelSelection({
           'private_models',
           'model_name, model_description',
           null,
-          { user_uuid: userUUID } 
+          { user_uuid: userUUID }
         );
 
         const formattedModelOptions: ModelOption[] = modelIdentifiers.map(

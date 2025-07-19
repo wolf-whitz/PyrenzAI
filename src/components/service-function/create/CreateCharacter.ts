@@ -15,7 +15,8 @@ const notifySuccess = async (
   userName?: string,
   charName?: string
 ) => {
-  if (typeof document === 'undefined' || document.visibilityState === 'visible') return;
+  if (typeof document === 'undefined' || document.visibilityState === 'visible')
+    return;
 
   await NotificationManager.fire({
     title: 'Character Saved',
@@ -45,7 +46,10 @@ const postCharacter = async (
       };
 
   try {
-    const res = await Utils.post<CreateCharacterResponse>('/api/CreateCharacter', data);
+    const res = await Utils.post<CreateCharacterResponse>(
+      '/api/CreateCharacter',
+      data
+    );
     return res;
   } catch (err) {
     Sentry.captureException(err);
@@ -85,7 +89,11 @@ export const createCharacter = async (
     return { error: res.error };
   }
 
-  await notifySuccess('Successfully created {{char}}.', character.creator, character.name);
+  await notifySuccess(
+    'Successfully created {{char}}.',
+    character.creator,
+    character.name
+  );
   return { char_uuid: characterUuid };
 };
 
@@ -116,6 +124,10 @@ export const updateCharacter = async (
     return { error: res.error };
   }
 
-  await notifySuccess('Successfully updated {{char}}.', character.creator, character.name);
+  await notifySuccess(
+    'Successfully updated {{char}}.',
+    character.creator,
+    character.name
+  );
   return { char_uuid: character.char_uuid };
 };

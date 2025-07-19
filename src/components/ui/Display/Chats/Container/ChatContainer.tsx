@@ -8,7 +8,10 @@ interface ChatContainerProps {
   chat_uuid: string;
 }
 
-export function ChatContainer({ className = '', chat_uuid }: ChatContainerProps) {
+export function ChatContainer({
+  className = '',
+  chat_uuid,
+}: ChatContainerProps) {
   const { char, user } = useChatStore();
   const { imageURL } = useUserStore();
   const [isGenerating, setIsGenerating] = useState(false);

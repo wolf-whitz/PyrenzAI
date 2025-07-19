@@ -5,7 +5,7 @@ import {
   CommunityGuidelines,
   MobileNav,
   CreatePageLoader,
-  GetUserUUID
+  GetUserUUID,
 } from '@components';
 import { GetUserData } from '@function';
 import { useMediaQuery, useTheme, Box, Typography } from '@mui/material';
