@@ -14,10 +14,10 @@ const fetcher = async (url: string) => {
 
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
-    user_uuid: userUUID || '',
   };
 
-  if (purchase_id) {
+  if (purchase_id && userUUID) {
+    headers.user_uuid = userUUID;
     headers.purchase_id = purchase_id;
   }
 
@@ -75,10 +75,10 @@ async function request<T>(
 
     const headers: HeadersInit = {
       Accept: isImageRequest ? 'image/png' : 'application/json',
-      user_uuid: userUUID || '',
     };
 
-    if (purchase_id) {
+    if (purchase_id && userUUID) {
+      headers.user_uuid = userUUID;
       headers.purchase_id = purchase_id;
     }
 
