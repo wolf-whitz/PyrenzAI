@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, Container } from '@mui/material';
 
 export const BlockedPage = () => {
   return (
@@ -8,11 +8,22 @@ export const BlockedPage = () => {
       justifyContent="center"
       alignItems="center"
       textAlign="center"
-      p={4}
+      bgcolor="background.default"
+      color="text.primary"
     >
-      <Typography variant="h4">
-        With accordance to the New Digital Markets Act, we have decided not to operate in the United Kingdom, nor will our services work there.
-      </Typography>
+      <Container maxWidth="sm">
+        <Typography variant="h4" gutterBottom>
+          Region Access Restricted
+        </Typography>
+        <Typography variant="body1">
+          Due to compliance with the Digital Markets Act, we currently do not offer services in your region (United Kingdom or Philippines).
+          <br />
+          We kindly ask that you refrain from using this application while located in these areas.
+        </Typography>
+        <Typography variant="body2" mt={4} color="text.secondary">
+          If you believe this is an error or wish to continue at your own discretion, using a VPN may help you access our services.
+        </Typography>
+      </Container>
     </Box>
   );
 };
