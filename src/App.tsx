@@ -8,7 +8,6 @@ import { useUserStore } from '~/store';
 import { Box, useTheme } from '@mui/material';
 
 const AppContent = () => {
-  const navigate = useNavigate();
   const showAlert = usePyrenzAlert();
   const [loading, setLoading] = useState(true);
 

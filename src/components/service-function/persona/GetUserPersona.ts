@@ -2,67 +2,33 @@ import { Utils } from '~/Utility';
 import { useUserStore } from '~/store';
 import { GetUserUUID } from '@function';
 
-interface ModelInfo {
-  name: string;
-  model_description: string;
-  plan: string;
-  description: string;
-}
+let inFlightRequest: Promise<any> | null = null;
 
-interface PrivateModel {
-  model_description: string;
-  model_name: string;
-}
+export async function GetUserData(): Promise<any> {
+  const store = useUserStore.getState();
+  const cachedData: any = store.cachedUserData ?? null;
+  const cacheAge = cachedData ? Date.now() - cachedData.gotten_at : Infinity;
 
-interface PrivateModels {
-  [key: string]: PrivateModel;
-}
+  if (cachedData && cacheAge < 60_000) {
+    return cachedData.data;
+  }
 
-interface ApiResponse {
-  username: string;
-  user_avatar: string;
-  user_uuid: string;
-  purchase_id: string | null;
-  ai_customization: any;
-  preferred_model?: string;
-  is_admin: boolean;
-  subscription_data: {
-    tier: string;
-    max_token: number;
-    model: { [key: string]: ModelInfo };
-    private_models: PrivateModels;
-  };
-  persona_name?: string;
-}
-
-interface CachedUserData {
-  data: ApiResponse;
-  gotten_at: number;
-}
-
-function isApiResponse(response: any): response is ApiResponse {
-  return response && typeof response.username !== 'undefined';
-}
-
-let inFlightRequest: Promise<ApiResponse | { error: string }> | null = null;
-
-export async function GetUserData(): Promise<ApiResponse | { error: string }> {
   if (inFlightRequest) {
     return inFlightRequest;
   }
 
   inFlightRequest = (async () => {
-    const store = useUserStore.getState();
-
     try {
       const user_uuid = await GetUserUUID();
       if (!user_uuid) return { error: 'User UUID not found' };
 
-      const response = await Utils.post<ApiResponse>('/api/GetUserData', {
+      const response = await Utils.post<any>('/api/GetUserData', {
         user_uuid,
       });
 
-      if (!isApiResponse(response)) return { error: 'Failed to fetch user data' };
+      if (!response || typeof response.username === 'undefined') {
+        return { error: 'Failed to fetch user data' };
+      }
 
       store.setUserUUID(response.user_uuid);
       store.setUsername(response.username);
@@ -78,7 +44,7 @@ export async function GetUserData(): Promise<ApiResponse | { error: string }> {
       }
 
       const modelIdentifiers = Object.entries(response.subscription_data.model).map(
-        ([name, info]) => ({
+        ([name, info]: any) => ({
           name,
           model_description: info.description,
         })
@@ -93,7 +59,7 @@ export async function GetUserData(): Promise<ApiResponse | { error: string }> {
       });
 
       return response;
-    } catch (err) {
+    } catch {
       return { error: 'An error occurred while fetching user data' };
     } finally {
       inFlightRequest = null;

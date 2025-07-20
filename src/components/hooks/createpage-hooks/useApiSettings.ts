@@ -58,9 +58,7 @@ export const useApiSettings = () => {
           'private_models',
           'id, model_name, model_description',
           null,
-          {
-            user_uuid: userUuid,
-          }
+          { user_uuid: userUuid }
         );
         setUserModels(data || []);
       } catch (error) {
@@ -76,9 +74,7 @@ export const useApiSettings = () => {
       'private_models',
       'id, model_name, model_description',
       null,
-      {
-        user_uuid: userUuid,
-      }
+      { user_uuid: userUuid }
     );
     setUserModels(data || []);
   };
@@ -94,14 +90,17 @@ export const useApiSettings = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+
     if (!userUuid) {
       showAlert('User not loaded yet, please try again 🤷‍♂️', 'Alert');
       return;
     }
-    if (!apiUrl.trim()) {
-      showAlert('API URL is required!', 'Error');
+
+    if (!apiUrl.trim() || !apiKey.trim() || !modelName.trim() || !modelDescription.trim()) {
+      showAlert('All fields (API URL, API Key, Model Name, and Description) are required! 🚫', 'Error');
       return;
     }
+
     try {
       const encryptedApiKey = await encrypt(apiKey);
       await Utils.db.insert('private_models', {
@@ -129,6 +128,12 @@ export const useApiSettings = () => {
       showAlert('User not loaded yet, please try again 🤷‍♂️', 'Alert');
       return;
     }
+
+    if (!apiUrl.trim() || !apiKey.trim() || !modelName.trim() || !modelDescription.trim()) {
+      showAlert('All fields must be filled in to update the model 📝', 'Error');
+      return;
+    }
+
     try {
       const encryptedApiKey = await encrypt(apiKey);
       await Utils.db.update(
@@ -145,10 +150,7 @@ export const useApiSettings = () => {
       await refreshUserModels();
     } catch (error) {
       console.error('Error updating model:', error);
-      showAlert(
-        'Oops! Couldn’t update your model. Check the console.',
-        'Error'
-      );
+      showAlert('Oops! Couldn’t update your model. Check the console.', 'Error');
     }
   };
 
@@ -163,10 +165,7 @@ export const useApiSettings = () => {
       await refreshUserModels();
     } catch (error) {
       console.error('Error deleting model:', error);
-      showAlert(
-        'Oops! Couldn’t delete your model. Check the console.',
-        'Error'
-      );
+      showAlert('Oops! Couldn’t delete your model. Check the console.', 'Error');
     }
   };
 

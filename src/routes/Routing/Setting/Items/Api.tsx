@@ -18,6 +18,7 @@ import {
   PyrenzFormControl,
   PyrenzOutlinedInput,
   PyrenzInputLabel,
+  PyrenzDialog,
 } from '~/theme';
 
 export const Api = () => {
@@ -43,6 +44,8 @@ export const Api = () => {
   const [selectedModelIndex, setSelectedModelIndex] = useState<number | null>(
     null
   );
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [modelToDelete, setModelToDelete] = useState<string | null>(null);
 
   const handleMenuOpen = (
     event: React.MouseEvent<HTMLElement>,
@@ -70,15 +73,27 @@ export const Api = () => {
   const handleDeleteClick = () => {
     if (selectedModelIndex !== null) {
       const model = userModels[selectedModelIndex];
-      handleDelete(model.id);
+      setModelToDelete(model.id);
+      setDialogOpen(true);
     }
     handleMenuClose();
   };
 
+  const confirmDelete = () => {
+    if (modelToDelete !== null) {
+      handleDelete(modelToDelete);
+      setModelToDelete(null);
+    }
+    setDialogOpen(false);
+  };
+
+  const cancelDelete = () => {
+    setModelToDelete(null);
+    setDialogOpen(false);
+  };
+
   return (
-    <Box
-      sx={{ p: 3, display: 'flex', flexDirection: 'column', height: '100%' }}
-    >
+    <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', height: '100%' }}>
       <Typography variant="h6" gutterBottom>
         API Settings
       </Typography>
@@ -138,7 +153,7 @@ export const Api = () => {
           <Textarea
             value={modelName}
             onChange={(e) => setModelName(e.target.value)}
-            placeholder="Enter the Model Name"
+            placeholder="Enter the Model Name or slug name eg moonshotai/kimi-k2:free"
           />
         </Box>
         <Box mb={2}>
@@ -196,6 +211,13 @@ export const Api = () => {
           ))}
         </Box>
       </Box>
+      <PyrenzDialog
+        open={dialogOpen}
+        onClose={cancelDelete}
+        title="Confirm Delete"
+        content="Are you sure you want to delete this model? This action cannot be undone."
+        onConfirm={confirmDelete}
+      />
     </Box>
   );
 };
