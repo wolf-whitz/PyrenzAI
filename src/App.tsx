@@ -1,20 +1,51 @@
 import React, { useEffect, useState, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, useNavigate } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+  useNavigate,
+} from 'react-router-dom';
 import { AppRoutes } from '~/routes/routes';
 import { Spinner } from '@components';
 import { Utils as utils } from '~/Utility';
 import { usePyrenzAlert } from '~/provider';
 import { useUserStore } from '~/store';
 import { Box, useTheme } from '@mui/material';
+import { BlockedPage } from './routes/Routing';
 
 const AppContent = () => {
   const showAlert = usePyrenzAlert();
   const [loading, setLoading] = useState(true);
-
+  const [isBlocked, setIsBlocked] = useState(false);
   const isDeleted = useUserStore((state) => state.is_deleted);
   const setIsDeleted = useUserStore((state) => state.setIsDeleted);
   const theme = useTheme();
   const currentTheme = theme.palette.mode;
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const blockUsersFromCertainCountries = async () => {
+      try {
+        const res = await fetch('https://ipapi.co/json/');
+        const geoData = await res.json();
+        const blockedCountries = ['United Kingdom'];
+
+        if (blockedCountries.includes(geoData?.country_name)) {
+          setIsBlocked(true);
+          if (location.pathname !== '/Blocked') {
+            navigate('/Blocked', { replace: true });
+          }
+        }
+      } catch (err) {
+        console.error('Geolocation block error:', err);
+      }
+    };
+
+    blockUsersFromCertainCountries();
+  }, [navigate, location.pathname]);
 
   useEffect(() => {
     const checkUserStatus = async () => {
@@ -66,6 +97,10 @@ const AppContent = () => {
     return <Spinner />;
   }
 
+  if (isBlocked) {
+    return <BlockedPage />;
+  }
+
   return (
     <Box
       data-mui-theme={`theme-${currentTheme}`}
@@ -93,7 +128,9 @@ const AppContent = () => {
         },
       }}
     >
-      <Routes>{AppRoutes}</Routes>
+      <Routes>
+        {AppRoutes}
+      </Routes>
     </Box>
   );
 };

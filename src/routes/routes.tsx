@@ -13,6 +13,7 @@ import {
   Policy,
   AdminPanel,
   CharacterPage,
+  BlockedPage
 } from './Routing';
 
 export const AppRoutes = (
@@ -33,6 +34,7 @@ export const AppRoutes = (
     <Route path="/docs" element={<DocPage />} />
     <Route path="/Admin" element={<AdminPanel />} />
     <Route path="/character/:char_uuid" element={<CharacterPage />} />
+    <Route path="/Blocked" element={<BlockedPage />} />
     <Route path="*" element={<ErrorPage />} />
   </>
 );

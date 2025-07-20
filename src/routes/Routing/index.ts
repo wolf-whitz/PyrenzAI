@@ -17,3 +17,4 @@ export * from './Setting/Setting';
 export * from './AdminPanel';
 
 export * from './Character';
+export * from './Blocked';
