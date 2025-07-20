@@ -13,15 +13,13 @@ export const BlockedPage = () => {
     >
       <Container maxWidth="sm">
         <Typography variant="h4" gutterBottom>
-          Region Access Restricted
+          Access Restricted in the United Kingdom
         </Typography>
         <Typography variant="body1">
-          Due to compliance with the Digital Markets Act, we currently do not offer services in your region (United Kingdom).
-          <br />
-          We kindly ask that you refrain from using this application while located in these areas.
+          In compliance with the UK’s Online Safety Act, access to this application is currently unavailable within the United Kingdom.
         </Typography>
         <Typography variant="body2" mt={4} color="text.secondary">
-          If you believe this is an error or wish to continue at your own discretion, using a VPN may help you access our services.
+          If you're accessing this service from within the UK, we kindly ask that you refrain from using the platform. If you're outside the UK and believe this is an error, using a VPN may help resolve the issue.
         </Typography>
       </Container>
     </Box>
