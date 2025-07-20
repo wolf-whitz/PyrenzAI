@@ -16,7 +16,7 @@ export const BlockedPage = () => {
           Region Access Restricted
         </Typography>
         <Typography variant="body1">
-          Due to compliance with the Digital Markets Act, we currently do not offer services in your region (United Kingdom or Philippines).
+          Due to compliance with the Digital Markets Act, we currently do not offer services in your region (United Kingdom).
           <br />
           We kindly ask that you refrain from using this application while located in these areas.
         </Typography>
