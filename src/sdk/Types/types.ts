@@ -1,0 +1,21 @@
+export interface Range {
+  from: number
+  to: number
+}
+
+export interface OrderBy {
+  column: string
+  ascending?: boolean
+}
+
+export type Match<T = Record<string, any>> = {
+  [K in keyof T]?: T[K] | T[K][]
+}
+
+export type FilterOperator = 'in' | 'not.in' | 'not.overlaps' | 'eq' | (string & {})
+
+export interface ExtraFilter {
+  column: string
+  operator: FilterOperator
+  value: any
+}

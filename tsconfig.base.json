@@ -11,7 +11,9 @@
       "@shared-types": ["src/components"],
       "@libs/*": ["src/lib/*"],
 
-      "@function": ["src/components/service-function"]
+      "@function": ["src/components/service-function"],
+
+      "@sdk/*": ["src/sdk/*"]
     }
   }
 }

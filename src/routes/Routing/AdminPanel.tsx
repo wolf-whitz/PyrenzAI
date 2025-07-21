@@ -8,76 +8,93 @@ import {
   useTheme,
 } from '@mui/material';
 import { Utils } from '~/Utility';
-import { PyrenzBlueButton } from '~/theme';
-import { Sidebar, MobileNav } from '@components';
+import { Sidebar, MobileNav, CharacterReport } from '@components';
+import { PyrenzDialog } from '~/theme';
 
-interface Admin {
-  is_admin: boolean;
+interface CharacterReportType {
+  report_content: string;
+  char_uuid: string;
+  user_uuid: string;
+  creator_uuid: string;
 }
 
 export function AdminPanel() {
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [showLoginModal, setShowLoginModal] = useState(false);
-
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [reports, setReports] = useState<CharacterReportType[]>([]);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogContent, setDialogContent] = useState('');
+  const [onDialogConfirm, setOnDialogConfirm] = useState<() => void>(() => {});
   const userUUID = useUserStore((state) => state.userUUID);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   useEffect(() => {
     const checkAdminStatus = async () => {
+      setLoading(true);
+      const { data } = await Utils.db.select<{ is_admin: boolean }>(
+        'admins',
+        'is_admin',
+        null,
+        { user_uuid: userUUID }
+      );
+      setIsAdmin(data?.[0]?.is_admin || false);
+      setLoading(false);
+    };
+    if (userUUID) checkAdminStatus();
+  }, [userUUID]);
+
+  useEffect(() => {
+    const fetchAdminData = async () => {
+      const data = await Utils.db.rpc<CharacterReportType[]>('get_admin_data', {
+        admin_uuid: userUUID,
+      });
+      setReports(data || []);
+    };
+    if (isAdmin && userUUID) fetchAdminData();
+  }, [isAdmin, userUUID]);
+
+  const openBanDialog = (
+    id: string,
+    action: 'ban' | 'unban',
+    target: 'character' | 'user'
+  ) => {
+    const confirmAction = async () => {
       try {
-        setLoading(true);
-        const { data, error } = await Utils.db.client
-          .from('admins')
-          .select('is_admin')
-          .eq('user_uuid', userUUID)
-          .single<Admin>();
-
-        if (error) {
-          throw error;
+        const fnName =
+          target === 'character' ? 'manage_character_ban' : 'manage_user_ban';
+        const inputKey =
+          target === 'character' ? 'target_char_uuid' : 'target_user_uuid';
+        await Utils.db.rpc(fnName, {
+          admin_uuid: userUUID,
+          [inputKey]: id,
+          ban_type: action,
+        });
+        if (action === 'ban') {
+          if (target === 'character') {
+            setReports((prev) => prev.filter((r) => r.char_uuid !== id));
+          }
+          if (target === 'user') {
+            setReports((prev) => prev.filter((r) => r.user_uuid !== id));
+          }
         }
-
-        setIsAdmin(data?.is_admin || false);
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          console.error('Error checking admin status:', error.message);
-        } else {
-          console.error('Unknown error occurred:', error);
-        }
+      } catch (e) {
+        console.error(`Failed to ${action} ${target}:`, e);
       } finally {
-        setLoading(false);
+        setDialogOpen(false);
       }
     };
 
-    if (userUUID) {
-      checkAdminStatus();
-    }
-  }, [userUUID]);
-
-  const handleMaintenanceMode = async () => {
-    try {
-      const response = await Utils.post('/api/Commands', {
-        type: 'Maintenance',
-      });
-      console.log('Maintenance mode request sent:', response);
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.error('Error sending maintenance mode request:', error.message);
-      } else {
-        console.error('Unknown error occurred:', error);
-      }
-    }
+    setDialogContent(
+      `Are you sure you want to ${action} this ${target}? This action cannot be undone.`
+    );
+    setOnDialogConfirm(() => confirmAction);
+    setDialogOpen(true);
   };
 
   if (loading) {
     return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="100%"
-      >
+      <Box display="flex" justifyContent="center" alignItems="center" height="100%">
         <CircularProgress />
       </Box>
     );
@@ -85,12 +102,7 @@ export function AdminPanel() {
 
   if (!isAdmin) {
     return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="52vh"
-      >
+      <Box display="flex" justifyContent="center" alignItems="center" height="52vh">
         <Typography variant="h6" color="textSecondary">
           Access Denied: Admins Only
         </Typography>
@@ -101,24 +113,39 @@ export function AdminPanel() {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Box sx={{ display: 'flex', flex: 1 }}>
-        {!isMobile && <Sidebar />}
-        <Box
-          sx={{
-            flex: 1,
-            p: isMobile ? 2 : 4,
-            mb: isMobile ? '56px' : 0,
-            textAlign: 'center',
-          }}
-        >
-          <Typography variant="h4" gutterBottom>
+        <Box sx={{ display: { xs: 'none', md: 'block' }, p: 5, pr: 3 }}>
+          <Sidebar />
+        </Box>
+        <Box sx={{ flex: 1, p: isMobile ? 2 : 4, mb: isMobile ? '56px' : 0 }}>
+          <Typography variant="h4" gutterBottom textAlign="center">
             Admin Panel
           </Typography>
-          <PyrenzBlueButton onClick={handleMaintenanceMode} sx={{ mt: 3 }}>
-            Maintenance Mode
-          </PyrenzBlueButton>
+          <Box mt={4}>
+            <Typography variant="h6" gutterBottom>
+              Character Reports
+            </Typography>
+            {reports.length === 0 ? (
+              <Typography color="text.secondary">No reports found.</Typography>
+            ) : (
+              <CharacterReport
+                reports={reports}
+                onBanCharacter={(id) => openBanDialog(id, 'ban', 'character')}
+                onUnbanCharacter={(id) => openBanDialog(id, 'unban', 'character')}
+                onBanUser={(id) => openBanDialog(id, 'ban', 'user')}
+                onUnbanUser={(id) => openBanDialog(id, 'unban', 'user')}
+              />
+            )}
+          </Box>
         </Box>
       </Box>
-      {isMobile && <MobileNav setShowLoginModal={setShowLoginModal} />}
+      {isMobile && <MobileNav setShowLoginModal={() => {}} />}
+      <PyrenzDialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        title="Confirm Action"
+        content={dialogContent}
+        onConfirm={onDialogConfirm}
+      />
     </Box>
   );
 }

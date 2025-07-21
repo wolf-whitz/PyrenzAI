@@ -8,96 +8,162 @@ import {
 import { AppRoutes } from '~/routes/routes';
 import { Spinner } from '@components';
 import { Utils as utils } from '~/Utility';
-import { usePyrenzAlert } from '~/provider';
 import { useUserStore } from '~/store';
 import { Box, useTheme } from '@mui/material';
 import { BlockedPage } from './routes/Routing';
 
-const AppContent = () => {
-  const showAlert = usePyrenzAlert();
+export function AppContent() {
   const [loading, setLoading] = useState(true);
   const [isBlocked, setIsBlocked] = useState(false);
-  const isDeleted = useUserStore((state) => state.is_deleted);
-  const setIsDeleted = useUserStore((state) => state.setIsDeleted);
+
+  const {
+    cachedUserData,
+    setCachedUserData,
+    clearCachedUserData,
+    setIsDeleted,
+    setIsBanned,
+  } = useUserStore();
+
   const theme = useTheme();
   const currentTheme = theme.palette.mode;
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const blockUsersFromCertainCountries = async () => {
+    const CACHE_TIME_MS = 5 * 60 * 1000;
+
+    const initChecks = async () => {
       try {
-        const res = await fetch('https://ipapi.co/json/');
-        const geoData = await res.json();
+        const now = Date.now();
+        const cache = cachedUserData;
+        const isCacheValid = cache && now - cache.gotten_at < CACHE_TIME_MS;
+
+        if (isCacheValid) {
+          const { country_name, is_deleted, is_banned } = cache.data;
+
+          if (country_name === 'United Kingdom') {
+            setIsBlocked(true);
+            if (location.pathname !== '/Blocked') {
+              navigate('/Blocked', { replace: true });
+            }
+            return;
+          }
+
+          if (is_deleted) {
+            setIsDeleted(true);
+            await utils.db.client.auth.signOut();
+            navigate('/Blocked?type=deleted', { replace: true });
+            return;
+          }
+
+          if (is_banned) {
+            setIsBanned(true);
+            await utils.db.client.auth.signOut();
+            navigate('/Blocked?type=banned', { replace: true });
+            return;
+          }
+
+          setIsDeleted(false);
+          setIsBanned(false);
+          return;
+        }
+
+        const ipRes = await fetch('https://ipapi.co/json/');
+        const geoData = await ipRes.json();
         const blockedCountries = ['United Kingdom'];
 
         if (blockedCountries.includes(geoData?.country_name)) {
+          setCachedUserData({
+            data: {
+              country_name: geoData.country_name,
+              is_deleted: false,
+              is_banned: false,
+            },
+            gotten_at: now,
+          });
+
           setIsBlocked(true);
           if (location.pathname !== '/Blocked') {
             navigate('/Blocked', { replace: true });
           }
+          return;
         }
-      } catch (err) {
-        console.error('Geolocation block error:', err);
-      }
-    };
 
-    blockUsersFromCertainCountries();
-  }, [navigate, location.pathname]);
+        const { data: { user } } = await utils.db.client.auth.getUser();
 
-  useEffect(() => {
-    const checkUserStatus = async () => {
-      if (typeof isDeleted === 'boolean') {
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const {
-          data: { user },
-        } = await utils.db.client.auth.getUser();
+        let is_deleted = false;
+        let is_banned = false;
 
         if (user) {
-          const result = await utils.db.select<{ is_deleted: boolean }>(
-            'user_data',
-            'is_deleted',
-            null,
-            { user_uuid: user.id }
-          );
+          const userId = user.id;
 
-          const data = result?.data?.[0];
+          const [deletedRes, bannedRes] = await Promise.all([
+            utils.db.select<{ is_deleted: boolean }>(
+              'user_data',
+              'is_deleted',
+              null,
+              { user_uuid: userId }
+            ),
+            utils.db.select<{ is_banned: boolean }>(
+              'banned_users',
+              'is_banned',
+              null,
+              { user_uuid: userId }
+            ),
+          ]);
 
-          if (data?.is_deleted) {
-            showAlert(
-              'Your account is deleted. Please contact an admin to immediately open your account.',
-              'alert'
-            );
+          is_deleted = deletedRes?.data?.[0]?.is_deleted ?? false;
+          is_banned = bannedRes?.data?.[0]?.is_banned ?? false;
+
+          if (is_deleted) {
             setIsDeleted(true);
             await utils.db.client.auth.signOut();
-          } else {
-            setIsDeleted(false);
+            navigate('/Blocked?type=deleted', { replace: true });
+            return;
           }
-        } else {
-          setIsDeleted(false);
+
+          if (is_banned) {
+            setIsBanned(true);
+            await utils.db.client.auth.signOut();
+            navigate('/Blocked?type=banned', { replace: true });
+            return;
+          }
         }
-      } catch (err) {
-        console.error('Error fetching user data:', err);
+
+        setCachedUserData({
+          data: {
+            country_name: geoData?.country_name,
+            is_deleted,
+            is_banned,
+          },
+          gotten_at: now,
+        });
+
         setIsDeleted(false);
+        setIsBanned(false);
+      } catch (err) {
+        console.error('Init check error:', err);
+        setIsDeleted(false);
+        setIsBanned(false);
+        clearCachedUserData();
       } finally {
         setLoading(false);
       }
     };
 
-    checkUserStatus();
-  }, [isDeleted, setIsDeleted, showAlert]);
+    initChecks();
+  }, [
+    location,
+    navigate,
+    cachedUserData,
+    setCachedUserData,
+    clearCachedUserData,
+    setIsDeleted,
+    setIsBanned,
+  ]);
 
-  if (loading) {
-    return <Spinner />;
-  }
-
-  if (isBlocked) {
-    return <BlockedPage />;
-  }
+  if (loading) return <Spinner />;
+  if (isBlocked) return <BlockedPage />;
 
   return (
     <Box
@@ -129,7 +195,7 @@ const AppContent = () => {
       <Routes>{AppRoutes}</Routes>
     </Box>
   );
-};
+}
 
 export function App() {
   return (

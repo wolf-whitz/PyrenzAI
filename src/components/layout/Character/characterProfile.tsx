@@ -27,7 +27,7 @@ interface CharacterProfileProps {
   handleEditCharacter: () => void;
   handleCharacterDeletion: () => void;
   handleCreatorClick: () => void;
-  handleReportCharacter: (reportMessage: string) => void;
+  handleReportCharacter: (reportMessage: string, creatorUuid: string) => void;
 }
 
 export function CharacterProfile({
@@ -54,7 +54,7 @@ export function CharacterProfile({
   };
 
   const handleSubmitReport = () => {
-    handleReportCharacter(reportText);
+    handleReportCharacter(reportText, character.creator_uuid);
     handleCloseReport();
   };
 
@@ -149,69 +149,75 @@ export function CharacterProfile({
           >
             {isLoading.startChat ? 'Loading...' : 'Start Chat'}
           </PyrenzBlueButton>
-          <PyrenzBlueButton
-            variant="contained"
-            sx={{
-              mt: 2,
-              py: 1.5,
-              color: 'white',
-              backgroundColor: 'warning.main',
-              '&:hover': {
-                backgroundColor: 'warning.dark',
-              },
-            }}
-            fullWidth
-            onClick={handleOpenReport}
-            startIcon={<ReportIcon />}
-          >
-            Report Character
-          </PyrenzBlueButton>
-          <Popover
-            open={reportPopoverOpen}
-            anchorEl={anchorEl}
-            onClose={handleCloseReport}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'right',
-            }}
-            transformOrigin={{
-              vertical: 'bottom',
-              horizontal: 'left',
-            }}
-          >
-            <Box
-              sx={{
-                p: 3,
-                backgroundColor: '#2c2c2c',
-                color: 'white',
-                width: '400px',
-              }}
-            >
-              <Typography variant="subtitle1" gutterBottom>
-                Why do you want to report this character?
-              </Typography>
-              <Textarea
-                placeholder="Type your reason here..."
-                value={reportText}
-                onChange={(e) => setReportText(e.target.value)}
-              />
-              <Box display="flex" justifyContent="center" mt={2}>
-                <Button
-                  variant="contained"
-                  onClick={handleSubmitReport}
+
+          {!character.is_private && (
+            <>
+              <PyrenzBlueButton
+                variant="contained"
+                sx={{
+                  mt: 2,
+                  py: 1.5,
+                  color: 'white',
+                  backgroundColor: 'warning.main',
+                  '&:hover': {
+                    backgroundColor: 'warning.dark',
+                  },
+                }}
+                fullWidth
+                onClick={handleOpenReport}
+                startIcon={<ReportIcon />}
+              >
+                Report Character
+              </PyrenzBlueButton>
+              <Popover
+                open={reportPopoverOpen}
+                anchorEl={anchorEl}
+                onClose={handleCloseReport}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'right',
+                }}
+                transformOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                }}
+              >
+                <Box
                   sx={{
-                    backgroundColor: 'warning.main',
+                    p: 3,
+                    backgroundColor: '#2c2c2c',
                     color: 'white',
-                    '&:hover': {
-                      backgroundColor: 'warning.dark',
-                    },
+                    width: '400px',
                   }}
                 >
-                  Submit
-                </Button>
-              </Box>
-            </Box>
-          </Popover>
+                  <Typography variant="subtitle1" gutterBottom>
+                    Why do you want to report this character?
+                  </Typography>
+                  <Textarea
+                    placeholder="Type your reason here..."
+                    value={reportText}
+                    onChange={(e) => setReportText(e.target.value)}
+                  />
+                  <Box display="flex" justifyContent="center" mt={2}>
+                    <Button
+                      variant="contained"
+                      onClick={handleSubmitReport}
+                      sx={{
+                        backgroundColor: 'warning.main',
+                        color: 'white',
+                        '&:hover': {
+                          backgroundColor: 'warning.dark',
+                        },
+                      }}
+                    >
+                      Submit
+                    </Button>
+                  </Box>
+                </Box>
+              </Popover>
+            </>
+          )}
+
           {isCreator && (
             <>
               <PyrenzBlueButton

@@ -1,7 +1,6 @@
 import { Utils } from '~/Utility';
 import * as Sentry from '@sentry/react';
 import { Character } from '@shared-types';
-import { useUserStore, useHomeStore } from '~/store';
 
 interface FetchCharactersProps {
   currentPage: number;
@@ -13,6 +12,7 @@ interface FetchCharactersProps {
   tags?: string[];
   creatoruuid?: string;
   sortBy?: 'created_at' | 'chat_messages_count';
+  blockedTags?: string[];
 }
 
 interface FetchCharactersResponse {
@@ -20,7 +20,7 @@ interface FetchCharactersResponse {
   characters: Character[];
 }
 
-export const fetchCharacters = async ({
+export async function fetchCharacters({
   currentPage = 1,
   itemsPerPage = 20,
   search,
@@ -30,56 +30,94 @@ export const fetchCharacters = async ({
   tags = [],
   creatoruuid,
   sortBy = 'chat_messages_count',
-}: FetchCharactersProps): Promise<FetchCharactersResponse> => {
+  blockedTags = [],
+}: FetchCharactersProps): Promise<FetchCharactersResponse> {
   try {
-    const { blocked_tags } = useUserStore.getState();
-    const { setMaxPage } = useHomeStore.getState();
+    const bannedUserRes = await Utils.db.select<{ user_uuid: string }>(
+      'banned_users',
+      'user_uuid'
+    );
+    const bannedUserUUIDs = bannedUserRes.data
+      .map((u) => u.user_uuid)
+      .filter(Boolean);
 
-    const buildQuery = async (table: string) => {
-      let query = Utils.db.client.from(table).select('*', { count: 'exact' });
+    const match: Record<string, any> = {};
+    if (search) match.name = `%${search.trim()}%`;
+    if (charuuid) match.char_uuid = charuuid.trim();
+    if (!showNsfw) match.is_nsfw = false;
+    if (genderFilter) match.gender = genderFilter.trim();
+    if (creatoruuid) match.creator_uuid = creatoruuid.trim();
 
-      if (search) query = query.ilike('name', `%${search.trim()}%`);
-      if (charuuid) query = query.eq('char_uuid', charuuid.trim());
-      if (!showNsfw) query = query.eq('is_nsfw', false);
-      if (genderFilter) query = query.eq('gender', genderFilter.trim());
-      if (tags.length > 0) query = query.overlaps('tags', tags);
-      if (creatoruuid) query = query.eq('creator_uuid', creatoruuid.trim());
-      if (blocked_tags && blocked_tags.length > 0) {
-        query = query.not('tags', 'overlaps', blocked_tags);
-      }
+    const baseFilters: {
+      column: string;
+      operator: 'in' | 'not_overlaps' | 'not_in' | 'eq';
+      value: any;
+    }[] = [];
 
-      query = query.order(sortBy, { ascending: false });
-
-      const from = (currentPage - 1) * itemsPerPage;
-      const to = from + itemsPerPage - 1;
-      query = query.range(from, to);
-
-      const { data, error, count } = await query;
-      return { data, error, count };
-    };
-
-    let { data, count, error } = await buildQuery('public_characters');
-
-    if (error || !data || data.length === 0) {
-      const fallback = await buildQuery('private_characters');
-      data = fallback.data;
-      count = fallback.count;
-      if (fallback.error) throw fallback.error;
+    if (tags.length > 0) {
+      baseFilters.push({ column: 'tags', operator: 'in', value: tags });
+    }
+    if (blockedTags.length > 0) {
+      baseFilters.push({
+        column: 'tags',
+        operator: 'not_overlaps',
+        value: blockedTags,
+      });
+    }
+    if (bannedUserUUIDs.length > 0) {
+      baseFilters.push({
+        column: 'creator_uuid',
+        operator: 'not_in',
+        value: bannedUserUUIDs,
+      });
     }
 
-    const characters: Character[] = (data || []).map((char: any) => ({
+    const range = {
+      from: (currentPage - 1) * itemsPerPage,
+      to: currentPage * itemsPerPage - 1,
+    };
+
+    const orderBy = {
+      column: sortBy,
+      ascending: false,
+    };
+
+    const { data } = await Utils.db.selectFirstAvailable<Character>(
+      ['public_characters', 'private_characters'],
+      match,
+      '*',
+      'exact',
+      range,
+      orderBy,
+      (tableName) => {
+        const filters = [...baseFilters].filter((f) => {
+          if (
+            (f.operator === 'in' || f.operator === 'not_in' || f.operator === 'not_overlaps') &&
+            (!Array.isArray(f.value) || f.value.length === 0)
+          ) {
+            return false;
+          }
+          return true;
+        });
+        if (tableName === 'public_characters') {
+          filters.push({ column: 'is_banned', operator: 'eq', value: false });
+        }
+        return filters;
+      }
+    );
+
+    const normalized: Character[] = Array.isArray(data) ? data : data ? [data] : [];
+    const mappedCharacters: Character[] = normalized.map((char) => ({
       ...char,
       id: String(char.id),
     }));
 
-    setMaxPage(Math.ceil((count ?? 0) / itemsPerPage));
-
     let selectedCharacter: Character | null = null;
-    if (characters.length > 0) {
+    if (mappedCharacters.length > 0) {
       const highestCount = Math.max(
-        ...characters.map((c) => c.chat_messages_count || 0)
+        ...mappedCharacters.map((c) => c.chat_messages_count || 0)
       );
-      const topCharacters = characters.filter(
+      const topCharacters = mappedCharacters.filter(
         (c) => c.chat_messages_count === highestCount
       );
       selectedCharacter =
@@ -92,11 +130,9 @@ export const fetchCharacters = async ({
 
     return {
       character: selectedCharacter,
-      characters,
+      characters: mappedCharacters,
     };
   } catch (err) {
-    const { setMaxPage } = useHomeStore.getState();
-    setMaxPage(0);
     if (err instanceof Error) {
       Sentry.captureException(err);
     } else {
@@ -107,4 +143,4 @@ export const fetchCharacters = async ({
       characters: [],
     };
   }
-};
+}

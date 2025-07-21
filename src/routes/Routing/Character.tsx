@@ -8,15 +8,22 @@ import {
   useCharacterData,
   CharacterProfile,
   CharacterDetails,
+  AuthenticationModal,
 } from '@components';
 import { CreateNewChat } from '@function';
 import { Utils } from '~/Utility';
 
 export function CharacterPage() {
   const { char_uuid } = useParams<{ char_uuid: string }>();
-  const { character, notFound, handleDeleteCharacter, handleReportCharacter } =
-    useCharacterData(char_uuid);
+  const {
+    character,
+    notFound,
+    handleDeleteCharacter,
+    handleReportCharacter,
+  } = useCharacterData(char_uuid);
+
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [userUuid, setUserUuid] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState({
     startChat: false,
@@ -67,30 +74,33 @@ export function CharacterPage() {
   }
 
   const handleStartChat = async () => {
-    setIsLoading({ ...isLoading, startChat: true });
-    const { data } = await Utils.db.client.auth.getUser();
-    const currentUserUuid = data?.user?.id;
-    if (!character || !currentUserUuid) {
-      setIsLoading({ ...isLoading, startChat: false });
+    if (!userUuid) {
+      setAuthMode('login'); 
+      setShowLoginModal(true);
       return;
     }
-    const result = await CreateNewChat(character.char_uuid, currentUserUuid);
-    if (result.error) {
-      console.error('Failed to create chat:', result.error);
-    } else {
-      console.log('Chat created successfully:', result.chat_uuid);
-      navigate(`/chat/${result.chat_uuid}`);
+
+    setIsLoading((prev) => ({ ...prev, startChat: true }));
+    try {
+      const result = await CreateNewChat(character.char_uuid, userUuid);
+      if (result.error) {
+        console.error('Failed to create chat:', result.error);
+      } else {
+        console.log('Chat created successfully:', result.chat_uuid);
+        navigate(`/chat/${result.chat_uuid}`);
+      }
+    } finally {
+      setIsLoading((prev) => ({ ...prev, startChat: false }));
     }
-    setIsLoading({ ...isLoading, startChat: false });
   };
 
   const handleCharacterDeletion = async () => {
-    setIsLoading({ ...isLoading, deleteCharacter: true });
+    setIsLoading((prev) => ({ ...prev, deleteCharacter: true }));
     const success = await handleDeleteCharacter();
     if (success) {
       navigate('/Home');
     }
-    setIsLoading({ ...isLoading, deleteCharacter: false });
+    setIsLoading((prev) => ({ ...prev, deleteCharacter: false }));
   };
 
   const handleCreatorClick = () => {
@@ -98,9 +108,9 @@ export function CharacterPage() {
   };
 
   const handleEditCharacter = () => {
-    setIsLoading({ ...isLoading, editCharacter: true });
+    setIsLoading((prev) => ({ ...prev, editCharacter: true }));
     navigate(`/create/${character.char_uuid}`);
-    setIsLoading({ ...isLoading, editCharacter: false });
+    setIsLoading((prev) => ({ ...prev, editCharacter: false }));
   };
 
   return (
@@ -117,6 +127,7 @@ export function CharacterPage() {
         <Sidebar />
       </Box>
       {isMobile && <MobileNav setShowLoginModal={setShowLoginModal} />}
+
       <Box component="main" sx={{ flexGrow: 1, p: 4 }}>
         <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={4}>
           <CharacterProfile
@@ -132,6 +143,16 @@ export function CharacterPage() {
           <CharacterDetails character={character} />
         </Box>
       </Box>
+
+      {showLoginModal && (
+        <AuthenticationModal
+          mode={authMode}
+          onClose={() => setShowLoginModal(false)}
+          toggleMode={() =>
+            setAuthMode((prev) => (prev === 'login' ? 'register' : 'login'))
+          }
+        />
+      )}
     </Box>
   );
 }

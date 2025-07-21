@@ -2,10 +2,6 @@ import { Utils } from '~/Utility';
 import { Character } from '@shared-types';
 import { useUserStore } from '~/store';
 
-interface CharacterDataResponse {
-  characters: Character[];
-}
-
 type SortBy = 'created_at' | 'chat_messages_count' | null;
 
 export async function getRandomCharacters(
@@ -21,33 +17,42 @@ export async function getRandomCharacters(
   const { show_nsfw = true, blocked_tags = [] } = useUserStore.getState();
   const fetchLimit = maxCharacter * 10;
 
-  const data = (await Utils.db.rpc('get_filtered_characters', {
-    page: 1,
-    items_per_page: fetchLimit,
-    show_nsfw,
-    blocked_tags: blocked_tags.length ? blocked_tags : [],
-    sort_by: sortBy,
-    gender_filter: null,
-    search: null,
-    tag: [],
-    creatoruuid: null,
-    charuuid: null,
-  })) as CharacterDataResponse;
+  const bannedUserRes = await Utils.db.select<{ user_uuid: string }>(
+    'banned_users',
+    'user_uuid'
+  );
 
-  if (!data) {
-    throw new Error('Failed to fetch random characters');
-  }
+  const bannedUserUUIDs = bannedUserRes.data.map((u) => u.user_uuid).filter(Boolean);
 
-  const characters = (data.characters ?? []).map((char: Character) => ({
-    ...char,
-    id: String(char.id),
-  }));
+  const match: Record<string, any> = {};
+  if (!show_nsfw) match.is_nsfw = false;
 
-  if (characters.length === 0) return [];
+  const extraFilters = [
+    ...(blocked_tags.length > 0
+      ? [{ column: 'tags', operator: 'not_overlaps', value: blocked_tags }]
+      : []),
+    ...(bannedUserUUIDs.length > 0
+      ? [{ column: 'creator_uuid', operator: 'not_in', value: bannedUserUUIDs }]
+      : []),
+    { column: 'is_banned', operator: 'eq', value: false },
+  ];
 
-  const shuffledCharacters = characters.sort(() => 0.5 - Math.random());
+  const { data: allCharacters = [] } = await Utils.db.select<Character>(
+    'public_characters',
+    '*',
+    'exact',
+    match,
+    { from: 0, to: fetchLimit - 1 },
+    sortBy ? { column: sortBy, ascending: false } : undefined,
+    extraFilters
+  );
+
+  const shuffled = allCharacters.sort(() => 0.5 - Math.random());
   const startIndex = (page - 1) * maxCharacter;
   const endIndex = startIndex + maxCharacter;
 
-  return shuffledCharacters.slice(startIndex, endIndex);
+  return shuffled.slice(startIndex, endIndex).map((char) => ({
+    ...char,
+    id: String(char.id),
+  }));
 }

@@ -22,6 +22,7 @@ export const useCharacterData = (char_uuid: string | undefined) => {
             ['public_characters', 'private_characters'],
             { char_uuid }
           );
+
         if (foundCharacter) {
           const verifiedCharacter = CharacterSchema.parse({
             ...foundCharacter,
@@ -71,7 +72,8 @@ export const useCharacterData = (char_uuid: string | undefined) => {
   };
 
   const handleReportCharacter = async (
-    reportText: string
+    reportText: string,
+    creator_uuid: string
   ): Promise<boolean> => {
     if (!char_uuid) return false;
 
@@ -82,6 +84,7 @@ export const useCharacterData = (char_uuid: string | undefined) => {
       const reportData = {
         user_uuid,
         char_uuid,
+        creator_uuid,
         report_content: reportText,
       };
 

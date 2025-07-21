@@ -23,24 +23,12 @@ interface Customization {
   charQuotedColor: string;
 }
 
-interface ApiResponse {
-  username: string;
-  user_avatar: string;
-  user_uuid: string;
-  ai_customization: any;
-  preferred_model?: string;
-  is_admin: boolean;
-  subscription_data: {
-    tier: string;
-    max_token: number;
-    model: { [key: string]: ModelIdentifier };
-    private_models: { [key: string]: any };
-  };
-  persona_name?: string;
-}
-
 interface CachedUserData {
-  data: ApiResponse;
+  data: {
+    country_name?: string;
+    is_deleted?: boolean;
+    is_banned?: boolean;
+  };
   gotten_at: number;
 }
 
@@ -51,6 +39,7 @@ interface UserStore {
   userIcon: string | null;
   is_login: boolean;
   is_deleted: boolean | undefined;
+  is_banned: boolean | undefined;
   is_admin: boolean;
   subscription_plan: string[] | null;
   imageURL: string | null;
@@ -69,6 +58,7 @@ interface UserStore {
   setUserIcon: (icon: string) => void;
   setIsLogin: (isLogin: boolean) => void;
   setIsDeleted: (isDeleted: boolean | undefined) => void;
+  setIsBanned: (isBanned: boolean | undefined) => void;
   setIsAdmin: (isAdmin: boolean) => void;
   setSubscriptionPlan: (plan: string[]) => void;
   setImageURL: (url: string | null) => void;
@@ -94,6 +84,7 @@ export const useUserStore = create<UserStore>()(
       userIcon: null,
       is_login: false,
       is_deleted: undefined,
+      is_banned: undefined,
       is_admin: false,
       subscription_plan: null,
       imageURL: null,
@@ -125,6 +116,7 @@ export const useUserStore = create<UserStore>()(
       setUserIcon: (icon) => set({ userIcon: icon }),
       setIsLogin: (isLogin) => set({ is_login: isLogin }),
       setIsDeleted: (isDeleted) => set({ is_deleted: isDeleted }),
+      setIsBanned: (isBanned) => set({ is_banned: isBanned }),
       setIsAdmin: (isAdmin) => set({ is_admin: isAdmin }),
       setSubscriptionPlan: (plan) => set({ subscription_plan: plan }),
       setImageURL: (url) => set({ imageURL: url }),
@@ -149,6 +141,7 @@ export const useUserStore = create<UserStore>()(
           userIcon: null,
           is_login: false,
           is_deleted: undefined,
+          is_banned: undefined,
           is_admin: false,
           subscription_plan: null,
           imageURL: null,

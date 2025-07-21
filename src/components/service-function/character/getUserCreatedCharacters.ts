@@ -31,15 +31,35 @@ export const getUserCreatedCharacters = (
     const fetchCharacters = async (uuid: string) => {
       const { show_nsfw } = useUserStore.getState();
 
+      const bannedUserRes = await Utils.db.select<{ user_uuid: string }>(
+        'banned_users',
+        'user_uuid'
+      );
+
+      const bannedUserUUIDs = bannedUserRes.data.map((u) => u.user_uuid).filter(Boolean);
+
+      if (bannedUserUUIDs.includes(uuid)) {
+        return { characters: [], max_page: 1 };
+      }
+
       const fetchFromTable = async (table: string) => {
+        const match: Record<string, any> = { creator_uuid: uuid };
+        if (!show_nsfw) match.is_nsfw = false;
+
+        const extraFilters =
+          table === 'public_characters'
+            ? [{ column: 'is_banned', operator: 'eq', value: false }]
+            : [];
+
         try {
           const { data } = await Utils.db.select<Character>(
             table,
             '*',
             null,
-            { creator_uuid: uuid },
+            match,
             { from: (page - 1) * itemsPerPage, to: page * itemsPerPage - 1 },
-            { column: sortBy, ascending: false }
+            { column: sortBy, ascending: false },
+            extraFilters
           );
           return data || [];
         } catch {
@@ -53,6 +73,7 @@ export const getUserCreatedCharacters = (
       ]);
 
       const combinedChars = [...publicChars, ...privateChars];
+
       return {
         characters: combinedChars,
         max_page: Math.ceil(combinedChars.length / itemsPerPage),
@@ -78,6 +99,7 @@ export const getUserCreatedCharacters = (
           null,
           { user_uuid: uuid }
         );
+
         const user = userDataArr?.[0];
         if (!user) return null;
 
@@ -88,8 +110,8 @@ export const getUserCreatedCharacters = (
             null,
             { user_uuid: uuid }
           );
-        const sub = subDataArr?.[0];
 
+        const sub = subDataArr?.[0];
         const validPlans: SubscriptionPlan[] = ['Melon', 'Durian', 'Pineapple'];
         const plan = validPlans.includes(
           sub?.subscription_plan as SubscriptionPlan
@@ -120,6 +142,7 @@ export const getUserCreatedCharacters = (
           uuid = undefined;
         }
       }
+
       if (!uuid) {
         setLoading(false);
         return;
@@ -135,6 +158,7 @@ export const getUserCreatedCharacters = (
         setCharacters(characters);
         setMaxPage(max_page);
       }
+
       setLoading(false);
     };
 

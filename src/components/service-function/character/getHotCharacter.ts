@@ -4,10 +4,6 @@ import { useUserStore } from '~/store';
 
 type SortBy = 'chat_messages_count' | 'created_at';
 
-interface CharacterDataResponse {
-  characters: Character[];
-}
-
 export async function getHotCharacter(
   type: string,
   maxCharacter: number,
@@ -20,27 +16,41 @@ export async function getHotCharacter(
 
   const { show_nsfw = true, blocked_tags = [] } = useUserStore.getState();
 
-  const data = (await Utils.db.rpc('get_filtered_characters', {
-    page,
-    items_per_page: maxCharacter,
-    show_nsfw: show_nsfw ?? true,
-    blocked_tags: blocked_tags.length ? blocked_tags : [],
-    gender_filter: null,
-    search: null,
-    tag: [],
-    creatoruuid: null,
-    sort_by: sortBy,
-    charuuid: null,
-  })) as CharacterDataResponse;
+  const bannedUserRes = await Utils.db.select<{ user_uuid: string }>(
+    'banned_users',
+    'user_uuid'
+  );
 
-  if (!data) {
-    throw new Error('Failed to fetch hot characters');
-  }
+  const bannedUserUUIDs = bannedUserRes.data.map((u) => u.user_uuid).filter(Boolean);
 
-  const characters = (data.characters ?? []).map((char: any) => ({
+  const match: Record<string, any> = {};
+  if (!show_nsfw) match.is_nsfw = false;
+
+  const from = (page - 1) * maxCharacter;
+  const to = from + maxCharacter - 1;
+
+  const extraFilters = [
+    ...(blocked_tags.length > 0
+      ? [{ column: 'tags', operator: 'not_overlaps', value: blocked_tags }]
+      : []),
+    ...(bannedUserUUIDs.length > 0
+      ? [{ column: 'creator_uuid', operator: 'not_in', value: bannedUserUUIDs }]
+      : []),
+    { column: 'is_banned', operator: 'eq', value: false },
+  ];
+
+  const { data: characters = [] } = await Utils.db.select<Character>(
+    'public_characters',
+    '*',
+    'exact',
+    match,
+    { from, to },
+    { column: sortBy, ascending: false },
+    extraFilters
+  );
+
+  return characters.map((char) => ({
     ...char,
     id: String(char.id),
   }));
-
-  return characters;
 }
