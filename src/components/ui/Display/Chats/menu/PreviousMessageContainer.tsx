@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Avatar,
   CircularProgress,
@@ -9,27 +9,40 @@ import {
   Popover,
   MenuItem,
 } from '@mui/material';
+import { Utils } from '~/Utility';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { motion } from 'framer-motion';
-import { usePreviousChatAPI } from '@components';
 import { PyrenzDialog } from '~/theme';
 
 export function PreviousChat() {
-  const {
-    chats,
-    isInitialLoading,
-    loading,
-    error,
-    handleMessageClick,
-    handleDelete,
-    truncateMessage,
-    loadMore,
-    hasMore,
-  } = usePreviousChatAPI();
-
+  const [chats, setChats] = useState<any[]>([]);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(0);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedChatUuid, setSelectedChatUuid] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  const PAGE_SIZE = 15;
+
+  const truncateMessage = (msg: string, max = 80) =>
+    msg.length > max ? msg.slice(0, max) + '...' : msg;
+
+  const handleMessageClick = (uuid: string) => {
+    console.log('Clicked chat', uuid);
+  };
+
+  const handleDelete = async (uuid: string) => {
+    try {
+      await Utils.db.delete('chats', { chat_uuid: uuid });
+      setChats((prev) => prev.filter((chat) => chat.chat_uuid !== uuid));
+    } catch (err: any) {
+      console.error('Error deleting chat:', err);
+      setError(err.message || 'Failed to delete chat');
+    }
+  };
 
   const handleMenuOpen = (
     event: React.MouseEvent<HTMLElement>,
@@ -52,14 +65,45 @@ export function PreviousChat() {
     setDialogOpen(false);
   };
 
+  const fetchChats = async (page = 0) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const { data } = await Utils.db.select(
+        'chats',
+        '*',
+        'exact',
+        {},
+        {
+          from: page * PAGE_SIZE,
+          to: page * PAGE_SIZE + PAGE_SIZE - 1,
+        },
+        { column: 'created_at', ascending: false }
+      );
+      setChats((prev) => [...prev, ...data]);
+      setHasMore(data.length === PAGE_SIZE);
+    } catch (err: any) {
+      console.error('Error fetching chats:', err);
+      setError(err.message || 'Failed to load chats');
+    } finally {
+      setIsInitialLoading(false);
+      setLoading(false);
+    }
+  };
+
+  const loadMore = () => {
+    const nextPage = page + 1;
+    setPage(nextPage);
+    fetchChats(nextPage);
+  };
+
+  useEffect(() => {
+    fetchChats();
+  }, []);
+
   return (
-    <Box
-      component="aside"
-      sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}
-    >
-      <Box
-        sx={{ display: { xs: 'none', lg: 'flex' }, flex: 1, p: 2, width: 256 }}
-      >
+    <Box component="aside" sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <Box sx={{ display: { xs: 'none', lg: 'flex' }, flex: 1, p: 2, width: 256 }}>
         <Box
           sx={{
             borderRadius: 2,
