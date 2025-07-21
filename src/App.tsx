@@ -2,8 +2,6 @@ import React, { useEffect, useState, Suspense } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
-  Route,
-  Navigate,
   useLocation,
   useNavigate,
 } from 'react-router-dom';

@@ -10,11 +10,26 @@ class SupabaseUtil {
     this.client = client;
   }
 
-  insert = async <T>(table: string, data: T | T[]): Promise<T[]> => {
-    const { data: result, error } = await this.client
-      .from(table)
-      .insert(data)
-      .select();
+  insert = async <T>(
+    table: string,
+    data: T | T[],
+    options?: {
+      onConflict?: string[];
+    }
+  ): Promise<T[]> => {
+    let query;
+
+    if (options?.onConflict) {
+      query = this.client
+        .from(table)
+        .upsert(data, {
+          onConflict: options.onConflict.join(', '),
+        });
+    } else {
+      query = this.client.from(table).insert(data);
+    }
+
+    const { data: result, error } = await query.select();
     if (error) throw error;
     return result as T[];
   };
@@ -59,16 +74,24 @@ class SupabaseUtil {
     countOption: 'exact' | 'planned' | 'estimated' | null = null,
     match: { [key: string]: any } = {},
     range?: { from: number; to: number },
-    orderBy?: { column: string; ascending?: boolean }
+    orderBy?: { column: string; ascending?: boolean },
+    extraFilter?: { column: string; operator: 'in'; value: any[] }
   ): Promise<{ data: T[]; count: number | null }> => {
     let query = this.client.from(table).select(columns, {
       count: countOption ?? undefined,
-      head: false,
     });
 
-    Object.entries(match).forEach(([key, value]) => {
-      query = query.eq(key, value);
-    });
+    for (const [key, value] of Object.entries(match)) {
+      if (Array.isArray(value)) {
+        query = query.in(key, value);
+      } else {
+        query = query.eq(key, value);
+      }
+    }
+
+    if (extraFilter) {
+      query = query.in(extraFilter.column, extraFilter.value);
+    }
 
     if (orderBy?.column) {
       query = query.order(orderBy.column, {
@@ -81,7 +104,6 @@ class SupabaseUtil {
     }
 
     const { data: result, error, count } = await query;
-
     if (error) throw error;
     return { data: result as T[], count };
   };

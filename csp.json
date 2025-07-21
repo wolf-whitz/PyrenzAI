@@ -31,7 +31,8 @@
     "https://*.jsdelivr.net",
     "https://*.pollinations.ai",
     "https://cloudflareinsights.com",
-    "https://*.onrender.com/"
+    "https://*.onrender.com/",
+    "https://ipapi.co/"
   ],
   "media-src": ["'self'", "blob:"],
   "font-src": ["'self'", "*"],

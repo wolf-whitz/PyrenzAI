@@ -61,6 +61,7 @@ export async function CreateNewChat(
       lorebook,
       persona,
       scenario,
+      is_temporary: true,
     });
 
     return { chat_uuid: chatUuid };

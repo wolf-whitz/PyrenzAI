@@ -43,12 +43,6 @@ export function Archive() {
     goToPreviousPage,
   } = useArchiveChatPageAPI(open, handleClose, itemsToShow);
 
-  const truncateMessage = (message: string, length: number) => {
-    return message.length > length
-      ? `${message.substring(0, length)}...`
-      : message;
-  };
-
   return (
     <Box
       sx={{
@@ -102,11 +96,7 @@ export function Archive() {
                       onDeleteClick={() => handleDeleteChat(chat.chat_uuid)}
                       isPinned={chat.is_pinned}
                     >
-                      <Typography variant="body2" color="text.secondary">
-                        {isMobile
-                          ? truncateMessage(chat.preview_message, 50)
-                          : chat.preview_message}
-                      </Typography>
+                      {chat.preview_message}
                     </PyrenzChatsCharacterCard>
                   </Box>
                 ))}

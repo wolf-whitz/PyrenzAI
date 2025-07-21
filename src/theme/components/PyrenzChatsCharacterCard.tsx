@@ -3,7 +3,6 @@ import {
   Card,
   CardContent,
   Typography,
-  Button,
   IconButton,
   Menu,
   MenuItem,
@@ -11,14 +10,35 @@ import {
   Theme,
   useMediaQuery,
   useTheme,
+  Box,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { PyrenzRibbon } from '~/theme';
+import { PyrenzDialog } from '~/theme';
+
+const StyledCard = styled(Card)({
+  display: 'flex',
+  flexDirection: 'row',
+  width: '100%',
+  maxWidth: '440px',
+  height: '250px',
+  borderRadius: '20px',
+  overflow: 'hidden',
+  backgroundColor: '#111827',
+  color: '#f8f9fa',
+  position: 'relative',
+  boxShadow: '0 6px 26px rgba(0, 0, 0, 0.2)',
+  transition: 'transform 0.25s ease-in-out, box-shadow 0.25s ease-in-out',
+  '&:hover': {
+    transform: 'scale(1.035)',
+    boxShadow: '0 10px 36px rgba(0, 0, 0, 0.25)',
+  },
+});
 
 const StyledCardImage = styled('div')({
-  width: '120px',
-  height: '220px',
+  width: '135px',
+  height: '100%',
   overflow: 'hidden',
   position: 'relative',
   display: 'flex',
@@ -27,27 +47,32 @@ const StyledCardImage = styled('div')({
   flexShrink: 0,
 });
 
-const StyledCardName = styled(Typography)({
-  fontSize: '1.25rem',
-  fontWeight: 'bold',
-  marginBottom: '8px',
-  color: '#f8f9fa',
-});
-
-const StyledCardContent = styled(CardContent)({
-  flex: '1',
-  padding: '16px',
-  display: 'flex',
-  flexDirection: 'column',
-  '&:last-child': {
-    paddingBottom: '16px',
-  },
-});
-
 const StyledImage = styled('img')({
   width: '100%',
   height: '100%',
   objectFit: 'cover',
+});
+
+const StyledCardContent = styled(CardContent)({
+  flex: 1,
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between',
+  padding: '18px 16px',
+  overflow: 'hidden',
+  '&:last-child': {
+    paddingBottom: '18px',
+  },
+});
+
+const StyledCardName = styled(Typography)({
+  fontSize: '1.3rem',
+  fontWeight: 700,
+  marginBottom: '12px',
+  color: '#ffffff',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
 });
 
 interface PyrenzChatsCharacterCardProps {
@@ -62,9 +87,7 @@ interface PyrenzChatsCharacterCardProps {
   isPinned?: boolean;
 }
 
-export const PyrenzChatsCharacterCard: React.FC<
-  PyrenzChatsCharacterCardProps
-> = ({
+export function PyrenzChatsCharacterCard({
   imageSrc,
   characterName,
   children,
@@ -74,109 +97,127 @@ export const PyrenzChatsCharacterCard: React.FC<
   style,
   sx,
   isPinned = false,
-}) => {
+}: PyrenzChatsCharacterCardProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [confirmPinOpen, setConfirmPinOpen] = useState(false);
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
+  const handleClose = () => setAnchorEl(null);
+
+  const handleDelete = () => {
+    setConfirmDeleteOpen(true);
+    handleClose();
+  };
+
+  const handlePin = () => {
+    setConfirmPinOpen(true);
+    handleClose();
+  };
+
+  const confirmDelete = () => {
+    setConfirmDeleteOpen(false);
+    if (onDeleteClick) {
+      const fakeEvent = { preventDefault: () => {} } as React.MouseEvent<HTMLButtonElement>;
+      onDeleteClick(fakeEvent);
+    }
+  };
+
+  const confirmPin = () => {
+    setConfirmPinOpen(false);
+    if (onPinClick) {
+      const fakeEvent = { preventDefault: () => {} } as React.MouseEvent<HTMLButtonElement>;
+      onPinClick(fakeEvent);
+    }
   };
 
   return (
-    <Card
-      style={style}
-      sx={{
-        display: 'flex',
-        width: '100%',
-        maxWidth: '400px',
-        borderRadius: '16px',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-        overflow: 'hidden',
-        backgroundColor: '#111827',
-        color: '#f8f9fa',
-        position: 'relative',
-        transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
-        '&:hover': {
-          transform: 'scale(1.05)',
-          boxShadow: '0 6px 25px rgba(0, 0, 0, 0.15)',
-        },
-        ...sx,
-      }}
-    >
-      <StyledCardImage>
-        <StyledImage src={imageSrc} alt="Preview" />
-        {isPinned && <PyrenzRibbon color="red">Pinned</PyrenzRibbon>}
-      </StyledCardImage>
-      <StyledCardContent>
-        <StyledCardName>{characterName}</StyledCardName>
-        <Typography variant="body2" color="text.secondary">
-          {children}
-        </Typography>
-      </StyledCardContent>
-      <IconButton
-        aria-label="more"
-        aria-controls="long-menu"
-        aria-haspopup="true"
-        onClick={handleMenuClick}
-        sx={{
-          position: 'absolute',
-          top: 8,
-          right: 8,
-          color: 'inherit',
-        }}
-      >
-        <MoreVertIcon />
-      </IconButton>
-      <Menu
-        id="long-menu"
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-        PaperProps={{
-          style: {
-            width: '20ch',
-          },
-        }}
-      >
-        <MenuItem
-          onClick={(e) => {
-            handleClose();
-            if (ChatSend) {
-              ChatSend(e as unknown as React.MouseEvent<HTMLDivElement>);
-            }
+    <>
+      <StyledCard style={style} sx={sx}>
+        <StyledCardImage>
+          <StyledImage src={imageSrc} alt="Preview" />
+          {isPinned && <PyrenzRibbon color="red">Pinned</PyrenzRibbon>}
+        </StyledCardImage>
+
+        <StyledCardContent>
+          <Box>
+            <StyledCardName>{characterName}</StyledCardName>
+            <Typography
+              variant="body2"
+              sx={{
+                color: '#cbd5e1',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                display: '-webkit-box',
+                WebkitLineClamp: 6,
+                WebkitBoxOrient: 'vertical',
+                lineHeight: 1.5,
+                fontSize: '0.9rem',
+              }}
+            >
+              {children}
+            </Typography>
+          </Box>
+        </StyledCardContent>
+
+        <IconButton
+          aria-label="more"
+          onClick={handleMenuClick}
+          sx={{
+            position: 'absolute',
+            top: 8,
+            right: 8,
+            color: 'inherit',
           }}
         >
-          Chat Now
-        </MenuItem>
-        <MenuItem
-          onClick={(e) => {
-            handleClose();
-            if (onPinClick) {
-              onPinClick(e as unknown as React.MouseEvent<HTMLButtonElement>);
-            }
-          }}
+          <MoreVertIcon />
+        </IconButton>
+
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+          PaperProps={{ style: { width: '20ch' } }}
         >
-          Pin Chat
-        </MenuItem>
-        <MenuItem
-          onClick={(e) => {
-            handleClose();
-            if (onDeleteClick) {
-              onDeleteClick(
-                e as unknown as React.MouseEvent<HTMLButtonElement>
-              );
-            }
-          }}
-        >
-          Delete Chat
-        </MenuItem>
-      </Menu>
-    </Card>
+          <MenuItem
+            onClick={(e) => {
+              handleClose();
+              ChatSend?.(e as unknown as React.MouseEvent<HTMLDivElement>);
+            }}
+          >
+            Chat Now
+          </MenuItem>
+          <MenuItem onClick={handlePin}>
+            {isPinned ? 'Unpin Chat' : 'Pin Chat'}
+          </MenuItem>
+          <MenuItem onClick={handleDelete}>Delete Chat</MenuItem>
+        </Menu>
+      </StyledCard>
+
+      <PyrenzDialog
+        open={confirmDeleteOpen}
+        onClose={() => setConfirmDeleteOpen(false)}
+        title="Delete Chat?"
+        content="This will permanently remove the chat history. This action is irreversible."
+        onConfirm={confirmDelete}
+      />
+
+      <PyrenzDialog
+        open={confirmPinOpen}
+        onClose={() => setConfirmPinOpen(false)}
+        title={isPinned ? 'Unpin Chat?' : 'Pin Chat?'}
+        content={
+          isPinned
+            ? 'This chat will be unpinned from your archive.'
+            : 'This chat will be pinned to the top of your archive for quick access.'
+        }
+        onConfirm={confirmPin}
+      />
+    </>
   );
-};
+}
