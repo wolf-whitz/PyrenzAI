@@ -20,11 +20,9 @@ class SupabaseUtil {
     let query;
 
     if (options?.onConflict) {
-      query = this.client
-        .from(table)
-        .upsert(data, {
-          onConflict: options.onConflict.join(', '),
-        });
+      query = this.client.from(table).upsert(data, {
+        onConflict: options.onConflict.join(', '),
+      });
     } else {
       query = this.client.from(table).insert(data);
     }

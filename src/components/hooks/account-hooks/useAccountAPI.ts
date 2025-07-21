@@ -5,7 +5,9 @@ import { Utils } from '~/Utility';
 import { User } from '@supabase/supabase-js';
 
 export const useAccountAPI = () => {
-  const [languages, setLanguages] = useState<{ code: string; name: string }[]>([]);
+  const [languages, setLanguages] = useState<{ code: string; name: string }[]>(
+    []
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
@@ -27,11 +29,13 @@ export const useAccountAPI = () => {
     };
 
     const fetchUser = async () => {
-      const { data: sessionData, error: sessionError } = await Utils.db.client.auth.getSession();
+      const { data: sessionData, error: sessionError } =
+        await Utils.db.client.auth.getSession();
       if (sessionError || !sessionData.session) {
         console.error('Error fetching session:', sessionError);
       } else {
-        const { data: userData, error: userError } = await Utils.db.client.auth.getUser();
+        const { data: userData, error: userError } =
+          await Utils.db.client.auth.getUser();
         if (userError) {
           console.error('Error fetching user:', userError);
         } else {

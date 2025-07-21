@@ -14,7 +14,7 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   ArrowForward as ArrowForwardIcon,
-  ReportOutlined as ReportIcon
+  ReportOutlined as ReportIcon,
 } from '@mui/icons-material';
 import { PyrenzBlueButton } from '~/theme';
 import { Textarea } from '@components';
@@ -67,7 +67,7 @@ export function CharacterProfile({
           backgroundColor: '#1E1E1E',
           color: 'white',
           borderRadius: 2,
-          boxShadow: 3
+          boxShadow: 3,
         }}
       >
         <CardMedia
@@ -77,11 +77,16 @@ export function CharacterProfile({
           alt={character.name}
           sx={{
             borderTopLeftRadius: 8,
-            borderTopRightRadius: 8
+            borderTopRightRadius: 8,
           }}
         />
         <CardContent>
-          <Typography gutterBottom variant="h5" component="h2" sx={{ fontWeight: 'bold' }}>
+          <Typography
+            gutterBottom
+            variant="h5"
+            component="h2"
+            sx={{ fontWeight: 'bold' }}
+          >
             {character.name}
           </Typography>
           <Typography
@@ -100,7 +105,7 @@ export function CharacterProfile({
                 cursor: 'pointer',
                 fontWeight: 'medium',
                 textDecoration: 'underline',
-                '&:hover': { color: 'primary.main' }
+                '&:hover': { color: 'primary.main' },
               }}
               onClick={handleCreatorClick}
             >
@@ -121,7 +126,7 @@ export function CharacterProfile({
                     backgroundColor: '#555',
                     boxShadow: '0 0 10px rgba(255,255,255,0.2)',
                     transform: 'scale(1.05)',
-                  }
+                  },
                 }}
               />
             ))}
@@ -153,7 +158,7 @@ export function CharacterProfile({
               backgroundColor: 'warning.main',
               '&:hover': {
                 backgroundColor: 'warning.dark',
-              }
+              },
             }}
             fullWidth
             onClick={handleOpenReport}
@@ -174,7 +179,14 @@ export function CharacterProfile({
               horizontal: 'left',
             }}
           >
-            <Box sx={{ p: 3, backgroundColor: '#2c2c2c', color: 'white', width: '400px' }}>
+            <Box
+              sx={{
+                p: 3,
+                backgroundColor: '#2c2c2c',
+                color: 'white',
+                width: '400px',
+              }}
+            >
               <Typography variant="subtitle1" gutterBottom>
                 Why do you want to report this character?
               </Typography>
@@ -192,7 +204,7 @@ export function CharacterProfile({
                     color: 'white',
                     '&:hover': {
                       backgroundColor: 'warning.dark',
-                    }
+                    },
                   }}
                 >
                   Submit
@@ -211,7 +223,7 @@ export function CharacterProfile({
                   backgroundColor: '#1976d2',
                   '&:hover': {
                     backgroundColor: '#1565c0',
-                  }
+                  },
                 }}
                 fullWidth
                 onClick={handleEditCharacter}
@@ -229,7 +241,7 @@ export function CharacterProfile({
                   backgroundColor: 'error.main',
                   '&:hover': {
                     backgroundColor: 'error.dark',
-                  }
+                  },
                 }}
                 fullWidth
                 onClick={handleCharacterDeletion}

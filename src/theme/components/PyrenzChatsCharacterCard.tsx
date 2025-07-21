@@ -123,7 +123,9 @@ export function PyrenzChatsCharacterCard({
   const confirmDelete = () => {
     setConfirmDeleteOpen(false);
     if (onDeleteClick) {
-      const fakeEvent = { preventDefault: () => {} } as React.MouseEvent<HTMLButtonElement>;
+      const fakeEvent = {
+        preventDefault: () => {},
+      } as React.MouseEvent<HTMLButtonElement>;
       onDeleteClick(fakeEvent);
     }
   };
@@ -131,7 +133,9 @@ export function PyrenzChatsCharacterCard({
   const confirmPin = () => {
     setConfirmPinOpen(false);
     if (onPinClick) {
-      const fakeEvent = { preventDefault: () => {} } as React.MouseEvent<HTMLButtonElement>;
+      const fakeEvent = {
+        preventDefault: () => {},
+      } as React.MouseEvent<HTMLButtonElement>;
       onPinClick(fakeEvent);
     }
   };

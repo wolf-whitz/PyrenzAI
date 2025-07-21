@@ -46,7 +46,9 @@ async function request<T>(
   isImageRequest = false
 ): Promise<T> {
   const { userUUID, purchase_id, subscription_plan } = useUserStore.getState();
-  const plan = Array.isArray(subscription_plan) ? subscription_plan[0] : subscription_plan;
+  const plan = Array.isArray(subscription_plan)
+    ? subscription_plan[0]
+    : subscription_plan;
 
   const BASE_URL =
     purchase_id && userUUID ? SERVER_API_URL_1 : SERVER_API_URL_2;

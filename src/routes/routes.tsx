@@ -13,7 +13,7 @@ import {
   Policy,
   AdminPanel,
   CharacterPage,
-  BlockedPage
+  BlockedPage,
 } from './Routing';
 
 export const AppRoutes = (

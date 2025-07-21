@@ -93,7 +93,9 @@ export const Api = () => {
   };
 
   return (
-    <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', height: '100%' }}>
+    <Box
+      sx={{ p: 3, display: 'flex', flexDirection: 'column', height: '100%' }}
+    >
       <Typography variant="h6" gutterBottom>
         API Settings
       </Typography>

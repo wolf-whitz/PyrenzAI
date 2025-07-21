@@ -7,14 +7,15 @@ import {
   MobileNav,
   useCharacterData,
   CharacterProfile,
-  CharacterDetails
+  CharacterDetails,
 } from '@components';
 import { CreateNewChat } from '@function';
 import { Utils } from '~/Utility';
 
 export function CharacterPage() {
   const { char_uuid } = useParams<{ char_uuid: string }>();
-  const { character, notFound, handleDeleteCharacter, handleReportCharacter } = useCharacterData(char_uuid);
+  const { character, notFound, handleDeleteCharacter, handleReportCharacter } =
+    useCharacterData(char_uuid);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [userUuid, setUserUuid] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState({
@@ -54,7 +55,8 @@ export function CharacterPage() {
           404 - Character Not Found
         </Typography>
         <Typography variant="body1">
-          The character you are looking for does not exist or you do not have permission to view it.
+          The character you are looking for does not exist or you do not have
+          permission to view it.
         </Typography>
       </Box>
     );
@@ -102,7 +104,15 @@ export function CharacterPage() {
   };
 
   return (
-    <Box sx={{ display: 'flex', backgroundColor: '#121212', color: 'white', minHeight: '100vh', pb: 6 }}>
+    <Box
+      sx={{
+        display: 'flex',
+        backgroundColor: '#121212',
+        color: 'white',
+        minHeight: '100vh',
+        pb: 6,
+      }}
+    >
       <Box sx={{ display: { xs: 'none', md: 'block' }, p: 5, pr: 3 }}>
         <Sidebar />
       </Box>

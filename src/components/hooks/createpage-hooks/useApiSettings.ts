@@ -96,8 +96,16 @@ export const useApiSettings = () => {
       return;
     }
 
-    if (!apiUrl.trim() || !apiKey.trim() || !modelName.trim() || !modelDescription.trim()) {
-      showAlert('All fields (API URL, API Key, Model Name, and Description) are required! 🚫', 'Error');
+    if (
+      !apiUrl.trim() ||
+      !apiKey.trim() ||
+      !modelName.trim() ||
+      !modelDescription.trim()
+    ) {
+      showAlert(
+        'All fields (API URL, API Key, Model Name, and Description) are required! 🚫',
+        'Error'
+      );
       return;
     }
 
@@ -129,7 +137,12 @@ export const useApiSettings = () => {
       return;
     }
 
-    if (!apiUrl.trim() || !apiKey.trim() || !modelName.trim() || !modelDescription.trim()) {
+    if (
+      !apiUrl.trim() ||
+      !apiKey.trim() ||
+      !modelName.trim() ||
+      !modelDescription.trim()
+    ) {
       showAlert('All fields must be filled in to update the model 📝', 'Error');
       return;
     }
@@ -150,7 +163,10 @@ export const useApiSettings = () => {
       await refreshUserModels();
     } catch (error) {
       console.error('Error updating model:', error);
-      showAlert('Oops! Couldn’t update your model. Check the console.', 'Error');
+      showAlert(
+        'Oops! Couldn’t update your model. Check the console.',
+        'Error'
+      );
     }
   };
 
@@ -165,7 +181,10 @@ export const useApiSettings = () => {
       await refreshUserModels();
     } catch (error) {
       console.error('Error deleting model:', error);
-      showAlert('Oops! Couldn’t delete your model. Check the console.', 'Error');
+      showAlert(
+        'Oops! Couldn’t delete your model. Check the console.',
+        'Error'
+      );
     }
   };
 

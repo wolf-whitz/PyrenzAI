@@ -16,10 +16,13 @@ export const BlockedPage = () => {
           Access Restricted in the United Kingdom
         </Typography>
         <Typography variant="body1">
-          In compliance with the UK’s Online Safety Act, access to this application is currently unavailable within the United Kingdom.
+          In compliance with the UK’s Online Safety Act, access to this
+          application is currently unavailable within the United Kingdom.
         </Typography>
         <Typography variant="body2" mt={4} color="text.secondary">
-          If you're accessing this service from within the UK, we kindly ask that you refrain from using the platform. If you're outside the UK and believe this is an error, using a VPN may help resolve the issue.
+          If you're accessing this service from within the UK, we kindly ask
+          that you refrain from using the platform. If you're outside the UK and
+          believe this is an error, using a VPN may help resolve the issue.
         </Typography>
       </Container>
     </Box>

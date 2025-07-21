@@ -1,2 +1,2 @@
-export * from './characterDetails'
-export * from './characterProfile'
+export * from './characterDetails';
+export * from './characterProfile';

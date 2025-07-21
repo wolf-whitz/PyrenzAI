@@ -40,15 +40,17 @@ export async function GetUserData(): Promise<any> {
       store.setPurchaseId(response.purchase_id || '');
 
       if (response.ai_customization?.inference_settings) {
-        store.setInferenceSettings(response.ai_customization.inference_settings);
+        store.setInferenceSettings(
+          response.ai_customization.inference_settings
+        );
       }
 
-      const modelIdentifiers = Object.entries(response.subscription_data.model).map(
-        ([name, info]: any) => ({
-          name,
-          model_description: info.description,
-        })
-      );
+      const modelIdentifiers = Object.entries(
+        response.subscription_data.model
+      ).map(([name, info]: any) => ({
+        name,
+        model_description: info.description,
+      }));
 
       store.setModelIdentifiers(modelIdentifiers);
       store.setMaxTokenLimit(response.subscription_data.max_token);

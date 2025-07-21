@@ -17,10 +17,11 @@ export const useCharacterData = (char_uuid: string | undefined) => {
         return;
       }
       try {
-        const { data: foundCharacter } = await Utils.db.selectFirstAvailable<any>(
-          ['public_characters', 'private_characters'],
-          { char_uuid }
-        );
+        const { data: foundCharacter } =
+          await Utils.db.selectFirstAvailable<any>(
+            ['public_characters', 'private_characters'],
+            { char_uuid }
+          );
         if (foundCharacter) {
           const verifiedCharacter = CharacterSchema.parse({
             ...foundCharacter,
@@ -69,7 +70,9 @@ export const useCharacterData = (char_uuid: string | undefined) => {
     }
   };
 
-  const handleReportCharacter = async (reportText: string): Promise<boolean> => {
+  const handleReportCharacter = async (
+    reportText: string
+  ): Promise<boolean> => {
     if (!char_uuid) return false;
 
     try {
@@ -100,5 +103,11 @@ export const useCharacterData = (char_uuid: string | undefined) => {
     }
   };
 
-  return { character, notFound, loading, handleDeleteCharacter, handleReportCharacter };
+  return {
+    character,
+    notFound,
+    loading,
+    handleDeleteCharacter,
+    handleReportCharacter,
+  };
 };

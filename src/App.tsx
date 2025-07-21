@@ -126,9 +126,7 @@ const AppContent = () => {
         },
       }}
     >
-      <Routes>
-        {AppRoutes}
-      </Routes>
+      <Routes>{AppRoutes}</Routes>
     </Box>
   );
 };
