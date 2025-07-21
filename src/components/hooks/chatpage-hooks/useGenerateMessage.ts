@@ -80,7 +80,7 @@ export const useGenerateMessage = () => {
 
         const data = await Utils.post<GenerateResponse>(url, payload);
 
-        if (!data?.content) throw new Error('No valid response from API');
+        if (!data?.content) throw new Error(`No valid response from API, Please share this with the developers: ${JSON.stringify(data)}`);
 
         const responseId = data.MessageID;
 
