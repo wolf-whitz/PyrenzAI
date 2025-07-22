@@ -9,15 +9,17 @@ interface UploadResult {
 
 export async function uploadImage(
   bucketName: string,
-  file: File
+  file: File | Blob
 ): Promise<UploadResult> {
   try {
-    if (!file.type.startsWith('image/')) {
-      return { url: null, error: 'Only image files are allowed.' };
+    const isImageType = file.type.startsWith('image/') || file instanceof Blob;
+
+    if (!isImageType) {
+      return { url: null, error: 'Only image files or blobs are allowed.' };
     }
 
     const maxSizeInBytes = 1 * 1024 * 1024;
-    if (file.size > maxSizeInBytes) {
+    if ('size' in file && file.size > maxSizeInBytes) {
       return { url: null, error: 'File size must be less than 1MB.' };
     }
 
@@ -53,26 +55,63 @@ export async function uploadImage(
   }
 }
 
-async function convertToWebP(file: File): Promise<Blob | null> {
+const MAX_DIMENSION = 1024;
+
+async function convertToWebP(input: File | Blob): Promise<Blob | null> {
   return new Promise((resolve) => {
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return resolve(null);
-      ctx.drawImage(img, 0, 0);
-      canvas.toBlob(
-        (blob) => {
-          if (blob) resolve(blob);
-          else resolve(null);
-        },
-        'image/webp',
-        0.9
-      );
-    };
-    img.onerror = () => resolve(null);
-    img.src = URL.createObjectURL(file);
+    try {
+      const objectUrl = URL.createObjectURL(input);
+      const img = new Image();
+
+      img.onload = () => {
+        try {
+          let { width, height } = img;
+
+          if (width > MAX_DIMENSION || height > MAX_DIMENSION) {
+            const aspectRatio = width / height;
+
+            if (aspectRatio > 1) {
+              width = MAX_DIMENSION;
+              height = Math.round(MAX_DIMENSION / aspectRatio);
+            } else {
+              height = MAX_DIMENSION;
+              width = Math.round(MAX_DIMENSION * aspectRatio);
+            }
+          }
+
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+
+          const ctx = canvas.getContext('2d');
+          if (!ctx) {
+            URL.revokeObjectURL(objectUrl);
+            return resolve(null);
+          }
+
+          ctx.drawImage(img, 0, 0, width, height);
+          canvas.toBlob(
+            (blob) => {
+              URL.revokeObjectURL(objectUrl);
+              resolve(blob ?? null);
+            },
+            'image/webp',
+            0.9
+          );
+        } catch {
+          URL.revokeObjectURL(objectUrl);
+          resolve(null);
+        }
+      };
+
+      img.onerror = () => {
+        URL.revokeObjectURL(objectUrl);
+        resolve(null);
+      };
+
+      img.src = objectUrl;
+    } catch {
+      resolve(null);
+    }
   });
 }

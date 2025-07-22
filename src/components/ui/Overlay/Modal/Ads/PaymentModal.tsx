@@ -18,10 +18,6 @@ export function PaymentModal({
   plan,
   isMonthly,
 }: PaymentModalProps) {
-  const handleKofiClick = () => {
-    window.location.href = 'https://ko-fi.com/whitzscott/tiers';
-  };
-
   const handleGumroadClick = () => {
     window.location.href = 'https://gumroad.com/your_gumroad_username';
   };
@@ -43,25 +39,7 @@ export function PaymentModal({
           <strong>Important when buying:</strong> PyrenzAI does not offer
           refunds after <strong>7 days</strong> from the purchase date.
         </Typography>
-        <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center', gap: 2 }}>
-          <PyrenzBlueButton
-            variant="contained"
-            onClick={handleKofiClick}
-            sx={{
-              backgroundColor: '#FF5E5B',
-              color: 'white',
-              '&:hover': {
-                backgroundColor: '#E04746',
-              },
-            }}
-          >
-            <img
-              src="/Favicons/Kofi.png"
-              alt="Kofi"
-              style={{ width: '20px', marginRight: '8px' }}
-            />
-            Buy via Ko-fi
-          </PyrenzBlueButton>
+        <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
           <PyrenzBlueButton
             variant="contained"
             onClick={handleGumroadClick}

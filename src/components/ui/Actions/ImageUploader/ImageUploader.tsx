@@ -43,13 +43,6 @@ export function ImageUploader({
     handleSubmit,
   } = useImageGenerate({ initialImage, onImageSelect });
 
-  const defaultModelInstruction = `Create a highly vivid and visually rich scene. Describe the characters in third-person perspective using no names — refer to them only as "a man", "a woman", or their appropriate gender identity.
-Capture every detail: their pose, their expressions, their clothing, and emotional state.
-Paint the entire background with specific detail — lighting, atmosphere, weather, time of day, and any dynamic action happening.
-Ensure everything is cinematic and immersive.`;
-
-  const defaultAdditionalPrompt = `complex background, Detailed Room, Detiled character, ((Cinematic pose)), ((cinematic up Shot)), cinematic lighting, masterpiece, ultra-detailed, best quality ,intricate details ,ai-generated, perfect anatomy, absurdres`;
-
   return (
     <Box
       sx={{
@@ -65,6 +58,7 @@ Ensure everything is cinematic and immersive.`;
         initialImage={bannerImagePreview}
         className="w-full mb-4"
       />
+
       <PyrenzBlueButton
         variant="contained"
         startIcon={<AddPhotoAlternateIcon />}
@@ -73,6 +67,7 @@ Ensure everything is cinematic and immersive.`;
       >
         Generate Image
       </PyrenzBlueButton>
+
       <Modal open={open} onClose={handleClose}>
         <Box
           sx={{
@@ -96,9 +91,9 @@ Ensure everything is cinematic and immersive.`;
             Model Instruction
           </Typography>
           <Textarea
-            value={modelInstruction || defaultModelInstruction}
+            value={modelInstruction}
             onChange={(e) => setModelInstruction(e.target.value)}
-            placeholder="Instruction for how the model should behave"
+            placeholder="Describe the model's behavior"
           />
 
           <Typography fontWeight={600} mt={2} mb={1}>
@@ -107,16 +102,16 @@ Ensure everything is cinematic and immersive.`;
           <Textarea
             value={textareaValue}
             onChange={(e) => setTextareaValue(e.target.value)}
-            placeholder="Enter a description to generate an image for your character ₍⑅ᐢ..ᐢ₎"
+            placeholder="Enter a scene to generate your character ₍⑅ᐢ..ᐢ₎"
           />
 
           <Typography fontWeight={600} mt={2} mb={1}>
             Additional Prompt
           </Typography>
           <Textarea
-            value={additionalPrompt || defaultAdditionalPrompt}
+            value={additionalPrompt}
             onChange={(e) => setAdditionalPrompt(e.target.value)}
-            placeholder="Extra quality or aesthetic details"
+            placeholder="Extra visual or quality instructions"
           />
 
           <Select

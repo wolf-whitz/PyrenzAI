@@ -57,9 +57,15 @@ export function TextareaForm() {
     debouncedSetCharacter(tagsArray);
   };
 
-  const handleImageSelect = async (file: File | null) => {
-    if (!file) return;
-    const { url, error } = await uploadImage('character-image', file);
+  const handleImageSelect = async (input: File | Blob | string | null) => {
+    if (!input) return;
+
+    if (typeof input === 'string') {
+      setCharacter({ profile_image: input });
+      return;
+    }
+
+    const { url, error } = await uploadImage('character-image', input);
     if (error) {
       showAlert(error, 'alert');
     } else if (url) {

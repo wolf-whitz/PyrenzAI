@@ -2,24 +2,29 @@ import { useState, useEffect } from 'react';
 import { Utils } from '~/Utility';
 import { usePyrenzAlert } from '~/provider';
 
-interface ImageResponse {
-  data: {
-    data: Array<{ url: string }>;
-  };
+interface ShuttleImage {
+  url: string;
 }
+
+type ShuttleImageResponse = ShuttleImage[];
 
 interface UseImageGenerateProps {
   initialImage?: string | null;
   onImageSelect: (file: File | null) => void;
 }
 
+const DEFAULT_MODEL_INSTRUCTION = `Create a highly vivid and visually rich scene. Describe the characters in third-person perspective using no names — refer to them only as "a man", "a woman", or their appropriate gender identity.
+Capture every detail: their pose, their expressions, their clothing, and emotional state.
+Paint the entire background with specific detail — lighting, atmosphere, weather, time of day, and any dynamic action happening.
+Ensure everything is cinematic and immersive.`;
+
+const DEFAULT_ADDITIONAL_PROMPT = `complex background, Detailed Room, Detiled character, ((Cinematic pose)), ((cinematic up Shot)), cinematic lighting, masterpiece, ultra-detailed, best quality ,intricate details ,ai-generated, perfect anatomy, absurdres`;
+
 export const useImageGenerate = ({
   initialImage,
   onImageSelect,
 }: UseImageGenerateProps) => {
-  const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(
-    initialImage || null
-  );
+  const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(initialImage || null);
   const [open, setOpen] = useState(false);
   const [textareaValue, setTextareaValue] = useState('');
   const [modelInstruction, setModelInstruction] = useState('');
@@ -31,16 +36,21 @@ export const useImageGenerate = ({
   const showAlert = usePyrenzAlert();
 
   useEffect(() => {
-    if (initialImage) setBannerImagePreview(initialImage);
+    setBannerImagePreview(initialImage || null);
   }, [initialImage]);
+
+  useEffect(() => {
+    if (!modelInstruction) setModelInstruction(DEFAULT_MODEL_INSTRUCTION);
+    if (!additionalPrompt) setAdditionalPrompt(DEFAULT_ADDITIONAL_PROMPT);
+  }, [open]);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   const handleClear = () => {
     setTextareaValue('');
-    setModelInstruction('');
-    setAdditionalPrompt('');
+    setModelInstruction(DEFAULT_MODEL_INSTRUCTION);
+    setAdditionalPrompt(DEFAULT_ADDITIONAL_PROMPT);
     setImageUrl(null);
     setIsSubmitted(false);
     setBannerImagePreview(null);
@@ -65,31 +75,32 @@ export const useImageGenerate = ({
     setIsSubmitted(true);
 
     try {
-      const finalPrompt = `
-${modelInstruction.trim()}
+      const blocks: string[] = [];
 
-Scene Description:
-${textareaValue.trim()}
+      if (modelInstruction.trim()) blocks.push(`Model Instruction:\n${modelInstruction.trim()}`);
+      blocks.push(`Scene Description:\n${textareaValue.trim()}`);
+      if (additionalPrompt.trim()) blocks.push(`Additional Prompt:\n${additionalPrompt.trim()}`);
 
-Additional Prompt:
-${additionalPrompt.trim()}
-      `.trim();
+      const finalPrompt = blocks.join('\n\n');
 
-      const res = await Utils.post<ImageResponse>('/api/ImageGen', {
+      const res = await Utils.post<ShuttleImageResponse>('/api/ImageGen', {
         query: finalPrompt,
         type: imageType,
       });
 
-      if (!res?.data?.data || res.data.data.length === 0) {
-        throw new Error('No image URL returned');
+      if (!res || !Array.isArray(res) || res.length === 0) {
+        throw new Error('No image returned');
       }
 
-      const firstImageUrl = res.data.data[0].url;
+      const firstImageUrl = res[0].url;
       setImageUrl(firstImageUrl);
       setBannerImagePreview(firstImageUrl);
-      onImageSelect(null); // Reset file selection
-    } catch (error) {
-      console.error('Image generation error:', error);
+
+      const blob = await fetch(firstImageUrl).then((r) => r.blob());
+      const file = new File([blob], 'generated-image.png', { type: blob.type });
+      onImageSelect(file);
+    } catch (err) {
+      console.error('Image generation error:', err);
       showAlert('Error creating image', 'Alert');
     } finally {
       setIsLoading(false);

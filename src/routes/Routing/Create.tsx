@@ -113,6 +113,17 @@ export function CreatePage() {
             >
               <Typography variant="h4">Please Log In</Typography>
             </Box>
+          ) : !userUUID ? (
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              minHeight="100vh"
+            >
+              <Typography variant="h5" color="error">
+                Unknown error: Unable to get user_uuid
+              </Typography>
+            </Box>
           ) : (
             <>
               <Box flex={1} overflow="auto">
