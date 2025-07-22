@@ -39,7 +39,7 @@ export function useFetchCharacters({
         showNsfw: show_nsfw,
       });
 
-      const safeCharacters = response.characters.map((char: Character) => char);
+      const safeCharacters = response.map((char: Character) => char);
 
       setCharacters(safeCharacters);
     } catch (error) {

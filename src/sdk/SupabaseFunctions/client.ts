@@ -1,7 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { ExtraFilter, Match, OrderBy, Range } from '@sdk/Types'
 import { select } from './select'
-import { selectFirstAvailable } from './selectFirstAvailable'
 import { rpc } from './rpc'
 import { insert } from './insert'
 import { update } from './update'
@@ -39,14 +38,4 @@ export const withClient = (client: SupabaseClient) => ({
     func: string,
     params: Record<string, any> = {}
   ) => rpc<T>(client, func, params),
-
-  selectFirstAvailable: <T>(
-    tables: string[],
-    match: Match = {},
-    columns: string = '*',
-    countOption: 'exact' | 'planned' | 'estimated' | null = null,
-    range?: Range,
-    orderBy?: OrderBy,
-    getExtraFilters?: (table: string) => ExtraFilter[]
-  ) => selectFirstAvailable<T>(client, tables, match, columns, countOption, range, orderBy, getExtraFilters)
 })

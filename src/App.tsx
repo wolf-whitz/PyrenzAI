@@ -12,91 +12,32 @@ import { useUserStore } from '~/store';
 import { Box, useTheme } from '@mui/material';
 import { BlockedPage } from './routes/Routing';
 
-export function AppContent() {
+const AppContent = () => {
   const [loading, setLoading] = useState(true);
   const [isBlocked, setIsBlocked] = useState(false);
-
-  const {
-    cachedUserData,
-    setCachedUserData,
-    clearCachedUserData,
-    setIsDeleted,
-    setIsBanned,
-  } = useUserStore();
-
+  const setIsDeleted = useUserStore((state) => state.setIsDeleted);
+  const setIsBanned = useUserStore((state) => state.setIsBanned);
   const theme = useTheme();
   const currentTheme = theme.palette.mode;
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const CACHE_TIME_MS = 5 * 60 * 1000;
-
     const initChecks = async () => {
       try {
-        const now = Date.now();
-        const cache = cachedUserData;
-        const isCacheValid = cache && now - cache.gotten_at < CACHE_TIME_MS;
-
-        if (isCacheValid) {
-          const { country_name, is_deleted, is_banned } = cache.data;
-
-          if (country_name === 'United Kingdom') {
-            setIsBlocked(true);
-            if (location.pathname !== '/Blocked') {
-              navigate('/Blocked', { replace: true });
-            }
-            return;
-          }
-
-          if (is_deleted) {
-            setIsDeleted(true);
-            await utils.db.client.auth.signOut();
-            navigate('/Blocked?type=deleted', { replace: true });
-            return;
-          }
-
-          if (is_banned) {
-            setIsBanned(true);
-            await utils.db.client.auth.signOut();
-            navigate('/Blocked?type=banned', { replace: true });
-            return;
-          }
-
-          setIsDeleted(false);
-          setIsBanned(false);
-          return;
-        }
-
-        const ipRes = await fetch('https://ipapi.co/json/');
-        const geoData = await ipRes.json();
+        const res = await fetch('https://ipapi.co/json/');
+        const geoData = await res.json();
         const blockedCountries = ['United Kingdom'];
-
         if (blockedCountries.includes(geoData?.country_name)) {
-          setCachedUserData({
-            data: {
-              country_name: geoData.country_name,
-              is_deleted: false,
-              is_banned: false,
-            },
-            gotten_at: now,
-          });
-
           setIsBlocked(true);
           if (location.pathname !== '/Blocked') {
             navigate('/Blocked', { replace: true });
           }
           return;
         }
-
         const { data: { user } } = await utils.db.client.auth.getUser();
-
-        let is_deleted = false;
-        let is_banned = false;
-
         if (user) {
           const userId = user.id;
-
           const [deletedRes, bannedRes] = await Promise.all([
             utils.db.select<{ is_deleted: boolean }>(
               'user_data',
@@ -111,60 +52,49 @@ export function AppContent() {
               { user_uuid: userId }
             ),
           ]);
-
-          is_deleted = deletedRes?.data?.[0]?.is_deleted ?? false;
-          is_banned = bannedRes?.data?.[0]?.is_banned ?? false;
-
-          if (is_deleted) {
+          const isDeletedUser = deletedRes?.data?.[0]?.is_deleted;
+          const isBannedUser = bannedRes?.data?.[0]?.is_banned;
+          if (isDeletedUser) {
             setIsDeleted(true);
             await utils.db.client.auth.signOut();
-            navigate('/Blocked?type=deleted', { replace: true });
+            if (
+              location.pathname !== '/Blocked' ||
+              location.search !== '?type=deleted'
+            ) {
+              navigate('/Blocked?type=deleted', { replace: true });
+            }
             return;
-          }
-
-          if (is_banned) {
+          } else if (isBannedUser) {
             setIsBanned(true);
             await utils.db.client.auth.signOut();
-            navigate('/Blocked?type=banned', { replace: true });
+            if (
+              location.pathname !== '/Blocked' ||
+              location.search !== '?type=banned'
+            ) {
+              navigate('/Blocked?type=banned', { replace: true });
+            }
             return;
+          } else {
+            setIsDeleted(false);
+            setIsBanned(false);
           }
+        } else {
+          setIsDeleted(false);
+          setIsBanned(false);
         }
-
-        setCachedUserData({
-          data: {
-            country_name: geoData?.country_name,
-            is_deleted,
-            is_banned,
-          },
-          gotten_at: now,
-        });
-
-        setIsDeleted(false);
-        setIsBanned(false);
       } catch (err) {
         console.error('Init check error:', err);
         setIsDeleted(false);
         setIsBanned(false);
-        clearCachedUserData();
       } finally {
         setLoading(false);
       }
     };
-
     initChecks();
-  }, [
-    location,
-    navigate,
-    cachedUserData,
-    setCachedUserData,
-    clearCachedUserData,
-    setIsDeleted,
-    setIsBanned,
-  ]);
+  }, [location, navigate, setIsDeleted, setIsBanned]);
 
   if (loading) return <Spinner />;
   if (isBlocked) return <BlockedPage />;
-
   return (
     <Box
       data-mui-theme={`theme-${currentTheme}`}
@@ -195,7 +125,7 @@ export function AppContent() {
       <Routes>{AppRoutes}</Routes>
     </Box>
   );
-}
+};
 
 export function App() {
   return (

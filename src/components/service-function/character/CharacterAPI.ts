@@ -16,12 +16,17 @@ export const useCharacterData = (char_uuid: string | undefined) => {
         setLoading(false);
         return;
       }
+
       try {
-        const { data: foundCharacter } =
-          await Utils.db.selectFirstAvailable<any>(
-            ['public_characters', 'private_characters'],
-            { char_uuid }
-          );
+        const match = { char_uuid };
+
+        const [publicRes, privateRes] = await Promise.all([
+          Utils.db.select<any>('public_characters', '*', 'exact', match),
+          Utils.db.select<any>('private_characters', '*', 'exact', match),
+        ]);
+
+        const foundCharacter =
+          publicRes.data?.[0] || privateRes.data?.[0] || null;
 
         if (foundCharacter) {
           const verifiedCharacter = CharacterSchema.parse({
@@ -42,6 +47,7 @@ export const useCharacterData = (char_uuid: string | undefined) => {
         setLoading(false);
       }
     };
+
     fetchCharacterData();
   }, [char_uuid]);
 
@@ -50,13 +56,16 @@ export const useCharacterData = (char_uuid: string | undefined) => {
     try {
       const user_uuid = await GetUserUUID();
       if (!user_uuid) return false;
+
       const tableName = character?.is_public
         ? 'public_characters'
         : 'private_characters';
+
       const deleted = await Utils.db.delete(tableName, {
         char_uuid,
         creator_uuid: user_uuid,
       });
+
       if (deleted.length > 0) {
         showAlert('Character deleted successfully', 'success');
         return true;

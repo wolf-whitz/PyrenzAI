@@ -15,11 +15,6 @@ interface FetchCharactersProps {
   blockedTags?: string[];
 }
 
-interface FetchCharactersResponse {
-  character: Character | null;
-  characters: Character[];
-}
-
 export async function fetchCharacters({
   currentPage = 1,
   itemsPerPage = 20,
@@ -31,12 +26,13 @@ export async function fetchCharacters({
   creatoruuid,
   sortBy = 'chat_messages_count',
   blockedTags = [],
-}: FetchCharactersProps): Promise<FetchCharactersResponse> {
+}: FetchCharactersProps): Promise<Character[]> {
   try {
     const bannedUserRes = await Utils.db.select<{ user_uuid: string }>(
       'banned_users',
       'user_uuid'
     );
+
     const bannedUserUUIDs = bannedUserRes.data
       .map((u) => u.user_uuid)
       .filter(Boolean);
@@ -57,6 +53,7 @@ export async function fetchCharacters({
     if (tags.length > 0) {
       baseFilters.push({ column: 'tags', operator: 'in', value: tags });
     }
+
     if (blockedTags.length > 0) {
       baseFilters.push({
         column: 'tags',
@@ -64,6 +61,7 @@ export async function fetchCharacters({
         value: blockedTags,
       });
     }
+
     if (bannedUserUUIDs.length > 0) {
       baseFilters.push({
         column: 'creator_uuid',
@@ -82,65 +80,47 @@ export async function fetchCharacters({
       ascending: false,
     };
 
-    const { data } = await Utils.db.selectFirstAvailable<Character>(
-      ['public_characters', 'private_characters'],
-      match,
-      '*',
-      'exact',
-      range,
-      orderBy,
-      (tableName) => {
-        const filters = [...baseFilters].filter((f) => {
-          if (
-            (f.operator === 'in' || f.operator === 'not_in' || f.operator === 'not_overlaps') &&
-            (!Array.isArray(f.value) || f.value.length === 0)
-          ) {
-            return false;
-          }
-          return true;
-        });
-        if (tableName === 'public_characters') {
-          filters.push({ column: 'is_banned', operator: 'eq', value: false });
+    const result = await Promise.all(
+      ['public_characters', 'private_characters'].map(async (table) => {
+        const extraFilters = [...baseFilters];
+
+        if (table === 'public_characters') {
+          extraFilters.push({
+            column: 'is_banned',
+            operator: 'eq',
+            value: false,
+          });
         }
-        return filters;
-      }
+
+        const { data } = await Utils.db.select<Character>(
+          table,
+          '*',
+          'exact',
+          match,
+          range,
+          orderBy,
+          extraFilters
+        );
+
+        return data;
+      })
     );
 
-    const normalized: Character[] = Array.isArray(data) ? data : data ? [data] : [];
-    const mappedCharacters: Character[] = normalized.map((char) => ({
+    const merged = result.flat().filter((char) => char != null);
+
+    const normalized: Character[] = merged.map((char) => ({
       ...char,
       id: String(char.id),
     }));
 
-    let selectedCharacter: Character | null = null;
-    if (mappedCharacters.length > 0) {
-      const highestCount = Math.max(
-        ...mappedCharacters.map((c) => c.chat_messages_count || 0)
-      );
-      const topCharacters = mappedCharacters.filter(
-        (c) => c.chat_messages_count === highestCount
-      );
-      selectedCharacter =
-        topCharacters.length === 1
-          ? topCharacters[0]
-          : topCharacters.sort((a, b) =>
-              String(a.id).localeCompare(String(b.id))
-            )[0];
-    }
-
-    return {
-      character: selectedCharacter,
-      characters: mappedCharacters,
-    };
+    return normalized;
   } catch (err) {
+    console.error('Character fetch error:', err);
     if (err instanceof Error) {
       Sentry.captureException(err);
     } else {
       Sentry.captureMessage('An unknown error occurred.');
     }
-    return {
-      character: null,
-      characters: [],
-    };
+    return [];
   }
 }

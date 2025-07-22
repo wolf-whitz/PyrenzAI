@@ -21,7 +21,6 @@ export class SupabaseUtil {
   update: ReturnType<typeof withClient>['update']
   delete: ReturnType<typeof withClient>['delete']
   rpc: ReturnType<typeof withClient>['rpc']
-  selectFirstAvailable: ReturnType<typeof withClient>['selectFirstAvailable']
 
   constructor(client: SupabaseClient) {
     this.client = client
@@ -32,6 +31,5 @@ export class SupabaseUtil {
     this.update = fns.update
     this.delete = fns.delete
     this.rpc = fns.rpc
-    this.selectFirstAvailable = fns.selectFirstAvailable
   }
 }

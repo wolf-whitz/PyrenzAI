@@ -14,7 +14,7 @@ interface PaginationProps {
 }
 
 export function Pagination({
-  currentPage: initialCurrentPage,
+  currentPage,
   setCurrentPage,
   itemsPerPage,
   search,
@@ -23,7 +23,6 @@ export function Pagination({
   const showAlert = usePyrenzAlert();
   const setCharacters = useHomeStore((state) => state.setCharacters);
   const maxPage = useHomeStore((state) => state.maxPage);
-  const [currentPage, setCurrentPageState] = useState(initialCurrentPage);
 
   const handlePageChange = async (newPage: number) => {
     if (isLoading || newPage < 1 || newPage > maxPage) return;
@@ -37,13 +36,10 @@ export function Pagination({
         search,
       });
 
-      const { characters } = response;
-
-      setCurrentPageState(newPage);
       setCurrentPage(newPage);
 
-      if (characters.length > 0) {
-        setCharacters(characters);
+      if (response.length > 0) {
+        setCharacters(response);
       } else {
         setCharacters([]);
         showAlert('No more characters to load on this page.', 'Success');
@@ -63,11 +59,7 @@ export function Pagination({
         Pagination Controls
       </h2>
       <Box display="flex" alignItems="center" justifyContent="center" gap={2}>
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          transition={{ duration: 0.3 }}
-        >
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.3 }}>
           <Button
             variant="outlined"
             onClick={() => handlePageChange(currentPage - 1)}
@@ -88,14 +80,8 @@ export function Pagination({
             {'<'}
           </Button>
         </motion.div>
-        <Typography color="#fff">
-          Page {currentPage} of {maxPage}
-        </Typography>
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          transition={{ duration: 0.3 }}
-        >
+        <Typography color="#fff">Page {currentPage} of {maxPage}</Typography>
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.3 }}>
           <Button
             variant="outlined"
             onClick={() => handlePageChange(currentPage + 1)}
@@ -105,8 +91,7 @@ export function Pagination({
               borderColor: '#add8e6',
               borderRadius: '9999px',
               padding: '0.5rem 1rem',
-              cursor:
-                isLoading || currentPage >= maxPage ? 'not-allowed' : 'pointer',
+              cursor: isLoading || currentPage >= maxPage ? 'not-allowed' : 'pointer',
               '&:hover': {
                 borderColor: 'blue',
                 backgroundColor: 'rgba(0, 0, 255, 0.04)',

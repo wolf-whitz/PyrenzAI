@@ -1,7 +1,14 @@
-import { createClient } from '@supabase/supabase-js'
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from '~/config'
-import { SupabaseUtil } from '~/sdk/SupabaseUtils'
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from '~/config';
+import { SupabaseUtil } from '~/sdk/SupabaseUtils';
 
-const client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+let _client: SupabaseClient | null = null;
 
-export const db = new SupabaseUtil(client)
+function getClient(): SupabaseClient {
+  if (!_client) {
+    _client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }
+  return _client;
+}
+
+export const db = new SupabaseUtil(getClient());
