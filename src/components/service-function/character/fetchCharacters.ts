@@ -92,28 +92,27 @@ export async function fetchCharacters({
           });
         }
 
-        const { data } = await Utils.db.select<Character>(
+        const { pages } = await Utils.db.select<Character>(
           table,
           '*',
           'exact',
           match,
           range,
           orderBy,
-          extraFilters
+          extraFilters,
+          true
         );
 
-        return data;
+        return pages?.[0] ?? [];
       })
     );
 
     const merged = result.flat().filter((char) => char != null);
 
-    const normalized: Character[] = merged.map((char) => ({
+    return merged.map((char) => ({
       ...char,
       id: String(char.id),
     }));
-
-    return normalized;
   } catch (err) {
     console.error('Character fetch error:', err);
     if (err instanceof Error) {

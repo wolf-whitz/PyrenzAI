@@ -9,8 +9,9 @@ export async function select<T>(
   match: Match = {},
   range?: Range,
   orderBy?: OrderBy,
-  extraFilters?: ExtraFilter[]
-): Promise<{ data: T[]; count: number | null }> {
+  extraFilters?: ExtraFilter[],
+  paging: boolean = false
+): Promise<{ data: T[]; count: number | null; pages?: T[][] }> {
   let query = client.from(table).select(columns, {
     count: countOption ?? undefined,
   });
@@ -62,8 +63,15 @@ export async function select<T>(
 
   if (error) throw error;
 
+  const finalData = (data ?? []) as T[];
+
   return {
-    data: (data ?? []) as T[],
+    data: finalData,
     count: count ?? null,
+    pages: paging
+      ? Array.from({ length: Math.ceil(finalData.length / 10) }, (_, i) =>
+          finalData.slice(i * 10, i * 10 + 10)
+        )
+      : undefined,
   };
 }

@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom';
 import { useHomeStore, useUserStore } from '~/store';
 import { useTranslation } from 'react-i18next';
 import {
@@ -6,13 +5,11 @@ import {
   getLatestCharacter as GetLatestCharacters,
   getRandomCharacters as GetRandomCharacters,
   getCharacterWithTag as GetCharactersWithTags,
-  GetUserUUID,
   useFetchCharacters,
 } from '@components';
 import { usePyrenzAlert } from '~/provider';
 
 export const useHomepageAPI = () => {
-  const navigate = useNavigate();
   const {
     search,
     currentPage,
@@ -23,7 +20,6 @@ export const useHomepageAPI = () => {
     setCharacters,
   } = useHomeStore();
   const { t } = useTranslation();
-  const userUUID = GetUserUUID();
   const itemsPerPage = 20;
   const showAlert = usePyrenzAlert();
   const showNSFW = useUserStore((state) => state.show_nsfw);
@@ -109,16 +105,12 @@ export const useHomepageAPI = () => {
   };
 
   return {
-    navigate,
     search,
-    currentPage,
     characters,
     loading,
     setSearch,
     setCurrentPage,
-    setLoading,
     t,
-    userUUID,
     itemsPerPage,
     handleButtonClick,
     onButtonTagClicked,

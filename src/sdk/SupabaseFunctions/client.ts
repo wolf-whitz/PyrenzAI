@@ -1,10 +1,10 @@
-import type { SupabaseClient } from '@supabase/supabase-js'
-import type { ExtraFilter, Match, OrderBy, Range } from '@sdk/Types'
-import { select } from './select'
-import { rpc } from './rpc'
-import { insert } from './insert'
-import { update } from './update'
-import { remove } from './delete'
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { ExtraFilter, Match, OrderBy, Range } from '@sdk/Types';
+import { select } from './select';
+import { rpc } from './rpc';
+import { insert } from './insert';
+import { update } from './update';
+import { remove } from './delete';
 
 export const withClient = (client: SupabaseClient) => ({
   select: <T>(
@@ -14,8 +14,9 @@ export const withClient = (client: SupabaseClient) => ({
     match: Match = {},
     range?: Range,
     orderBy?: OrderBy,
-    extraFilters?: ExtraFilter[]
-  ) => select<T>(client, table, columns, countOption, match, range, orderBy, extraFilters),
+    extraFilters?: ExtraFilter[],
+    paging: boolean = false
+  ) => select<T>(client, table, columns, countOption, match, range, orderBy, extraFilters, paging),
 
   insert: <T>(
     table: string,
@@ -38,4 +39,4 @@ export const withClient = (client: SupabaseClient) => ({
     func: string,
     params: Record<string, any> = {}
   ) => rpc<T>(client, func, params),
-})
+});

@@ -1,6 +1,6 @@
-import { useEffect, useState, useCallback } from 'react';
-import { motion } from 'framer-motion';
-import { Container, useMediaQuery, Box, useTheme } from '@mui/material';
+import { useState } from 'react'
+import { motion } from 'framer-motion'
+import { Container, useMediaQuery, Box, useTheme } from '@mui/material'
 import {
   Sidebar,
   SearchBar,
@@ -13,17 +13,16 @@ import {
   Banner,
   AuthenticationModal,
   useHomepageAPI,
-} from '@components';
+} from '@components'
 
 export function Home() {
-  const [showLogin, setShowLogin] = useState(false);
-  const [showRegister, setShowRegister] = useState(false);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [showLogin, setShowLogin] = useState(false)
+  const [showRegister, setShowRegister] = useState(false)
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
   const {
     search,
-    currentPage,
     characters,
     loading,
     setSearch,
@@ -32,18 +31,15 @@ export function Home() {
     itemsPerPage,
     handleButtonClick,
     onButtonTagClicked,
-  } = useHomepageAPI();
+  } = useHomepageAPI()
 
   const toggleMode = () => {
-    setShowLogin(!showLogin);
-    setShowRegister(!showRegister);
-  };
+    setShowLogin(!showLogin)
+    setShowRegister(!showRegister)
+  }
 
   return (
-    <Box
-      component="div"
-      sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}
-    >
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <motion.div
         className="flex flex-col min-h-screen text-white"
         aria-label={t('ariaLabels.homePage')}
@@ -53,30 +49,18 @@ export function Home() {
         transition={{ duration: 0.5 }}
       >
         <Box component="header" sx={{ width: '100%' }}>
-          <PreviewHeader
-            setShowLogin={setShowLogin}
-            setShowRegister={setShowRegister}
-          />
+          <PreviewHeader setShowLogin={setShowLogin} setShowRegister={setShowRegister} />
         </Box>
 
         <Container
-          component="div"
           maxWidth={false}
           disableGutters
-          sx={{
-            flex: 1,
-            display: 'flex',
-            flexDirection: { xs: 'column', md: 'row' },
-          }}
+          sx={{ flex: 1, display: 'flex', flexDirection: { xs: 'column', md: 'row' } }}
         >
           {!isMobile && (
             <Box
               component="nav"
-              sx={{
-                display: { xs: 'none', md: 'flex' },
-                pl: '50px',
-                mt: '16px',
-              }}
+              sx={{ display: { xs: 'none', md: 'flex' }, pl: '50px', mt: '16px' }}
               aria-label={t('ariaLabels.mainNavigation')}
             >
               <Sidebar />
@@ -93,15 +77,11 @@ export function Home() {
               alignItems: 'center',
             }}
           >
-            <Box component="header" sx={{ width: '100%' }}>
+            <Box sx={{ width: '100%' }}>
               <Banner />
             </Box>
 
-            <Box
-              component="div"
-              sx={{ mb: 6, width: '100%', maxWidth: 'lg' }}
-              aria-labelledby="search-heading"
-            >
+            <Box sx={{ mb: 6, width: '100%', maxWidth: 'lg' }}>
               <h2 id="search-heading" className="sr-only">
                 {t('ariaLabels.searchCharacters')}
               </h2>
@@ -113,11 +93,7 @@ export function Home() {
               />
             </Box>
 
-            <Box
-              component="div"
-              sx={{ mb: 6 }}
-              aria-labelledby="custom-action-heading"
-            >
+            <Box sx={{ mb: 6 }}>
               <h2 id="custom-action-heading" className="sr-only">
                 {t('ariaLabels.customActionButton')}
               </h2>
@@ -128,11 +104,7 @@ export function Home() {
               />
             </Box>
 
-            <Box
-              component="div"
-              sx={{ width: '100%' }}
-              aria-labelledby="characters-heading"
-            >
+            <Box sx={{ width: '100%' }}>
               <h2 id="characters-heading" className="sr-only">
                 {t('ariaLabels.characterList')}
               </h2>
@@ -146,10 +118,8 @@ export function Home() {
 
             {!loading && (
               <Pagination
-                currentPage={currentPage}
-                setCurrentPage={setCurrentPage}
-                itemsPerPage={itemsPerPage}
                 search={search}
+                itemsPerPage={itemsPerPage}
               />
             )}
           </Box>
@@ -166,12 +136,12 @@ export function Home() {
         <AuthenticationModal
           mode={showLogin ? 'login' : 'register'}
           onClose={() => {
-            setShowLogin(false);
-            setShowRegister(false);
+            setShowLogin(false)
+            setShowRegister(false)
           }}
           toggleMode={toggleMode}
         />
       )}
     </Box>
-  );
+  )
 }
