@@ -1,29 +1,29 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import llamaTokenizer from 'llama-tokenizer-js';
-import { motion } from 'framer-motion';
+import React, { useEffect, useState, useMemo } from 'react'
+import llamaTokenizer from 'llama-tokenizer-js'
+import { motion } from 'framer-motion'
 import {
   TextField,
   Tooltip as MUITooltip,
   Typography,
   InputAdornment,
   Box,
-} from '@mui/material';
-import clsx from 'clsx';
-import { z } from 'zod';
-import debounce from 'lodash/debounce';
+} from '@mui/material'
+import clsx from 'clsx'
+import { z } from 'zod'
+import debounce from 'lodash/debounce'
 
 interface TextareaProps {
-  name?: string;
-  value: string | string[];
-  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  label?: string;
-  placeholder?: string;
-  showTokenizer?: boolean;
-  className?: string;
-  maxLength?: number;
-  require_link?: boolean;
-  is_tag?: boolean;
-  onTagPressed?: (event: React.MouseEvent<HTMLElement>) => void;
+  name?: string
+  value: string | string[]
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
+  label?: string
+  placeholder?: string
+  showTokenizer?: boolean
+  className?: string
+  maxLength?: number
+  require_link?: boolean
+  is_tag?: boolean
+  onTagPressed?: (event: React.MouseEvent<HTMLElement>) => void
 }
 
 export function Textarea({
@@ -39,49 +39,49 @@ export function Textarea({
   is_tag = false,
   onTagPressed,
 }: TextareaProps) {
-  const [isLinkValid, setIsLinkValid] = useState(true);
+  const [isLinkValid, setIsLinkValid] = useState(true)
   const [characterCount, setCharacterCount] = useState(
     Array.isArray(value) ? value.join(', ').length : value.length
-  );
-  const [localTokenTotal, setLocalTokenTotal] = useState(0);
+  )
+  const [localTokenTotal, setLocalTokenTotal] = useState(0)
 
-  const urlSchema = z.string().url();
+  const urlSchema = z.string().url()
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newValue = e.target.value;
+    const newValue = e.target.value
 
     if (require_link) {
-      const validationResult = urlSchema.safeParse(newValue);
-      setIsLinkValid(validationResult.success);
-      if (!validationResult.success) return;
+      const validationResult = urlSchema.safeParse(newValue)
+      setIsLinkValid(validationResult.success)
+      if (!validationResult.success) return
     }
 
-    onChange(e);
-  };
+    onChange(e)
+  }
 
-  const displayValue = Array.isArray(value) ? value.join(', ') : value;
+  const displayValue = Array.isArray(value) ? value.join(', ') : value
 
   const tokenize = useMemo(
     () =>
       debounce((input: string) => {
-        const tokens = llamaTokenizer.encode(input);
-        setLocalTokenTotal(tokens.length);
+        const tokens = llamaTokenizer.encode(input)
+        setLocalTokenTotal(tokens.length)
       }, 250),
     []
-  );
+  )
 
   useEffect(() => {
-    const currentValue = Array.isArray(value) ? value.join(', ') : value;
-    setCharacterCount(currentValue.length);
+    const currentValue = Array.isArray(value) ? value.join(', ') : value
+    setCharacterCount(currentValue.length)
 
     if (showTokenizer) {
-      tokenize(currentValue);
+      tokenize(currentValue)
     }
 
     return () => {
-      tokenize.cancel();
-    };
-  }, [value, showTokenizer]);
+      tokenize.cancel()
+    }
+  }, [value, showTokenizer])
 
   return (
     <motion.div
@@ -90,12 +90,27 @@ export function Textarea({
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="flex justify-between items-center mb-1">
-        <Typography variant="body1" component="label" className="text-white">
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
+        <Typography variant="body1" component="label" sx={{ color: '#fff' }}>
           {label}
         </Typography>
-      </div>
-      <Box className="relative w-full">
+      </Box>
+
+      <Box
+        sx={{
+          position: 'relative',
+          width: '100%',
+          borderRadius: '16px',
+          background: 'rgba(255,255,255,0.03)',
+          backdropFilter: 'blur(8px)',
+          border: '1px solid rgba(255,255,255,0.08)',
+          transition: 'all 0.3s ease',
+          '&:hover': {
+            background: 'rgba(255,255,255,0.04)',
+            border: '1px solid rgba(255,255,255,0.15)',
+          },
+        }}
+      >
         <TextField
           name={name}
           value={displayValue}
@@ -111,22 +126,31 @@ export function Textarea({
             maxLength: maxLength,
             style: {
               paddingBottom: '40px',
+              color: '#fff',
             },
           }}
           InputProps={{
-            className:
-              'text-white bg-gray-800 border-none outline-none shadow-md transition-all duration-300 ease-in-out rounded-md',
-            style: { resize: 'none' },
+            className: 'bg-transparent',
+            sx: {
+              '& fieldset': { border: 'none' },
+              '& textarea': {
+                fontSize: '0.95rem',
+                lineHeight: 1.6,
+              },
+            },
             startAdornment: is_tag ? (
               <InputAdornment position="start">
                 <Typography
                   variant="body2"
                   onClick={onTagPressed}
-                  className="text-gray-500 cursor-pointer text-sm font-semibold"
                   sx={{
                     position: 'absolute',
                     bottom: 8,
                     left: 16,
+                    color: '#9ca3af',
+                    fontSize: '0.8rem',
+                    fontWeight: 500,
+                    cursor: 'pointer',
                     pointerEvents: 'auto',
                   }}
                 >
@@ -157,7 +181,6 @@ export function Textarea({
                         fontSize: '0.75rem',
                         color: '#9ca3af',
                         pointerEvents: 'auto',
-                        cursor: 'default',
                       }}
                     >
                       {characterCount}/{maxLength}
@@ -171,7 +194,6 @@ export function Textarea({
                           fontSize: '0.75rem',
                           color: '#9ca3af',
                           pointerEvents: 'auto',
-                          cursor: 'pointer',
                         }}
                       >
                         Tokens: {localTokenTotal}
@@ -185,5 +207,5 @@ export function Textarea({
         />
       </Box>
     </motion.div>
-  );
+  )
 }

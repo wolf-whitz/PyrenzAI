@@ -7,7 +7,7 @@ import {
 } from '@components';
 import { TextareaForm } from './Childrens/TextareaForm';
 import { useNavigate } from 'react-router-dom';
-import { Typography } from '@mui/material';
+import { Typography, Paper, Box } from '@mui/material';
 import { useCharacterStore } from '~/store';
 
 interface CharacterFormProps {
@@ -35,25 +35,63 @@ export function CharacterForm({
   } = useCreateAPI(navigate, character_update, user_uuid, creator);
 
   return (
-    <div className="flex flex-col items-center justify-center bg-gray-900 p-6">
-      <form
+    <Box
+      className="flex items-center justify-center min-h-screen p-4 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900"
+    >
+      <Paper
+        elevation={3}
+        component="form"
         onSubmit={handleSubmit}
-        className="bg-black p-8 rounded-lg shadow-lg w-full flex flex-col space-y-6"
+        sx={{
+          backgroundColor: 'rgba(30, 30, 30, 0.75)',
+          backdropFilter: 'blur(6px)',
+          borderRadius: 3,
+          width: '100%',
+          maxWidth: 700,
+          p: 4,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 4,
+          boxShadow: '0 0 16px rgba(0,0,0,0.3)',
+          border: '1px solid rgba(255,255,255,0.06)',
+        }}
       >
-        <Typography variant="h6" sx={{ color: 'white', fontWeight: 'bold' }}>
-          {character_update ? 'Update Mode' : 'Create Mode'}
+        <Typography
+          variant="h6"
+          sx={{
+            color: '#e5e5e5',
+            fontWeight: 600,
+            textAlign: 'center',
+            letterSpacing: '0.5px',
+          }}
+        >
+          {character_update ? 'Update Character' : 'Create Character'}
         </Typography>
 
         {error && (
-          <Typography variant="body2" sx={{ color: 'red', fontWeight: 'bold' }}>
+          <Typography
+            variant="body2"
+            sx={{
+              color: '#ff6b6b',
+              fontWeight: 500,
+              textAlign: 'center',
+              backgroundColor: 'rgba(255, 0, 0, 0.1)',
+              borderRadius: 2,
+              px: 2,
+              py: 1,
+            }}
+          >
             {error}
           </Typography>
         )}
 
-        <TextareaForm />
-        <GenderDropdown />
-        <VisibilityDropdown />
-        <TokenSummary />
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <TextareaForm />
+          <GenderDropdown />
+          <VisibilityDropdown />
+          <TokenSummary />
+        </Box>
+
         <FormActions
           onClear={handleClear}
           onSave={handleSave}
@@ -63,7 +101,7 @@ export function CharacterForm({
           onSelectDraft={handleSelectDraft}
           character_update={character_update}
         />
-      </form>
-    </div>
+      </Paper>
+    </Box>
   );
 }

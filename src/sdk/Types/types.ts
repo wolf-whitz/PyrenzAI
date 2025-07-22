@@ -12,7 +12,12 @@ export type Match<T = Record<string, any>> = {
   [K in keyof T]?: T[K] | T[K][]
 }
 
-export type FilterOperator = 'in' | 'not.in' | 'not.overlaps' | 'eq' | (string & {})
+export type FilterOperator =
+  | 'in'
+  | 'not_in'
+  | 'not_overlaps'
+  | 'eq'
+  | (string & {})  
 
 export interface ExtraFilter {
   column: string

@@ -15,3 +15,6 @@ export * from './PyrenzDialog';
 
 export * from './PyrenzColorPicker';
 export * from './PyrenzModal';
+
+export * from './PyrenzMenu'
+export * from './PyrenzCard'

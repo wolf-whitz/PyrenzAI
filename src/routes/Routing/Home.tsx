@@ -26,7 +26,9 @@ export function Home() {
     characters,
     loading,
     setSearch,
+    currentPage,
     setCurrentPage,
+    totalPages,
     t,
     itemsPerPage,
     handleButtonClick,
@@ -118,8 +120,10 @@ export function Home() {
 
             {!loading && (
               <Pagination
-                search={search}
-                itemsPerPage={itemsPerPage}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                isLoading={loading}
+                onPageChange={setCurrentPage}
               />
             )}
           </Box>

@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
-import { Typography, IconButton, Menu, MenuItem } from '@mui/material';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import React, { useState } from 'react'
+import { Typography, IconButton, MenuItem, Box } from '@mui/material'
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
+import { PyrenzMenu, PyrenzCard } from '~/theme'
 
 interface PersonaCardProps {
-  id: string;
-  persona_name: string;
-  persona_description: string;
-  is_selected?: boolean;
-  persona_profile?: string;
-  onSelect: (id: string) => void;
-  onDelete: (id: string) => void;
-  onEdit: (id: string) => void;
+  id: string
+  persona_name: string
+  persona_description: string
+  is_selected?: boolean
+  persona_profile?: string
+  onSelect: (id: string) => void
+  onDelete: (id: string) => void
+  onEdit: (id: string) => void
 }
 
 export function PersonaCard({
@@ -23,90 +24,99 @@ export function PersonaCard({
   onDelete,
   onEdit,
 }: PersonaCardProps) {
-  const truncateDescription = (description: string, limit: number = 100) => {
-    return description.length > limit
-      ? `${description.slice(0, limit)}...`
-      : description;
-  };
-
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+    setAnchorEl(event.currentTarget)
+  }
 
   const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
+    setAnchorEl(null)
+  }
 
   const handleSelect = () => {
-    onSelect(id);
-    handleMenuClose();
-  };
+    onSelect(id)
+    handleMenuClose()
+  }
 
   const handleDelete = () => {
-    onDelete(id);
-    handleMenuClose();
-  };
+    onDelete(id)
+    handleMenuClose()
+  }
 
   const handleEdit = () => {
-    onEdit(id);
-    handleMenuClose();
-  };
+    onEdit(id)
+    handleMenuClose()
+  }
+
+  const truncateDescription = (description: string, limit: number = 100) =>
+    description.length > limit ? `${description.slice(0, limit)}...` : description
 
   return (
-    <div
-      className={`bg-gray-700 rounded-lg p-4 flex flex-col cursor-pointer border-2 ${
-        is_selected ? 'border-blue-500' : 'border-transparent'
-      }`}
-    >
-      <div className="flex justify-between items-start">
-        <div className="flex items-center">
+    <PyrenzCard selected={is_selected}>
+      <Box display="flex" justifyContent="space-between" alignItems="start" gap={2}>
+        <Box display="flex" alignItems="center" gap={2}>
           {persona_profile && (
-            <img
+            <Box
+              component="img"
               src={persona_profile}
-              alt={`${persona_name}'s profile`}
-              className="w-12 h-12 rounded-full mr-4"
+              alt={persona_name}
+              sx={{
+                width: 48,
+                height: 48,
+                borderRadius: '50%',
+                objectFit: 'cover',
+              }}
             />
           )}
-          <Typography variant="h6" className="text-white">
+          <Typography
+            variant="subtitle1"
+            sx={{
+              color: '#fff',
+              fontWeight: 600,
+              fontSize: '1.05rem',
+              lineHeight: 1.2,
+            }}
+          >
             {persona_name}
           </Typography>
-        </div>
-        <IconButton
-          aria-label="more"
-          aria-controls="long-menu"
-          aria-haspopup="true"
-          onClick={handleMenuOpen}
-        >
-          <MoreVertIcon className="text-white" />
+        </Box>
+        <IconButton onClick={handleMenuOpen} sx={{ color: '#aaa' }}>
+          <MoreHorizIcon />
         </IconButton>
-      </div>
-      <Typography variant="body2" className="text-gray-300">
+      </Box>
+
+      <Typography
+        variant="body2"
+        sx={{
+          color: '#aaa',
+          mt: 1.5,
+          fontSize: '0.88rem',
+          lineHeight: 1.5,
+        }}
+      >
         {truncateDescription(persona_description)}
       </Typography>
+
       {is_selected && (
-        <Typography variant="body2" className="text-gray-400 mt-2">
+        <Typography
+          variant="body2"
+          sx={{
+            color: '#4ea7f7',
+            mt: 1,
+            fontSize: '0.85rem',
+            fontStyle: 'italic',
+          }}
+        >
           Default Persona
         </Typography>
       )}
-      <Menu
-        id="long-menu"
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-        PaperProps={{
-          style: {
-            maxHeight: 48 * 4.5,
-            width: '20ch',
-          },
-        }}
-      >
+
+      <PyrenzMenu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
         <MenuItem onClick={handleSelect}>Select</MenuItem>
         <MenuItem onClick={handleEdit}>Edit</MenuItem>
         <MenuItem onClick={handleDelete}>Delete</MenuItem>
-      </Menu>
-    </div>
-  );
+      </PyrenzMenu>
+    </PyrenzCard>
+  )
 }

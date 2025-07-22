@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
 import {
   AppBar,
   Toolbar,
@@ -11,7 +11,7 @@ import {
   Box,
   useMediaQuery,
   useTheme,
-} from '@mui/material';
+} from '@mui/material'
 import {
   HomeOutlined as HomeIcon,
   ChatOutlined as ChatIcon,
@@ -20,38 +20,38 @@ import {
   LoginOutlined as LoginIcon,
   PersonAddOutlined as PersonAddIcon,
   DescriptionOutlined as DescriptionIcon,
-} from '@mui/icons-material';
-import { FaDiscord } from 'react-icons/fa';
-import { useTranslation } from 'react-i18next';
-import { Utils } from '~/Utility';
-import { PyrenzStyledDrawer, PyrenzBlueButtonWithLoading } from '~/theme';
-import { useUserStore } from '~/store';
+} from '@mui/icons-material'
+import { FaDiscord } from 'react-icons/fa'
+import { useTranslation } from 'react-i18next'
+import { Utils } from '~/Utility'
+import { PyrenzStyledDrawer, PyrenzBlueButtonWithLoading } from '~/theme'
+import { useUserStore } from '~/store'
 
 interface HeaderProps {
-  setShowLogin: (value: boolean) => void;
-  setShowRegister: (value: boolean) => void;
+  setShowLogin: (value: boolean) => void
+  setShowRegister: (value: boolean) => void
 }
 
 export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const { t } = useTranslation();
-  const theme = useTheme();
-  const isMediumOrSmaller = useMediaQuery(theme.breakpoints.down('md'));
-  const subscriptionPlan = useUserStore((state) => state.subscription_plan);
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const { t } = useTranslation()
+  const theme = useTheme()
+  const isMediumOrSmaller = useMediaQuery(theme.breakpoints.down('md'))
+  const subscriptionPlan = useUserStore((state) => state.subscription_plan)
 
   useEffect(() => {
     const checkUserSession = async () => {
-      const { data, error } = await Utils.db.client.auth.getSession();
+      const { data, error } = await Utils.db.client.auth.getSession()
       if (data.session) {
-        setIsLoggedIn(true);
+        setIsLoggedIn(true)
       } else if (error) {
-        console.error('Error checking user session:', error);
+        console.error('Error checking user session:', error)
       }
-    };
+    }
 
-    checkUserSession();
-  }, []);
+    checkUserSession()
+  }, [])
 
   const menuItems = [
     { name: t('navigation.home'), icon: <HomeIcon />, link: '/Home' },
@@ -67,14 +67,14 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
       link: 'https://discord.gg/zTcyP4WB8h',
       external: true,
     },
-  ];
+  ]
 
   if (subscriptionPlan && subscriptionPlan.includes('Melon')) {
     menuItems.push({
       name: 'Pyrenz+',
       icon: <PyrenzPlusIcon />,
       link: '/Subscription',
-    });
+    })
   }
 
   return (
@@ -101,7 +101,7 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
               alt={t('footer.pyrenzLogo')}
               className="h-8 w-8"
             />
-            <div className="text-2xl font-bold font-pyrenzfont hover:text-blue-500 transition-colors duration-300">
+            <div className="text-2xl font-bold font-pyrenzfont hover:text-white transition-colors duration-300">
               Pyrenz<span className="text-[#add8e6]">AI</span>
             </div>
           </div>
@@ -114,12 +114,12 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
                   startIcon={icon}
                   sx={{
                     color: 'white',
-                    border: 'none',
                     background: 'transparent',
+                    border: 'none',
                     '&:hover': {
                       background: 'transparent',
                       border: 'none',
-                      color: 'blue',
+                      color: 'white',
                     },
                   }}
                   className="font-pyrenzfont whitespace-nowrap"
@@ -132,18 +132,19 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
                   {name}
                 </PyrenzBlueButtonWithLoading>
               ))}
+
               {!isLoggedIn && (
                 <>
                   <PyrenzBlueButtonWithLoading
                     startIcon={<LoginIcon />}
                     sx={{
                       color: 'white',
-                      border: 'none',
                       background: 'transparent',
+                      border: 'none',
                       '&:hover': {
                         background: 'transparent',
                         border: 'none',
-                        color: 'blue',
+                        color: 'white',
                       },
                     }}
                     className="font-pyrenzfont whitespace-nowrap"
@@ -155,12 +156,12 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
                     startIcon={<PersonAddIcon />}
                     sx={{
                       color: 'white',
-                      border: 'none',
                       background: 'transparent',
+                      border: 'none',
                       '&:hover': {
                         background: 'transparent',
                         border: 'none',
-                        color: 'blue',
+                        color: 'white',
                       },
                     }}
                     className="font-pyrenzfont whitespace-nowrap"
@@ -202,9 +203,8 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
                           backgroundColor: 'transparent',
                           color: 'white',
                           '&:hover': {
-                            backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                            borderRadius: '50px',
-                            color: 'blue',
+                            backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                            color: 'white',
                           },
                         }}
                       >
@@ -221,11 +221,10 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
                           onClick={() => setShowLogin(true)}
                           sx={{
                             backgroundColor: 'transparent',
-                            borderRadius: '50px',
                             color: 'white',
                             '&:hover': {
-                              backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                              color: 'blue',
+                              backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                              color: 'white',
                             },
                           }}
                         >
@@ -239,11 +238,10 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
                           onClick={() => setShowRegister(true)}
                           sx={{
                             backgroundColor: 'transparent',
-                            borderRadius: '50px',
                             color: 'white',
                             '&:hover': {
-                              backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                              color: 'blue',
+                              backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                              color: 'white',
                             },
                           }}
                         >
@@ -262,5 +260,5 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
         </Toolbar>
       </AppBar>
     </motion.div>
-  );
+  )
 }

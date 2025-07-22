@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import {
   HomeOutlined as HomeIcon,
@@ -9,7 +9,7 @@ import {
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '~/store';
-import { AuthenticationModal } from '@components';
+import { AuthenticationModal, GetUserUUID } from '@components';
 import {
   Tooltip,
   Drawer,
@@ -34,7 +34,25 @@ export function Sidebar({ className }: { className?: string }) {
   const user_uuid = useUserStore((state) => state.userUUID);
   const username = useUserStore((state) => state.username);
   const user_avatar = useUserStore((state) => state.userIcon);
-  const is_login = useUserStore((state) => state.is_login);
+
+  const [user, setUser] = useState<User | null>(null);
+
+  const fetchUser = async () => {
+    try {
+      const uuid = await GetUserUUID();
+      setUser({
+        username: username || 'Anon',
+        user_avatar: user_avatar || '',
+        user_uuid: uuid,
+      });
+    } catch {
+      setUser(null);
+    }
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, [user_uuid, username, user_avatar]);
 
   const menuItems = [
     {
@@ -65,18 +83,7 @@ export function Sidebar({ className }: { className?: string }) {
   ];
 
   const toggleModalMode = () => {
-    setModalMode((prevMode) => (prevMode === 'login' ? 'register' : 'login'));
-  };
-
-  const getUser = (): User | null => {
-    if (is_login && user_uuid) {
-      return {
-        username: username || 'Anon',
-        user_avatar: user_avatar || '',
-        user_uuid,
-      };
-    }
-    return null;
+    setModalMode((prev) => (prev === 'login' ? 'register' : 'login'));
   };
 
   return (
@@ -101,7 +108,7 @@ export function Sidebar({ className }: { className?: string }) {
                 setHovered={setHovered}
                 navigate={navigate}
                 setShowLoginModal={setShowLoginModal}
-                user={getUser()}
+                user={user}
               />
             ))}
           </List>
@@ -114,7 +121,7 @@ export function Sidebar({ className }: { className?: string }) {
                 setHovered={setHovered}
                 navigate={navigate}
                 setShowLoginModal={setShowLoginModal}
-                user={getUser()}
+                user={user}
               />
             ))}
           </List>
@@ -151,20 +158,19 @@ function SidebarItem({
 }: SidebarItemProps) {
   const { t } = useTranslation();
 
+  const restricted = [
+    t('navigation.settings'),
+    t('navigation.create'),
+    t('navigation.chats'),
+    t('navigation.profile'),
+  ];
+
   const handleClick = () => {
-    if (
-      [
-        t('navigation.settings'),
-        t('navigation.create'),
-        t('navigation.chats'),
-        t('navigation.profile'),
-      ].includes(item.name) &&
-      !user
-    ) {
+    if (restricted.includes(item.name) && !user) {
       setShowLoginModal(true);
-    } else {
-      navigate(item.path);
+      return;
     }
+    navigate(item.path);
   };
 
   return (

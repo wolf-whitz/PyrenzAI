@@ -1,6 +1,6 @@
-import { Button, CircularProgress, Box, styled } from '@mui/material';
-import { keyframes } from '@mui/system';
-import type { ButtonProps } from '@mui/material';
+import { Button, CircularProgress, Box, styled } from '@mui/material'
+import { keyframes } from '@mui/system'
+import type { ButtonProps } from '@mui/material'
 
 const zoomIn = keyframes`
   0% {
@@ -9,44 +9,50 @@ const zoomIn = keyframes`
   100% {
     transform: scale(1.05);
   }
-`;
+`
 
 interface PyrenzButtonProps extends ButtonProps {
-  dataState?: 'loading' | string;
+  dataState?: 'loading' | string
 }
 
 export const PyrenzBlueButton = styled(Button, {
   shouldForwardProp: (prop) => prop !== 'dataState',
 })<PyrenzButtonProps>(({ dataState }) => ({
-  color: 'black',
-  backgroundColor: '#00bcd4',
-  transition: 'all 0.2s ease',
-  borderRadius: 4,
-  justifyContent: 'center',
-  transform: 'scale(1)',
+  color: '#ffffff',
+  backgroundColor: 'rgba(255, 255, 255, 0.06)',
+  backdropFilter: 'blur(12px)',
+  WebkitBackdropFilter: 'blur(12px)',
+  borderRadius: 14,
+  padding: '10px 24px',
+  textTransform: 'none',
+  transition: 'all 0.3s ease-in-out',
+  border: '1.5px solid rgba(174, 228, 255, 0.2)',
+  boxShadow: 'none',
+  position: 'relative',
+  overflow: 'hidden',
+
   '&:hover': {
     animation: `${zoomIn} 0.3s ease forwards`,
-    backgroundColor: '#62efff',
-    color: 'black',
+    color: '#aee4ff',
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    border: '1.5px solid rgba(174, 228, 255, 0.4)',
     boxShadow: 'none',
   },
+
   '&:active': {
+    backgroundColor: 'rgba(0, 188, 212, 0.18)',
+    color: '#ffffff',
     transform: 'scale(0.96)',
+    border: '1.5px solid rgba(174, 228, 255, 0.3)',
+    boxShadow: 'none',
   },
+
   ...(dataState === 'loading' && {
     opacity: 0.6,
     pointerEvents: 'none',
     userSelect: 'none',
-    position: 'relative',
-    '&::after': {
-      content: '""',
-      position: 'absolute',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-    },
   }),
-}));
+}))
 
 export const PyrenzBlueButtonWithLoading = ({
   dataState,
@@ -68,5 +74,5 @@ export const PyrenzBlueButtonWithLoading = ({
         />
       )}
     </Box>
-  );
-};
+  )
+}

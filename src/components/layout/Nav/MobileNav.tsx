@@ -1,4 +1,9 @@
-import { BottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
+import { useState, useEffect } from 'react';
+import {
+  BottomNavigation,
+  BottomNavigationAction,
+  Paper,
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import {
   HomeOutlined as HomeIcon,
@@ -8,6 +13,7 @@ import {
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '~/store';
+import { GetUserUUID } from '@components';
 
 type SetShowLoginModal = (show: boolean) => void;
 
@@ -18,7 +24,22 @@ export function MobileNav({
 }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const isLogin = useUserStore((state) => state.is_login);
+
+  const user_uuid = useUserStore((state) => state.userUUID);
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState<boolean>(false);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        await GetUserUUID();
+        setIsUserLoggedIn(true);
+      } catch {
+        setIsUserLoggedIn(false);
+      }
+    };
+
+    checkAuth();
+  }, [user_uuid]);
 
   const menuItems = [
     {
@@ -44,14 +65,13 @@ export function MobileNav({
   ];
 
   const handleNavigation = (item: { name: string; path: string }) => {
-    if (
-      [
-        t('navigation.settings'),
-        t('navigation.create'),
-        t('navigation.chats'),
-      ].includes(item.name) &&
-      !isLogin
-    ) {
+    const protectedRoutes = [
+      t('navigation.settings'),
+      t('navigation.create'),
+      t('navigation.chats'),
+    ];
+
+    if (protectedRoutes.includes(item.name) && !isUserLoggedIn) {
       setShowLoginModal(true);
     } else {
       navigate(item.path);

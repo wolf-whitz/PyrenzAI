@@ -33,21 +33,13 @@ export function FormActions({
   const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  const handleOpenDraftModal = () => {
-    setIsDraftModalOpen(true);
-  };
-
-  const handleCloseDraftModal = () => {
-    setIsDraftModalOpen(false);
-  };
-
-  const handleGuideClick = () => {
-    navigate('/Docs');
-  };
+  const handleOpenDraftModal = () => setIsDraftModalOpen(true);
+  const handleCloseDraftModal = () => setIsDraftModalOpen(false);
+  const handleGuideClick = () => navigate('/Docs');
 
   return (
     <motion.div
-      className="flex flex-wrap justify-end space-x-2 space-y-2 mt-4"
+      className="flex flex-wrap justify-end gap-2 mt-4"
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -56,21 +48,14 @@ export function FormActions({
         variant="contained"
         onClick={onClear}
         className="w-full sm:w-auto"
-        sx={{
-          bgcolor: 'black',
-          color: 'white',
-          '&:hover': { bgcolor: 'gray.700' },
-          '&:focus': { outline: 'none', ring: '2px solid gray.500' },
-        }}
       >
         Clear
       </PyrenzBlueButton>
+
       <PyrenzBlueButton
         variant="contained"
-        color="primary"
         onClick={onSave}
         disabled={saveLoading}
-        className="w-full sm:w-auto"
         startIcon={
           saveLoading ? (
             <CircularProgress size={20} color="inherit" />
@@ -78,37 +63,42 @@ export function FormActions({
             <SaveIcon />
           )
         }
+        className="w-full sm:w-auto"
       >
         {saveLoading ? 'Saving...' : 'Save'}
       </PyrenzBlueButton>
+
       <PyrenzBlueButton
         variant="contained"
-        color="primary"
         onClick={handleOpenDraftModal}
-        className="w-full sm:w-auto"
         startIcon={<DescriptionIcon />}
+        className="w-full sm:w-auto"
       >
         Drafts
       </PyrenzBlueButton>
+
       {character_update && (
         <PyrenzBlueButton
           variant="contained"
           color="error"
           onClick={onDelete}
-          className="w-full sm:w-auto"
           startIcon={<DeleteIcon />}
+          className="w-full sm:w-auto"
         >
           Delete
         </PyrenzBlueButton>
       )}
+
       <CreateButton
         loading={loading}
         className="w-full sm:w-auto"
         character_update={character_update}
       />
+
       {isDraftModalOpen && (
         <DraftsModal onClose={handleCloseDraftModal} onSelect={onSelectDraft} />
       )}
+
       <Typography
         variant="body1"
         align="center"
@@ -118,13 +108,13 @@ export function FormActions({
           component="button"
           variant="body1"
           onClick={handleGuideClick}
-          style={{
-            background: 'none',
-            border: 'none',
-            padding: 0,
+          sx={{
+            textDecoration: 'underline',
             cursor: 'pointer',
             color: 'inherit',
-            textDecoration: 'underline',
+            background: 'none',
+            border: 0,
+            p: 0,
           }}
         >
           Not sure where to start? Check out our starter guide! ദ്ദി(ᵔᗜᵔ)
