@@ -35,9 +35,7 @@ export function CharacterForm({
   } = useCreateAPI(navigate, character_update, user_uuid, creator);
 
   return (
-    <Box
-      className="flex items-center justify-center min-h-screen p-4 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900"
-    >
+    <Box className="flex items-center justify-center min-h-screen p-4 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
       <Paper
         elevation={3}
         component="form"

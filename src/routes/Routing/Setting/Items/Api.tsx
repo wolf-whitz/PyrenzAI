@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
@@ -6,10 +6,10 @@ import {
   Tooltip,
   IconButton,
   CardContent,
-} from '@mui/material'
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
-import { Textarea, useApiSettings } from '@components'
+} from '@mui/material';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import { Textarea, useApiSettings } from '@components';
 import {
   PyrenzBlueButton,
   PyrenzFormControl,
@@ -18,7 +18,7 @@ import {
   PyrenzMenu,
   PyrenzCard,
   PyrenzSelect,
-} from '~/theme'
+} from '~/theme';
 
 export const Api = () => {
   const {
@@ -37,60 +37,67 @@ export const Api = () => {
     handleSubmit,
     handleEdit,
     handleDelete,
-  } = useApiSettings()
+  } = useApiSettings();
 
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const [selectedModelIndex, setSelectedModelIndex] = useState<number | null>(null)
-  const [dialogOpen, setDialogOpen] = useState(false)
-  const [modelToDelete, setModelToDelete] = useState<string | null>(null)
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedModelIndex, setSelectedModelIndex] = useState<number | null>(
+    null
+  );
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [modelToDelete, setModelToDelete] = useState<string | null>(null);
 
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, index: number) => {
-    setAnchorEl(event.currentTarget)
-    setSelectedModelIndex(index)
-  }
+  const handleMenuOpen = (
+    event: React.MouseEvent<HTMLElement>,
+    index: number
+  ) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedModelIndex(index);
+  };
 
   const handleMenuClose = () => {
-    setAnchorEl(null)
-    setSelectedModelIndex(null)
-  }
+    setAnchorEl(null);
+    setSelectedModelIndex(null);
+  };
 
   const handleEditClick = () => {
     if (selectedModelIndex !== null) {
-      const model = userModels[selectedModelIndex]
-      setModelName(model.model_name)
-      setModelDescription(model.model_description)
-      handleEdit(model.id)
+      const model = userModels[selectedModelIndex];
+      setModelName(model.model_name);
+      setModelDescription(model.model_description);
+      handleEdit(model.id);
     }
-    handleMenuClose()
-  }
+    handleMenuClose();
+  };
 
   const handleDeleteClick = () => {
     if (selectedModelIndex !== null) {
-      const model = userModels[selectedModelIndex]
-      setModelToDelete(model.id)
-      setDialogOpen(true)
+      const model = userModels[selectedModelIndex];
+      setModelToDelete(model.id);
+      setDialogOpen(true);
     }
-    handleMenuClose()
-  }
+    handleMenuClose();
+  };
 
   const confirmDelete = () => {
     if (modelToDelete !== null) {
-      handleDelete(modelToDelete)
-      setModelToDelete(null)
+      handleDelete(modelToDelete);
+      setModelToDelete(null);
     }
-    setDialogOpen(false)
-  }
+    setDialogOpen(false);
+  };
 
   const cancelDelete = () => {
-    setModelToDelete(null)
-    setDialogOpen(false)
-  }
+    setModelToDelete(null);
+    setDialogOpen(false);
+  };
 
   const truncate = (text: string, max: number) =>
-    text.length > max ? text.slice(0, max) + '...' : text
+    text.length > max ? text.slice(0, max) + '...' : text;
 
   return (
-    <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', height: '100%' }}>
+    <Box
+      sx={{ p: 3, display: 'flex', flexDirection: 'column', height: '100%' }}
+    >
       <Typography variant="h6" gutterBottom>
         API Settings
       </Typography>
@@ -98,7 +105,9 @@ export const Api = () => {
       <Box component="form" onSubmit={handleSubmit} sx={{ flex: 1 }}>
         <Box mb={2}>
           <PyrenzFormControl fullWidth>
-            <PyrenzInputLabel id="provider-select-label">Select Provider</PyrenzInputLabel>
+            <PyrenzInputLabel id="provider-select-label">
+              Select Provider
+            </PyrenzInputLabel>
             <PyrenzSelect
               labelId="provider-select-label"
               id="provider-select"
@@ -108,7 +117,12 @@ export const Api = () => {
             >
               {providers.map((provider, index) => (
                 <MenuItem key={index} value={provider.provider_name}>
-                  <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    width="100%"
+                  >
                     <Typography>{provider.provider_name}</Typography>
                     <Tooltip title={provider.provider_description} arrow>
                       <IconButton size="small" edge="end">
@@ -173,7 +187,11 @@ export const Api = () => {
           {userModels.map((model, index) => (
             <PyrenzCard key={index} sx={{ minWidth: 275 }}>
               <CardContent>
-                <Box display="flex" justifyContent="space-between" alignItems="center">
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
                   <Typography variant="h5" component="div">
                     {model.model_name}
                   </Typography>
@@ -213,5 +231,5 @@ export const Api = () => {
         onConfirm={confirmDelete}
       />
     </Box>
-  )
-}
+  );
+};

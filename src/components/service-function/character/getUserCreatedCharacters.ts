@@ -36,7 +36,9 @@ export const getUserCreatedCharacters = (
         'user_uuid'
       );
 
-      const bannedUserUUIDs = bannedUserRes.data.map((u) => u.user_uuid).filter(Boolean);
+      const bannedUserUUIDs = bannedUserRes.data
+        .map((u) => u.user_uuid)
+        .filter(Boolean);
 
       if (bannedUserUUIDs.includes(uuid)) {
         return { characters: [], max_page: 1 };

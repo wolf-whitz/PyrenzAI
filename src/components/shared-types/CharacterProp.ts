@@ -4,11 +4,12 @@ export const CharacterSchema = z.object({
   id: z.string().optional(),
   char_uuid: z.string(),
 
+  title: z.string(),
   name: z.string().default('Anon'),
   description: z.string(),
   persona: z.string(),
 
-  model_instructions: z.string().optional(),
+  model_instructions: z.string(),
   scenario: z.string(),
   gender: z.string(),
 
@@ -22,14 +23,15 @@ export const CharacterSchema = z.object({
   is_public: z.boolean(),
   is_nsfw: z.boolean().optional(),
   is_owner: z.boolean().optional(),
-  
+
   is_details_private: z.boolean().optional(),
   is_banned: z.boolean().optional(),
 
   isLoading: z.boolean().optional(),
-  creator_uuid: z.string().optional(),
+  creator_uuid: z.string(),
 
   lorebook: z.string(),
+  attribute: z.string().optional(),
 });
 
 export const DraftSchema = z.object({

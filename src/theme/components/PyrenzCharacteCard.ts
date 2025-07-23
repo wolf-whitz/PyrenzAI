@@ -1,5 +1,5 @@
-import { styled } from '@mui/material/styles'
-import { Card, CardContent, Typography, Box } from '@mui/material'
+import { styled } from '@mui/material/styles';
+import { Card, CardContent, Typography, Box } from '@mui/material';
 
 export const PyrenzCharacterCard = styled(Card)(({ theme }) => ({
   width: '100%',
@@ -15,7 +15,8 @@ export const PyrenzCharacterCard = styled(Card)(({ theme }) => ({
   border: '1px solid rgba(255, 255, 255, 0.08)',
   overflow: 'hidden',
   boxShadow: '0 8px 24px rgba(0,0,0,0.25)',
-  transition: 'transform 0.4s ease, box-shadow 0.4s ease, background-color 0.4s ease',
+  transition:
+    'transform 0.4s ease, box-shadow 0.4s ease, background-color 0.4s ease',
   transformStyle: 'preserve-3d',
   '&:hover': {
     transform: 'translateY(-8px)',
@@ -27,7 +28,7 @@ export const PyrenzCharacterCard = styled(Card)(({ theme }) => ({
     maxWidth: '100%',
     height: 420,
   },
-}))
+}));
 
 export const PyrenzCharacterCardImage = styled('div')({
   width: '100%',
@@ -37,7 +38,7 @@ export const PyrenzCharacterCardImage = styled('div')({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-})
+});
 
 export const PyrenzCharacterCardImageImg = styled('img')({
   width: '100%',
@@ -54,7 +55,7 @@ export const PyrenzCharacterCardImageImg = styled('img')({
   '&.nsfw:hover': {
     filter: 'none',
   },
-})
+});
 
 export const PyrenzCharacterCardContent = styled(CardContent)(({ theme }) => ({
   padding: '16px',
@@ -67,7 +68,7 @@ export const PyrenzCharacterCardContent = styled(CardContent)(({ theme }) => ({
   [theme.breakpoints.down('sm')]: {
     padding: '12px',
   },
-}))
+}));
 
 export const PyrenzCharacterCardTitle = styled(Typography)(({ theme }) => ({
   fontSize: '1.25rem',
@@ -77,21 +78,23 @@ export const PyrenzCharacterCardTitle = styled(Typography)(({ theme }) => ({
   [theme.breakpoints.down('sm')]: {
     fontSize: '1.1rem',
   },
-}))
+}));
 
-export const PyrenzCharacterCardDescription = styled(Typography)(({ theme }) => ({
-  fontSize: '0.875rem',
-  color: '#cbd5e1',
-  marginBottom: '16px',
-  overflow: 'hidden',
-  display: '-webkit-box',
-  WebkitLineClamp: 3,
-  WebkitBoxOrient: 'vertical',
-  [theme.breakpoints.down('sm')]: {
-    WebkitLineClamp: 2,
-    fontSize: '0.8rem',
-  },
-}))
+export const PyrenzCharacterCardDescription = styled(Typography)(
+  ({ theme }) => ({
+    fontSize: '0.875rem',
+    color: '#cbd5e1',
+    marginBottom: '16px',
+    overflow: 'hidden',
+    display: '-webkit-box',
+    WebkitLineClamp: 3,
+    WebkitBoxOrient: 'vertical',
+    [theme.breakpoints.down('sm')]: {
+      WebkitLineClamp: 2,
+      fontSize: '0.8rem',
+    },
+  })
+);
 
 export const PyrenzCharacterCardTags = styled(Box)({
   display: 'flex',
@@ -101,7 +104,7 @@ export const PyrenzCharacterCardTags = styled(Box)({
   maxHeight: 100,
   overflow: 'hidden',
   width: '100%',
-})
+});
 
 export const PyrenzCharacterCardTag = styled(Typography)({
   fontSize: '0.75rem',
@@ -115,7 +118,7 @@ export const PyrenzCharacterCardTag = styled(Typography)({
     color: '#f1f5f9',
     backgroundColor: 'rgba(30, 41, 59, 0.6)',
   },
-})
+});
 
 export const PyrenzAltTag = styled(Typography)({
   fontSize: '0.75rem',
@@ -125,4 +128,4 @@ export const PyrenzAltTag = styled(Typography)({
   '&:hover': {
     color: '#f1f5f9',
   },
-})
+});

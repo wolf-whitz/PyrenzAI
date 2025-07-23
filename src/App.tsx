@@ -35,7 +35,9 @@ const AppContent = () => {
           }
           return;
         }
-        const { data: { user } } = await utils.db.client.auth.getUser();
+        const {
+          data: { user },
+        } = await utils.db.client.auth.getUser();
         if (user) {
           const userId = user.id;
           const [deletedRes, bannedRes] = await Promise.all([

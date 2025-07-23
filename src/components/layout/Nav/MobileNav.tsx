@@ -1,9 +1,5 @@
 import { useState, useEffect } from 'react';
-import {
-  BottomNavigation,
-  BottomNavigationAction,
-  Paper,
-} from '@mui/material';
+import { BottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import {
   HomeOutlined as HomeIcon,

@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useUserStore } from '~/store'
+import { useState } from 'react';
+import { useUserStore } from '~/store';
 import {
   Tooltip,
   Dialog,
@@ -10,8 +10,8 @@ import {
   Button,
   Switch,
   Box,
-} from '@mui/material'
-import { styled } from '@mui/material/styles'
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 const PinkGlassSwitch = styled(Switch)(({ theme }) => ({
   width: 44,
@@ -42,7 +42,7 @@ const PinkGlassSwitch = styled(Switch)(({ theme }) => ({
     border: '1px solid rgba(255,255,255,0.1)',
     opacity: 1,
   },
-}))
+}));
 
 const GlassDialog = styled(Dialog)({
   '& .MuiPaper-root': {
@@ -52,7 +52,7 @@ const GlassDialog = styled(Dialog)({
     border: '1px solid rgba(255, 255, 255, 0.1)',
     color: '#fff',
   },
-})
+});
 
 const GlassButton = styled(Button)({
   padding: '6px 14px',
@@ -66,27 +66,27 @@ const GlassButton = styled(Button)({
   '&:hover': {
     backgroundColor: 'rgba(255, 255, 255, 0.08)',
   },
-})
+});
 
 export function NSFWSwitch() {
-  const { show_nsfw, toggleShowNSFW } = useUserStore()
-  const [openTooltip, setOpenTooltip] = useState(false)
-  const [openDialog, setOpenDialog] = useState(false)
+  const { show_nsfw, toggleShowNSFW } = useUserStore();
+  const [openTooltip, setOpenTooltip] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
 
-  const handleTooltipOpen = () => setOpenTooltip(true)
-  const handleTooltipClose = () => setOpenTooltip(false)
+  const handleTooltipOpen = () => setOpenTooltip(true);
+  const handleTooltipClose = () => setOpenTooltip(false);
 
   const handleSwitchChange = () => {
-    if (!show_nsfw) setOpenDialog(true)
-    else toggleShowNSFW()
-  }
+    if (!show_nsfw) setOpenDialog(true);
+    else toggleShowNSFW();
+  };
 
   const handleConfirm = () => {
-    toggleShowNSFW()
-    setOpenDialog(false)
-  }
+    toggleShowNSFW();
+    setOpenDialog(false);
+  };
 
-  const handleCancel = () => setOpenDialog(false)
+  const handleCancel = () => setOpenDialog(false);
 
   return (
     <>
@@ -115,7 +115,10 @@ export function NSFWSwitch() {
       >
         <DialogTitle id="alert-dialog-title">Confirm Action</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description" sx={{ color: '#ddd' }}>
+          <DialogContentText
+            id="alert-dialog-description"
+            sx={{ color: '#ddd' }}
+          >
             Enabling NSFW content confirms that you are 18 or older and that you
             agree to our Terms of Service. Pyrenzai does not guarantee the
             nature of user-generated content. If you encounter any characters or
@@ -131,5 +134,5 @@ export function NSFWSwitch() {
         </DialogActions>
       </GlassDialog>
     </>
-  )
+  );
 }

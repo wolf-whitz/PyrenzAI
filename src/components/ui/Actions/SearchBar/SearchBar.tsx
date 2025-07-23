@@ -1,4 +1,10 @@
-import React, { useState, ChangeEvent, KeyboardEvent, useEffect } from 'react';
+import React, {
+  useState,
+  ChangeEvent,
+  KeyboardEvent,
+  useEffect,
+  useRef,
+} from 'react';
 import {
   TextField,
   InputAdornment,
@@ -23,26 +29,30 @@ export function SearchBar({
 }: SearchBarProps) {
   const [inputValue, setInputValue] = useState(search);
   const [isLoading, setIsLoading] = useState(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
   const { t } = useTranslation();
 
   useEffect(() => {
     if (inputValue.trim() === '') {
-      const timer = setTimeout(() => {
+      timerRef.current = setTimeout(() => {
         setSearch('');
         setCurrentPage(1);
-      }, 2000);
-      return () => clearTimeout(timer);
+      }, 1000);
     }
-  }, [inputValue, setSearch, setCurrentPage]);
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, [inputValue]);
 
   const handleSearch = () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
     setIsLoading(true);
-    const timer = setTimeout(() => {
-      setSearch(inputValue);
+
+    setTimeout(() => {
+      setSearch(inputValue.trim());
       setCurrentPage(1);
       setIsLoading(false);
-    }, 2000);
-    return () => clearTimeout(timer);
+    }, 500);
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -100,7 +110,6 @@ export function SearchBar({
                   backgroundColor: 'transparent',
                   color: 'white',
                 },
-
                 '& input:-webkit-autofill': {
                   WebkitBoxShadow: '0 0 0 1000px #1F2937 inset',
                   WebkitTextFillColor: 'white',

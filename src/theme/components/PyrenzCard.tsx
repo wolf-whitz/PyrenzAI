@@ -1,17 +1,24 @@
-import React from 'react'
-import { Box, BoxProps } from '@mui/material'
+import React from 'react';
+import { Box, BoxProps } from '@mui/material';
 
 interface PyrenzCardProps extends BoxProps {
-  children: React.ReactNode
-  selected?: boolean
+  children: React.ReactNode;
+  selected?: boolean;
 }
 
-export function PyrenzCard({ children, selected, sx, ...rest }: PyrenzCardProps) {
+export function PyrenzCard({
+  children,
+  selected,
+  sx,
+  ...rest
+}: PyrenzCardProps) {
   return (
     <Box
       sx={{
         background: 'rgba(255, 255, 255, 0.025)',
-        border: selected ? '1px solid #4ea7f7' : '1px solid rgba(255,255,255,0.08)',
+        border: selected
+          ? '1px solid #4ea7f7'
+          : '1px solid rgba(255,255,255,0.08)',
         borderRadius: '20px',
         backdropFilter: 'blur(8px)',
         padding: 3,
@@ -27,5 +34,5 @@ export function PyrenzCard({ children, selected, sx, ...rest }: PyrenzCardProps)
     >
       {children}
     </Box>
-  )
+  );
 }

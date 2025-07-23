@@ -1,5 +1,5 @@
-import { Menu, MenuProps } from '@mui/material'
-import { styled } from '@mui/material/styles'
+import { Menu, MenuProps } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 export const PyrenzMenu = styled((props: MenuProps) => (
   <Menu
@@ -34,4 +34,4 @@ export const PyrenzMenu = styled((props: MenuProps) => (
       },
     },
   },
-}))
+}));

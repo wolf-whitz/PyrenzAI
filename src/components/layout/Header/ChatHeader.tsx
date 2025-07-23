@@ -7,20 +7,20 @@ import {
   Box,
   Fade,
   Container,
-} from '@mui/material';
-import { ArrowBack } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
-import { useChatStore } from '~/store';
+} from '@mui/material'
+import { ArrowBack } from '@mui/icons-material'
+import { useNavigate } from 'react-router-dom'
+import { useChatStore } from '~/store'
 
 export function ChatHeader() {
-  const theme = useTheme();
-  const isMdScreen = useMediaQuery(theme.breakpoints.up('lg'));
-  const navigate = useNavigate();
-  const { char } = useChatStore();
+  const theme = useTheme()
+  const isMdScreen = useMediaQuery(theme.breakpoints.up('lg'))
+  const navigate = useNavigate()
+  const { char } = useChatStore()
 
   const handleArrowLeftClick = () => {
-    navigate('/#');
-  };
+    navigate('/#')
+  }
 
   return (
     <Fade in={true} timeout={500}>
@@ -53,17 +53,17 @@ export function ChatHeader() {
               aria-label="Character profile"
             >
               <Avatar
-                alt={char?.name || 'Anon'}
+                alt={char?.title || 'Anon'}
                 src={char?.profile_image || ''}
                 sx={{ width: 40, height: 40 }}
               />
             </IconButton>
             <Typography variant="h6" sx={{ fontSize: '1rem' }}>
-              {char?.name || 'Anon'}
+              {char?.title || 'Anon'}
             </Typography>
           </Box>
         </Box>
       </Container>
     </Fade>
-  );
+  )
 }

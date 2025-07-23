@@ -17,6 +17,13 @@ export const textareasByCategory: TextareaCategory[] = [
     category: 'Basic Information',
     fields: [
       {
+        name: 'title',
+        label: 'Title',
+        placeholder: 'Enter character title e.g., The Brave Warrior',
+        maxLength: 100,
+        showTokenizer: true,
+      },
+      {
         name: 'name',
         label: 'Name',
         placeholder: 'Enter character name e.g., John Doe',
@@ -82,6 +89,17 @@ export const textareasByCategory: TextareaCategory[] = [
         is_tag: true,
         maxLength: 150,
         showTokenizer: false,
+      },
+    ],
+  },
+  {
+    category: 'Attribute',
+    fields: [
+      {
+        name: 'attribute',
+        label: 'Attribute',
+        placeholder: 'Strength, Agility, Intelligence...',
+        showTokenizer: true,
       },
     ],
   },

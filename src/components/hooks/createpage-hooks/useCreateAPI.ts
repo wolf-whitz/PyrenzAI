@@ -63,22 +63,10 @@ export const useCreateAPI = (
   };
 
   const character: Character = {
-    persona: characterState.persona || '',
-    name: characterState.name || '',
-    model_instructions: characterState.model_instructions || '',
-    scenario: characterState.scenario || '',
-    description: characterState.description || '',
-    first_message: characterState.first_message || '',
-    lorebook: characterState.lorebook || '',
+    ...(characterState as Character),
     tags,
-    gender: characterState.gender || '',
     creator: creator || '',
-    is_public: characterState.is_public || false,
-    is_nsfw: characterState.is_nsfw || false,
-    is_details_private: characterState.is_details_private || false,
-    profile_image: characterState.profile_image || '',
     creator_uuid: user_uuid || '',
-    char_uuid: characterState.char_uuid || '',
   };
 
   const handleClear = () => {

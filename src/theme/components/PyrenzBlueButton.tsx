@@ -1,6 +1,6 @@
-import { Button, CircularProgress, Box, styled } from '@mui/material'
-import { keyframes } from '@mui/system'
-import type { ButtonProps } from '@mui/material'
+import { Button, CircularProgress, Box, styled } from '@mui/material';
+import { keyframes } from '@mui/system';
+import type { ButtonProps } from '@mui/material';
 
 const zoomIn = keyframes`
   0% {
@@ -9,10 +9,10 @@ const zoomIn = keyframes`
   100% {
     transform: scale(1.05);
   }
-`
+`;
 
 interface PyrenzButtonProps extends ButtonProps {
-  dataState?: 'loading' | string
+  dataState?: 'loading' | string;
 }
 
 export const PyrenzBlueButton = styled(Button, {
@@ -52,7 +52,7 @@ export const PyrenzBlueButton = styled(Button, {
     pointerEvents: 'none',
     userSelect: 'none',
   }),
-}))
+}));
 
 export const PyrenzBlueButtonWithLoading = ({
   dataState,
@@ -74,5 +74,5 @@ export const PyrenzBlueButtonWithLoading = ({
         />
       )}
     </Box>
-  )
-}
+  );
+};

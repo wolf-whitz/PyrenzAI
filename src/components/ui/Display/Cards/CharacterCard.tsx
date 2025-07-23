@@ -1,12 +1,12 @@
-import { useState, useEffect, useCallback } from 'react'
-import { Character } from '@shared-types'
-import { Box, Typography, Fade } from '@mui/material'
+import { useState, useEffect, useCallback } from 'react';
+import { Character } from '@shared-types';
+import { Box, Typography, Fade } from '@mui/material';
 import {
   ChatBubbleOutlineRounded as ChatIcon,
   PublicRounded as PublicIcon,
   LockRounded as LockIcon,
-} from '@mui/icons-material'
-import { useNavigate } from 'react-router-dom'
+} from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 import {
   PyrenzCharacterCard,
   PyrenzCharacterCardContent,
@@ -18,34 +18,34 @@ import {
   PyrenzCharacterCardImageImg,
   PyrenzAltTag,
   PyrenzRibbon,
-} from '~/theme'
+} from '~/theme';
 
 interface CharacterCardProps {
-  character: Character
+  character: Character;
 }
 
 export function CharacterCard({ character }: CharacterCardProps) {
-  const [isLoaded, setIsLoaded] = useState(false)
-  const navigate = useNavigate()
+  const [isLoaded, setIsLoaded] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoaded(true), 50)
-    return () => clearTimeout(timer)
-  }, [])
+    const timer = setTimeout(() => setIsLoaded(true), 50);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleCardClick = useCallback(() => {
-    navigate(`/character/${character.char_uuid}`)
-  }, [character.char_uuid, navigate])
+    navigate(`/character/${character.char_uuid}`);
+  }, [character.char_uuid, navigate]);
 
   const handleCreatorClick = useCallback(
     (e: React.MouseEvent<HTMLElement>) => {
-      e.stopPropagation()
-      navigate(`/profile/${character.creator_uuid}`)
+      e.stopPropagation();
+      navigate(`/profile/${character.creator_uuid}`);
     },
     [character.creator_uuid, navigate]
-  )
+  );
 
-  if (character.isLoading) return null
+  if (character.isLoading) return null;
 
   return (
     <Fade in={isLoaded} timeout={1500}>
@@ -133,5 +133,5 @@ export function CharacterCard({ character }: CharacterCardProps) {
         </PyrenzCharacterCardContent>
       </PyrenzCharacterCard>
     </Fade>
-  )
+  );
 }

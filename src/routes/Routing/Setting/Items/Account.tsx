@@ -1,25 +1,20 @@
-import { motion } from 'framer-motion'
-import {
-  Avatar,
-  Box,
-  ButtonBase,
-  Typography,
-} from '@mui/material'
-import { ChevronRightOutlined as ChevronRightIcon } from '@mui/icons-material'
-import { LanguageModal, useAccountAPI } from '@components'
-import { PyrenzDialog } from '~/theme'
-import { useState } from 'react'
+import { motion } from 'framer-motion';
+import { Avatar, Box, ButtonBase, Typography } from '@mui/material';
+import { ChevronRightOutlined as ChevronRightIcon } from '@mui/icons-material';
+import { LanguageModal, useAccountAPI } from '@components';
+import { PyrenzDialog } from '~/theme';
+import { useState } from 'react';
 
-const MotionButtonBase = motion(ButtonBase)
+const MotionButtonBase = motion(ButtonBase);
 
 const GlassyActionRow = ({
   label,
   onClick,
 }: {
-  label: string
-  onClick: () => void
+  label: string;
+  onClick: () => void;
 }) => {
-  const [isHovered, setIsHovered] = useState(false)
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <MotionButtonBase
@@ -73,8 +68,8 @@ const GlassyActionRow = ({
         />
       </motion.div>
     </MotionButtonBase>
-  )
-}
+  );
+};
 
 export function Account() {
   const {
@@ -84,14 +79,16 @@ export function Account() {
     toggleModal,
     confirmLogOut,
     confirmDeleteAccount,
-  } = useAccountAPI()
-  const [dialogType, setDialogType] = useState<'logout' | 'delete' | null>(null)
+  } = useAccountAPI();
+  const [dialogType, setDialogType] = useState<'logout' | 'delete' | null>(
+    null
+  );
 
   const handleConfirm = () => {
-    if (dialogType === 'logout') confirmLogOut()
-    else if (dialogType === 'delete') confirmDeleteAccount()
-    setDialogType(null)
-  }
+    if (dialogType === 'logout') confirmLogOut();
+    else if (dialogType === 'delete') confirmDeleteAccount();
+    setDialogType(null);
+  };
 
   return (
     <motion.div
@@ -113,10 +110,7 @@ export function Account() {
         <Typography variant="h3" component="h1">
           Account
         </Typography>
-        <Typography
-          variant="subtitle1"
-          sx={{ color: '#cbd5e0', mt: 0.5 }}
-        >
+        <Typography variant="subtitle1" sx={{ color: '#cbd5e0', mt: 0.5 }}>
           Manage your login and account settings
         </Typography>
       </Box>
@@ -131,8 +125,14 @@ export function Account() {
       )}
 
       <GlassyActionRow label="Language" onClick={toggleModal} />
-      <GlassyActionRow label="Log Out" onClick={() => setDialogType('logout')} />
-      <GlassyActionRow label="Delete Account" onClick={() => setDialogType('delete')} />
+      <GlassyActionRow
+        label="Log Out"
+        onClick={() => setDialogType('logout')}
+      />
+      <GlassyActionRow
+        label="Delete Account"
+        onClick={() => setDialogType('delete')}
+      />
 
       <PyrenzDialog
         open={dialogType !== null}
@@ -156,5 +156,5 @@ export function Account() {
         onClose={toggleModal}
       />
     </motion.div>
-  )
+  );
 }

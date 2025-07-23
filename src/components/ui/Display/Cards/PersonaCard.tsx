@@ -1,17 +1,17 @@
-import React, { useState } from 'react'
-import { Typography, IconButton, MenuItem, Box } from '@mui/material'
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
-import { PyrenzMenu, PyrenzCard } from '~/theme'
+import React, { useState } from 'react';
+import { Typography, IconButton, MenuItem, Box } from '@mui/material';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import { PyrenzMenu, PyrenzCard } from '~/theme';
 
 interface PersonaCardProps {
-  id: string
-  persona_name: string
-  persona_description: string
-  is_selected?: boolean
-  persona_profile?: string
-  onSelect: (id: string) => void
-  onDelete: (id: string) => void
-  onEdit: (id: string) => void
+  id: string;
+  persona_name: string;
+  persona_description: string;
+  is_selected?: boolean;
+  persona_profile?: string;
+  onSelect: (id: string) => void;
+  onDelete: (id: string) => void;
+  onEdit: (id: string) => void;
 }
 
 export function PersonaCard({
@@ -24,37 +24,44 @@ export function PersonaCard({
   onDelete,
   onEdit,
 }: PersonaCardProps) {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
+    setAnchorEl(event.currentTarget);
+  };
 
   const handleMenuClose = () => {
-    setAnchorEl(null)
-  }
+    setAnchorEl(null);
+  };
 
   const handleSelect = () => {
-    onSelect(id)
-    handleMenuClose()
-  }
+    onSelect(id);
+    handleMenuClose();
+  };
 
   const handleDelete = () => {
-    onDelete(id)
-    handleMenuClose()
-  }
+    onDelete(id);
+    handleMenuClose();
+  };
 
   const handleEdit = () => {
-    onEdit(id)
-    handleMenuClose()
-  }
+    onEdit(id);
+    handleMenuClose();
+  };
 
   const truncateDescription = (description: string, limit: number = 100) =>
-    description.length > limit ? `${description.slice(0, limit)}...` : description
+    description.length > limit
+      ? `${description.slice(0, limit)}...`
+      : description;
 
   return (
     <PyrenzCard selected={is_selected}>
-      <Box display="flex" justifyContent="space-between" alignItems="start" gap={2}>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="start"
+        gap={2}
+      >
         <Box display="flex" alignItems="center" gap={2}>
           {persona_profile && (
             <Box
@@ -112,11 +119,15 @@ export function PersonaCard({
         </Typography>
       )}
 
-      <PyrenzMenu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
+      <PyrenzMenu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+      >
         <MenuItem onClick={handleSelect}>Select</MenuItem>
         <MenuItem onClick={handleEdit}>Edit</MenuItem>
         <MenuItem onClick={handleDelete}>Delete</MenuItem>
       </PyrenzMenu>
     </PyrenzCard>
-  )
+  );
 }

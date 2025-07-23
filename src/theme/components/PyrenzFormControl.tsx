@@ -11,13 +11,13 @@ import {
   styled,
   Typography,
   MenuItemProps,
-} from '@mui/material'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+} from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-const glassyBg = 'rgba(255, 255, 255, 0.06)'
-const border = '1px solid rgba(255, 255, 255, 0.15)'
-const textColor = '#e0e0e0'
-const accentColor = '#b0d0ff'
+const glassyBg = 'rgba(255, 255, 255, 0.06)';
+const border = '1px solid rgba(255, 255, 255, 0.15)';
+const textColor = '#e0e0e0';
+const accentColor = '#b0d0ff';
 
 export const PyrenzFormControl = styled(FormControl)({
   backdropFilter: 'blur(8px)',
@@ -49,7 +49,7 @@ export const PyrenzFormControl = styled(FormControl)({
       color: accentColor,
     },
   },
-})
+});
 
 export const PyrenzOutlinedInput = styled(MuiOutlinedInput)({
   borderRadius: '6px',
@@ -67,7 +67,7 @@ export const PyrenzOutlinedInput = styled(MuiOutlinedInput)({
   '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
     borderColor: 'transparent',
   },
-})
+});
 
 export const PyrenzInputLabel = styled(InputLabel)({
   color: textColor,
@@ -75,7 +75,7 @@ export const PyrenzInputLabel = styled(InputLabel)({
   '&.Mui-focused': {
     color: accentColor,
   },
-})
+});
 
 export const PyrenzSelect = styled((props: SelectProps) => (
   <Select
@@ -115,7 +115,7 @@ export const PyrenzSelect = styled((props: SelectProps) => (
   '& svg': {
     color: textColor,
   },
-})
+});
 
 export const PyrenzMenuItem = styled((props: MenuItemProps) => (
   <MenuItem {...props} />
@@ -138,14 +138,14 @@ export const PyrenzMenuItem = styled((props: MenuItemProps) => (
       backgroundColor: 'rgba(255, 255, 255, 0.15)',
     },
   },
-})
+});
 
 export function PyrenzAccordionInput({
   label,
   children,
 }: {
-  label: string
-  children: React.ReactNode
+  label: string;
+  children: React.ReactNode;
 }) {
   return (
     <Accordion
@@ -186,5 +186,5 @@ export function PyrenzAccordionInput({
         {children}
       </AccordionDetails>
     </Accordion>
-  )
+  );
 }

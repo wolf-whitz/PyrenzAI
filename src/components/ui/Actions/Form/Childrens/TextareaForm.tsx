@@ -81,6 +81,7 @@ export function TextareaForm() {
       character.scenario,
       character.first_message,
       character.lorebook,
+      character.attribute,
     ];
 
     const totalTokens = fieldsToCount.reduce((sum, field) => {

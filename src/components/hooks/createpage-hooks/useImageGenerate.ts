@@ -24,7 +24,9 @@ export const useImageGenerate = ({
   initialImage,
   onImageSelect,
 }: UseImageGenerateProps) => {
-  const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(initialImage || null);
+  const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(
+    initialImage || null
+  );
   const [open, setOpen] = useState(false);
   const [textareaValue, setTextareaValue] = useState('');
   const [modelInstruction, setModelInstruction] = useState('');
@@ -77,9 +79,11 @@ export const useImageGenerate = ({
     try {
       const blocks: string[] = [];
 
-      if (modelInstruction.trim()) blocks.push(`Model Instruction:\n${modelInstruction.trim()}`);
+      if (modelInstruction.trim())
+        blocks.push(`Model Instruction:\n${modelInstruction.trim()}`);
       blocks.push(`Scene Description:\n${textareaValue.trim()}`);
-      if (additionalPrompt.trim()) blocks.push(`Additional Prompt:\n${additionalPrompt.trim()}`);
+      if (additionalPrompt.trim())
+        blocks.push(`Additional Prompt:\n${additionalPrompt.trim()}`);
 
       const finalPrompt = blocks.join('\n\n');
 

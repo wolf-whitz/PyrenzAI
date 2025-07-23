@@ -65,16 +65,16 @@ export const createCharacter = async (
     return { error: 'Creator is required.' };
   }
 
-  let characterUuid: string;
-  try {
-    characterUuid = uuidv4();
-  } catch (err) {
-    Sentry.captureException(err);
-    return { error: 'Failed to generate character ID.' };
+  if (!character.char_uuid) {
+    try {
+      character.char_uuid = uuidv4();
+    } catch (err) {
+      Sentry.captureException(err);
+      return { error: 'Failed to generate character ID.' };
+    }
   }
 
-  const updatedCharacter = { ...character, char_uuid: characterUuid };
-  const res = await postCharacter('create', updatedCharacter, profileImageFile);
+  const res = await postCharacter('create', character, profileImageFile);
 
   if (res.is_moderated) {
     return {
@@ -94,7 +94,7 @@ export const createCharacter = async (
     character.creator,
     character.name
   );
-  return { char_uuid: characterUuid };
+  return { char_uuid: character.char_uuid };
 };
 
 export const updateCharacter = async (

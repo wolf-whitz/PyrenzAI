@@ -1,6 +1,6 @@
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import { Container, useMediaQuery, Box, useTheme } from '@mui/material'
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { Container, useMediaQuery, Box, useTheme } from '@mui/material';
 import {
   Sidebar,
   SearchBar,
@@ -13,32 +13,45 @@ import {
   Banner,
   AuthenticationModal,
   useHomepageAPI,
-} from '@components'
+} from '@components';
+import { useSearchParams } from 'react-router-dom';
 
 export function Home() {
-  const [showLogin, setShowLogin] = useState(false)
-  const [showRegister, setShowRegister] = useState(false)
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+  const [showLogin, setShowLogin] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const currentPage = Math.max(1, parseInt(searchParams.get('page') || '1'));
 
   const {
     search,
     characters,
     loading,
     setSearch,
-    currentPage,
-    setCurrentPage,
     totalPages,
     t,
     itemsPerPage,
     handleButtonClick,
     onButtonTagClicked,
-  } = useHomepageAPI()
+  } = useHomepageAPI(currentPage);
+
+  const setPage = (page: number) => {
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set('page', String(page));
+    setSearchParams(newParams);
+  };
 
   const toggleMode = () => {
-    setShowLogin(!showLogin)
-    setShowRegister(!showRegister)
-  }
+    setShowLogin(!showLogin);
+    setShowRegister(!showRegister);
+  };
+
+  const handleSearchChange = (val: string) => {
+    setSearch(val);
+    setPage(1);
+  };
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
@@ -51,18 +64,29 @@ export function Home() {
         transition={{ duration: 0.5 }}
       >
         <Box component="header" sx={{ width: '100%' }}>
-          <PreviewHeader setShowLogin={setShowLogin} setShowRegister={setShowRegister} />
+          <PreviewHeader
+            setShowLogin={setShowLogin}
+            setShowRegister={setShowRegister}
+          />
         </Box>
 
         <Container
           maxWidth={false}
           disableGutters
-          sx={{ flex: 1, display: 'flex', flexDirection: { xs: 'column', md: 'row' } }}
+          sx={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: { xs: 'column', md: 'row' },
+          }}
         >
           {!isMobile && (
             <Box
               component="nav"
-              sx={{ display: { xs: 'none', md: 'flex' }, pl: '50px', mt: '16px' }}
+              sx={{
+                display: { xs: 'none', md: 'flex' },
+                pl: '50px',
+                mt: '16px',
+              }}
               aria-label={t('ariaLabels.mainNavigation')}
             >
               <Sidebar />
@@ -89,8 +113,8 @@ export function Home() {
               </h2>
               <SearchBar
                 search={search}
-                setSearch={setSearch}
-                setCurrentPage={setCurrentPage}
+                setSearch={handleSearchChange}
+                setCurrentPage={setPage}
                 aria-label={t('ariaLabels.searchCharacters')}
               />
             </Box>
@@ -119,12 +143,7 @@ export function Home() {
             </Box>
 
             {!loading && (
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                isLoading={loading}
-                onPageChange={setCurrentPage}
-              />
+              <Pagination totalPages={totalPages} isLoading={loading} />
             )}
           </Box>
         </Container>
@@ -140,12 +159,12 @@ export function Home() {
         <AuthenticationModal
           mode={showLogin ? 'login' : 'register'}
           onClose={() => {
-            setShowLogin(false)
-            setShowRegister(false)
+            setShowLogin(false);
+            setShowRegister(false);
           }}
           toggleMode={toggleMode}
         />
       )}
     </Box>
-  )
+  );
 }

@@ -46,7 +46,10 @@ interface UserData {
 
 type GetUserDataResponse = UserData | { error: string };
 
-export const useCustomizeAPI = ({ customization, subscriptionPlan }: CustomizationProps) => {
+export const useCustomizeAPI = ({
+  customization,
+  subscriptionPlan,
+}: CustomizationProps) => {
   const userStore = useUserStore();
   const [maxTokens, setMaxTokens] = useState<number>(
     customization?.maxTokens || userStore.inferenceSettings.maxTokens || 100
@@ -58,10 +61,14 @@ export const useCustomizeAPI = ({ customization, subscriptionPlan }: Customizati
     customization?.topP || userStore.inferenceSettings.topP || 1
   );
   const [presencePenalty, setPresencePenalty] = useState<number>(
-    customization?.presencePenalty || userStore.inferenceSettings.presencePenalty || 0
+    customization?.presencePenalty ||
+      userStore.inferenceSettings.presencePenalty ||
+      0
   );
   const [frequencyPenalty, setFrequencyPenalty] = useState<number>(
-    customization?.frequencyPenalty || userStore.inferenceSettings.frequencyPenalty || 0
+    customization?.frequencyPenalty ||
+      userStore.inferenceSettings.frequencyPenalty ||
+      0
   );
   const [modelMemoryLimit, setModelMemoryLimit] = useState<number>(
     customization?.modelMemoryLimit || 15
@@ -80,10 +87,13 @@ export const useCustomizeAPI = ({ customization, subscriptionPlan }: Customizati
 
   const stateSetters = {
     maxTokens: (value: number) => setMaxTokens(Math.min(value, maxTokenLimit)),
-    temperature: (value: number) => setTemperature(Math.min(Math.max(value, 0), 2)),
+    temperature: (value: number) =>
+      setTemperature(Math.min(Math.max(value, 0), 2)),
     topP: (value: number) => setTopP(Math.min(Math.max(value, 0), 1)),
-    presencePenalty: (value: number) => setPresencePenalty(Math.min(Math.max(value, -2), 2)),
-    frequencyPenalty: (value: number) => setFrequencyPenalty(Math.min(Math.max(value, -2), 2)),
+    presencePenalty: (value: number) =>
+      setPresencePenalty(Math.min(Math.max(value, -2), 2)),
+    frequencyPenalty: (value: number) =>
+      setFrequencyPenalty(Math.min(Math.max(value, -2), 2)),
     modelMemoryLimit: (value: number) => setModelMemoryLimit(value),
   };
 
@@ -123,7 +133,7 @@ export const useCustomizeAPI = ({ customization, subscriptionPlan }: Customizati
       presencePenalty,
       frequencyPenalty,
     };
-  
+
     try {
       const userUUID: string = await GetUserUUID();
       const data = {
@@ -133,15 +143,15 @@ export const useCustomizeAPI = ({ customization, subscriptionPlan }: Customizati
         is_public: !isModelPrivate(preferredModel),
         modelMemoryLimit,
       };
-  
+
       const response = await Utils.post<any>('/api/ModelSwitch', data);
-  
+
       if (response?.error) {
         console.error('API Error:', response.error);
         showAlert(response.error, 'Alert');
-        return; 
+        return;
       }
-  
+
       showAlert('Customization data submitted successfully!', 'Success');
     } catch (error) {
       Sentry.captureException(error);
@@ -150,8 +160,7 @@ export const useCustomizeAPI = ({ customization, subscriptionPlan }: Customizati
       showAlert(errorMessage, 'Alert');
     }
   };
-  
-  
+
   return {
     maxTokens,
     temperature,

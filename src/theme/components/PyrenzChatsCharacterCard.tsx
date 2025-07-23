@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import {
   Typography,
   IconButton,
@@ -8,10 +8,10 @@ import {
   SxProps,
   Theme,
   Box,
-} from '@mui/material'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
-import { styled } from '@mui/material/styles'
-import { PyrenzRibbon, PyrenzDialog, PyrenzCard, PyrenzMenu } from '~/theme'
+} from '@mui/material';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { styled } from '@mui/material/styles';
+import { PyrenzRibbon, PyrenzDialog, PyrenzCard, PyrenzMenu } from '~/theme';
 
 const StyledCardImage = styled('div')({
   width: '135px',
@@ -22,13 +22,13 @@ const StyledCardImage = styled('div')({
   alignItems: 'center',
   justifyContent: 'center',
   flexShrink: 0,
-})
+});
 
 const StyledImage = styled('img')({
   width: '100%',
   height: '100%',
   objectFit: 'cover',
-})
+});
 
 const StyledCardContent = styled(Box)({
   flex: 1,
@@ -37,7 +37,7 @@ const StyledCardContent = styled(Box)({
   justifyContent: 'space-between',
   padding: '18px 16px',
   overflow: 'hidden',
-})
+});
 
 const StyledCardName = styled(Typography)({
   fontSize: '1.3rem',
@@ -47,18 +47,18 @@ const StyledCardName = styled(Typography)({
   whiteSpace: 'nowrap',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
-})
+});
 
 interface PyrenzChatsCharacterCardProps {
-  imageSrc: string
-  characterName: string
-  children?: React.ReactNode
-  ChatSend?: (event: React.MouseEvent<HTMLDivElement>) => void
-  onDeleteClick?: (event: React.MouseEvent<HTMLButtonElement>) => void
-  onPinClick?: (event: React.MouseEvent<HTMLButtonElement>) => void
-  style?: React.CSSProperties
-  sx?: SxProps<Theme>
-  isPinned?: boolean
+  imageSrc: string;
+  characterName: string;
+  children?: React.ReactNode;
+  ChatSend?: (event: React.MouseEvent<HTMLDivElement>) => void;
+  onDeleteClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  onPinClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  style?: React.CSSProperties;
+  sx?: SxProps<Theme>;
+  isPinned?: boolean;
 }
 
 export function PyrenzChatsCharacterCard({
@@ -72,47 +72,47 @@ export function PyrenzChatsCharacterCard({
   sx,
   isPinned = false,
 }: PyrenzChatsCharacterCardProps) {
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
-  const [confirmPinOpen, setConfirmPinOpen] = useState(false)
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [confirmPinOpen, setConfirmPinOpen] = useState(false);
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
+    setAnchorEl(event.currentTarget);
+  };
 
-  const handleClose = () => setAnchorEl(null)
+  const handleClose = () => setAnchorEl(null);
 
   const handleDelete = () => {
-    setConfirmDeleteOpen(true)
-    handleClose()
-  }
+    setConfirmDeleteOpen(true);
+    handleClose();
+  };
 
   const handlePin = () => {
-    setConfirmPinOpen(true)
-    handleClose()
-  }
+    setConfirmPinOpen(true);
+    handleClose();
+  };
 
   const confirmDelete = () => {
-    setConfirmDeleteOpen(false)
+    setConfirmDeleteOpen(false);
     if (onDeleteClick) {
       const fakeEvent = {
         preventDefault: () => {},
-      } as React.MouseEvent<HTMLButtonElement>
-      onDeleteClick(fakeEvent)
+      } as React.MouseEvent<HTMLButtonElement>;
+      onDeleteClick(fakeEvent);
     }
-  }
+  };
 
   const confirmPin = () => {
-    setConfirmPinOpen(false)
+    setConfirmPinOpen(false);
     if (onPinClick) {
       const fakeEvent = {
         preventDefault: () => {},
-      } as React.MouseEvent<HTMLButtonElement>
-      onPinClick(fakeEvent)
+      } as React.MouseEvent<HTMLButtonElement>;
+      onPinClick(fakeEvent);
     }
-  }
+  };
 
   return (
     <>
@@ -176,8 +176,8 @@ export function PyrenzChatsCharacterCard({
         >
           <MenuItem
             onClick={(e) => {
-              handleClose()
-              ChatSend?.(e as unknown as React.MouseEvent<HTMLDivElement>)
+              handleClose();
+              ChatSend?.(e as unknown as React.MouseEvent<HTMLDivElement>);
             }}
           >
             Chat Now
@@ -209,5 +209,5 @@ export function PyrenzChatsCharacterCard({
         onConfirm={confirmPin}
       />
     </>
-  )
+  );
 }

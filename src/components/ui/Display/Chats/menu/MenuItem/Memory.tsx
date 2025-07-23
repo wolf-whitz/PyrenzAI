@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Box, Button, Typography, Tooltip } from '@mui/material';
+import { Box, Typography, Tooltip } from '@mui/material';
 import { Textarea } from '@components';
 import { Utils } from '~/Utility';
 import { usePyrenzAlert } from '~/provider';
@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom';
 import { LlamaTokenizer } from 'llama-tokenizer-js';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import WarningIcon from '@mui/icons-material/Warning';
+import { PyrenzBlueButton } from '~/theme';
 
 export function Memory() {
   const [textValue, setTextValue] = useState('');
@@ -34,7 +35,6 @@ export function Memory() {
           setTextValue(data[0].characters_memories || '');
         }
       } catch (error) {
-        console.error('Error fetching memory:', error);
         showAlert('Failed to fetch memory. Please try again.', 'alert');
       }
     };
@@ -71,7 +71,6 @@ export function Memory() {
 
       showAlert('Memory updated successfully!', 'success');
     } catch (error) {
-      console.error('Error updating memory:', error);
       showAlert('Failed to update memory. Please try again.', 'alert');
     }
   };
@@ -119,14 +118,9 @@ export function Memory() {
           </Typography>
         </Box>
       </Box>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleSubmit}
-        fullWidth
-      >
+      <PyrenzBlueButton onClick={handleSubmit} fullWidth>
         Submit
-      </Button>
+      </PyrenzBlueButton>
     </Box>
   );
 }

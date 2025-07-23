@@ -102,8 +102,13 @@ export function PreviousChat() {
   }, []);
 
   return (
-    <Box component="aside" sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <Box sx={{ display: { xs: 'none', lg: 'flex' }, flex: 1, p: 2, width: 256 }}>
+    <Box
+      component="aside"
+      sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}
+    >
+      <Box
+        sx={{ display: { xs: 'none', lg: 'flex' }, flex: 1, p: 2, width: 256 }}
+      >
         <Box
           sx={{
             borderRadius: 2,

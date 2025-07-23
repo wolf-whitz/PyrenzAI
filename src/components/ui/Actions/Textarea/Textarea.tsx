@@ -1,29 +1,29 @@
-import React, { useEffect, useState, useMemo } from 'react'
-import llamaTokenizer from 'llama-tokenizer-js'
-import { motion } from 'framer-motion'
+import React, { useEffect, useState, useMemo } from 'react';
+import llamaTokenizer from 'llama-tokenizer-js';
+import { motion } from 'framer-motion';
 import {
   TextField,
   Tooltip as MUITooltip,
   Typography,
   InputAdornment,
   Box,
-} from '@mui/material'
-import clsx from 'clsx'
-import { z } from 'zod'
-import debounce from 'lodash/debounce'
+} from '@mui/material';
+import clsx from 'clsx';
+import { z } from 'zod';
+import debounce from 'lodash/debounce';
 
 interface TextareaProps {
-  name?: string
-  value: string | string[]
-  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
-  label?: string
-  placeholder?: string
-  showTokenizer?: boolean
-  className?: string
-  maxLength?: number
-  require_link?: boolean
-  is_tag?: boolean
-  onTagPressed?: (event: React.MouseEvent<HTMLElement>) => void
+  name?: string;
+  value: string | string[];
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  label?: string;
+  placeholder?: string;
+  showTokenizer?: boolean;
+  className?: string;
+  maxLength?: number;
+  require_link?: boolean;
+  is_tag?: boolean;
+  onTagPressed?: (event: React.MouseEvent<HTMLElement>) => void;
 }
 
 export function Textarea({
@@ -39,49 +39,49 @@ export function Textarea({
   is_tag = false,
   onTagPressed,
 }: TextareaProps) {
-  const [isLinkValid, setIsLinkValid] = useState(true)
+  const [isLinkValid, setIsLinkValid] = useState(true);
   const [characterCount, setCharacterCount] = useState(
     Array.isArray(value) ? value.join(', ').length : value.length
-  )
-  const [localTokenTotal, setLocalTokenTotal] = useState(0)
+  );
+  const [localTokenTotal, setLocalTokenTotal] = useState(0);
 
-  const urlSchema = z.string().url()
+  const urlSchema = z.string().url();
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newValue = e.target.value
+    const newValue = e.target.value;
 
     if (require_link) {
-      const validationResult = urlSchema.safeParse(newValue)
-      setIsLinkValid(validationResult.success)
-      if (!validationResult.success) return
+      const validationResult = urlSchema.safeParse(newValue);
+      setIsLinkValid(validationResult.success);
+      if (!validationResult.success) return;
     }
 
-    onChange(e)
-  }
+    onChange(e);
+  };
 
-  const displayValue = Array.isArray(value) ? value.join(', ') : value
+  const displayValue = Array.isArray(value) ? value.join(', ') : value;
 
   const tokenize = useMemo(
     () =>
       debounce((input: string) => {
-        const tokens = llamaTokenizer.encode(input)
-        setLocalTokenTotal(tokens.length)
+        const tokens = llamaTokenizer.encode(input);
+        setLocalTokenTotal(tokens.length);
       }, 250),
     []
-  )
+  );
 
   useEffect(() => {
-    const currentValue = Array.isArray(value) ? value.join(', ') : value
-    setCharacterCount(currentValue.length)
+    const currentValue = Array.isArray(value) ? value.join(', ') : value;
+    setCharacterCount(currentValue.length);
 
     if (showTokenizer) {
-      tokenize(currentValue)
+      tokenize(currentValue);
     }
 
     return () => {
-      tokenize.cancel()
-    }
-  }, [value, showTokenizer])
+      tokenize.cancel();
+    };
+  }, [value, showTokenizer]);
 
   return (
     <motion.div
@@ -90,7 +90,12 @@ export function Textarea({
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={1}
+      >
         <Typography variant="body1" component="label" sx={{ color: '#fff' }}>
           {label}
         </Typography>
@@ -207,5 +212,5 @@ export function Textarea({
         />
       </Box>
     </motion.div>
-  )
+  );
 }

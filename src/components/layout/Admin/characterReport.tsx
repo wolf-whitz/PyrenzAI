@@ -1,10 +1,5 @@
 import { useState, useMemo } from 'react';
-import {
-  Box,
-  Typography,
-  Button,
-  TextField,
-} from '@mui/material';
+import { Box, Typography, Button, TextField } from '@mui/material';
 import BlockIcon from '@mui/icons-material/Block';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import PersonOffIcon from '@mui/icons-material/PersonOff';
@@ -36,11 +31,12 @@ export function CharacterReport({
 
   const filteredReports = useMemo(() => {
     const term = searchTerm.toLowerCase();
-    return reports.filter(report =>
-      report.report_content.toLowerCase().includes(term) ||
-      report.char_uuid.toLowerCase().includes(term) ||
-      report.user_uuid.toLowerCase().includes(term) ||
-      report.creator_uuid.toLowerCase().includes(term)
+    return reports.filter(
+      (report) =>
+        report.report_content.toLowerCase().includes(term) ||
+        report.char_uuid.toLowerCase().includes(term) ||
+        report.user_uuid.toLowerCase().includes(term) ||
+        report.creator_uuid.toLowerCase().includes(term)
     );
   }, [searchTerm, reports]);
 
@@ -98,13 +94,22 @@ export function CharacterReport({
           <Typography variant="body2" sx={{ mb: 1 }}>
             {report.report_content}
           </Typography>
-          <Typography variant="caption" sx={{ display: 'block', color: '#bbb' }}>
+          <Typography
+            variant="caption"
+            sx={{ display: 'block', color: '#bbb' }}
+          >
             Character UUID: <strong>{report.char_uuid}</strong>
           </Typography>
-          <Typography variant="caption" sx={{ display: 'block', color: '#bbb' }}>
+          <Typography
+            variant="caption"
+            sx={{ display: 'block', color: '#bbb' }}
+          >
             User UUID: <strong>{report.user_uuid}</strong>
           </Typography>
-          <Typography variant="caption" sx={{ display: 'block', color: '#bbb' }}>
+          <Typography
+            variant="caption"
+            sx={{ display: 'block', color: '#bbb' }}
+          >
             Creator UUID: <strong>{report.creator_uuid}</strong>
           </Typography>
           <Box sx={{ display: 'flex', gap: 2, mt: 2, flexWrap: 'wrap' }}>

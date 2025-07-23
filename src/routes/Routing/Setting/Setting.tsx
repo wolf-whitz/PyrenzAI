@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { Sidebar, MobileNav } from '@components'
-import { Utils } from '~/Utility'
-import type { User } from '@supabase/supabase-js'
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { Sidebar, MobileNav } from '@components';
+import { Utils } from '~/Utility';
+import type { User } from '@supabase/supabase-js';
 import {
   Box,
   Tabs,
@@ -11,38 +11,38 @@ import {
   CircularProgress,
   useTheme,
   useMediaQuery,
-} from '@mui/material'
-import { PyrenzBlueButton } from '~/theme'
-import { Account, Profile, Persona, Api } from './Items'
+} from '@mui/material';
+import { PyrenzBlueButton } from '~/theme';
+import { Account, Profile, Persona, Api } from './Items';
 
-const tabs = ['account', 'profile', 'persona', 'api'] as const
+const tabs = ['account', 'profile', 'persona', 'api'] as const;
 
 export function Setting() {
-  const [activeTab, setActiveTab] = useState<(typeof tabs)[number]>('account')
-  const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState<boolean>(true)
-  const theme = useTheme()
-  const isMedium = useMediaQuery(theme.breakpoints.down('md'))
+  const [activeTab, setActiveTab] = useState<(typeof tabs)[number]>('account');
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const theme = useTheme();
+  const isMedium = useMediaQuery(theme.breakpoints.down('md'));
 
   useEffect(() => {
     const init = async () => {
-      setLoading(true)
+      setLoading(true);
       const { data: sessionData, error: sessionError } =
-        await Utils.db.client.auth.getSession()
+        await Utils.db.client.auth.getSession();
       if (sessionError || !sessionData.session) {
-        setLoading(false)
-        return
+        setLoading(false);
+        return;
       }
       const { data: userData, error: userError } =
-        await Utils.db.client.auth.getUser()
-      if (!userError && userData?.user) setUser(userData.user)
-      setLoading(false)
-    }
-    init()
-  }, [])
+        await Utils.db.client.auth.getUser();
+      if (!userError && userData?.user) setUser(userData.user);
+      setLoading(false);
+    };
+    init();
+  }, []);
 
   const renderTabs = () => {
-    if (!user) return null
+    if (!user) return null;
 
     const getTabs = (arr: readonly string[]) =>
       arr.map((tab) => (
@@ -52,16 +52,20 @@ export function Setting() {
           label={
             <PyrenzBlueButton
               sx={{
-                border: activeTab === tab ? '2px solid #66ccff' : '2px solid transparent',
+                border:
+                  activeTab === tab
+                    ? '2px solid #66ccff'
+                    : '2px solid transparent',
                 borderRadius: '12px',
                 transition: 'all 0.3s ease-in-out',
                 color: activeTab === tab ? '#aee4ff' : '#ffffff',
                 fontWeight: activeTab === tab ? 700 : 500,
                 px: 3,
                 py: 1.2,
-                background: activeTab === tab
-                  ? 'rgba(255,255,255,0.12)'
-                  : 'rgba(255,255,255,0.04)',
+                background:
+                  activeTab === tab
+                    ? 'rgba(255,255,255,0.12)'
+                    : 'rgba(255,255,255,0.04)',
                 backdropFilter: 'blur(8px)',
                 WebkitBackdropFilter: 'blur(8px)',
                 '&:hover': {
@@ -74,7 +78,7 @@ export function Setting() {
             </PyrenzBlueButton>
           }
         />
-      ))
+      ));
 
     if (isMedium) {
       return (
@@ -104,7 +108,7 @@ export function Setting() {
             {getTabs(tabs.slice(2))}
           </Tabs>
         </Box>
-      )
+      );
     }
 
     return (
@@ -125,23 +129,23 @@ export function Setting() {
           {getTabs(tabs)}
         </Tabs>
       </Box>
-    )
-  }
+    );
+  };
 
   const Content = () => {
     switch (activeTab) {
       case 'account':
-        return <Account />
+        return <Account />;
       case 'profile':
-        return <Profile />
+        return <Profile />;
       case 'persona':
-        return <Persona />
+        return <Persona />;
       case 'api':
-        return <Api />
+        return <Api />;
       default:
-        return null
+        return null;
     }
-  }
+  };
 
   return (
     <Box display="flex">
@@ -191,5 +195,5 @@ export function Setting() {
       </Box>
       {isMedium && <MobileNav setShowLoginModal={() => {}} />}
     </Box>
-  )
+  );
 }

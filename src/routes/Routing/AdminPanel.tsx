@@ -94,7 +94,12 @@ export function AdminPanel() {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100%"
+      >
         <CircularProgress />
       </Box>
     );
@@ -102,7 +107,12 @@ export function AdminPanel() {
 
   if (!isAdmin) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="52vh">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="52vh"
+      >
         <Typography variant="h6" color="textSecondary">
           Access Denied: Admins Only
         </Typography>
@@ -130,7 +140,9 @@ export function AdminPanel() {
               <CharacterReport
                 reports={reports}
                 onBanCharacter={(id) => openBanDialog(id, 'ban', 'character')}
-                onUnbanCharacter={(id) => openBanDialog(id, 'unban', 'character')}
+                onUnbanCharacter={(id) =>
+                  openBanDialog(id, 'unban', 'character')
+                }
                 onBanUser={(id) => openBanDialog(id, 'ban', 'user')}
                 onUnbanUser={(id) => openBanDialog(id, 'unban', 'user')}
               />

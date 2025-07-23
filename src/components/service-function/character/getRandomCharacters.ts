@@ -1,8 +1,8 @@
-import { Utils } from '~/Utility'
-import { Character } from '@shared-types'
-import { useUserStore } from '~/store'
+import { Utils } from '~/Utility';
+import { Character } from '@shared-types';
+import { useUserStore } from '~/store';
 
-type SortBy = 'created_at' | 'chat_messages_count' | null
+type SortBy = 'created_at' | 'chat_messages_count' | null;
 
 export async function getRandomCharacters(
   type: string,
@@ -11,21 +11,23 @@ export async function getRandomCharacters(
   sortBy: SortBy = null
 ): Promise<{ characters: Character[]; totalPages: number }> {
   if (type !== 'random') {
-    throw new Error('Invalid type')
+    throw new Error('Invalid type');
   }
 
-  const { show_nsfw = true, blocked_tags = [] } = useUserStore.getState()
-  const fetchLimit = maxCharacter * 10
+  const { show_nsfw = true, blocked_tags = [] } = useUserStore.getState();
+  const fetchLimit = maxCharacter * 10;
 
   const bannedUserRes = await Utils.db.select<{ user_uuid: string }>(
     'banned_users',
     'user_uuid'
-  )
+  );
 
-  const bannedUserUUIDs = bannedUserRes.data.map((u) => u.user_uuid).filter(Boolean)
+  const bannedUserUUIDs = bannedUserRes.data
+    .map((u) => u.user_uuid)
+    .filter(Boolean);
 
-  const match: Record<string, any> = {}
-  if (!show_nsfw) match.is_nsfw = false
+  const match: Record<string, any> = {};
+  if (!show_nsfw) match.is_nsfw = false;
 
   const extraFilters = [
     ...(blocked_tags.length > 0
@@ -35,7 +37,7 @@ export async function getRandomCharacters(
       ? [{ column: 'creator_uuid', operator: 'not_in', value: bannedUserUUIDs }]
       : []),
     { column: 'is_banned', operator: 'eq', value: false },
-  ]
+  ];
 
   const { data: allCharacters = [] } = await Utils.db.select<Character>(
     'public_characters',
@@ -45,12 +47,12 @@ export async function getRandomCharacters(
     { from: 0, to: fetchLimit - 1 },
     sortBy ? { column: sortBy, ascending: false } : undefined,
     extraFilters
-  )
+  );
 
-  const shuffled = allCharacters.sort(() => 0.5 - Math.random())
-  const startIndex = (page - 1) * maxCharacter
-  const endIndex = startIndex + maxCharacter
-  const paged = shuffled.slice(startIndex, endIndex)
+  const shuffled = allCharacters.sort(() => 0.5 - Math.random());
+  const startIndex = (page - 1) * maxCharacter;
+  const endIndex = startIndex + maxCharacter;
+  const paged = shuffled.slice(startIndex, endIndex);
 
   return {
     characters: paged.map((char) => ({
@@ -58,5 +60,5 @@ export async function getRandomCharacters(
       id: String(char.id),
     })),
     totalPages: Math.ceil(shuffled.length / maxCharacter),
-  }
+  };
 }

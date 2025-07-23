@@ -15,12 +15,8 @@ import { Utils } from '~/Utility';
 
 export function CharacterPage() {
   const { char_uuid } = useParams<{ char_uuid: string }>();
-  const {
-    character,
-    notFound,
-    handleDeleteCharacter,
-    handleReportCharacter,
-  } = useCharacterData(char_uuid);
+  const { character, notFound, handleDeleteCharacter, handleReportCharacter } =
+    useCharacterData(char_uuid);
 
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
@@ -75,7 +71,7 @@ export function CharacterPage() {
 
   const handleStartChat = async () => {
     if (!userUuid) {
-      setAuthMode('login'); 
+      setAuthMode('login');
       setShowLoginModal(true);
       return;
     }

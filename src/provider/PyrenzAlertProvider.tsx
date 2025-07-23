@@ -34,7 +34,8 @@ const AlertContext = createContext<AlertContextType | undefined>(undefined);
 
 export const usePyrenzAlert = () => {
   const context = useContext(AlertContext);
-  if (!context) throw new Error('usePyrenzAlert must be used within an AlertProvider');
+  if (!context)
+    throw new Error('usePyrenzAlert must be used within an AlertProvider');
   return context.showAlert;
 };
 
