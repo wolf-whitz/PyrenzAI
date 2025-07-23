@@ -1,14 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { ExtraFilter, Match, Range, OrderBy } from '@sdk/Types'
 
-function parsePostgresArray(str: string): string[] {
-  return str
-    .slice(1, -1)
-    .split(',')
-    .map((s) => s.trim())
-    .filter(Boolean)
-}
-
 export async function select<T>(
   client: SupabaseClient,
   table: string,
@@ -35,15 +27,7 @@ export async function select<T>(
   }
 
   extraFilters?.forEach(({ column, operator, value }) => {
-    let arrayValue: any[] = []
-
-    if (Array.isArray(value)) {
-      arrayValue = value
-    } else if (typeof value === 'string' && value.startsWith('{') && value.endsWith('}')) {
-      arrayValue = parsePostgresArray(value)
-    } else {
-      arrayValue = [value]
-    }
+    const arrayValue = Array.isArray(value) ? value : typeof value === 'string' ? [value] : []
 
     if (['in', 'not_in', 'not_overlaps'].includes(operator) && arrayValue.length === 0) return
 

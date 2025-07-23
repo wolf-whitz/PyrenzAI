@@ -15,9 +15,7 @@ export async function getCharacterWithTag(
   creatorUUID?: string,
   sortBy: SortBy = 'chat_messages_count'
 ): Promise<Character[]> {
-  if (type !== 'tags') {
-    throw new Error('Invalid type: must be "tags"')
-  }
+  if (type !== 'tags') throw new Error('Invalid type: must be "tags"')
 
   const { show_nsfw = true, blocked_tags = [] } = useUserStore.getState()
 
@@ -42,7 +40,7 @@ export async function getCharacterWithTag(
       ? [
           {
             column: 'tags',
-            operator: 'in',
+            operator: 'overlaps',
             value: [tag.trim()],
           },
         ]
@@ -71,6 +69,7 @@ export async function getCharacterWithTag(
       value: false,
     },
   ]
+  
 
   const { data: characters = [] } = await Utils.db.select<Character>(
     'public_characters',

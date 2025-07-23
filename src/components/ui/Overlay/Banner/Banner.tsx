@@ -12,7 +12,7 @@ export function Banner() {
       style={{
         backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/BackgroundTree.avif)`,
         width: '100%',
-        maxWidth: '13`40px', 
+        maxWidth: '1340px', 
         margin: '0 auto 1.2rem',  
         flexGrow: 0,
         flexShrink: 0,

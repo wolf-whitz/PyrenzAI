@@ -1,7 +1,6 @@
-import { useState } from 'react';
-import { useUserStore } from '~/store';
+import { useState } from 'react'
+import { useUserStore } from '~/store'
 import {
-  Switch,
   Tooltip,
   Dialog,
   DialogActions,
@@ -9,51 +8,85 @@ import {
   DialogContentText,
   DialogTitle,
   Button,
-} from '@mui/material';
-import { pink } from '@mui/material/colors';
-import { styled } from '@mui/material/styles';
+  Switch,
+  Box,
+} from '@mui/material'
+import { styled } from '@mui/material/styles'
 
-const PinkSwitch = styled(Switch)(({ theme }) => ({
-  '& .MuiSwitch-switchBase.Mui-checked': {
-    color: pink[500],
-    '&:hover': {
-      backgroundColor: 'rgba(255, 105, 180, 0.08)',
+const PinkGlassSwitch = styled(Switch)(({ theme }) => ({
+  width: 44,
+  height: 26,
+  padding: 0,
+  '& .MuiSwitch-switchBase': {
+    padding: 1,
+    '&.Mui-checked': {
+      transform: 'translateX(18px)',
+      color: '#fff',
+      '& + .MuiSwitch-track': {
+        backgroundColor: 'rgba(255, 105, 180, 0.3)',
+        opacity: 1,
+        border: '1px solid rgba(255,255,255,0.1)',
+      },
     },
   },
-  '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-    backgroundColor: pink[500],
+  '& .MuiSwitch-thumb': {
+    width: 22,
+    height: 22,
+    borderRadius: '50%',
+    backgroundColor: '#ff69b4',
   },
-}));
+  '& .MuiSwitch-track': {
+    borderRadius: 26,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    backdropFilter: 'blur(10px)',
+    border: '1px solid rgba(255,255,255,0.1)',
+    opacity: 1,
+  },
+}))
+
+const GlassDialog = styled(Dialog)({
+  '& .MuiPaper-root': {
+    backgroundColor: 'rgba(30, 30, 30, 0.6)',
+    backdropFilter: 'blur(12px)',
+    borderRadius: 12,
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+    color: '#fff',
+  },
+})
+
+const GlassButton = styled(Button)({
+  padding: '6px 14px',
+  borderRadius: 8,
+  fontWeight: 500,
+  fontSize: '0.875rem',
+  color: '#fff',
+  backgroundColor: 'rgba(255, 255, 255, 0.04)',
+  border: '1px solid rgba(255,255,255,0.08)',
+  textTransform: 'none',
+  '&:hover': {
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+  },
+})
 
 export function NSFWSwitch() {
-  const { show_nsfw, toggleShowNSFW } = useUserStore();
-  const [openTooltip, setOpenTooltip] = useState(false);
-  const [openDialog, setOpenDialog] = useState(false);
+  const { show_nsfw, toggleShowNSFW } = useUserStore()
+  const [openTooltip, setOpenTooltip] = useState(false)
+  const [openDialog, setOpenDialog] = useState(false)
 
-  const handleTooltipOpen = () => {
-    setOpenTooltip(true);
-  };
-
-  const handleTooltipClose = () => {
-    setOpenTooltip(false);
-  };
+  const handleTooltipOpen = () => setOpenTooltip(true)
+  const handleTooltipClose = () => setOpenTooltip(false)
 
   const handleSwitchChange = () => {
-    if (!show_nsfw) {
-      setOpenDialog(true);
-    } else {
-      toggleShowNSFW();
-    }
-  };
+    if (!show_nsfw) setOpenDialog(true)
+    else toggleShowNSFW()
+  }
 
   const handleConfirm = () => {
-    toggleShowNSFW();
-    setOpenDialog(false);
-  };
+    toggleShowNSFW()
+    setOpenDialog(false)
+  }
 
-  const handleCancel = () => {
-    setOpenDialog(false);
-  };
+  const handleCancel = () => setOpenDialog(false)
 
   return (
     <>
@@ -64,14 +97,17 @@ export function NSFWSwitch() {
         onOpen={handleTooltipOpen}
         onClose={handleTooltipClose}
       >
-        <PinkSwitch
-          checked={show_nsfw}
-          onChange={handleSwitchChange}
-          aria-label="NSFW switch"
-          aria-checked={show_nsfw}
-        />
+        <Box display="inline-flex">
+          <PinkGlassSwitch
+            checked={show_nsfw}
+            onChange={handleSwitchChange}
+            aria-label="NSFW switch"
+            aria-checked={show_nsfw}
+          />
+        </Box>
       </Tooltip>
-      <Dialog
+
+      <GlassDialog
         open={openDialog}
         onClose={handleCancel}
         aria-labelledby="alert-dialog-title"
@@ -79,7 +115,7 @@ export function NSFWSwitch() {
       >
         <DialogTitle id="alert-dialog-title">Confirm Action</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
+          <DialogContentText id="alert-dialog-description" sx={{ color: '#ddd' }}>
             Enabling NSFW content confirms that you are 18 or older and that you
             agree to our Terms of Service. Pyrenzai does not guarantee the
             nature of user-generated content. If you encounter any characters or
@@ -88,23 +124,12 @@ export function NSFWSwitch() {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button
-            onClick={handleCancel}
-            color="inherit"
-            sx={{ backgroundColor: 'transparent', color: 'white' }}
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleConfirm}
-            color="inherit"
-            autoFocus
-            sx={{ backgroundColor: 'transparent', color: 'white' }}
-          >
+          <GlassButton onClick={handleCancel}>Cancel</GlassButton>
+          <GlassButton onClick={handleConfirm} autoFocus>
             Confirm
-          </Button>
+          </GlassButton>
         </DialogActions>
-      </Dialog>
+      </GlassDialog>
     </>
-  );
+  )
 }

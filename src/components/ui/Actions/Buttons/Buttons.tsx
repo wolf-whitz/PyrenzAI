@@ -1,9 +1,9 @@
-import { motion } from 'framer-motion';
-import React, { useState, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
-import { buttons } from '@shared-types';
-import { MoreButtonsModal } from '@components';
-import { PyrenzBlueButton, NSFWSwitch } from '~/theme';
+import { motion } from 'framer-motion'
+import React, { useState, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
+import { buttons } from '@shared-types'
+import { MoreButtonsModal } from '@components'
+import { PyrenzBlueButton, NSFWSwitch } from '~/theme'
 
 interface CustomButtonProps {
   onButtonClick: (
@@ -13,20 +13,20 @@ interface CustomButtonProps {
     tag?: string,
     gender?: 'male' | 'female',
     searchQuery?: string
-  ) => void;
-  onButtonTagClicked: (tag: string) => void;
+  ) => void
+  onButtonTagClicked: (tag: string) => void
 }
 
 export function CustomButton({
   onButtonClick,
   onButtonTagClicked,
 }: CustomButtonProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [visibleButtons] = useState(buttons);
-  const [loading, setLoading] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const { t } = useTranslation();
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [visibleButtons] = useState(buttons)
+  const [loading, setLoading] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const containerRef = useRef<HTMLDivElement | null>(null)
+  const { t } = useTranslation()
 
   const handleButtonClick = async (
     type: string,
@@ -35,11 +35,11 @@ export function CustomButton({
     tag?: string,
     gender?: 'male' | 'female'
   ) => {
-    setLoading(true);
-    await onButtonClick(type, maxCharacter, page, tag, gender, searchQuery);
-    console.log(type);
-    setLoading(false);
-  };
+    setLoading(true)
+    await onButtonClick(type, maxCharacter, page, tag, gender, searchQuery)
+    console.log(type)
+    setLoading(false)
+  }
 
   return (
     <motion.div
@@ -51,6 +51,7 @@ export function CustomButton({
         display: 'flex',
         flexWrap: 'wrap',
         justifyContent: 'center',
+        alignItems: 'center',
         gap: '8px',
         marginBottom: '1.5rem',
       }}
@@ -81,6 +82,7 @@ export function CustomButton({
           </PyrenzBlueButton>
         </motion.div>
       ))}
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -93,7 +95,16 @@ export function CustomButton({
           {t('HomePageMoreButtons.btn.more')}
         </PyrenzBlueButton>
       </motion.div>
-      <NSFWSwitch />
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: (visibleButtons.length + 1) * 0.1 }}
+        style={{ display: 'flex', alignItems: 'center', height: 40 }}
+      >
+        <NSFWSwitch />
+      </motion.div>
+
       {isModalOpen && (
         <MoreButtonsModal
           isOpen={isModalOpen}
@@ -102,5 +113,5 @@ export function CustomButton({
         />
       )}
     </motion.div>
-  );
+  )
 }
