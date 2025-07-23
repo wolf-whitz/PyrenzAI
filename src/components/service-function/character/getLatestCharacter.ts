@@ -1,33 +1,37 @@
-import { Utils } from '~/Utility';
-import { Character } from '@shared-types';
-import { useUserStore } from '~/store';
+import { Utils } from '~/Utility'
+import { Character } from '@shared-types'
+import { useUserStore } from '~/store'
 
-type SortBy = 'created_at' | 'chat_messages_count';
+type SortBy = 'created_at' | 'chat_messages_count'
+
+interface GetLatestCharacterResponse {
+  characters: Character[]
+  totalItems: number
+  totalPages: number
+}
 
 export async function getLatestCharacter(
   type: string,
   maxCharacter: number,
   page: number,
   sortBy: SortBy = 'created_at'
-): Promise<Character[]> {
-  if (type !== 'latest') {
-    throw new Error('Invalid type');
-  }
+): Promise<GetLatestCharacterResponse> {
+  if (type !== 'latest') throw new Error('Invalid type')
 
-  const { show_nsfw = true, blocked_tags = [] } = useUserStore.getState();
+  const { show_nsfw = true, blocked_tags = [] } = useUserStore.getState()
 
   const bannedUserRes = await Utils.db.select<{ user_uuid: string }>(
     'banned_users',
     'user_uuid'
-  );
+  )
 
-  const bannedUserUUIDs = bannedUserRes.data.map((u) => u.user_uuid).filter(Boolean);
+  const bannedUserUUIDs = bannedUserRes.data.map((u) => u.user_uuid).filter(Boolean)
 
-  const match: Record<string, any> = {};
-  if (!show_nsfw) match.is_nsfw = false;
+  const match: Record<string, any> = {}
+  if (!show_nsfw) match.is_nsfw = false
 
-  const from = (page - 1) * maxCharacter;
-  const to = from + maxCharacter - 1;
+  const from = (page - 1) * maxCharacter
+  const to = from + maxCharacter - 1
 
   const extraFilters = [
     ...(blocked_tags.length > 0
@@ -37,20 +41,30 @@ export async function getLatestCharacter(
       ? [{ column: 'creator_uuid', operator: 'not_in', value: bannedUserUUIDs }]
       : []),
     { column: 'is_banned', operator: 'eq', value: false },
-  ];
+  ]
 
-  const { data: characters = [] } = await Utils.db.select<Character>(
+  const { data = [], count } = await Utils.db.select<Character>(
     'public_characters',
     '*',
     'exact',
     match,
     { from, to },
     { column: sortBy, ascending: false },
-    extraFilters
-  );
+    extraFilters,
+    true  
+  )
 
-  return characters.map((char) => ({
+  const characters = data.map((char) => ({
     ...char,
     id: String(char.id),
-  }));
+  }))
+
+  const totalItems = count ?? characters.length
+  const totalPages = Math.max(1, Math.ceil(totalItems / maxCharacter))
+
+  return {
+    characters,
+    totalItems,
+    totalPages,
+  }
 }

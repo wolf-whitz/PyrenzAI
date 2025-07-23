@@ -1,88 +1,91 @@
 import { Utils } from '~/Utility'
 import { Character } from '@shared-types'
 import { useUserStore } from '~/store'
-import type { ExtraFilter } from '@sdk/Types'
 
-type SortBy = 'chat_messages_count' | 'created_at'
+interface GetCharacterWithTagProps {
+  maxCharacter: number
+  page: number
+  tag: string
+  gender?: string
+  searchQuery?: string
+  creatorUUID?: string
+  sortBy?: 'chat_messages_count' | 'created_at'
+}
 
-export async function getCharacterWithTag(
-  maxCharacter: number,
-  page: number,
-  type: string,
-  tag: string,
-  gender?: string,
-  searchQuery?: string,
-  creatorUUID?: string,
-  sortBy: SortBy = 'chat_messages_count'
-): Promise<Character[]> {
-  if (type !== 'tags') throw new Error('Invalid type: must be "tags"')
+interface GetCharacterWithTagResponse {
+  characters: Character[]
+  totalItems: number
+  totalPages: number
+}
 
+export async function getCharacterWithTag({
+  maxCharacter,
+  page,
+  tag,
+  gender,
+  searchQuery,
+  creatorUUID,
+  sortBy = 'chat_messages_count',
+}: GetCharacterWithTagProps): Promise<GetCharacterWithTagResponse> {
   const { show_nsfw = true, blocked_tags = [] } = useUserStore.getState()
 
-  const bannedUserRes = await Utils.db.select<{ user_uuid: string }>(
-    'banned_users',
-    'user_uuid'
-  )
+  const bannedUserRes = await Utils.db.select<{ user_uuid: string }>('banned_users', 'user_uuid')
+  const bannedUserUUIDs = (bannedUserRes.data ?? []).map((u) => u.user_uuid).filter(Boolean)
 
-  const bannedUserUUIDs = bannedUserRes.data.map((u) => u.user_uuid).filter(Boolean)
+  const match: Record<string, any> = {
+    ...(searchQuery ? { name: `%${searchQuery.trim()}%` } : {}),
+    ...(gender ? { gender: gender.trim() } : {}),
+    ...(creatorUUID ? { creator_uuid: creatorUUID.trim() } : {}),
+    ...(show_nsfw ? {} : { is_nsfw: false }),
+  }
 
-  const match: Record<string, any> = {}
-  if (searchQuery) match.name = `%${searchQuery.trim()}%`
-  if (!show_nsfw) match.is_nsfw = false
-  if (gender) match.gender = gender.trim()
-  if (creatorUUID) match.creator_uuid = creatorUUID.trim()
-
-  const from = (page - 1) * maxCharacter
-  const to = from + maxCharacter - 1
-
-  const extraFilters: ExtraFilter[] = [
+  const filters = [
+    { column: 'is_banned', operator: 'eq', value: false },
     ...(tag
-      ? [
-          {
-            column: 'tags',
-            operator: 'overlaps',
-            value: [tag.trim()],
-          },
-        ]
+      ? [{ column: 'tags', operator: 'overlaps', value: [tag.trim()] }]
       : []),
-    ...(blocked_tags.length > 0
-      ? [
-          {
-            column: 'tags',
-            operator: 'not_overlaps',
-            value: blocked_tags.map((t) => t.trim()),
-          },
-        ]
+    ...(blocked_tags.length
+      ? [{ column: 'tags', operator: 'not_overlaps', value: blocked_tags.map((t) => t.trim()) }]
       : []),
-    ...(bannedUserUUIDs.length > 0
-      ? [
-          {
-            column: 'creator_uuid',
-            operator: 'not_in',
-            value: bannedUserUUIDs,
-          },
-        ]
+    ...(bannedUserUUIDs.length
+      ? [{ column: 'creator_uuid', operator: 'not_in', value: bannedUserUUIDs }]
       : []),
-    {
-      column: 'is_banned',
-      operator: 'eq',
-      value: false,
-    },
   ]
-  
 
-  const { data: characters = [] } = await Utils.db.select<Character>(
+  const { data = [], count } = await Utils.db.select<Character>(
     'public_characters',
     '*',
     'exact',
     match,
-    { from, to },
+    undefined,
     { column: sortBy, ascending: false },
-    extraFilters
+    filters,
+    false
   )
 
-  return characters.map((char) => ({
+  const filtered = data.filter((char) => {
+    if (!show_nsfw && char.is_nsfw) return false
+    if (bannedUserUUIDs.includes(char.creator_uuid)) return false
+    if (gender && char.gender !== gender) return false
+    if (creatorUUID && char.creator_uuid !== creatorUUID) return false
+    if (tag && !char.tags?.includes(tag)) return false
+    if (blocked_tags.length && char.tags?.some((t) => blocked_tags.includes(t))) return false
+    return true
+  })
+
+  const totalItems = count ?? filtered.length
+  const totalPages = Math.max(1, Math.ceil(totalItems / maxCharacter))
+  const start = (page - 1) * maxCharacter
+  const end = page * maxCharacter
+
+  const characters = filtered.slice(start, end).map((char) => ({
     ...char,
     id: String(char.id),
   }))
+
+  return {
+    characters,
+    totalItems,
+    totalPages,
+  }
 }

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef, useEffect } from 'react'
 import { Box, Typography, IconButton } from '@mui/material'
 import { motion } from 'framer-motion'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
@@ -12,14 +12,28 @@ interface PaginationProps {
 }
 
 export function Pagination({ currentPage, totalPages, isLoading, onPageChange }: PaginationProps) {
+  const lockRef = useRef(false)
+  const lastPageRef = useRef(currentPage)
+
+  useEffect(() => {
+    if (currentPage !== lastPageRef.current) {
+      lastPageRef.current = currentPage
+      lockRef.current = false
+    }
+  }, [currentPage])
+
   const handlePrev = () => {
-    if (currentPage > 1 && !isLoading) onPageChange(currentPage - 1)
+    if (currentPage > 1 && !isLoading && !lockRef.current) {
+      lockRef.current = true
+      onPageChange(currentPage - 1)
+    }
   }
 
-  console.log('Current Page:', currentPage, 'Total Pages:', totalPages, 'Is Loading:', isLoading)
-
   const handleNext = () => {
-    if (currentPage < totalPages && !isLoading) onPageChange(currentPage + 1)
+    if (currentPage < totalPages && !isLoading && !lockRef.current) {
+      lockRef.current = true
+      onPageChange(currentPage + 1)
+    }
   }
 
   return (
