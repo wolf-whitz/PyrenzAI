@@ -56,10 +56,7 @@ export async function getHotCharacter(
     paging: true,
   });
 
-  const characters = data.map((char) => ({
-    ...char,
-    id: String(char.id),
-  }));
+  const characters = data.map((char) => (char));
 
   const totalItems = count ?? characters.length;
   const totalPages = Math.max(1, Math.ceil(totalItems / maxCharacter));
