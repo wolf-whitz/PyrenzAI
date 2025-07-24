@@ -48,6 +48,8 @@ export async function CreateNewChat(
       profile_image,
       lorebook,
       scenario,
+      title,
+      attribute
     } = character;
 
     await utils.db.insert('chats', {
@@ -62,6 +64,8 @@ export async function CreateNewChat(
       persona,
       scenario,
       is_temporary: true,
+      attribute,
+      title
     });
 
     return { chat_uuid: chatUuid };

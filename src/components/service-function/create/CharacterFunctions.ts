@@ -17,6 +17,7 @@ const requiredCharacterFields: (keyof Character)[] = [
   'gender',
   'creator',
   'profile_image',
+  'attribute'
 ];
 
 const validateCharacterData = (character: Character) => {
