@@ -22,7 +22,6 @@ export function CreatePage() {
   const [creatorName, setCreatorName] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [userUUID, setUserUUID] = useState<string | null>(null);
-
   const setCharacter = useCharacterStore((state) => state.setCharacter);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -48,22 +47,20 @@ export function CreatePage() {
 
       if (char_uuid) {
         try {
-          const { data: publicData } = await Utils.db.select<Character>(
-            'public_characters',
-            '*',
-            null,
-            { char_uuid }
-          );
+          const { data: publicData } = await Utils.db.select<Character>({
+            tables: 'public_characters',
+            columns: '*',
+            match: { char_uuid },
+          });
 
           let character: Character | null = publicData?.[0] ?? null;
 
           if (!character) {
-            const { data: privateData } = await Utils.db.select<Character>(
-              'private_characters',
-              '*',
-              null,
-              { char_uuid, creator_uuid: fetchedUUID }
-            );
+            const { data: privateData } = await Utils.db.select<Character>({
+              tables: 'private_characters',
+              columns: '*',
+              match: { char_uuid, creator_uuid: fetchedUUID },
+            });
 
             character = privateData?.[0] ?? null;
           }
@@ -74,7 +71,6 @@ export function CreatePage() {
                 .split(',')
                 .map((tag) => tag.trim());
             }
-
             setCharacter(character);
             setCharacterUpdate(true);
           }
@@ -102,7 +98,6 @@ export function CreatePage() {
         <Box component="aside" width={{ xs: '100%', sm: '256px' }}>
           <Sidebar />
         </Box>
-
         <Box component="main" flex={1} display="flex" flexDirection="column">
           {!user ? (
             <Box
@@ -139,14 +134,12 @@ export function CreatePage() {
             </>
           )}
         </Box>
-
         <Box
           component="aside"
           sx={{ display: { xs: 'none', sm: 'block' }, width: '256px' }}
         >
           <CommunityGuidelines />
         </Box>
-
         {isMobile && <MobileNav setShowLoginModal={setShowLoginModal} />}
       </Box>
     </Suspense>

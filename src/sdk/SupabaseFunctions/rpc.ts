@@ -1,11 +1,14 @@
-import { SupabaseClient } from '@supabase/supabase-js';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
-export async function rpc<T>(
+export const rpc = async <T>(
   client: SupabaseClient,
-  func: string,
-  params: Record<string, any> = {}
-): Promise<T> {
+  req: {
+    func: string;
+    params?: Record<string, any>;
+  }
+): Promise<T> => {
+  const { func, params = {} } = req;
   const { data, error } = await client.rpc(func, params);
   if (error) throw error;
   return data as T;
-}
+};

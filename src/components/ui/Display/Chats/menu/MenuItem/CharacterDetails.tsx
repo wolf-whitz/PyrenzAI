@@ -6,11 +6,6 @@ import { PyrenzBlueButton } from '~/theme';
 import { Utils } from '~/Utility';
 import { styled } from '@mui/system';
 
-interface CharacterDetailsProps {
-  char: Character;
-  onSubmit: (characterDetails: Character) => void;
-}
-
 const bounceAnimation = keyframes`
   0%, 100% {
     transform: translateY(0);
@@ -27,35 +22,39 @@ const BouncingImage = styled('img')({
   marginBottom: '10px',
 });
 
+interface CharacterDetailsProps {
+  char: Character;
+  onSubmit: (characterDetails: Character) => void;
+}
+
 export function CharacterDetails({ char, onSubmit }: CharacterDetailsProps) {
   const [characterDetails, setCharacterDetails] = useState<Character>(char);
   const [showDetails, setShowDetails] = useState<boolean | null>(null);
 
   useEffect(() => {
     const fetchCharacterDetails = async () => {
-      const tables = ['public_characters', 'private_characters'];
+      try {
+        const { data } = await Utils.db.select<Character>({
+          tables: ['public_characters', 'private_characters'],
+          columns:
+            'char_uuid, name, title, attribute, persona, scenario, model_instructions, is_details_private',
+          match: { char_uuid: char.char_uuid },
+        });
 
-      for (const table of tables) {
-        try {
-          const { data } = await Utils.db.select<{
-            is_details_private: boolean;
-          }>(table, 'is_details_private', null, {
-            char_uuid: char.char_uuid,
-          });
-
-          if (data?.[0]) {
-            setShowDetails(!data[0].is_details_private);
+        const character = data?.find((c) => c.char_uuid === char.char_uuid);
+        if (character) {
+          const isPrivate = character.is_details_private;
+          if (!isPrivate) {
+            setCharacterDetails(character);
+            setShowDetails(true);
             return;
           }
-        } catch (error) {
-          console.error(
-            `Error fetching character details from ${table}:`,
-            error
-          );
         }
+        setShowDetails(false);
+      } catch (error) {
+        console.error('Error fetching character details:', error);
+        setShowDetails(false);
       }
-
-      setShowDetails(false);
     };
 
     fetchCharacterDetails();
@@ -75,6 +74,8 @@ export function CharacterDetails({ char, onSubmit }: CharacterDetailsProps) {
 
   const textareaFields = [
     { label: 'Name', field: 'name', maxLength: 50 },
+    { label: 'Title', field: 'title', maxLength: 50 },
+    { label: 'Attribute', field: 'attribute', maxLength: 50 },
     { label: 'Persona', field: 'persona' },
     { label: 'Scenario', field: 'scenario' },
     { label: 'Model Instructions', field: 'model_instructions' },
@@ -118,7 +119,6 @@ export function CharacterDetails({ char, onSubmit }: CharacterDetailsProps) {
       {textareaFields.map((textarea) => {
         const value = characterDetails[textarea.field as keyof Character];
         const textValue = typeof value === 'string' ? value : String(value);
-
         return (
           <Textarea
             key={textarea.field}

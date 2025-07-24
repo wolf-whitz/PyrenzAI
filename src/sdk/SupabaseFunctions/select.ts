@@ -1,83 +1,125 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { ExtraFilter, Match, Range, OrderBy } from '@sdk/Types';
+import { getCached, setCached } from '../Cache/cacheWorkerManager';
+
+function makeCacheKey(req: any): string {
+  return JSON.stringify(req);
+}
 
 export async function select<T>(
   client: SupabaseClient,
-  table: string,
-  columns: string = '*',
-  countOption: 'exact' | 'planned' | 'estimated' | null = null,
-  match: Match = {},
-  range?: Range,
-  orderBy?: OrderBy,
-  extraFilters?: ExtraFilter[],
-  paging: boolean = false
+  req: {
+    tables: string | string[];
+    columns?: string;
+    countOption?: 'exact' | 'planned' | 'estimated' | null;
+    match?: Match;
+    range?: Range;
+    orderBy?: OrderBy;
+    extraFilters?: ExtraFilter[];
+    paging?: boolean;
+  }
 ): Promise<{ data: T[]; count: number | null; pages?: T[][] }> {
-  let query = client.from(table).select(columns, {
-    count: countOption ?? undefined,
-  });
+  const key = makeCacheKey(req);
+  const cached = await getCached<{
+    data: T[];
+    count: number | null;
+    pages?: T[][];
+  }>(key);
 
-  for (const [key, value] of Object.entries(match)) {
-    if (Array.isArray(value)) {
-      query = query.in(key, value);
-    } else if (typeof value === 'string' && value.includes('%')) {
-      query = query.ilike(key, value);
-    } else {
-      query = query.eq(key, value);
-    }
-  }
+  if (cached) return cached;
 
-  extraFilters?.forEach(({ column, operator, value }) => {
-    const arrayValue = Array.isArray(value)
-      ? value
-      : typeof value === 'string'
-        ? [value]
-        : [];
+  const {
+    tables,
+    columns = '*',
+    countOption = null,
+    match = {},
+    range,
+    orderBy,
+    extraFilters = [],
+    paging = false,
+  } = req;
 
-    if (
-      ['in', 'not_in', 'not_overlaps'].includes(operator) &&
-      arrayValue.length === 0
-    )
-      return;
+  const tableList = Array.isArray(tables) ? tables : [tables];
+  const allData: T[] = [];
+  let totalCount: number | null = 0;
 
-    switch (operator) {
-      case 'in':
-        query = query.in(column, arrayValue);
-        break;
-      case 'not_in':
-        query = query.not(column, 'in', arrayValue);
-        break;
-      case 'not_overlaps':
-        query = query.not(column, 'overlaps', arrayValue);
-        break;
-      case 'eq':
-        query = query.eq(column, Array.isArray(value) ? value[0] : value);
-        break;
-    }
-  });
+  const results = await Promise.all(
+    tableList.map(async (table) => {
+      let query = (client.from(table) as any).select(columns, {
+        count: countOption ?? undefined,
+      });
 
-  if (orderBy?.column) {
-    query = query.order(orderBy.column, {
-      ascending: orderBy.ascending ?? true,
-    });
-  }
+      for (const [key, value] of Object.entries(match)) {
+        if (Array.isArray(value)) {
+          query = query.in(key, value);
+        } else if (typeof value === 'string' && value.includes('%')) {
+          query = query.ilike(key, value);
+        } else {
+          query = query.eq(key, value);
+        }
+      }
 
-  if (range) {
-    query = query.range(range.from, range.to);
-  }
-
-  const { data, error, count } = await query;
-
-  if (error) throw error;
-
-  const finalData = (data ?? []) as T[];
-
-  return {
-    data: finalData,
-    count: count ?? null,
-    pages: paging
-      ? Array.from({ length: Math.ceil(finalData.length / 10) }, (_, i) =>
-          finalData.slice(i * 10, i * 10 + 10)
+      for (const { column, operator, value } of extraFilters) {
+        const arrayValue = Array.isArray(value)
+          ? value
+          : typeof value === 'string'
+            ? [value]
+            : [];
+        if (
+          ['in', 'not_in', 'not_overlaps'].includes(operator) &&
+          arrayValue.length === 0
         )
-      : undefined,
+          continue;
+
+        switch (operator) {
+          case 'in':
+            query = query.in(column, arrayValue);
+            break;
+          case 'not_in':
+            query = query.not(column, 'in', arrayValue);
+            break;
+          case 'not_overlaps':
+            query = query.not(column, 'overlaps', arrayValue);
+            break;
+          case 'eq':
+            query = query.eq(column, Array.isArray(value) ? value[0] : value);
+            break;
+        }
+      }
+
+      if (orderBy?.column) {
+        query = query.order(orderBy.column, {
+          ascending: orderBy.ascending ?? true,
+        });
+      }
+
+      if (range) {
+        query = query.range(range.from, range.to);
+      }
+
+      const { data, error, count } = await query;
+      if (error) throw error;
+      return { data: data as T[] | null, count: count ?? 0 };
+    })
+  );
+
+  for (const { data, count } of results) {
+    if (data) allData.push(...data);
+    totalCount = typeof totalCount === 'number' ? totalCount + count : count;
+  }
+
+  const pages = paging
+    ? Array.from({ length: Math.ceil(allData.length / 10) }, (_, i) =>
+        allData.slice(i * 10, i * 10 + 10)
+      )
+    : undefined;
+
+  const response = {
+    data: allData,
+    count: totalCount,
+    pages,
   };
+
+  await setCached(key, response);
+  return response;
 }

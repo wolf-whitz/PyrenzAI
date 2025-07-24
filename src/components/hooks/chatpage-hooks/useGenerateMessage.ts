@@ -43,7 +43,6 @@ export const useGenerateMessage = () => {
       };
 
       const charMessageId = uuidv4();
-
       const charMessage: Message = {
         id: charMessageId,
         name: char.name || char.character_name || 'AI',
@@ -57,19 +56,17 @@ export const useGenerateMessage = () => {
 
       try {
         const user_uuid = await GetUserUUID();
-        const { data: userData } = await Utils.db.select<UserDataRow>(
-          'user_data',
-          'inference_settings',
-          null,
-          { user_uuid }
-        );
+        const { data: userData } = await Utils.db.select<UserDataRow>({
+          tables: 'user_data',
+          columns: 'inference_settings',
+          match: { user_uuid },
+        });
 
         if (!userData?.[0]) {
           throw new Error('Inference settings not found for this user');
         }
 
         const { inference_settings } = userData[0];
-
         const url = `/api/Generate?user_uuid=${user_uuid}`;
         const payload = {
           Type: 'Generate',
@@ -82,7 +79,9 @@ export const useGenerateMessage = () => {
 
         if (!data?.content)
           throw new Error(
-            `No valid response from API, Please share this with the developers: ${JSON.stringify(data)}`
+            `No valid response from API, Please share this with the developers: ${JSON.stringify(
+              data
+            )}`
           );
 
         const responseId = data.MessageID;

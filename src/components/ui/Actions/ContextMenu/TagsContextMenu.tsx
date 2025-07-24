@@ -22,7 +22,10 @@ export function TagsMenu({ anchorEl, onClose, onTagClick }: TagsMenuProps) {
 
   const fetchTags = async () => {
     try {
-      const { data } = await utils.db.select<Tag>('tags', '*');
+      const { data } = await utils.db.select<Tag>({
+        tables: 'tags',
+        columns: '*',
+      });
       if (data) setTags(data);
     } catch (error) {
       console.error('Error fetching tags:', error);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Box,
   Typography,
@@ -43,41 +43,43 @@ export function CharacterCardImageModal({
   const [isFetching, setIsFetching] = useState(false);
   const showAlert = usePyrenzAlert();
 
-  const fetchCharacterCards = async (page: number) => {
-    if (isFetching) return;
-    setIsFetching(true);
-    setLoading(page === 1);
-    setLoadMoreLoading(page > 1);
+  const fetchCharacterCards = useCallback(
+    async (page: number) => {
+      if (isFetching) return;
+      setIsFetching(true);
+      setLoading(page === 1);
+      setLoadMoreLoading(page > 1);
 
-    try {
-      const { data } = await Utils.db.select<CharacterCard>(
-        'persona_cards',
-        'id, card_name, card_description, card_image',
-        null,
-        {
+      try {
+        const { data } = await Utils.db.select<CharacterCard>({
+          tables: 'persona_cards',
+          columns: 'id, card_name, card_description, card_image',
           range: {
             from: (page - 1) * 5,
             to: page * 5 - 1,
           },
-        }
-      );
+        });
 
-      if (data.length < 5) setHasMore(false);
-
-      setCharacterCards((prevCards) => [
-        ...prevCards,
-        ...data.filter((card) => card.card_image),
-      ]);
-    } catch (error) {
-      console.error('Failed to fetch character cards', error);
-      showAlert('Failed to fetch character cards. Please try again.', 'Alert');
-      Sentry.captureException(error);
-    } finally {
-      setIsFetching(false);
-      setLoading(false);
-      setLoadMoreLoading(false);
-    }
-  };
+        if (data.length < 5) setHasMore(false);
+        setCharacterCards((prevCards) => [
+          ...prevCards,
+          ...data.filter((card) => card.card_image),
+        ]);
+      } catch (error) {
+        console.error('Failed to fetch character cards', error);
+        showAlert(
+          'Failed to fetch character cards. Please try again.',
+          'Alert'
+        );
+        Sentry.captureException(error);
+      } finally {
+        setIsFetching(false);
+        setLoading(false);
+        setLoadMoreLoading(false);
+      }
+    },
+    [isFetching, showAlert]
+  );
 
   useEffect(() => {
     if (isModalOpen) {
@@ -86,22 +88,26 @@ export function CharacterCardImageModal({
       setHasMore(true);
       fetchCharacterCards(1);
     }
-  }, [isModalOpen]);
+  }, [isModalOpen, fetchCharacterCards]);
 
-  const handleLoadMore = () => {
-    fetchCharacterCards(page + 1);
-    setPage((prev) => prev + 1);
-  };
+  const handleLoadMore = useCallback(() => {
+    const nextPage = page + 1;
+    fetchCharacterCards(nextPage);
+    setPage(nextPage);
+  }, [page, fetchCharacterCards]);
 
-  const handleCardClick = (cardImage: string) => {
-    setSelectedImage(cardImage);
-    setModalOpen(false);
-    setCreatePersonaModalOpen(true);
-  };
+  const handleCardClick = useCallback(
+    (cardImage: string) => {
+      setSelectedImage(cardImage);
+      setModalOpen(false);
+      setCreatePersonaModalOpen(true);
+    },
+    [setSelectedImage, setModalOpen, setCreatePersonaModalOpen]
+  );
 
-  const handleImageError = (cardId: string) => {
+  const handleImageError = useCallback((cardId: string) => {
     setCharacterCards((prev) => prev.filter((card) => card.id !== cardId));
-  };
+  }, []);
 
   if (!isModalOpen) return null;
 
@@ -144,7 +150,6 @@ export function CharacterCardImageModal({
           >
             Choose a Character Card
           </Typography>
-
           <Box
             sx={{
               display: 'grid',
@@ -198,7 +203,6 @@ export function CharacterCardImageModal({
                   </Card>
                 ))}
           </Box>
-
           {hasMore && (
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
               <PyrenzBlueButton

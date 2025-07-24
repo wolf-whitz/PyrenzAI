@@ -35,12 +35,12 @@ export const usePersonaAPI = () => {
     if (!userUuid) return;
     setLoading(true);
     try {
-      const result = await utils.db.select<PersonaCard>(
-        'personas',
-        'id, persona_name, persona_description, persona_profile, is_selected, user_uuid',
-        null,
-        { user_uuid: userUuid }
-      );
+      const result = await utils.db.select<PersonaCard>({
+        tables: 'personas',
+        columns:
+          'id, persona_name, persona_description, persona_profile, is_selected, user_uuid',
+        match: { user_uuid: userUuid },
+      });
       const data = result?.data ?? [];
       setPersonaData(data);
     } catch (error) {
@@ -62,17 +62,16 @@ export const usePersonaAPI = () => {
       setModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     ) => {
       if (!newPersonaName || !newPersonaDescription || !userUuid) return;
-
       try {
-        const result = await utils.db.insert('personas', [
-          {
+        const result = await utils.db.insert({
+          tables: 'personas',
+          data: {
             persona_name: newPersonaName,
             persona_description: newPersonaDescription,
             user_uuid: userUuid,
             persona_profile: selectedImage,
           },
-        ]);
-
+        });
         if (result && result.length > 0) {
           const newPersona = result[0] as PersonaCard;
           setPersonaData((prevData) => [...prevData, newPersona]);
@@ -93,16 +92,16 @@ export const usePersonaAPI = () => {
     async (id: string) => {
       if (!userUuid) return;
       try {
-        await utils.db.update<PersonaCard>(
-          'personas',
-          { is_selected: false },
-          { user_uuid: userUuid }
-        );
-        await utils.db.update<PersonaCard>(
-          'personas',
-          { is_selected: true },
-          { id }
-        );
+        await utils.db.update({
+          tables: 'personas',
+          values: { is_selected: false },
+          match: { user_uuid: userUuid },
+        });
+        await utils.db.update({
+          tables: 'personas',
+          values: { is_selected: true },
+          match: { id },
+        });
         await fetchPersona();
       } catch (error) {
         console.error('Failed to update persona selection', error);
@@ -115,7 +114,10 @@ export const usePersonaAPI = () => {
   const handleDeletePersona = useCallback(
     async (id: string) => {
       try {
-        await utils.db.delete<PersonaCard>('personas', { id });
+        await utils.db.remove({
+          tables: 'personas',
+          match: { id },
+        });
         await fetchPersona();
       } catch (error) {
         console.error('Failed to delete persona', error);
@@ -141,15 +143,15 @@ export const usePersonaAPI = () => {
     ) => {
       if (!newPersonaName || !newPersonaDescription || !userUuid) return;
       try {
-        await utils.db.update<PersonaCard>(
-          'personas',
-          {
+        await utils.db.update({
+          tables: 'personas',
+          values: {
             persona_name: newPersonaName,
             persona_description: newPersonaDescription,
             persona_profile: selectedImage,
           },
-          { id }
-        );
+          match: { id },
+        });
         await fetchPersona();
         setNewPersonaName('');
         setNewPersonaDescription('');

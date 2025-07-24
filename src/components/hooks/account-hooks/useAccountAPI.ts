@@ -11,9 +11,7 @@ export const useAccountAPI = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
-
   const navigate = useNavigate();
-
   const clearData = useUserStore.getState().clearData;
   const setIsLogin = useUserStore((state) => state.setIsLogin);
 
@@ -76,12 +74,14 @@ export const useAccountAPI = () => {
 
   const confirmDeleteAccount = async () => {
     if (!user?.id) return;
+
     try {
-      await Utils.db.update(
-        'user_data',
-        { is_deleted: true },
-        { user_uuid: user.id }
-      );
+      await Utils.db.update({
+        tables: 'user_data',
+        values: { is_deleted: true },
+        match: { user_uuid: user.id },
+      });
+
       await confirmLogOut();
     } catch (error) {
       console.error('Error deleting account:', error);

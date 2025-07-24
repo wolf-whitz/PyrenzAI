@@ -34,32 +34,27 @@ export const useCharacterModalApi = ({
         Sentry.captureException(error);
       }
     };
-
     fetchUserUUID();
   }, []);
 
   const fetchCharacter = async (charUuid: string) => {
     try {
-      const { data: publicCharacter } = await utils.db.select<Character>(
-        'public_characters',
-        '*',
-        null,
-        {
-          char_uuid: charUuid,
-        }
-      );
+      const { data: publicCharacter } = await utils.db.select<Character>({
+        tables: 'public_characters',
+        columns: '*',
+        match: { char_uuid: charUuid },
+      });
+
       if (publicCharacter?.length) {
         return publicCharacter[0];
       }
 
-      const { data: privateCharacter } = await utils.db.select<Character>(
-        'private_characters',
-        '*',
-        null,
-        {
-          char_uuid: charUuid,
-        }
-      );
+      const { data: privateCharacter } = await utils.db.select<Character>({
+        tables: 'private_characters',
+        columns: '*',
+        match: { char_uuid: charUuid },
+      });
+
       if (privateCharacter?.length) {
         return privateCharacter[0];
       }
@@ -85,23 +80,18 @@ export const useCharacterModalApi = ({
 
   const handleChatNow = async () => {
     if (isLoading || !initialCharacter?.char_uuid) return;
-
     if (!userUUID) {
       showAlert('You need to be logged in to chat with a bot.', 'Alert');
       return;
     }
-
     setIsLoading(true);
-
     try {
       const character = await fetchCharacter(initialCharacter.char_uuid);
       if (!character) {
         showAlert('Character not found.', 'Alert');
         return;
       }
-
       const response = await CreateNewChat(character.char_uuid, userUUID);
-
       if (response?.chat_uuid) {
         navigate(`/chat/${response.chat_uuid}`);
       } else {
@@ -119,7 +109,6 @@ export const useCharacterModalApi = ({
 
   const handleEditCharacter = async () => {
     if (!initialCharacter?.char_uuid) return;
-
     const character = await fetchCharacter(initialCharacter.char_uuid);
     if (character) {
       navigate(`/create/${character.char_uuid}`, {
@@ -130,11 +119,11 @@ export const useCharacterModalApi = ({
 
   const handleDeleteCharacter = async () => {
     if (!initialCharacter?.char_uuid) return;
-
     setIsLoading(true);
     try {
-      await utils.db.delete('public_characters', {
-        char_uuid: initialCharacter.char_uuid,
+      await utils.db.remove({
+        tables: 'public_characters',
+        match: { char_uuid: initialCharacter.char_uuid },
       });
 
       showAlert('Character deleted successfully!', 'Success');
@@ -148,10 +137,10 @@ export const useCharacterModalApi = ({
         setIsLoading(false);
         return;
       }
-
       try {
-        await utils.db.delete('private_characters', {
-          char_uuid: initialCharacter.char_uuid,
+        await utils.db.remove({
+          tables: 'private_characters',
+          match: { char_uuid: initialCharacter.char_uuid },
         });
 
         showAlert('Character deleted successfully!', 'Success');

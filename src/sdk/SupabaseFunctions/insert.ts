@@ -1,16 +1,20 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-export const insert = async <T>(
+export const insert = async <T = any>(
   client: SupabaseClient,
-  table: string,
-  data: T | T[],
-  options?: { onConflict?: string[] }
+  req: {
+    tables: string;
+    data: T | T[];
+    options?: { onConflict?: string[] };
+  }
 ): Promise<T[]> => {
+  const { tables, data, options } = req;
+
   const query = options?.onConflict
-    ? client.from(table).upsert(data, {
+    ? client.from(tables).upsert(data, {
         onConflict: options.onConflict.join(', '),
       })
-    : client.from(table).insert(data);
+    : client.from(tables).insert(data);
 
   const { data: res, error } = await query.select();
   if (error) throw error;

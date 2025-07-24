@@ -10,19 +10,17 @@ export async function getRandomCharacters(
   page: number,
   sortBy: SortBy = null
 ): Promise<{ characters: Character[]; totalPages: number }> {
-  if (type !== 'random') {
-    throw new Error('Invalid type');
-  }
+  if (type !== 'random') throw new Error('Invalid type');
 
   const { show_nsfw = true, blocked_tags = [] } = useUserStore.getState();
   const fetchLimit = maxCharacter * 10;
 
-  const bannedUserRes = await Utils.db.select<{ user_uuid: string }>(
-    'banned_users',
-    'user_uuid'
-  );
+  const bannedUserRes = await Utils.db.select<{ user_uuid: string }>({
+    tables: 'banned_users',
+    columns: 'user_uuid',
+  });
 
-  const bannedUserUUIDs = bannedUserRes.data
+  const bannedUserUUIDs = (bannedUserRes.data ?? [])
     .map((u) => u.user_uuid)
     .filter(Boolean);
 
@@ -39,15 +37,16 @@ export async function getRandomCharacters(
     { column: 'is_banned', operator: 'eq', value: false },
   ];
 
-  const { data: allCharacters = [] } = await Utils.db.select<Character>(
-    'public_characters',
-    '*',
-    'exact',
+  const { data: allCharacters = [] } = await Utils.db.select<Character>({
+    tables: 'public_characters',
+    columns: '*',
+    countOption: 'exact',
     match,
-    { from: 0, to: fetchLimit - 1 },
-    sortBy ? { column: sortBy, ascending: false } : undefined,
-    extraFilters
-  );
+    range: { from: 0, to: fetchLimit - 1 },
+    orderBy: sortBy ? { column: sortBy, ascending: false } : undefined,
+    extraFilters,
+    paging: false,
+  });
 
   const shuffled = allCharacters.sort(() => 0.5 - Math.random());
   const startIndex = (page - 1) * maxCharacter;
@@ -55,10 +54,7 @@ export async function getRandomCharacters(
   const paged = shuffled.slice(startIndex, endIndex);
 
   return {
-    characters: paged.map((char) => ({
-      ...char,
-      id: String(char.id),
-    })),
+    characters: paged.map((char) => char),
     totalPages: Math.ceil(shuffled.length / maxCharacter),
   };
 }

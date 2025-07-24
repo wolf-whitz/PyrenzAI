@@ -37,6 +37,10 @@ export function FormActions({
   const handleCloseDraftModal = () => setIsDraftModalOpen(false);
   const handleGuideClick = () => navigate('/Docs');
 
+  const handleSelectDraft = (draft: Draft) => {
+    onSelectDraft(draft);
+  };
+
   return (
     <motion.div
       className="flex flex-wrap justify-end gap-2 mt-4"
@@ -51,7 +55,6 @@ export function FormActions({
       >
         Clear
       </PyrenzBlueButton>
-
       <PyrenzBlueButton
         variant="contained"
         onClick={onSave}
@@ -67,7 +70,6 @@ export function FormActions({
       >
         {saveLoading ? 'Saving...' : 'Save'}
       </PyrenzBlueButton>
-
       <PyrenzBlueButton
         variant="contained"
         onClick={handleOpenDraftModal}
@@ -76,7 +78,6 @@ export function FormActions({
       >
         Drafts
       </PyrenzBlueButton>
-
       {character_update && (
         <PyrenzBlueButton
           variant="contained"
@@ -88,17 +89,17 @@ export function FormActions({
           Delete
         </PyrenzBlueButton>
       )}
-
       <CreateButton
         loading={loading}
         className="w-full sm:w-auto"
         character_update={character_update}
       />
-
       {isDraftModalOpen && (
-        <DraftsModal onClose={handleCloseDraftModal} onSelect={onSelectDraft} />
+        <DraftsModal
+          onClose={handleCloseDraftModal}
+          onSelect={handleSelectDraft}
+        />
       )}
-
       <Typography
         variant="body1"
         align="center"

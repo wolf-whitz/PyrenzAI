@@ -24,7 +24,6 @@ export function PreviousChat() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedChatUuid, setSelectedChatUuid] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-
   const PAGE_SIZE = 15;
 
   const truncateMessage = (msg: string, max = 80) =>
@@ -36,7 +35,10 @@ export function PreviousChat() {
 
   const handleDelete = async (uuid: string) => {
     try {
-      await Utils.db.delete('chats', { chat_uuid: uuid });
+      await Utils.db.remove({
+        tables: 'chats',
+        match: { chat_uuid: uuid },
+      });
       setChats((prev) => prev.filter((chat) => chat.chat_uuid !== uuid));
     } catch (err: any) {
       console.error('Error deleting chat:', err);
@@ -69,17 +71,17 @@ export function PreviousChat() {
     setLoading(true);
     setError(null);
     try {
-      const { data } = await Utils.db.select(
-        'chats',
-        '*',
-        'exact',
-        {},
-        {
+      const { data } = await Utils.db.select({
+        tables: 'chats',
+        columns: '*',
+        countOption: 'exact',
+        match: {},
+        range: {
           from: page * PAGE_SIZE,
           to: page * PAGE_SIZE + PAGE_SIZE - 1,
         },
-        { column: 'created_at', ascending: false }
-      );
+        orderBy: { column: 'created_at', ascending: false },
+      });
       setChats((prev) => [...prev, ...data]);
       setHasMore(data.length === PAGE_SIZE);
     } catch (err: any) {
@@ -216,33 +218,33 @@ export function PreviousChat() {
               )}
             </Box>
           )}
-          <Popover
-            open={Boolean(anchorEl)}
-            anchorEl={anchorEl}
-            onClose={() => {
-              setAnchorEl(null);
-              setSelectedChatUuid(null);
-            }}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'right',
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-            }}
-          >
-            <MenuItem
-              onClick={() => {
-                setDialogOpen(true);
-                setAnchorEl(null);
-              }}
-            >
-              Delete
-            </MenuItem>
-          </Popover>
         </Box>
       </Box>
+      <Popover
+        open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
+        onClose={() => {
+          setAnchorEl(null);
+          setSelectedChatUuid(null);
+        }}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+      >
+        <MenuItem
+          onClick={() => {
+            setDialogOpen(true);
+            setAnchorEl(null);
+          }}
+        >
+          Delete
+        </MenuItem>
+      </Popover>
       <PyrenzDialog
         open={dialogOpen}
         onClose={handleCancelDelete}

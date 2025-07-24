@@ -11,4 +11,6 @@ function getClient(): SupabaseClient {
   return _client;
 }
 
-export const db = new SupabaseUtil(getClient());
+SupabaseUtil.init(getClient());
+
+export const db = SupabaseUtil.instance.db;

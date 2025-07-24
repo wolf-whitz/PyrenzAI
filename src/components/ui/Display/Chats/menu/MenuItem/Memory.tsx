@@ -22,13 +22,13 @@ export function Memory() {
         showAlert('Unknown Chat', 'alert');
         return;
       }
-
       try {
         const { data } = await Utils.db.select<{ characters_memories: string }>(
-          'chats',
-          'characters_memories',
-          null,
-          { chat_uuid }
+          {
+            tables: 'chats',
+            columns: 'characters_memories',
+            match: { chat_uuid },
+          }
         );
 
         if (data?.[0]) {
@@ -61,13 +61,12 @@ export function Memory() {
       showAlert('Unknown Chat', 'alert');
       return;
     }
-
     try {
-      await Utils.db.update(
-        'chats',
-        { characters_memories: textValue },
-        { chat_uuid }
-      );
+      await Utils.db.update({
+        tables: 'chats',
+        values: { characters_memories: textValue },
+        match: { chat_uuid },
+      });
 
       showAlert('Memory updated successfully!', 'success');
     } catch (error) {

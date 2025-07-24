@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const CharacterSchema = z.object({
-  id: z.string().optional(),
+  id: z.number().optional(),
   char_uuid: z.string(),
 
   title: z.string(),
@@ -35,7 +35,7 @@ export const CharacterSchema = z.object({
 });
 
 export const DraftSchema = z.object({
-  id: z.number(),
+  id: z.number().optional(),
   user_uuid: z.string(),
   persona: z.string(),
   name: z.string(),

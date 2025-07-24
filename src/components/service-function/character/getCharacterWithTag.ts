@@ -29,10 +29,10 @@ export async function getCharacterWithTag({
 }: GetCharacterWithTagProps): Promise<GetCharacterWithTagResponse> {
   const { show_nsfw = true, blocked_tags = [] } = useUserStore.getState();
 
-  const bannedUserRes = await Utils.db.select<{ user_uuid: string }>(
-    'banned_users',
-    'user_uuid'
-  );
+  const bannedUserRes = await Utils.db.select<{ user_uuid: string }>({
+    tables: 'banned_users',
+    columns: 'user_uuid',
+  });
   const bannedUserUUIDs = (bannedUserRes.data ?? [])
     .map((u) => u.user_uuid)
     .filter(Boolean);
@@ -63,16 +63,15 @@ export async function getCharacterWithTag({
       : []),
   ];
 
-  const { data = [], count } = await Utils.db.select<Character>(
-    'public_characters',
-    '*',
-    'exact',
+  const { data = [], count } = await Utils.db.select<Character>({
+    tables: 'public_characters',
+    columns: '*',
+    countOption: 'exact',
     match,
-    undefined,
-    { column: sortBy, ascending: false },
-    filters,
-    false
-  );
+    orderBy: { column: sortBy, ascending: false },
+    extraFilters: filters,
+    paging: false,
+  });
 
   const filtered = data.filter((char) => {
     if (!show_nsfw && char.is_nsfw) return false;
@@ -92,7 +91,7 @@ export async function getCharacterWithTag({
 
   const characters = filtered.slice(start, end).map((char) => ({
     ...char,
-    id: String(char.id),
+    id: char.id,
   }));
 
   return {

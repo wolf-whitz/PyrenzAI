@@ -25,6 +25,7 @@ export const useApiSettings = () => {
   const [providers, setProviders] = useState<Provider[]>([]);
   const [selectedProvider, setSelectedProvider] = useState<string>('');
   const [userModels, setUserModels] = useState<UserModel[]>([]);
+
   const showAlert = usePyrenzAlert();
 
   useEffect(() => {
@@ -38,10 +39,10 @@ export const useApiSettings = () => {
   useEffect(() => {
     const fetchProviders = async () => {
       try {
-        const { data } = await Utils.db.select<Provider>(
-          'providers',
-          'provider_name, provider_description, provider_link'
-        );
+        const { data } = await Utils.db.select<Provider>({
+          tables: 'providers',
+          columns: 'provider_name, provider_description, provider_link',
+        });
         setProviders(data || []);
       } catch (error) {
         console.error('Error fetching providers:', error);
@@ -54,12 +55,11 @@ export const useApiSettings = () => {
     const fetchUserModels = async () => {
       if (!userUuid) return;
       try {
-        const { data } = await Utils.db.select<UserModel>(
-          'private_models',
-          'id, model_name, model_description',
-          null,
-          { user_uuid: userUuid }
-        );
+        const { data } = await Utils.db.select<UserModel>({
+          tables: 'private_models',
+          columns: 'id, model_name, model_description',
+          match: { user_uuid: userUuid },
+        });
         setUserModels(data || []);
       } catch (error) {
         console.error('Error fetching user models:', error);
@@ -70,12 +70,11 @@ export const useApiSettings = () => {
 
   const refreshUserModels = async () => {
     if (!userUuid) return;
-    const { data } = await Utils.db.select<UserModel>(
-      'private_models',
-      'id, model_name, model_description',
-      null,
-      { user_uuid: userUuid }
-    );
+    const { data } = await Utils.db.select<UserModel>({
+      tables: 'private_models',
+      columns: 'id, model_name, model_description',
+      match: { user_uuid: userUuid },
+    });
     setUserModels(data || []);
   };
 
@@ -90,12 +89,10 @@ export const useApiSettings = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
     if (!userUuid) {
       showAlert('User not loaded yet, please try again 🤷‍♂️', 'Alert');
       return;
     }
-
     if (
       !apiUrl.trim() ||
       !apiKey.trim() ||
@@ -108,15 +105,17 @@ export const useApiSettings = () => {
       );
       return;
     }
-
     try {
       const encryptedApiKey = await encrypt(apiKey);
-      await Utils.db.insert('private_models', {
-        user_uuid: userUuid,
-        model_name: modelName,
-        model_url: apiUrl,
-        model_description: modelDescription,
-        model_api_key: encryptedApiKey,
+      await Utils.db.insert({
+        tables: 'private_models',
+        data: {
+          user_uuid: userUuid,
+          model_name: modelName,
+          model_url: apiUrl,
+          model_description: modelDescription,
+          model_api_key: encryptedApiKey,
+        },
       });
       showAlert('Model saved successfully! 🎉', 'Success');
       setModelName('');
@@ -136,7 +135,6 @@ export const useApiSettings = () => {
       showAlert('User not loaded yet, please try again 🤷‍♂️', 'Alert');
       return;
     }
-
     if (
       !apiUrl.trim() ||
       !apiKey.trim() ||
@@ -146,19 +144,18 @@ export const useApiSettings = () => {
       showAlert('All fields must be filled in to update the model 📝', 'Error');
       return;
     }
-
     try {
       const encryptedApiKey = await encrypt(apiKey);
-      await Utils.db.update(
-        'private_models',
-        {
+      await Utils.db.update({
+        tables: 'private_models',
+        values: {
           model_name: modelName,
           model_url: apiUrl,
           model_description: modelDescription,
           model_api_key: encryptedApiKey,
         },
-        { id }
-      );
+        match: { id },
+      });
       showAlert('Model updated successfully! 🎉', 'Success');
       await refreshUserModels();
     } catch (error) {
@@ -176,7 +173,10 @@ export const useApiSettings = () => {
       return;
     }
     try {
-      await Utils.db.delete('private_models', { id });
+      await Utils.db.remove({
+        tables: 'private_models',
+        match: { id },
+      });
       showAlert('Model deleted successfully! 🎉', 'Success');
       await refreshUserModels();
     } catch (error) {

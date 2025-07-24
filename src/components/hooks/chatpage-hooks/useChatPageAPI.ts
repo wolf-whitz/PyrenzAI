@@ -49,6 +49,7 @@ export const useChatPageAPI = (
   const handleSend = async (message: string): Promise<void> => {
     const trimmedMessage = message.trim();
     if (!trimmedMessage) return;
+
     try {
       const response = await generateMessage(
         trimmedMessage,
@@ -58,7 +59,6 @@ export const useChatPageAPI = (
         setMessages,
         setIsGenerating
       );
-
       if (!response.isSubscribed && response.remainingMessages === 0) {
         setIsAdModalOpen(true);
       }
@@ -69,17 +69,23 @@ export const useChatPageAPI = (
 
   const handleRemoveMessage = async (messageId: string): Promise<void> => {
     if (!messageId) return;
+
     const index = previous_message.findIndex((msg) => msg.id === messageId);
     if (index === -1) return;
+
     const messagesToDelete = previous_message
       .slice(index)
       .map((msg) => msg.id)
       .filter((id): id is string => !!id);
+
     if (!messagesToDelete.length) return;
+
     try {
-      await Utils.db.delete<{ id: string }>('chat_messages', {
-        id: messagesToDelete,
+      await Utils.db.remove({
+        tables: 'chat_messages',
+        match: { id: messagesToDelete },
       });
+
       setMessages((prevMessages) =>
         prevMessages.filter(
           (msg) =>
@@ -93,11 +99,13 @@ export const useChatPageAPI = (
 
   const handleRegenerateMessage = async (messageId: string): Promise<void> => {
     if (!messageId) return;
+
     try {
       const userMessage = previous_message.find(
         (msg) => msg.id === messageId && msg.type === 'user'
       );
       if (!userMessage) return;
+
       await handleRemoveMessage(messageId);
       await handleSend(userMessage.text);
     } catch (error) {
@@ -111,17 +119,19 @@ export const useChatPageAPI = (
     type: 'user' | 'char'
   ): Promise<void> => {
     if (!messageId || !editedMessage) return;
+
     try {
       const columnName = type === 'user' ? 'user_message' : 'char_message';
-      await Utils.db.update(
-        'chat_messages',
-        { [columnName]: editedMessage },
-        {
+      await Utils.db.update({
+        tables: 'chat_messages',
+        values: { [columnName]: editedMessage },
+        match: {
           id: messageId,
           user_uuid: user.user_uuid,
           chat_uuid: chat_uuid,
-        }
-      );
+        },
+      });
+
       setMessages((prevMessages) =>
         prevMessages.map((msg) =>
           msg.id === messageId && msg.type === type
@@ -170,11 +180,14 @@ export const useChatPageAPI = (
           profile_image: char.profile_image,
         };
 
-        await Utils.db.insert('chat_messages', {
-          user_uuid: user.user_uuid,
-          chat_uuid: chat_uuid,
-          char_message: newImageMessage.text,
-          is_image: true,
+        await Utils.db.insert({
+          tables: 'chat_messages',
+          data: {
+            user_uuid: user.user_uuid,
+            chat_uuid: chat_uuid,
+            char_message: newImageMessage.text,
+            is_image: true,
+          },
         });
 
         setMessages((prevMessages) => [...prevMessages, newImageMessage]);

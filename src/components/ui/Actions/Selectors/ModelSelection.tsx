@@ -54,13 +54,17 @@ export function ModelSelection({
           name: string;
           subscription_plan: string;
           model_description: string;
-        }>('model_identifiers', 'name, subscription_plan, model_description');
+        }>({
+          tables: 'model_identifiers',
+          columns: 'name, subscription_plan, model_description',
+        });
 
         const { data: privateModelsData } = await Utils.db.select<PrivateModel>(
-          'private_models',
-          'model_name, model_description',
-          null,
-          { user_uuid: userUUID }
+          {
+            tables: 'private_models',
+            columns: 'model_name, model_description',
+            match: { user_uuid: userUUID },
+          }
         );
 
         const formattedModelOptions: ModelOption[] = modelIdentifiers.map(

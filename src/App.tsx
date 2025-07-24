@@ -12,6 +12,14 @@ import { useUserStore } from '~/store';
 import { Box, useTheme } from '@mui/material';
 import { BlockedPage } from './routes/Routing';
 
+interface UserData {
+  is_deleted: boolean;
+}
+
+interface BannedUser {
+  is_banned: boolean;
+}
+
 const AppContent = () => {
   const [loading, setLoading] = useState(true);
   const [isBlocked, setIsBlocked] = useState(false);
@@ -28,6 +36,7 @@ const AppContent = () => {
         const res = await fetch('https://ipapi.co/json/');
         const geoData = await res.json();
         const blockedCountries = ['United Kingdom'];
+
         if (blockedCountries.includes(geoData?.country_name)) {
           setIsBlocked(true);
           if (location.pathname !== '/Blocked') {
@@ -35,27 +44,30 @@ const AppContent = () => {
           }
           return;
         }
+
         const {
           data: { user },
         } = await utils.db.client.auth.getUser();
+
         if (user) {
           const userId = user.id;
+
           const [deletedRes, bannedRes] = await Promise.all([
-            utils.db.select<{ is_deleted: boolean }>(
-              'user_data',
-              'is_deleted',
-              null,
-              { user_uuid: userId }
-            ),
-            utils.db.select<{ is_banned: boolean }>(
-              'banned_users',
-              'is_banned',
-              null,
-              { user_uuid: userId }
-            ),
+            utils.db.select<UserData>({
+              tables: 'user_data',
+              columns: 'is_deleted',
+              match: { user_uuid: userId },
+            }),
+            utils.db.select<BannedUser>({
+              tables: 'banned_users',
+              columns: 'is_banned',
+              match: { user_uuid: userId },
+            }),
           ]);
+
           const isDeletedUser = deletedRes?.data?.[0]?.is_deleted;
           const isBannedUser = bannedRes?.data?.[0]?.is_banned;
+
           if (isDeletedUser) {
             setIsDeleted(true);
             await utils.db.client.auth.signOut();
@@ -92,11 +104,14 @@ const AppContent = () => {
         setLoading(false);
       }
     };
+
     initChecks();
   }, [location, navigate, setIsDeleted, setIsBanned]);
 
   if (loading) return <Spinner />;
+
   if (isBlocked) return <BlockedPage />;
+
   return (
     <Box
       data-mui-theme={`theme-${currentTheme}`}

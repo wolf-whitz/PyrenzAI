@@ -1,14 +1,16 @@
 import React from 'react';
-import { Box, BoxProps } from '@mui/material';
+import { Box, BoxProps, Skeleton, Stack } from '@mui/material';
 
 interface PyrenzCardProps extends BoxProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   selected?: boolean;
+  loading?: boolean;
 }
 
 export function PyrenzCard({
   children,
   selected,
+  loading = false,
   sx,
   ...rest
 }: PyrenzCardProps) {
@@ -32,7 +34,19 @@ export function PyrenzCard({
       }}
       {...rest}
     >
-      {children}
+      {loading ? (
+        <Stack spacing={1}>
+          <Skeleton variant="text" width="60%" height={30} />
+          <Skeleton variant="text" width="80%" />
+          <Skeleton
+            variant="rectangular"
+            height={80}
+            sx={{ borderRadius: 2 }}
+          />
+        </Stack>
+      ) : (
+        children
+      )}
     </Box>
   );
 }

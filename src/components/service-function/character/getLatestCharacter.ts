@@ -20,12 +20,12 @@ export async function getLatestCharacter(
 
   const { show_nsfw = true, blocked_tags = [] } = useUserStore.getState();
 
-  const bannedUserRes = await Utils.db.select<{ user_uuid: string }>(
-    'banned_users',
-    'user_uuid'
-  );
+  const bannedUserRes = await Utils.db.select<{ user_uuid: string }>({
+    tables: 'banned_users',
+    columns: 'user_uuid',
+  });
 
-  const bannedUserUUIDs = bannedUserRes.data
+  const bannedUserUUIDs = (bannedUserRes.data ?? [])
     .map((u) => u.user_uuid)
     .filter(Boolean);
 
@@ -45,20 +45,20 @@ export async function getLatestCharacter(
     { column: 'is_banned', operator: 'eq', value: false },
   ];
 
-  const { data = [], count } = await Utils.db.select<Character>(
-    'public_characters',
-    '*',
-    'exact',
+  const { data = [], count } = await Utils.db.select<Character>({
+    tables: 'public_characters',
+    columns: '*',
+    countOption: 'exact',
     match,
-    { from, to },
-    { column: sortBy, ascending: false },
+    range: { from, to },
+    orderBy: { column: sortBy, ascending: false },
     extraFilters,
-    true
-  );
+    paging: true,
+  });
 
   const characters = data.map((char) => ({
     ...char,
-    id: String(char.id),
+    id: char.id,
   }));
 
   const totalItems = count ?? characters.length;

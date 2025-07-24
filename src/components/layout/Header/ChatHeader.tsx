@@ -7,20 +7,20 @@ import {
   Box,
   Fade,
   Container,
-} from '@mui/material'
-import { ArrowBack } from '@mui/icons-material'
-import { useNavigate } from 'react-router-dom'
-import { useChatStore } from '~/store'
+} from '@mui/material';
+import { ArrowBack } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
+import { useChatStore } from '~/store';
 
 export function ChatHeader() {
-  const theme = useTheme()
-  const isMdScreen = useMediaQuery(theme.breakpoints.up('lg'))
-  const navigate = useNavigate()
-  const { char } = useChatStore()
+  const theme = useTheme();
+  const isMdScreen = useMediaQuery(theme.breakpoints.up('lg'));
+  const navigate = useNavigate();
+  const { char } = useChatStore();
 
   const handleArrowLeftClick = () => {
-    navigate('/#')
-  }
+    navigate('/#');
+  };
 
   return (
     <Fade in={true} timeout={500}>
@@ -65,5 +65,5 @@ export function ChatHeader() {
         </Box>
       </Container>
     </Fade>
-  )
+  );
 }

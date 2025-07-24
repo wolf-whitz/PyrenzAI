@@ -23,15 +23,15 @@ export function CustomModelFields() {
     const fetchCustomProvider = async () => {
       try {
         const userUUID = await GetUserUUID();
-
         const { data } = await Utils.db.select<{
           custom_provider: CustomProvider;
-        }>('user_data', 'custom_provider', null, {
-          user_uuid: userUUID,
+        }>({
+          tables: 'user_data',
+          columns: 'custom_provider',
+          match: { user_uuid: userUUID },
         });
 
         const firstRecord = data?.[0];
-
         if (firstRecord?.custom_provider) {
           const provider = firstRecord.custom_provider;
           setApiKey(provider.api_key || '');
@@ -61,11 +61,11 @@ export function CustomModelFields() {
         provider_url: providerUrl,
       };
 
-      await Utils.db.update(
-        'user_data',
-        { custom_provider: updatedProvider },
-        { user_uuid: userUUID }
-      );
+      await Utils.db.update({
+        tables: 'user_data',
+        values: { custom_provider: updatedProvider },
+        match: { user_uuid: userUUID },
+      });
 
       console.log('Custom provider settings updated successfully ✅');
     } catch (err) {
@@ -87,7 +87,6 @@ export function CustomModelFields() {
           />
         </PyrenzFormControl>
       </Box>
-
       <Box mb={2}>
         <PyrenzFormControl fullWidth variant="outlined">
           <PyrenzInputLabel htmlFor="model-name">Model Name</PyrenzInputLabel>
@@ -100,7 +99,6 @@ export function CustomModelFields() {
           />
         </PyrenzFormControl>
       </Box>
-
       <Box mb={2}>
         <PyrenzFormControl fullWidth variant="outlined">
           <PyrenzInputLabel htmlFor="provider-url">
@@ -115,7 +113,6 @@ export function CustomModelFields() {
           />
         </PyrenzFormControl>
       </Box>
-
       <Box display="flex" justifyContent="space-between" mb={4}>
         <Button variant="contained" color="primary" onClick={handleClear}>
           Clear

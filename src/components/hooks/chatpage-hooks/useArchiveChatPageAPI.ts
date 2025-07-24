@@ -57,14 +57,14 @@ export function useArchiveChatPageAPI(
       const rangeFrom = page * chatsPerPage;
       const rangeTo = rangeFrom + chatsPerPage - 1;
 
-      const { data: chatData, count } = await Utils.db.select<ChatTable>(
-        'chats',
-        '*',
-        'exact',
-        { is_temporary: false },
-        { from: rangeFrom, to: rangeTo },
-        { column: 'created_at', ascending: false }
-      );
+      const { data: chatData, count } = await Utils.db.select<ChatTable>({
+        tables: 'chats',
+        columns: '*',
+        countOption: 'exact',
+        match: { is_temporary: false },
+        range: { from: rangeFrom, to: rangeTo },
+        orderBy: { column: 'created_at', ascending: false },
+      });
 
       if (!chatData || chatData.length === 0) {
         setChats([]);
@@ -78,24 +78,20 @@ export function useArchiveChatPageAPI(
       );
 
       const [publicChars, privateChars] = await Promise.all([
-        Utils.db.select<CharacterTable>(
-          'public_characters',
-          'char_uuid, name',
-          null,
-          {},
-          undefined,
-          undefined,
-          [{ column: 'char_uuid', operator: 'in', value: uniqueCharUUIDs }]
-        ),
-        Utils.db.select<CharacterTable>(
-          'private_characters',
-          'char_uuid, name',
-          null,
-          {},
-          undefined,
-          undefined,
-          [{ column: 'char_uuid', operator: 'in', value: uniqueCharUUIDs }]
-        ),
+        Utils.db.select<CharacterTable>({
+          tables: 'public_characters',
+          columns: 'char_uuid, name',
+          extraFilters: [
+            { column: 'char_uuid', operator: 'in', value: uniqueCharUUIDs },
+          ],
+        }),
+        Utils.db.select<CharacterTable>({
+          tables: 'private_characters',
+          columns: 'char_uuid, name',
+          extraFilters: [
+            { column: 'char_uuid', operator: 'in', value: uniqueCharUUIDs },
+          ],
+        }),
       ]);
 
       const allCharacters = [
@@ -141,7 +137,10 @@ export function useArchiveChatPageAPI(
 
   const handleDeleteChat = async (chatUuid: string) => {
     try {
-      await Utils.db.delete('chats', { chat_uuid: chatUuid });
+      await Utils.db.remove({
+        tables: 'chats',
+        match: { chat_uuid: chatUuid },
+      });
       await fetchChats(currentPage);
     } catch (err) {
       console.error('Error deleting chat:', err);
@@ -150,11 +149,11 @@ export function useArchiveChatPageAPI(
 
   const handlePinChat = async (chatUuid: string) => {
     try {
-      await Utils.db.update<ChatTable>(
-        'chats',
-        { is_pinned: true },
-        { chat_uuid: chatUuid }
-      );
+      await Utils.db.update({
+        tables: 'chats',
+        values: { is_pinned: true },
+        match: { chat_uuid: chatUuid },
+      });
       await fetchChats(currentPage);
     } catch (err) {
       console.error('Error pinning chat:', err);

@@ -40,18 +40,13 @@ export function Persona() {
         const {
           data: { user },
         } = await Utils.db.client.auth.getUser();
-
         if (!user) throw new Error('User not authenticated');
-
         const user_uuid = user.id;
-
-        const { data } = await Utils.db.select<PersonaData>(
-          'personas',
-          '*',
-          null,
-          { user_uuid }
-        );
-
+        const { data } = await Utils.db.select<PersonaData>({
+          tables: 'personas',
+          columns: '*',
+          match: { user_uuid },
+        });
         setPersonas(data ?? []);
       } catch (error) {
         console.error('Failed to fetch personas:', error);
@@ -82,26 +77,25 @@ export function Persona() {
         data: { user },
       } = await Utils.db.client.auth.getUser();
       if (!user) throw new Error('Not logged in');
-
       const user_uuid = user.id;
 
-      await Utils.db.update<PersonaData>(
-        'personas',
-        { is_selected: false },
-        { user_uuid }
-      );
+      await Utils.db.update({
+        tables: 'personas',
+        values: { is_selected: false },
+        match: { user_uuid },
+      });
 
-      await Utils.db.update<PersonaData>(
-        'personas',
-        { is_selected: true },
-        { id: selectedId }
-      );
+      await Utils.db.update({
+        tables: 'personas',
+        values: { is_selected: true },
+        match: { id: selectedId },
+      });
 
       setPersonas((prev) =>
         prev.map((p) => ({ ...p, is_selected: p.id === selectedId }))
       );
     } catch (err) {
-      console.error(err);
+      console.error('Error selecting persona:', err);
     } finally {
       handleMenuClose();
     }
@@ -120,10 +114,13 @@ export function Persona() {
 
   const handleDialogConfirm = async () => {
     if (!personaToDelete) return;
+
     try {
-      await Utils.db.delete<PersonaData>('personas', {
-        id: personaToDelete.id,
+      await Utils.db.remove({
+        tables: 'personas',
+        match: { id: personaToDelete.id },
       });
+
       setPersonas((prev) => prev.filter((p) => p.id !== personaToDelete.id));
     } catch (error) {
       console.error('Error deleting persona:', error);
@@ -192,7 +189,6 @@ export function Persona() {
           ))}
         </Box>
       </PyrenzAccordionInput>
-
       <Menu
         anchorEl={anchorEl}
         open={openMenu}
@@ -218,7 +214,6 @@ export function Persona() {
           Delete
         </MenuItem>
       </Menu>
-
       <PyrenzDialog
         open={confirmDeleteOpen}
         onClose={handleDialogClose}

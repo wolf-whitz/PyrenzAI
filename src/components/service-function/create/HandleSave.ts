@@ -21,7 +21,10 @@ export const handleSaveDraft = async (
       ...character,
     };
 
-    await utils.db.insert('draft_characters', filteredCharacter);
+    await utils.db.insert({
+      tables: 'draft_characters',
+      data: filteredCharacter,
+    });
 
     return { success: true };
   } catch (error: any) {

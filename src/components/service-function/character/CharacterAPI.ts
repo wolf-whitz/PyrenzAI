@@ -19,14 +19,15 @@ export const useCharacterData = (char_uuid: string | undefined) => {
 
       try {
         const match = { char_uuid };
+        const { data } = await Utils.db.select<any>({
+          tables: ['public_characters', 'private_characters'],
+          columns: '*',
+          countOption: null,
+          match,
+          paging: false,
+        });
 
-        const [publicRes, privateRes] = await Promise.all([
-          Utils.db.select<any>('public_characters', '*', 'exact', match),
-          Utils.db.select<any>('private_characters', '*', 'exact', match),
-        ]);
-
-        const foundCharacter =
-          publicRes.data?.[0] || privateRes.data?.[0] || null;
+        const foundCharacter = data?.[0] ?? null;
 
         if (foundCharacter) {
           const verifiedCharacter = CharacterSchema.parse({
@@ -36,6 +37,7 @@ export const useCharacterData = (char_uuid: string | undefined) => {
             is_details_private: foundCharacter.is_details_private ?? false,
             is_nsfw: foundCharacter.is_nsfw ?? false,
           });
+
           setCharacter(verifiedCharacter);
         } else {
           setNotFound(true);
@@ -53,17 +55,17 @@ export const useCharacterData = (char_uuid: string | undefined) => {
 
   const handleDeleteCharacter = async (): Promise<boolean> => {
     if (!char_uuid) return false;
+
     try {
       const user_uuid = await GetUserUUID();
       if (!user_uuid) return false;
 
-      const tableName = character?.is_public
-        ? 'public_characters'
-        : 'private_characters';
-
-      const deleted = await Utils.db.delete(tableName, {
-        char_uuid,
-        creator_uuid: user_uuid,
+      const deleted = await Utils.db.remove({
+        tables: ['public_characters', 'private_characters'],
+        match: {
+          char_uuid,
+          creator_uuid: user_uuid,
+        },
       });
 
       if (deleted.length > 0) {
@@ -97,8 +99,12 @@ export const useCharacterData = (char_uuid: string | undefined) => {
         report_content: reportText,
       };
 
-      const result = await Utils.db.insert('character_reports', reportData, {
-        onConflict: ['user_uuid', 'char_uuid'],
+      const result = await Utils.db.insert({
+        tables: 'character_reports',
+        data: reportData,
+        options: {
+          onConflict: ['user_uuid', 'char_uuid'],
+        },
       });
 
       if (result.length > 0) {

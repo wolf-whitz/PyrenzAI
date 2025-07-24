@@ -30,16 +30,15 @@ export const useMenuAPI = ({ char }: MenuAPIProps) => {
   const handleCharacterDetailsSubmit = useCallback(
     async (characterDetails: Character) => {
       try {
-        await Utils.db.update(
-          'chats',
-          {
+        await Utils.db.update({
+          tables: 'chats',
+          values: {
             name: characterDetails.name,
             persona: characterDetails.persona,
             model_instructions: characterDetails.model_instructions,
           },
-          { char_uuid: char.char_uuid }
-        );
-
+          match: { char_uuid: char.char_uuid },
+        });
         console.log('Character details updated successfully');
       } catch (error) {
         console.error('Error updating character details:', error);
@@ -54,28 +53,23 @@ export const useMenuAPI = ({ char }: MenuAPIProps) => {
     if (savedBg) setBgImage(savedBg);
 
     let isMounted = true;
-
     const fetchData = async () => {
       try {
         const result = await GetUserData();
-
         if ('error' in result) {
           console.error(result.error);
           return;
         }
 
         const userData = result;
-
         if (userData && 'ai_customization' in userData) {
           const { modelMemoryLimit, ...restCustomization } =
             userData.ai_customization;
-
           if (isMounted) {
             setAiCustomization({
               ...restCustomization,
               modelMemoryLimit: modelMemoryLimit ?? 15,
             });
-
             const plan = userData.subscription_data?.tier;
             setSubscriptionPlan(
               ['MELON', 'PINEAPPLE', 'DURIAN'].includes(plan) ? plan : null

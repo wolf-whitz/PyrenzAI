@@ -40,14 +40,13 @@ export const fetchChatData = async (
     let messages: ChatMessageWithId[] = [];
 
     try {
-      const result = await utils.db.select<ChatMessageWithId>(
-        'chat_messages',
-        '*',
-        null,
-        { chat_uuid },
-        undefined,
-        { column: 'created_at', ascending: false }
-      );
+      const result = await utils.db.select<ChatMessageWithId>({
+        tables: 'chat_messages',
+        columns: '*',
+        match: { chat_uuid },
+        orderBy: { column: 'created_at', ascending: false },
+      });
+
       messages = result?.data ?? [];
     } catch (err) {
       Sentry.captureException(err);

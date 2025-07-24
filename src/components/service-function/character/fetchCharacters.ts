@@ -37,10 +37,11 @@ export async function fetchCharacters({
   const { setCurrentPage, setMaxPage } = useHomeStore.getState();
 
   try {
-    const bannedUserRes = await Utils.db.select<{ user_uuid: string }>(
-      'banned_users',
-      'user_uuid'
-    );
+    const bannedUserRes = await Utils.db.select<{ user_uuid: string }>({
+      tables: 'banned_users',
+      columns: 'user_uuid',
+    });
+
     const bannedUserUUIDs = bannedUserRes.data
       .map((u) => u.user_uuid)
       .filter(Boolean);
@@ -52,11 +53,7 @@ export async function fetchCharacters({
     if (genderFilter) match.gender = genderFilter.trim();
     if (creatoruuid) match.creator_uuid = creatoruuid.trim();
 
-    const baseFilters: {
-      column: string;
-      operator: 'in' | 'not_overlaps' | 'not_in' | 'eq';
-      value: any;
-    }[] = [];
+    const baseFilters = [];
 
     if (tags.length > 0) {
       baseFilters.push({ column: 'tags', operator: 'in', value: tags });
@@ -80,36 +77,18 @@ export async function fetchCharacters({
 
     const orderBy = { column: sortBy, ascending: false };
 
-    const allFilters = [...baseFilters];
-    const matchAll = { ...match };
-
-    const { data, count } = await Utils.db.select<Character>(
-      'public_characters',
-      '*',
-      'exact',
-      matchAll,
-      undefined,
+    const result = await Utils.db.select<Character>({
+      tables: ['public_characters', 'private_characters'],
+      columns: '*',
+      countOption: 'exact',
+      match,
       orderBy,
-      [...allFilters, { column: 'is_banned', operator: 'eq', value: false }],
-      false
-    );
+      extraFilters: baseFilters,
+      paging: false,
+    });
 
-    const { data: privateData, count: privateCount } =
-      await Utils.db.select<Character>(
-        'private_characters',
-        '*',
-        'exact',
-        matchAll,
-        undefined,
-        orderBy,
-        allFilters,
-        false
-      );
-
-    const merged = [...(data ?? []), ...(privateData ?? [])];
-
-    const filtered = merged.filter((char) => {
-      if (!showNsfw && char.is_nsfw) return false;
+    const filtered = result.data.filter((char) => {
+      if (char.is_nsfw && !showNsfw) return false;
       if (bannedUserUUIDs.includes(char.creator_uuid)) return false;
       if (genderFilter && char.gender !== genderFilter) return false;
       if (creatoruuid && char.creator_uuid !== creatoruuid) return false;
@@ -120,18 +99,18 @@ export async function fetchCharacters({
         char.tags?.some((tag) => blockedTags.includes(tag))
       )
         return false;
+      if ('is_banned' in char && (char as any).is_banned === true) return false;
       return true;
     });
 
-    const totalItems = (count ?? 0) + (privateCount ?? 0);
+    const totalItems = filtered.length;
     const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
-
     const start = (currentPage - 1) * itemsPerPage;
     const end = currentPage * itemsPerPage;
 
     const characters = filtered.slice(start, end).map((char) => ({
       ...char,
-      id: String(char.id),
+      id: char.id,
     }));
 
     setCurrentPage(currentPage);
@@ -143,7 +122,6 @@ export async function fetchCharacters({
       totalPages,
     };
   } catch (err) {
-    console.error('Character fetch error:', err);
     if (err instanceof Error) {
       Sentry.captureException(err);
     } else {

@@ -32,12 +32,11 @@ export function AdminPanel() {
   useEffect(() => {
     const checkAdminStatus = async () => {
       setLoading(true);
-      const { data } = await Utils.db.select<{ is_admin: boolean }>(
-        'admins',
-        'is_admin',
-        null,
-        { user_uuid: userUUID }
-      );
+      const { data } = await Utils.db.select<{ is_admin: boolean }>({
+        tables: 'admins',
+        columns: 'is_admin',
+        match: { user_uuid: userUUID },
+      });
       setIsAdmin(data?.[0]?.is_admin || false);
       setLoading(false);
     };
@@ -46,8 +45,9 @@ export function AdminPanel() {
 
   useEffect(() => {
     const fetchAdminData = async () => {
-      const data = await Utils.db.rpc<CharacterReportType[]>('get_admin_data', {
-        admin_uuid: userUUID,
+      const data = await Utils.db.rpc<CharacterReportType[]>({
+        func: 'get_admin_data',
+        params: { admin_uuid: userUUID },
       });
       setReports(data || []);
     };
@@ -65,10 +65,13 @@ export function AdminPanel() {
           target === 'character' ? 'manage_character_ban' : 'manage_user_ban';
         const inputKey =
           target === 'character' ? 'target_char_uuid' : 'target_user_uuid';
-        await Utils.db.rpc(fnName, {
-          admin_uuid: userUUID,
-          [inputKey]: id,
-          ban_type: action,
+        await Utils.db.rpc({
+          func: fnName,
+          params: {
+            admin_uuid: userUUID,
+            [inputKey]: id,
+            ban_type: action,
+          },
         });
         if (action === 'ban') {
           if (target === 'character') {
@@ -84,7 +87,6 @@ export function AdminPanel() {
         setDialogOpen(false);
       }
     };
-
     setDialogContent(
       `Are you sure you want to ${action} this ${target}? This action cannot be undone.`
     );

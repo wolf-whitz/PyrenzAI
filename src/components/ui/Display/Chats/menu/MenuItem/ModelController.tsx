@@ -6,6 +6,20 @@ import { Box, Typography, Tooltip, IconButton } from '@mui/material';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { db } from '~/Utility';
 
+interface ModelControls {
+  blocked: number[][];
+  encouraged: number[][];
+  controller: {
+    'Blocked Words Frequency': number;
+    'Encouraged Word Frequency': number;
+  };
+}
+
+interface UserData {
+  model_controls: ModelControls;
+  preset_instruction: string;
+}
+
 export function ModelControl() {
   const [blockedWords, setBlockedWords] = useState('');
   const [encouragedWords, setEncouragedWords] = useState('');
@@ -19,20 +33,11 @@ export function ModelControl() {
       const uuid = await GetUserUUID();
       if (!uuid) return;
       setUserUUID(uuid);
-
       try {
-        const { data } = await db.select<{
-          model_controls: {
-            blocked: number[][];
-            encouraged: number[][];
-            controller: {
-              'Blocked Words Frequency': number;
-              'Encouraged Word Frequency': number;
-            };
-          };
-          preset_instruction: string;
-        }>('user_data', 'model_controls, preset_instruction', null, {
-          user_uuid: uuid,
+        const { data } = await db.select<UserData>({
+          tables: 'user_data',
+          columns: 'model_controls, preset_instruction',
+          match: { user_uuid: uuid },
         });
 
         const controls = data?.[0]?.model_controls;
@@ -92,22 +97,9 @@ export function ModelControl() {
     );
 
     try {
-      await db.update<
-        {
-          model_controls: {
-            blocked: number[][];
-            encouraged: number[][];
-            controller: {
-              'Blocked Words Frequency': number;
-              'Encouraged Word Frequency': number;
-            };
-          };
-          preset_instruction: string;
-        },
-        { user_uuid: string }
-      >(
-        'user_data',
-        {
+      await db.update({
+        tables: 'user_data',
+        values: {
           model_controls: {
             blocked: blockedTokens,
             encouraged: encouragedTokens,
@@ -118,8 +110,8 @@ export function ModelControl() {
           },
           preset_instruction: presetInstruction,
         },
-        { user_uuid: userUUID }
-      );
+        match: { user_uuid: userUUID },
+      });
 
       console.log('Data submitted successfully');
     } catch (error) {

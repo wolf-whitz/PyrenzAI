@@ -1,35 +1,37 @@
-/**
- * A simple supabase sdk that provides a set of utility functions
- * for interacting with a Supabase client.
- *
- * @module SupabaseUtil
- *
- * This module exports the `SupabaseUtil` class, which wraps a Supabase client
- * and provides methods for common database operations such as select, insert,
- * update, delete, and remote procedure calls (RPCs). It also includes a method
- * to select the first available record from a table. and many more.
- */
-
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { withClient } from './SupabaseFunctions/client';
+import { withClient } from './client';
+
+let _instance: SupabaseUtil | null = null;
 
 export class SupabaseUtil {
-  client: SupabaseClient;
+  public readonly db: ReturnType<typeof withClient>;
 
-  select: ReturnType<typeof withClient>['select'];
-  insert: ReturnType<typeof withClient>['insert'];
-  update: ReturnType<typeof withClient>['update'];
-  delete: ReturnType<typeof withClient>['delete'];
-  rpc: ReturnType<typeof withClient>['rpc'];
+  private constructor(client: SupabaseClient) {
+    this.db = withClient(client);
+    console.log('🧃 Supabase SDK: loaded v1');
+  }
 
-  constructor(client: SupabaseClient) {
-    this.client = client;
-    const fns = withClient(client);
+  static init(client: SupabaseClient): SupabaseUtil {
+    if (_instance) {
+      throw new Error(
+        `❌ SupabaseUtil already initialized.\n` +
+          `🛑 Only one instance allowed.\n` +
+          `✅ Use 'SupabaseUtil.instance.db' instead.\n`
+      );
+    }
 
-    this.select = fns.select;
-    this.insert = fns.insert;
-    this.update = fns.update;
-    this.delete = fns.delete;
-    this.rpc = fns.rpc;
+    _instance = new SupabaseUtil(client);
+    return _instance;
+  }
+
+  static get instance(): SupabaseUtil {
+    if (!_instance) {
+      throw new Error(
+        `❌ SupabaseUtil not initialized.\n` +
+          `⚠️ Call 'SupabaseUtil.init(client)' first.\n`
+      );
+    }
+
+    return _instance;
   }
 }

@@ -3,6 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { GetUserUUID } from '@components';
 import { Utils } from '~/Utility';
 
+interface CharactersData {
+  Characters: Record<
+    string,
+    {
+      preview_message: string;
+      preview_image: string;
+    }
+  >;
+}
+
 interface Chat {
   chat_uuid: string;
   preview_message: string;
@@ -15,30 +25,29 @@ export const usePreviousChatAPI = () => {
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(false);
-
   const navigate = useNavigate();
 
   const fetchPreviousChats = async (pageNumber: number) => {
     try {
       const userUUID = await GetUserUUID();
-
       if (!userUUID) {
         setError('User information is missing.');
         setLoading(false);
         return;
       }
 
-      const data = await Utils.db.rpc<{ Characters: Record<string, any> }>(
-        'get_chats',
-        {
+      const data = await Utils.db.rpc<CharactersData>({
+        func: 'get_chats',
+        params: {
           page: pageNumber,
           per_page: 5,
-        }
-      );
+          user_uuid: userUUID,
+        },
+      });
 
       if (data && data.Characters) {
         const formattedChats = Object.entries(data.Characters).map(
-          ([chat_uuid, chatData]: [string, any]) => ({
+          ([chat_uuid, chatData]) => ({
             chat_uuid,
             preview_message: chatData.preview_message,
             preview_image: chatData.preview_image,
@@ -48,6 +57,7 @@ export const usePreviousChatAPI = () => {
         setChats((prevChats) =>
           pageNumber === 0 ? formattedChats : [...prevChats, ...formattedChats]
         );
+
         setHasMore(formattedChats.length > 0);
       } else {
         setHasMore(false);
@@ -68,8 +78,14 @@ export const usePreviousChatAPI = () => {
     if (!chatUuid) return;
 
     try {
-      await Utils.db.delete('chats', { chat_uuid: chatUuid });
-      setChats(chats.filter((chat) => chat.chat_uuid !== chatUuid));
+      await Utils.db.remove({
+        tables: 'chats',
+        match: { chat_uuid: chatUuid },
+      });
+
+      setChats((prevChats) =>
+        prevChats.filter((chat) => chat.chat_uuid !== chatUuid)
+      );
     } catch (err: any) {
       console.error('Failed to delete chat:', err);
       setError('Failed to delete chat. Please try again later.');
