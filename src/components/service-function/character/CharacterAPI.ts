@@ -50,15 +50,15 @@ export const useCharacterData = (char_uuid: string | undefined) => {
       const user_uuid = await GetUserUUID();
       if (!user_uuid) return false;
 
-      const deleted = await Utils.db.remove({
-        tables: ['public_characters', 'private_characters'],
-        match: {
-          char_uuid,
-          creator_uuid: user_uuid,
+      const result = await Utils.db.rpc<boolean>({
+        func: 'delete_character',
+        params: {
+          in_char_uuid: char_uuid,
+          in_creator_uuid: user_uuid,
         },
       });
 
-      if (deleted.length > 0) {
+      if (result === true) {
         showAlert('Character deleted successfully', 'success');
         return true;
       } else {
@@ -66,7 +66,7 @@ export const useCharacterData = (char_uuid: string | undefined) => {
         return false;
       }
     } catch (err) {
-      console.error('🚫 Failed to delete character:', err);
+      console.error('🚫 Failed to delete character via RPC:', err);
       showAlert('Error deleting character', 'error');
       return false;
     }
