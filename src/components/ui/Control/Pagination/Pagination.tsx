@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { Box, Typography, IconButton } from '@mui/material';
+import React from 'react';
+import { Box, IconButton, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -13,17 +13,14 @@ interface PaginationProps {
 export function Pagination({ totalPages, isLoading }: PaginationProps) {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const rawPage = parseInt(searchParams.get('page') || '1', 10);
-  const currentPage = useMemo(() => {
-    if (Number.isNaN(rawPage) || rawPage < 1) return 1;
-    if (rawPage > totalPages) return totalPages;
-    return rawPage;
-  }, [rawPage, totalPages]);
+  const currentPage = Math.max(
+    1,
+    Math.min(parseInt(searchParams.get('page') || '1', 10), totalPages)
+  );
 
   const setPage = (page: number) => {
-    const clampedPage = Math.max(1, Math.min(page, totalPages));
     const newParams = new URLSearchParams(searchParams);
-    newParams.set('page', String(clampedPage));
+    newParams.set('page', String(page));
     setSearchParams(newParams);
   };
 
@@ -45,7 +42,7 @@ export function Pagination({ totalPages, isLoading }: PaginationProps) {
       justifyContent="center"
       alignItems="center"
       mt={4}
-      gap={2}
+      gap={4}
     >
       <motion.div
         whileHover={{ scale: 1.1 }}
@@ -55,16 +52,12 @@ export function Pagination({ totalPages, isLoading }: PaginationProps) {
         <IconButton
           onClick={handlePrev}
           disabled={currentPage <= 1 || isLoading}
+          sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
         >
           <ChevronLeftIcon />
+          <Typography variant="button">Previous</Typography>
         </IconButton>
       </motion.div>
-
-      <Typography fontWeight={600}>
-        {isLoading
-          ? 'Loading Characters...'
-          : `Page ${currentPage} of ${totalPages}`}
-      </Typography>
 
       <motion.div
         whileHover={{ scale: 1.1 }}
@@ -74,7 +67,9 @@ export function Pagination({ totalPages, isLoading }: PaginationProps) {
         <IconButton
           onClick={handleNext}
           disabled={currentPage >= totalPages || isLoading}
+          sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
         >
+          <Typography variant="button">Next</Typography>
           <ChevronRightIcon />
         </IconButton>
       </motion.div>
