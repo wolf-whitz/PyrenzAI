@@ -78,12 +78,16 @@ export function NSFWSwitch() {
 
   const handleSwitchChange = () => {
     if (!show_nsfw) setOpenDialog(true);
-    else toggleShowNSFW();
+    else {
+      toggleShowNSFW();
+      location.reload(); 
+    }
   };
 
   const handleConfirm = () => {
     toggleShowNSFW();
     setOpenDialog(false);
+    location.reload(); 
   };
 
   const handleCancel = () => setOpenDialog(false);

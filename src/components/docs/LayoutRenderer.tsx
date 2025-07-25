@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Typography,
   Paper,
@@ -6,7 +6,9 @@ import {
   ListItem,
   Box,
   IconButton,
+  Tooltip,
   Link as MuiLink,
+  Fade,
 } from '@mui/material';
 import ReactMarkdown, { Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -33,17 +35,14 @@ export function LayoutRenderer({
   meta: DocMeta;
   content: string;
 }): React.ReactElement {
-  const [copied, setCopied] = React.useState<{ [key: string]: boolean }>({});
+  const [copied, setCopied] = useState<string | null>(null);
 
   const handleCopy = (text: string, key: string) => {
     navigator.clipboard
       .writeText(text)
       .then(() => {
-        setCopied((prev) => ({ ...prev, [key]: true }));
-        setTimeout(
-          () => setCopied((prev) => ({ ...prev, [key]: false })),
-          2000
-        );
+        setCopied(key);
+        setTimeout(() => setCopied(null), 2000);
       })
       .catch((err) => {
         console.error('Failed to copy text: ', err);
@@ -52,17 +51,17 @@ export function LayoutRenderer({
 
   const components: Components = {
     h1: ({ children }) => (
-      <Typography variant="h4" gutterBottom data-pyrenz-type="heading1">
+      <Typography variant="h4" gutterBottom fontWeight={700} data-pyrenz-type="heading1">
         {children}
       </Typography>
     ),
     h2: ({ children }) => (
-      <Typography variant="h5" gutterBottom data-pyrenz-type="heading2">
+      <Typography variant="h5" gutterBottom fontWeight={600} data-pyrenz-type="heading2">
         {children}
       </Typography>
     ),
     h3: ({ children }) => (
-      <Typography variant="h6" gutterBottom data-pyrenz-type="heading3">
+      <Typography variant="h6" gutterBottom fontWeight={600} data-pyrenz-type="heading3">
         {children}
       </Typography>
     ),
@@ -71,9 +70,19 @@ export function LayoutRenderer({
         {children}
       </Typography>
     ),
+    strong: ({ children }) => (
+      <Box component="strong" fontWeight="bold" data-pyrenz-type="bold">
+        {children}
+      </Box>
+    ),
+    em: ({ children }) => (
+      <Box component="em" fontStyle="italic" data-pyrenz-type="italic">
+        {children}
+      </Box>
+    ),
     code: ({ inline, children, className }: CustomCodeProps) => {
-      const key = React.useId();
       const codeText = String(children).replace(/\n$/, '');
+      const key = `${className}-${codeText.slice(0, 8)}`;
 
       if (inline) {
         return (
@@ -82,8 +91,8 @@ export function LayoutRenderer({
             data-pyrenz-type="inline-code"
             sx={{
               bgcolor: 'rgba(0,0,0,0.05)',
-              px: 0.5,
-              py: 0.2,
+              px: 0.6,
+              py: 0.3,
               borderRadius: 1,
               fontFamily: 'monospace',
               fontSize: '0.875rem',
@@ -98,38 +107,48 @@ export function LayoutRenderer({
       const language = match?.[1] || 'text';
 
       return (
-        <Box sx={{ position: 'relative', my: 2 }} data-pyrenz-type="code-block">
+        <Box
+          sx={{ position: 'relative', my: 3, borderRadius: 2, overflow: 'hidden' }}
+          data-pyrenz-type="code-block"
+        >
           <SyntaxHighlighter
             language={language}
             style={atomOneDark}
             showLineNumbers
             customStyle={{
               margin: 0,
-              borderRadius: 4,
-              fontSize: '0.875rem',
-              backgroundColor: '#000000',
               padding: '1rem',
+              backgroundColor: '#0d1117',
+              fontSize: '0.875rem',
+              lineHeight: 1.6,
             }}
             lineNumberStyle={{
-              color: '#888',
-              marginRight: '16px',
+              color: '#555',
               fontSize: '0.75rem',
+              marginRight: '16px',
             }}
           >
             {codeText}
           </SyntaxHighlighter>
-          <IconButton
-            onClick={() => handleCopy(codeText, key)}
-            sx={{
-              position: 'absolute',
-              top: 8,
-              right: 8,
-              color: copied[key] ? '#4caf50' : '#ffffff',
-              zIndex: 1,
-            }}
-          >
-            <ContentCopyIcon fontSize="small" />
-          </IconButton>
+          <Fade in timeout={300}>
+            <Tooltip title={copied === key ? 'Copied!' : 'Copy'} arrow placement="top">
+              <IconButton
+                onClick={() => handleCopy(codeText, key)}
+                sx={{
+                  position: 'absolute',
+                  top: 8,
+                  right: 8,
+                  color: copied === key ? '#4caf50' : '#fff',
+                  backgroundColor: 'rgba(0,0,0,0.3)',
+                  '&:hover': {
+                    backgroundColor: 'rgba(255,255,255,0.1)',
+                  },
+                }}
+              >
+                <ContentCopyIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </Fade>
         </Box>
       );
     },
@@ -155,33 +174,32 @@ export function LayoutRenderer({
           my: 2,
           display: 'block',
           mx: 'auto',
-          boxShadow: 1,
+          boxShadow: 2,
         }}
       />
     ),
     ul: ({ children }) => (
-      <List sx={{ listStyle: 'disc inside' }} data-pyrenz-type="unordered-list">
+      <List sx={{ listStyle: 'disc inside', pl: 2 }} data-pyrenz-type="unordered-list">
         {children}
       </List>
     ),
     ol: ({ children }) => (
-      <List
-        sx={{ listStyle: 'decimal inside' }}
-        data-pyrenz-type="ordered-list"
-      >
+      <List sx={{ listStyle: 'decimal inside', pl: 2 }} data-pyrenz-type="ordered-list">
         {children}
       </List>
     ),
     li: ({ children }) => (
-      <ListItem sx={{ display: 'list-item' }} data-pyrenz-type="list-item">
+      <ListItem sx={{ display: 'list-item', py: 0.5 }} data-pyrenz-type="list-item">
         {children}
       </ListItem>
     ),
   };
 
   return (
-    <ReactMarkdown components={components} remarkPlugins={[remarkGfm]}>
-      {content}
-    </ReactMarkdown>
+    <Paper elevation={0} sx={{ p: { xs: 2, sm: 3, md: 4 }, bgcolor: 'background.default' }}>
+      <ReactMarkdown components={components} remarkPlugins={[remarkGfm]}>
+        {content}
+      </ReactMarkdown>
+    </Paper>
   );
 }

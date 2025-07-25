@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Typography, ButtonBase } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import { motion } from 'framer-motion';
 import {
   LayoutRenderer,
   renderDoc,
@@ -10,6 +12,83 @@ import {
   MobileNav,
   PreviewHeader,
 } from '@components';
+
+const MotionButtonBase = motion(ButtonBase);
+
+const GlassyActionRow = ({
+  label,
+  onClick,
+}: {
+  label: string;
+  onClick: () => void;
+}) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <MotionButtonBase
+      onClick={onClick}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      sx={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
+        p: 3,
+        mt: 5,
+        borderRadius: '0.75rem',
+        background: 'rgba(255,255,255,0.06)',
+        backdropFilter: 'blur(4px)',
+        WebkitBackdropFilter: 'blur(4px)',
+        overflow: 'hidden',
+        transition: 'all 0.3s ease-in-out',
+        '&:hover': {
+          background: 'rgba(255,255,255,0.12)',
+          backdropFilter: 'blur(10px)',
+          WebkitBackdropFilter: 'blur(10px)',
+        },
+      }}
+    >
+      <Box>
+        <Typography
+          variant="button"
+          sx={{
+            color: '#fff',
+            fontWeight: 600,
+            fontSize: '1rem',
+            textTransform: 'none',
+          }}
+        >
+          Next
+        </Typography>
+        <Typography
+          variant="caption"
+          sx={{
+            display: 'block',
+            color: '#ccc',
+            fontWeight: 500,
+            mt: 0.3,
+          }}
+        >
+          {label}
+        </Typography>
+      </Box>
+
+      <motion.div
+        animate={{ x: isHovered ? 6 : 0 }}
+        transition={{ type: 'tween', duration: 0.3 }}
+      >
+        <ChevronRightIcon
+          sx={{
+            color: '#fff',
+            fontSize: 24,
+            transition: 'color 0.3s ease',
+          }}
+        />
+      </motion.div>
+    </MotionButtonBase>
+  );
+};
 
 export function DocPage() {
   const { doc_name } = useParams();
@@ -21,18 +100,6 @@ export function DocPage() {
   const slug = isValidSlug ? doc_name : docPath.default;
 
   const { meta, content } = renderDoc(slug);
-
-  useEffect(() => {
-    document.title = meta.title;
-
-    let descTag = document.querySelector('meta[name="description"]');
-    if (!descTag) {
-      descTag = document.createElement('meta');
-      descTag.setAttribute('name', 'description');
-      document.head.appendChild(descTag);
-    }
-    descTag.setAttribute('content', meta.description);
-  }, [meta.title, meta.description]);
 
   const handleNext = () => {
     const currentIndex = docPath.pages.findIndex((page) => page.slug === slug);
@@ -61,7 +128,7 @@ export function DocPage() {
           alt={`${meta.title} Banner`}
           sx={{
             width: '100%',
-            height: { xs: '200px', sm: '300px', md: '300' },
+            height: { xs: '200px', sm: '300px', md: '300px' },
             objectFit: 'cover',
             objectPosition: 'center',
           }}
@@ -120,35 +187,7 @@ export function DocPage() {
 
           <LayoutRenderer meta={meta} content={content} />
 
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleNext}
-            endIcon={<ArrowForwardIcon />}
-            sx={{
-              mt: 4,
-              px: 4,
-              py: 2,
-              width: '100%',
-              maxWidth: '300px',
-              display: 'flex',
-              justifyContent: 'space-between',
-            }}
-          >
-            <Box
-              sx={{
-                textAlign: 'left',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-              }}
-            >
-              <Typography variant="button">Next</Typography>
-              <Typography variant="caption" sx={{ fontWeight: 'bold' }}>
-                {nextPageTitle}
-              </Typography>
-            </Box>
-          </Button>
+          <GlassyActionRow label={nextPageTitle} onClick={handleNext} />
         </Box>
       </Box>
     </Box>
