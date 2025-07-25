@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { saveImageToDB, getImageFromDB, openDB } from '~/Utility';
+import { saveImageToDB, getImageFromDB } from '~/Utility';
 import { Box, Typography } from '@mui/material';
 import { PyrenzBlueButton } from '~/theme';
 import { useUserStore } from '~/store';
 import { MessageCustomizationModal } from '@components';
+import localforage from 'localforage';
 
 export function Cosmetic() {
   const [bgImage, setBgImage] = useState<string | null>(null);
@@ -32,10 +33,7 @@ export function Cosmetic() {
       await saveImageToDB(blob);
       setImageURL(bgImage);
     } else {
-      const db = await openDB();
-      const transaction = db.transaction('images', 'readwrite');
-      const store = transaction.objectStore('images');
-      store.delete('bgImage');
+      await localforage.removeItem('bgImage');
       setImageURL(null);
     }
   };
@@ -62,10 +60,7 @@ export function Cosmetic() {
 
   const handleDeleteImage = async () => {
     setBgImage(null);
-    const db = await openDB();
-    const transaction = db.transaction('images', 'readwrite');
-    const store = transaction.objectStore('images');
-    store.delete('bgImage');
+    await localforage.removeItem('bgImage');
     setImageURL(null);
   };
 

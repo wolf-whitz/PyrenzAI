@@ -1,95 +1,78 @@
-// cacheWorker.ts (Web Worker)
+import localforage from 'localforage';
 
-const CACHE_DB = 'SupabaseCacheDB';
-const CACHE_STORE = 'cacheStore';
-const TTL_MS = 3 * 60 * 1000; // 3 minutes
+const TTL_MS = 3 * 60 * 1000;
 
-let db: IDBDatabase | null = null;
 const memCache = new Map<string, { data: any; timestamp: number }>();
 
-function openDB(): Promise<IDBDatabase> {
-  return new Promise((resolve, reject) => {
-    if (db) return resolve(db);
+localforage.config({
+  name: 'SupabaseCache',
+  storeName: 'cacheStore',
+});
 
-    const request = indexedDB.open(CACHE_DB, 1);
-
-    request.onupgradeneeded = (event) => {
-      const db = request.result;
-      db.createObjectStore(CACHE_STORE);
-    };
-
-    request.onsuccess = () => {
-      db = request.result;
-      resolve(db);
-    };
-
-    request.onerror = () => {
-      reject(request.error);
-    };
-  });
+function isValid(timestamp: number) {
+  return Date.now() - timestamp < TTL_MS;
 }
 
-function getFromDB(key: string): Promise<any> {
-  return openDB().then((db) => {
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(CACHE_STORE, 'readonly');
-      const store = tx.objectStore(CACHE_STORE);
-      const req = store.get(key);
-      req.onsuccess = () => resolve(req.result ?? null);
-      req.onerror = () => reject(req.error);
-    });
-  });
+async function getFromCache(key: string) {
+  const mem = memCache.get(key);
+  if (mem && isValid(mem.timestamp)) {
+    return { hit: true, data: mem.data };
+  }
+
+  memCache.delete(key);
+
+  try {
+    const entry = await localforage.getItem<{ data: any; timestamp: number }>(key);
+    if (entry && isValid(entry.timestamp)) {
+      memCache.set(key, entry);
+      return { hit: true, data: entry.data };
+    }
+  } catch (err) {
+    console.error('Cache read error:', err);
+  }
+
+  return { hit: false };
 }
 
-function setToDB(key: string, value: any) {
-  return openDB().then((db) => {
-    const tx = db.transaction(CACHE_STORE, 'readwrite');
-    const store = tx.objectStore(CACHE_STORE);
-    store.put(value, key);
-  });
+async function setToCache(key: string, value: any) {
+  const entry = { data: value, timestamp: Date.now() };
+  memCache.set(key, entry);
+  try {
+    await localforage.setItem(key, entry);
+  } catch (err) {
+    console.error('Cache write error:', err);
+  }
 }
 
-function removeFromDB(key: string) {
-  return openDB().then((db) => {
-    const tx = db.transaction(CACHE_STORE, 'readwrite');
-    const store = tx.objectStore(CACHE_STORE);
-    store.delete(key);
-  });
+async function removeFromCache(key: string) {
+  memCache.delete(key);
+  try {
+    await localforage.removeItem(key);
+  } catch (err) {
+    console.error('Cache remove error:', err);
+  }
 }
 
-self.onmessage = async (e) => {
+self.onmessage = async (e: MessageEvent) => {
   const { type, key, value } = e.data;
 
   switch (type) {
-    case 'get':
-      if (memCache.has(key)) {
-        const entry = memCache.get(key)!;
-        if (Date.now() - entry.timestamp < TTL_MS) {
-          postMessage({ type: 'hit', key, data: entry.data });
-          return;
-        } else {
-          memCache.delete(key);
-        }
-      }
-
-      const dbResult = await getFromDB(key);
-      if (dbResult && Date.now() - dbResult.timestamp < TTL_MS) {
-        memCache.set(key, dbResult);
-        postMessage({ type: 'hit', key, data: dbResult.data });
-      } else {
-        postMessage({ type: 'miss', key });
-      }
+    case 'get': {
+      const { hit, data } = await getFromCache(key);
+      postMessage(hit ? { type: 'hit', key, data } : { type: 'miss', key });
       break;
-
-    case 'set':
-      const cacheEntry = { data: value, timestamp: Date.now() };
-      memCache.set(key, cacheEntry);
-      await setToDB(key, cacheEntry);
+    }
+    case 'set': {
+      await setToCache(key, value);
       break;
-
-    case 'delete':
-      memCache.delete(key);
-      await removeFromDB(key);
+    }
+    case 'delete': {
+      await removeFromCache(key);
       break;
+    }
+    case '__health_check__': {
+      postMessage({ type: '__health_check__', status: 'ok' });
+      break;
+    }
   }
 };

@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import {
   Sidebar,
   CharacterCard,
@@ -14,8 +14,8 @@ import {
   CircularProgress,
   IconButton,
 } from '@mui/material';
-import { Character, User } from '@shared-types';
-import { useState } from 'react';
+import { Character } from '@shared-types';
+import { useState, useEffect } from 'react';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
@@ -29,12 +29,26 @@ interface UserCharactersResult {
 
 export function ProfilePage() {
   const { creator_uuid } = useParams<{ creator_uuid: string }>();
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [page, setPage] = useState(1);
-  const [refreshCharacters, setRefreshCharacters] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
   const itemsPerPage = 20;
+  const initialPage = parseInt(searchParams.get('page') || '1', 10);
+  const [page, setPage] = useState(initialPage);
+  const [refreshCharacters, setRefreshCharacters] = useState(false);
+
+  // Sync state with URL
+  useEffect(() => {
+    setSearchParams((prev) => {
+      const updated = new URLSearchParams(prev);
+      updated.set('page', page.toString());
+      return updated;
+    });
+  }, [page]);
 
   const result: UserCharactersResult = GetUserCreatedCharacters(
     creator_uuid,
@@ -51,16 +65,16 @@ export function ProfilePage() {
 
   const { characters = [], userData, loading, isOwner, maxPage = 1 } = result;
 
+  const updatePage = (newPage: number) => {
+    setPage(newPage);
+  };
+
   const handlePreviousPage = () => {
-    if (page > 1) {
-      setPage(page - 1);
-    }
+    if (page > 1) updatePage(page - 1);
   };
 
   const handleNextPage = () => {
-    if (page < maxPage) {
-      setPage(page + 1);
-    }
+    if (page < maxPage) updatePage(page + 1);
   };
 
   if (loading) {
@@ -127,7 +141,7 @@ export function ProfilePage() {
             minHeight="50vh"
             pl={{ md: 10 }}
           >
-            {characters && characters[0] ? (
+            {characters.length > 0 ? (
               characters.map((character) => (
                 <Box key={character.id}>
                   <CharacterCard character={character} />
@@ -142,24 +156,19 @@ export function ProfilePage() {
               </Typography>
             )}
           </Box>
-          {characters && characters[0] && maxPage > 1 && (
-            <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              mt={2}
-            >
-              <IconButton onClick={handlePreviousPage} disabled={page === 1}>
-                <ChevronLeftIcon />
-              </IconButton>
-              <Typography variant="body1" sx={{ mx: 2 }}>
-                Page {page} of {maxPage}
-              </Typography>
-              <IconButton onClick={handleNextPage} disabled={page === maxPage}>
-                <ChevronRightIcon />
-              </IconButton>
-            </Box>
-          )}
+
+          {/* 🧭 Pagination always visible */}
+          <Box display="flex" justifyContent="center" alignItems="center" mt={2}>
+            <IconButton onClick={handlePreviousPage} disabled={page === 1}>
+              <ChevronLeftIcon />
+            </IconButton>
+            <Typography variant="body1" sx={{ mx: 2 }}>
+              Page {page} of {maxPage}
+            </Typography>
+            <IconButton onClick={handleNextPage} disabled={page === maxPage}>
+              <ChevronRightIcon />
+            </IconButton>
+          </Box>
         </Box>
       </Box>
       {isMobile && <MobileNav setShowLoginModal={setShowLoginModal} />}

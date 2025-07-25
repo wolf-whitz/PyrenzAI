@@ -1,8 +1,5 @@
-import { Utils } from '~/Utility';
 import { Character } from '@shared-types';
-import { useUserStore } from '~/store';
-
-type SortBy = 'created_at' | 'chat_messages_count';
+import { fetchCharacters } from './fetchCharacters'; 
 
 interface GetLatestCharacterResponse {
   characters: Character[];
@@ -13,56 +10,15 @@ interface GetLatestCharacterResponse {
 export async function getLatestCharacter(
   type: string,
   maxCharacter: number,
-  page: number,
-  sortBy: SortBy = 'created_at'
+  currentPage: number
 ): Promise<GetLatestCharacterResponse> {
   if (type !== 'latest') throw new Error('Invalid type');
 
-  const { show_nsfw = true, blocked_tags = [] } = useUserStore.getState();
-
-  const bannedUserRes = await Utils.db.select<{ user_uuid: string }>({
-    tables: 'banned_users',
-    columns: 'user_uuid',
+  const { characters, totalItems, totalPages } = await fetchCharacters({
+    currentPage,
+    itemsPerPage: maxCharacter,
+    sortBy: 'created_at',
   });
-
-  const bannedUserUUIDs = (bannedUserRes.data ?? [])
-    .map((u) => u.user_uuid)
-    .filter(Boolean);
-
-  const match: Record<string, any> = {};
-  if (!show_nsfw) match.is_nsfw = false;
-
-  const from = (page - 1) * maxCharacter;
-  const to = from + maxCharacter - 1;
-
-  const extraFilters = [
-    ...(blocked_tags.length > 0
-      ? [{ column: 'tags', operator: 'not_overlaps', value: blocked_tags }]
-      : []),
-    ...(bannedUserUUIDs.length > 0
-      ? [{ column: 'creator_uuid', operator: 'not_in', value: bannedUserUUIDs }]
-      : []),
-    { column: 'is_banned', operator: 'eq', value: false },
-  ];
-
-  const { data = [], count } = await Utils.db.select<Character>({
-    tables: 'public_characters',
-    columns: '*',
-    countOption: 'exact',
-    match,
-    range: { from, to },
-    orderBy: { column: sortBy, ascending: false },
-    extraFilters,
-    paging: true,
-  });
-
-  const characters = data.map((char) => ({
-    ...char,
-    id: char.id,
-  }));
-
-  const totalItems = count ?? characters.length;
-  const totalPages = Math.max(1, Math.ceil(totalItems / maxCharacter));
 
   return {
     characters,

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Box, Typography, IconButton } from '@mui/material';
 import { motion } from 'framer-motion';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -13,22 +13,28 @@ interface PaginationProps {
 export function Pagination({ totalPages, isLoading }: PaginationProps) {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const currentPage = Math.max(1, parseInt(searchParams.get('page') || '1'));
+  const rawPage = parseInt(searchParams.get('page') || '1', 10);
+  const currentPage = useMemo(() => {
+    if (Number.isNaN(rawPage) || rawPage < 1) return 1;
+    if (rawPage > totalPages) return totalPages;
+    return rawPage;
+  }, [rawPage, totalPages]);
 
   const setPage = (page: number) => {
+    const clampedPage = Math.max(1, Math.min(page, totalPages));
     const newParams = new URLSearchParams(searchParams);
-    newParams.set('page', String(page));
+    newParams.set('page', String(clampedPage));
     setSearchParams(newParams);
   };
 
   const handlePrev = () => {
-    if (currentPage > 1 && !isLoading) {
+    if (!isLoading && currentPage > 1) {
       setPage(currentPage - 1);
     }
   };
 
   const handleNext = () => {
-    if (currentPage < totalPages && !isLoading) {
+    if (!isLoading && currentPage < totalPages) {
       setPage(currentPage + 1);
     }
   };
@@ -46,10 +52,7 @@ export function Pagination({ totalPages, isLoading }: PaginationProps) {
         whileTap={{ scale: 0.95 }}
         transition={{ duration: 0.2 }}
       >
-        <IconButton
-          onClick={handlePrev}
-          disabled={currentPage <= 1 || isLoading}
-        >
+        <IconButton onClick={handlePrev} disabled={currentPage <= 1 || isLoading}>
           <ChevronLeftIcon />
         </IconButton>
       </motion.div>
@@ -57,7 +60,7 @@ export function Pagination({ totalPages, isLoading }: PaginationProps) {
       <Typography fontWeight={600}>
         {isLoading
           ? 'Loading Characters...'
-          : `Page ${currentPage} out of ${totalPages}`}
+          : `Page ${currentPage} of ${totalPages}`}
       </Typography>
 
       <motion.div
@@ -65,10 +68,7 @@ export function Pagination({ totalPages, isLoading }: PaginationProps) {
         whileTap={{ scale: 0.95 }}
         transition={{ duration: 0.2 }}
       >
-        <IconButton
-          onClick={handleNext}
-          disabled={currentPage >= totalPages || isLoading}
-        >
+        <IconButton onClick={handleNext} disabled={currentPage >= totalPages || isLoading}>
           <ChevronRightIcon />
         </IconButton>
       </motion.div>

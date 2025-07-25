@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { GetUserUUID } from '@components';
 import { Character, User } from '@shared-types';
-import { useUserStore } from '~/store';
+import { fetchCharacters } from './fetchCharacters';
 import { Utils } from '~/Utility';
 
 interface UseUserCreatedCharactersResponse {
@@ -14,13 +14,13 @@ interface UseUserCreatedCharactersResponse {
 
 type SubscriptionPlan = 'Melon' | 'Durian' | 'Pineapple';
 
-export const getUserCreatedCharacters = (
+export function getUserCreatedCharacters(
   creatorUUID?: string,
   page: number = 1,
   itemsPerPage: number = 20,
   refreshCharacters: boolean = false,
   sortBy: 'created_at' | 'chat_messages_count' = 'chat_messages_count'
-): UseUserCreatedCharactersResponse => {
+): UseUserCreatedCharactersResponse {
   const [characters, setCharacters] = useState<Character[]>([]);
   const [userData, setUserData] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -28,59 +28,13 @@ export const getUserCreatedCharacters = (
   const [maxPage, setMaxPage] = useState(1);
 
   useEffect(() => {
-    const fetchCharacters = async (uuid: string) => {
-      const { show_nsfw = true } = useUserStore.getState();
-
-      const bannedUserRes = await Utils.db.select<{ user_uuid: string }>({
-        tables: 'banned_users',
-        columns: 'user_uuid',
-      });
-
-      const bannedUserUUIDs = (bannedUserRes.data ?? [])
-        .map((u) => u.user_uuid)
-        .filter(Boolean);
-
-      if (bannedUserUUIDs.includes(uuid))
-        return { characters: [], max_page: 1 };
-
-      const match: Record<string, any> = { creator_uuid: uuid };
-      if (!show_nsfw) match.is_nsfw = false;
-
-      const extraFilters = [
-        { column: 'is_banned', operator: 'eq', value: false },
-      ];
-
-      const { data } = await Utils.db.select<Character>({
-        tables: ['public_characters', 'private_characters'],
-        columns: '*',
-        countOption: null,
-        match,
-        range: { from: (page - 1) * itemsPerPage, to: page * itemsPerPage - 1 },
-        orderBy: { column: sortBy, ascending: false },
-        extraFilters,
-        paging: false,
-      });
-
-      return {
-        characters: data ?? [],
-        max_page: Math.max(1, Math.ceil((data?.length ?? 0) / itemsPerPage)),
-      };
-    };
-
-    type UserDataFromDB = {
-      username?: string;
-      avatar_url?: string;
-      user_uuid?: string;
-    };
-
-    type SubscriptionDataFromDB = {
-      is_subscribed?: boolean;
-      subscription_plan?: string;
-    };
-
-    const fetchUserDataByUuid = async (uuid: string): Promise<User | null> => {
+    async function fetchUserDataByUuid(uuid: string): Promise<User | null> {
       try {
-        const userRes = await Utils.db.select<UserDataFromDB>({
+        const userRes = await Utils.db.select<{
+          username?: string;
+          avatar_url?: string;
+          user_uuid?: string;
+        }>({
           tables: 'user_data',
           columns: 'username, avatar_url, user_uuid',
           match: { user_uuid: uuid },
@@ -88,7 +42,10 @@ export const getUserCreatedCharacters = (
           paging: false,
         });
 
-        const subRes = await Utils.db.select<SubscriptionDataFromDB>({
+        const subRes = await Utils.db.select<{
+          is_subscribed?: boolean;
+          subscription_plan?: string;
+        }>({
           tables: 'subscription_plan',
           columns: 'is_subscribed, subscription_plan',
           match: { user_uuid: uuid },
@@ -102,9 +59,7 @@ export const getUserCreatedCharacters = (
         if (!userData) return null;
 
         const validPlans: SubscriptionPlan[] = ['Melon', 'Durian', 'Pineapple'];
-        const plan = validPlans.includes(
-          subData?.subscription_plan as SubscriptionPlan
-        )
+        const plan = validPlans.includes(subData?.subscription_plan as SubscriptionPlan)
           ? (subData?.subscription_plan as SubscriptionPlan)
           : undefined;
 
@@ -119,9 +74,9 @@ export const getUserCreatedCharacters = (
         console.error('Failed to fetch user/subscription data:', err);
         return null;
       }
-    };
+    }
 
-    const fetchData = async () => {
+    async function fetchData() {
       setLoading(true);
       let uuid = creatorUUID;
 
@@ -143,18 +98,28 @@ export const getUserCreatedCharacters = (
       const currentUserUUID = await GetUserUUID();
 
       if (user) {
-        const { characters, max_page } = await fetchCharacters(uuid);
+        const { characters, totalPages } = await fetchCharacters({
+          currentPage: page,
+          itemsPerPage,
+          sortBy,
+          genderFilter: null,
+          tagsFilter: null,
+          blockedTags: null,
+          showNSFW: undefined,
+          filterCreatorUUID: uuid, 
+        });
+
         setUserData(user);
         setIsOwner(user.user_uuid === currentUserUUID);
         setCharacters(characters);
-        setMaxPage(max_page);
+        setMaxPage(totalPages);
       }
 
       setLoading(false);
-    };
+    }
 
     fetchData();
   }, [creatorUUID, page, itemsPerPage, refreshCharacters, sortBy]);
 
   return { characters, userData, loading, isOwner, maxPage };
-};
+}

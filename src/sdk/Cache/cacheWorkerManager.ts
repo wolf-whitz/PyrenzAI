@@ -4,25 +4,48 @@ const worker = new Worker(new URL('./cacheWorker.ts', import.meta.url), {
 
 const listeners = new Map<string, (data: any) => void>();
 
-worker.onmessage = (e) => {
-  const { type, key, data } = e.data;
-  if (listeners.has(key)) {
-    listeners.get(key)!(type === 'hit' ? data : null);
-    listeners.delete(key);
+worker.onmessage = (e: MessageEvent) => {
+  const { type, key, data, status } = e.data || {};
+
+  if (type === '__health_check__') {
+    const listener = listeners.get('__health_check__');
+    if (listener) {
+      listener(status);
+      listeners.delete('__health_check__');
+    }
+    return;
   }
+
+  const listener = listeners.get(key);
+  if (!listener) return;
+
+  if (type === 'hit') {
+    listener(data);
+  } else if (type === 'miss') {
+    listener(null);
+  }
+
+  listeners.delete(key);
 };
 
-export function getCached<T>(key: string): Promise<T | null> {
+export function getCached<T = any>(key: string): Promise<T | null> {
   return new Promise((resolve) => {
     listeners.set(key, resolve);
     worker.postMessage({ type: 'get', key });
   });
 }
 
-export function setCached<T>(key: string, value: T) {
+export function setCached<T = any>(key: string, value: T): void {
   worker.postMessage({ type: 'set', key, value });
 }
 
-export function deleteCached(key: string) {
+export function deleteCached(key: string): void {
   worker.postMessage({ type: 'delete', key });
+}
+
+export function checkCacheHealth(): Promise<string> {
+  return new Promise((resolve) => {
+    listeners.set('__health_check__', resolve);
+    worker.postMessage({ type: '__health_check__' });
+  });
 }

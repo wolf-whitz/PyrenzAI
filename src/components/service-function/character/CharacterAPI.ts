@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { CharacterSchema, GetUserUUID } from '~/components';
+import { GetUserUUID, fetchCharacters } from '@components';
 import { Utils } from '~/Utility';
 import { usePyrenzAlert } from '~/provider';
 
@@ -18,27 +18,21 @@ export const useCharacterData = (char_uuid: string | undefined) => {
       }
 
       try {
-        const match = { char_uuid };
-        const { data } = await Utils.db.select<any>({
-          tables: ['public_characters', 'private_characters'],
-          columns: '*',
-          countOption: null,
-          match,
-          paging: false,
+        const { characters } = await fetchCharacters({
+          currentPage: 1,
+          itemsPerPage: 1,
+          sortBy: 'created_at',
+          genderFilter: null,
+          tagsFilter: null,
+          blockedTags: null,
+          showNSFW: true,
+          filterCharUUID: char_uuid,
         });
 
-        const foundCharacter = data?.[0] ?? null;
+        const foundCharacter = characters?.[0] ?? null;
 
         if (foundCharacter) {
-          const verifiedCharacter = CharacterSchema.parse({
-            ...foundCharacter,
-            id: foundCharacter.id ? String(foundCharacter.id) : undefined,
-            tags: foundCharacter.tags || [],
-            is_details_private: foundCharacter.is_details_private ?? false,
-            is_nsfw: foundCharacter.is_nsfw ?? false,
-          });
-
-          setCharacter(verifiedCharacter);
+          setCharacter(foundCharacter);
         } else {
           setNotFound(true);
         }
