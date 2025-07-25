@@ -13,10 +13,7 @@ interface PaginationProps {
 export function Pagination({ totalPages, isLoading }: PaginationProps) {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const currentPage = Math.max(
-    1,
-    Math.min(parseInt(searchParams.get('page') || '1', 10), totalPages)
-  );
+  const currentPage = Number(searchParams.get('page')) || 1;
 
   const setPage = (page: number) => {
     const newParams = new URLSearchParams(searchParams);

@@ -40,6 +40,7 @@ const StyledPyrenzMessageBox = styled(Box, {
   color: dataState === 'user' ? '#f1f1f1' : '#fff',
   boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.1)',
   wordWrap: 'break-word',
+  overflowWrap: 'anywhere',
   position: 'relative',
   cursor: 'pointer',
   transition:
@@ -75,9 +76,7 @@ export const PyrenzMessageBox = ({
   isLoading,
 }: PyrenzMessageBoxProps) => {
   const handleClick = (event: React.MouseEvent) => {
-    if (onClick) {
-      onClick(event);
-    }
+    if (onClick) onClick(event);
   };
 
   return (
@@ -141,7 +140,18 @@ export const PyrenzMessageBox = ({
             </Box>
           </Box>
         ) : (
-          <Box>{children}</Box>
+          <Box
+            display="flex"
+            flexDirection="column"
+            sx={{
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'break-word',
+              overflowWrap: 'anywhere',
+              lineHeight: 1.5,
+            }}
+          >
+            {children}
+          </Box>
         )}
       </StyledPyrenzMessageBox>
       {dataState === 'user' && userAvatar && (

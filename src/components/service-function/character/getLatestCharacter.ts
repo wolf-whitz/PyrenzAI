@@ -17,7 +17,7 @@ export async function getLatestCharacter(
   const { characters, totalItems, totalPages } = await fetchCharacters({
     currentPage,
     itemsPerPage: maxCharacter,
-    sortBy: 'created_at',
+    sortBy: 'chat_messages_count',
   });
 
   return {

@@ -21,7 +21,7 @@ export const useCharacterData = (char_uuid: string | undefined) => {
         const { characters } = await fetchCharacters({
           currentPage: 1,
           itemsPerPage: 1,
-          sortBy: 'created_at',
+          sortBy: 'chat_messages_count',
           filterCharUUID: char_uuid,
         });
 
