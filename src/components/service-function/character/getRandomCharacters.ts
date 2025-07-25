@@ -11,7 +11,7 @@ export async function getRandomCharacters(
   try {
     const { characters: allCharacters, totalPages } = await fetchCharacters({
       currentPage,
-      itemsPerPage: 100,
+      itemsPerPage: 20,
       sortBy: 'random',
     });
 
