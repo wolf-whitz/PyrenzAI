@@ -39,7 +39,8 @@ export async function fetchCharacters({
       columns: 'user_uuid',
     });
 
-    const bannedCreatorUUIDs = bannedRes.data?.map((user) => user.user_uuid) ?? [];
+    const bannedCreatorUUIDs =
+      bannedRes.data?.map((user) => user.user_uuid) ?? [];
 
     const result = await Utils.db.rpc<{
       total_count: number;

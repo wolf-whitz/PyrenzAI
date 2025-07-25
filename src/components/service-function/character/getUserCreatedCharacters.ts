@@ -59,7 +59,9 @@ export function getUserCreatedCharacters(
         if (!userData) return null;
 
         const validPlans: SubscriptionPlan[] = ['Melon', 'Durian', 'Pineapple'];
-        const plan = validPlans.includes(subData?.subscription_plan as SubscriptionPlan)
+        const plan = validPlans.includes(
+          subData?.subscription_plan as SubscriptionPlan
+        )
           ? (subData?.subscription_plan as SubscriptionPlan)
           : undefined;
 
@@ -104,7 +106,7 @@ export function getUserCreatedCharacters(
           sortBy,
           genderFilter: null,
           tagsFilter: null,
-          filterCreatorUUID: uuid, 
+          filterCreatorUUID: uuid,
         });
 
         setUserData(user);

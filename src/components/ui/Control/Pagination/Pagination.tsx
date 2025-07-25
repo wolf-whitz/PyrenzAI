@@ -52,7 +52,10 @@ export function Pagination({ totalPages, isLoading }: PaginationProps) {
         whileTap={{ scale: 0.95 }}
         transition={{ duration: 0.2 }}
       >
-        <IconButton onClick={handlePrev} disabled={currentPage <= 1 || isLoading}>
+        <IconButton
+          onClick={handlePrev}
+          disabled={currentPage <= 1 || isLoading}
+        >
           <ChevronLeftIcon />
         </IconButton>
       </motion.div>
@@ -68,7 +71,10 @@ export function Pagination({ totalPages, isLoading }: PaginationProps) {
         whileTap={{ scale: 0.95 }}
         transition={{ duration: 0.2 }}
       >
-        <IconButton onClick={handleNext} disabled={currentPage >= totalPages || isLoading}>
+        <IconButton
+          onClick={handleNext}
+          disabled={currentPage >= totalPages || isLoading}
+        >
           <ChevronRightIcon />
         </IconButton>
       </motion.div>

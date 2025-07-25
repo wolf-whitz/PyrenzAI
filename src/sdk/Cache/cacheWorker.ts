@@ -22,7 +22,9 @@ async function getFromCache(key: string) {
   memCache.delete(key);
 
   try {
-    const entry = await localforage.getItem<{ data: any; timestamp: number }>(key);
+    const entry = await localforage.getItem<{ data: any; timestamp: number }>(
+      key
+    );
     if (entry && isValid(entry.timestamp)) {
       memCache.set(key, entry);
       return { hit: true, data: entry.data };

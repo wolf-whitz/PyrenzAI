@@ -158,7 +158,12 @@ export function ProfilePage() {
           </Box>
 
           {/* 🧭 Pagination always visible */}
-          <Box display="flex" justifyContent="center" alignItems="center" mt={2}>
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            mt={2}
+          >
             <IconButton onClick={handlePreviousPage} disabled={page === 1}>
               <ChevronLeftIcon />
             </IconButton>

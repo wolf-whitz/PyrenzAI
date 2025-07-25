@@ -1,6 +1,6 @@
 /**
  * Property of the PyrenzAI project. Not recommended for use outside of the project.
- * 
+ *
  * This file is still unstable and only built for pyrenzai system. Of course if you wish to use this you may use the client. or other functions this file provides.
  */
 import type { SupabaseClient } from '@supabase/supabase-js';

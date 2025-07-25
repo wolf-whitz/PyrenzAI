@@ -1,5 +1,5 @@
 import { Character } from '@shared-types';
-import { fetchCharacters } from './fetchCharacters';  
+import { fetchCharacters } from './fetchCharacters';
 
 type SortBy = 'chat_messages_count' | 'created_at';
 

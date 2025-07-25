@@ -18,7 +18,11 @@ export const getImageFromDB = async (): Promise<Blob | null> => {
   }
 };
 
-export const insertData = async <T>(storeName: string, data: T, key: IDBValidKey): Promise<void> => {
+export const insertData = async <T>(
+  storeName: string,
+  data: T,
+  key: IDBValidKey
+): Promise<void> => {
   const customStore = localforage.createInstance({
     name: 'ImageDatabase',
     storeName: storeName,

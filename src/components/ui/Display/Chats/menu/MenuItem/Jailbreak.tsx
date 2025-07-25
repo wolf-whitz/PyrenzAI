@@ -138,7 +138,12 @@ export function Jailbreak() {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100%"
+      >
         <CircularProgress />
       </Box>
     );
@@ -152,7 +157,7 @@ export function Jailbreak() {
         onChange={(e) => setJailbreakPrompt(e.target.value)}
       />
 
-<Box display="flex" alignItems="center" gap={1}>
+      <Box display="flex" alignItems="center" gap={1}>
         <Tooltip title="Enable Jailbreak">
           <PinkGlassSwitch
             checked={isEnabled}
@@ -162,7 +167,7 @@ export function Jailbreak() {
         </Tooltip>
         Enable Jailbreak
       </Box>
-      
+
       <PyrenzBlueButton variant="contained" fullWidth onClick={handleSubmit}>
         Submit
       </PyrenzBlueButton>
@@ -171,8 +176,9 @@ export function Jailbreak() {
         <DialogTitle>Enable Jailbreak?</DialogTitle>
         <DialogContent>
           <DialogContentText sx={{ color: '#ddd' }}>
-            Enabling Jailbreak gives your AI fewer restrictions. This might break
-            some filters or change behavior. Are you sure you want to enable it?
+            Enabling Jailbreak gives your AI fewer restrictions. This might
+            break some filters or change behavior. Are you sure you want to
+            enable it?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

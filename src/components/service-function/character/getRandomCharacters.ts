@@ -1,5 +1,5 @@
 import { Character } from '@shared-types';
-import { fetchCharacters } from './fetchCharacters';  
+import { fetchCharacters } from './fetchCharacters';
 
 export async function getRandomCharacters(
   type: string,
