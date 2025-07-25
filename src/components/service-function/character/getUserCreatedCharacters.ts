@@ -104,8 +104,6 @@ export function getUserCreatedCharacters(
           sortBy,
           genderFilter: null,
           tagsFilter: null,
-          blockedTags: null,
-          showNSFW: undefined,
           filterCreatorUUID: uuid, 
         });
 
