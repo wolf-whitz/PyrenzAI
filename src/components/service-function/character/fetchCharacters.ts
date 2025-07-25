@@ -11,6 +11,7 @@ interface FetchCharactersProps {
   sortBy?: string;
   filterCreatorUUID?: string | null;
   filterCharUUID?: string | null;
+  search?: string | null;
 }
 
 interface FetchCharactersResponse {
@@ -27,6 +28,7 @@ export async function fetchCharacters({
   sortBy = 'id',
   filterCreatorUUID = null,
   filterCharUUID = null,
+  search = null,
 }: FetchCharactersProps): Promise<FetchCharactersResponse> {
   const { setCurrentPage, setMaxPage } = useHomeStore.getState();
   const { blocked_tags, show_nsfw } = useUserStore.getState();
@@ -55,6 +57,7 @@ export async function fetchCharacters({
         sort_by: sortBy,
         filter_creator_uuid: filterCreatorUUID,
         filter_char_uuid: filterCharUUID,
+        search,
       },
     });
 

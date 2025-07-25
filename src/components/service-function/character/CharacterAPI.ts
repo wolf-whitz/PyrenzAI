@@ -22,10 +22,6 @@ export const useCharacterData = (char_uuid: string | undefined) => {
           currentPage: 1,
           itemsPerPage: 1,
           sortBy: 'created_at',
-          genderFilter: null,
-          tagsFilter: null,
-          blockedTags: null,
-          showNSFW: true,
           filterCharUUID: char_uuid,
         });
 

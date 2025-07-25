@@ -9,7 +9,6 @@ interface UseFetchCharactersProps {
   search: string;
   itemsPerPage: number;
   t: (key: string) => string;
-  show_nsfw: boolean;
 }
 
 export function useFetchCharacters({
@@ -17,7 +16,6 @@ export function useFetchCharacters({
   search,
   itemsPerPage,
   t,
-  show_nsfw,
 }: UseFetchCharactersProps) {
   const showAlert = usePyrenzAlert();
   const {
@@ -36,8 +34,8 @@ export function useFetchCharacters({
       const response = await fetchCharacters({
         currentPage,
         itemsPerPage,
-        search: search || '',
-        showNsfw: show_nsfw,
+        sortBy: 'chat_messages_count',
+        search,
       });
 
       const safeCharacters = response.characters.map((char: Character) => char);
@@ -60,7 +58,7 @@ export function useFetchCharacters({
     setLoading,
     setCharacters,
     setMaxPage,
-    show_nsfw,
+    showAlert,
   ]);
 
   useEffect(() => {

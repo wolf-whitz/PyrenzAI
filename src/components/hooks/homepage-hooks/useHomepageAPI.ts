@@ -24,7 +24,6 @@ export const useHomepageAPI = (pageFromURL: number) => {
   const { t } = useTranslation();
   const itemsPerPage = 20;
   const showAlert = usePyrenzAlert();
-  const showNSFW = useUserStore((s) => s.show_nsfw);
 
   const usedCustomButton = useRef(false);
 
@@ -38,7 +37,6 @@ export const useHomepageAPI = (pageFromURL: number) => {
     search,
     itemsPerPage,
     t,
-    show_nsfw: showNSFW,
   });
 
   useEffect(() => {
