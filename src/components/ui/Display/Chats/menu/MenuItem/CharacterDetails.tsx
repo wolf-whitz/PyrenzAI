@@ -1,26 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, CircularProgress, keyframes } from '@mui/material';
+import { Box, Typography, CircularProgress } from '@mui/material';
 import { Textarea } from '@components';
 import { Character } from '@shared-types';
 import { PyrenzBlueButton } from '~/theme';
 import { Utils } from '~/Utility';
-import { styled } from '@mui/system';
-
-const bounceAnimation = keyframes`
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
-`;
-
-const BouncingImage = styled('img')({
-  animation: `${bounceAnimation} 2s infinite`,
-  width: '50px',
-  height: 'auto',
-  marginBottom: '10px',
-});
 
 interface CharacterDetailsProps {
   char: Character;
@@ -103,10 +86,6 @@ export function CharacterDetails({ char, onSubmit }: CharacterDetailsProps) {
         alignItems="center"
         height="100%"
       >
-        <BouncingImage
-          src="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MascotCrying.avif"
-          alt="Mascot"
-        />
         <Typography variant="h6" align="center">
           Details Have Been Hidden
         </Typography>

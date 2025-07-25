@@ -6,3 +6,5 @@ export * from './Memory';
 
 export * from './ModelController';
 export * from './Persona';
+
+export * from './Jailbreak';

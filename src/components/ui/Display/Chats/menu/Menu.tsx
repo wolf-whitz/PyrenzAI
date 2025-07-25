@@ -18,6 +18,7 @@ import {
   Memory,
   ModelControl,
   Persona,
+  Jailbreak,
 } from './MenuItem';
 import { useMenuAPI } from '@components';
 import { Character } from '@shared-types';
@@ -63,6 +64,8 @@ export function Menu({ onClose, char }: MenuProps) {
         return <ModelControl />;
       case 'Persona':
         return <Persona />;
+      case 'Jailbreak':
+        return <Jailbreak />;
       default:
         return null;
     }
@@ -81,6 +84,7 @@ export function Menu({ onClose, char }: MenuProps) {
     'Memory',
     'Model Control',
     'Persona',
+    'Jailbreak',
   ];
 
   return (
