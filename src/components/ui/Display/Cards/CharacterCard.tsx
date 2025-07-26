@@ -1,12 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Character } from '@shared-types';
+import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Fade } from '@mui/material';
 import {
   ChatBubbleOutlineRounded as ChatIcon,
   PublicRounded as PublicIcon,
   LockRounded as LockIcon,
 } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
 import {
   PyrenzCharacterCard,
   PyrenzCharacterCardContent,
@@ -19,6 +18,7 @@ import {
   PyrenzAltTag,
   PyrenzRibbon,
 } from '~/theme';
+import { Character } from '@shared-types';
 
 interface CharacterCardProps {
   character: Character;
@@ -37,6 +37,16 @@ export function CharacterCard({ character }: CharacterCardProps) {
     navigate(`/character/${character.char_uuid}`);
   }, [character.char_uuid, navigate]);
 
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        handleCardClick();
+      }
+    },
+    [handleCardClick]
+  );
+
   const handleCreatorClick = useCallback(
     (e: React.MouseEvent<HTMLElement>) => {
       e.stopPropagation();
@@ -49,7 +59,13 @@ export function CharacterCard({ character }: CharacterCardProps) {
 
   return (
     <Fade in={isLoaded} timeout={1500}>
-      <PyrenzCharacterCard onClick={handleCardClick}>
+      <PyrenzCharacterCard
+        onClick={handleCardClick}
+        onKeyDown={handleKeyDown}
+        tabIndex={0}
+        role="button"
+        aria-label={`Character card for ${character.title}`}
+      >
         <PyrenzCharacterCardImage style={{ position: 'relative' }}>
           {character.is_nsfw && (
             <PyrenzRibbon
@@ -77,9 +93,7 @@ export function CharacterCard({ character }: CharacterCardProps) {
             mb={1}
           >
             <Box display="flex" flexDirection="column">
-              <PyrenzCharacterCardTitle>
-                {character.title}
-              </PyrenzCharacterCardTitle>
+              <PyrenzCharacterCardTitle>{character.title}</PyrenzCharacterCardTitle>
               <Box
                 display="flex"
                 alignItems="center"
@@ -93,11 +107,7 @@ export function CharacterCard({ character }: CharacterCardProps) {
                 <PyrenzAltTag>@{character.creator}</PyrenzAltTag>
               </Box>
             </Box>
-            <Box
-              display={{ xs: 'none', md: 'flex' }}
-              alignItems="center"
-              gap={0.5}
-            >
+            <Box display={{ xs: 'none', md: 'flex' }} alignItems="center" gap={0.5}>
               <ChatIcon fontSize="small" sx={{ color: '#e2e8f0' }} />
               <Typography
                 variant="caption"
@@ -109,7 +119,7 @@ export function CharacterCard({ character }: CharacterCardProps) {
           </Box>
           <PyrenzCharacterCardDescription>
             {character.description?.length > 120
-              ? `${character.description.substring(0, 120)}...`
+              ? `${character.description.slice(0, 120)}...`
               : character.description || 'No description available.'}
           </PyrenzCharacterCardDescription>
           <PyrenzCharacterCardTags>
