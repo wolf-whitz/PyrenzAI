@@ -11,6 +11,8 @@ import { Utils as utils } from '~/Utility';
 import { useUserStore } from '~/store';
 import { Box, useTheme } from '@mui/material';
 import { BlockedPage } from './routes/Routing';
+import { HelmetProvider } from 'react-helmet-async';
+import { HelmetWrapper } from '~/HelmetWrapper'; 
 
 interface UserData {
   is_deleted: boolean;
@@ -110,43 +112,47 @@ const AppContent = () => {
   if (isBlocked) return <BlockedPage />;
 
   return (
-    <Box
-      data-mui-theme={`theme-${currentTheme}`}
-      aria-label="PyrenzAI"
-      sx={{
-        scrollBehavior: 'smooth',
-        scrollbarWidth: 'thin',
-        scrollbarColor: 'transparent transparent',
-        '&::-webkit-scrollbar': {
-          width: 8,
-          opacity: 0.2,
-          transition: 'opacity 0.3s ease',
-        },
-        '&:hover::-webkit-scrollbar': {
-          opacity: 1,
-        },
-        '&::-webkit-scrollbar-track': {
-          background: 'transparent',
-        },
-        '&::-webkit-scrollbar-thumb': {
-          backgroundColor: 'rgba(100, 100, 100, 0.4)',
-          borderRadius: 10,
-          border: '2px solid transparent',
-          backgroundClip: 'content-box',
-        },
-      }}
-    >
-      <Routes>{AppRoutes}</Routes>
-    </Box>
+    <HelmetWrapper>
+      <Box
+        data-mui-theme={`theme-${currentTheme}`}
+        aria-label="PyrenzAI"
+        sx={{
+          scrollBehavior: 'smooth',
+          scrollbarWidth: 'thin',
+          scrollbarColor: 'transparent transparent',
+          '&::-webkit-scrollbar': {
+            width: 8,
+            opacity: 0.2,
+            transition: 'opacity 0.3s ease',
+          },
+          '&:hover::-webkit-scrollbar': {
+            opacity: 1,
+          },
+          '&::-webkit-scrollbar-track': {
+            background: 'transparent',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: 'rgba(100, 100, 100, 0.4)',
+            borderRadius: 10,
+            border: '2px solid transparent',
+            backgroundClip: 'content-box',
+          },
+        }}
+      >
+        <Routes>{AppRoutes}</Routes>
+      </Box>
+    </HelmetWrapper>
   );
 };
 
 export function App() {
   return (
-    <Router>
-      <Suspense fallback={<Spinner />}>
-        <AppContent />
-      </Suspense>
-    </Router>
+    <HelmetProvider>
+      <Router>
+        <Suspense fallback={<Spinner />}>
+          <AppContent />
+        </Suspense>
+      </Router>
+    </HelmetProvider>
   );
 }
