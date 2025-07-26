@@ -3,22 +3,15 @@ import { useUserStore } from '~/store';
 
 export const GetUserUUID = async (): Promise<string | null> => {
   try {
-    const { data, error } = await utils.db.client.auth.getSession();
+    const user = await utils.db.getUser();
 
-    if (error) {
-      console.error('Error fetching user session:', error);
-      return null;
-    }
+    if (!user) return null;
 
-    if (data.session) {
-      const uuid = data.session.user.id;
-      useUserStore.getState().setUserUUID(uuid);
-      return uuid;
-    }
-
-    return null;
-  } catch (error) {
-    console.error('Error fetching user UUID:', error);
+    const uuid = user.id;
+    useUserStore.getState().setUserUUID(uuid);
+    return uuid;
+  } catch (err) {
+    console.error('Error fetching user UUID:', err);
     return null;
   }
 };

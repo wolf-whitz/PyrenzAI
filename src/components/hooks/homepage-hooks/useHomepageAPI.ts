@@ -1,30 +1,21 @@
-import { useHomeStore, useUserStore } from '~/store';
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  getHotCharacter as GetHotCharacters,
-  getLatestCharacter as GetLatestCharacters,
-  getRandomCharacters as GetRandomCharacters,
-  getCharacterWithTag as GetCharactersWithTags,
-  useFetchCharacters,
-} from '@components';
+import { useFetchCharacters, useHandleCharacterFetchClick } from '@components';
+import { useHomeStore } from '~/store';
 import { usePyrenzAlert } from '~/provider';
 import type { Character } from '@shared-types';
-import { useRef, useEffect } from 'react';
 
 export const useHomepageAPI = (pageFromURL: number) => {
   const {
     search,
     setSearch,
     setCurrentPage: setStoreCurrentPage,
-    setLoading,
     setCharacters,
     setMaxPage,
   } = useHomeStore();
 
   const { t } = useTranslation();
   const itemsPerPage = 20;
-  const showAlert = usePyrenzAlert();
-
   const usedCustomButton = useRef(false);
 
   const {
@@ -39,87 +30,12 @@ export const useHomepageAPI = (pageFromURL: number) => {
     t,
   });
 
-  useEffect(() => {
-    if (!usedCustomButton.current) {
-      setStoreCurrentPage(pageFromURL);
-    }
-  }, [pageFromURL]);
-
-  const handleButtonClick = async (
-    type: 'hot' | 'latest' | 'random' | 'tags',
-    maxCharacter?: number,
-    page: number = 1,
-    tag?: string,
-    gender?: string,
-    searchQuery?: string
-  ): Promise<Character[]> => {
-    usedCustomButton.current = true;
-    setStoreCurrentPage(page);
-    setLoading(true);
-
-    try {
-      let result:
-        | Awaited<ReturnType<typeof GetHotCharacters>>
-        | Awaited<ReturnType<typeof GetLatestCharacters>>
-        | Awaited<ReturnType<typeof GetRandomCharacters>>
-        | Awaited<ReturnType<typeof GetCharactersWithTags>>;
-
-      switch (type) {
-        case 'hot':
-          if (maxCharacter === undefined) throw new Error('Missing data');
-          result = await GetHotCharacters('hot', maxCharacter, page);
-          break;
-        case 'latest':
-          if (maxCharacter === undefined) throw new Error('Missing data');
-          result = await GetLatestCharacters('latest', maxCharacter, page);
-          break;
-        case 'random':
-          if (maxCharacter === undefined) throw new Error('Missing data');
-          result = await GetRandomCharacters('random', maxCharacter, page);
-          break;
-        case 'tags':
-          if (!tag || maxCharacter === undefined)
-            throw new Error('Missing tag or data');
-          result = await GetCharactersWithTags({
-            maxCharacter,
-            page,
-            tag,
-            gender,
-            searchQuery,
-          });
-          break;
-        default:
-          throw new Error('Invalid type');
-      }
-
-      if (result.characters.length === 0) {
-        setCharacters([]);
-        setMaxPage(1);
-        return [];
-      }
-
-      setCharacters(result.characters);
-      setMaxPage(result.totalPages);
-      return result.characters;
-    } catch (error) {
-      if (error instanceof Error) {
-        showAlert(
-          t('errors.callingRPCFunction') + ': ' + error.message,
-          'Alert'
-        );
-      } else {
-        showAlert(t('errors.unknown'), 'Alert');
-      }
-      setCharacters([]);
-      setMaxPage(1);
-      return [];
-    } finally {
-      setLoading(false);
-    }
-  };
+  const fetchCharacterData = useHandleCharacterFetchClick();
 
   const onButtonTagClicked = async (tag: string) => {
-    await handleButtonClick('tags', itemsPerPage, pageFromURL, tag);
+    const res = await fetchCharacterData('tags', itemsPerPage, pageFromURL, undefined, tag, undefined, search);
+    setCharacters(res.characters);
+    setMaxPage(res.totalPages);
   };
 
   return {
@@ -135,7 +51,28 @@ export const useHomepageAPI = (pageFromURL: number) => {
     },
     t,
     itemsPerPage,
-    handleButtonClick,
+    handleCharacterFetchClick: async (
+      type: 'hot' | 'latest' | 'random' | 'tags',
+      page: number,
+      options?: {
+        tag?: string;
+        gender?: string;
+      }
+    ) => {
+      const res = await fetchCharacterData(
+        type,
+        itemsPerPage,
+        page,
+        undefined,
+        options?.tag,
+        options?.gender,
+        search
+      );
+      setCharacters(res.characters);
+      setMaxPage(res.totalPages);
+      usedCustomButton.current = true;
+      setStoreCurrentPage(page);
+    },
     onButtonTagClicked,
   };
 };

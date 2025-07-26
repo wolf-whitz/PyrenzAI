@@ -8,6 +8,7 @@ interface GetCharacterWithTagProps {
   gender?: string;
   searchQuery?: string;
   sortBy?: 'chat_messages_count' | 'created_at';
+  filter_creator_uuid?: string | null;
 }
 
 interface GetCharacterWithTagResponse {
@@ -23,6 +24,7 @@ export async function getCharacterWithTag({
   gender,
   searchQuery,
   sortBy = 'chat_messages_count',
+  filter_creator_uuid = null,
 }: GetCharacterWithTagProps): Promise<GetCharacterWithTagResponse> {
   const tagFilters = tag ? [tag] : null;
 
@@ -32,16 +34,12 @@ export async function getCharacterWithTag({
     genderFilter: gender ?? null,
     tagsFilter: tagFilters,
     sortBy,
+    search: searchQuery ?? null,
+    filterCreatorUUID: filter_creator_uuid,
   });
 
-  const filtered = characters.filter((char) =>
-    searchQuery
-      ? char.name?.toLowerCase().includes(searchQuery.toLowerCase())
-      : true
-  );
-
   return {
-    characters: filtered,
+    characters,
     totalItems,
     totalPages,
   };

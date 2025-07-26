@@ -1,34 +1,115 @@
 import { useEffect, useState } from 'react';
-import { GetUserUUID } from '@components';
+import { useSearchParams } from 'react-router-dom';
+import { useHandleCharacterFetchClick } from '@components';
 import { Character, User } from '@shared-types';
-import { fetchCharacters } from './fetchCharacters';
 import { Utils } from '~/Utility';
-
-interface UseUserCreatedCharactersResponse {
-  characters: Character[];
-  userData: User | null;
-  loading: boolean;
-  isOwner: boolean;
-  maxPage: number;
-}
 
 type SubscriptionPlan = 'Melon' | 'Durian' | 'Pineapple';
 
+interface UseUserCreatedCharactersResponse {
+  userData: User | null;
+  currentPage: number;
+  maxPage: number;
+  totalItems: number;
+  characters: Character[];
+  loading: boolean;
+  handleButtonClick: (
+    type: 'hot' | 'latest' | 'random' | 'tags',
+    maxCharacter?: number,
+    page?: number,
+    tag?: string,
+    gender?: string,
+    search?: string
+  ) => Promise<Character[]>;
+  handleButtonTagClicked: (tag: string) => void;
+  goToNextPage: () => void;
+  goToPrevPage: () => void;
+}
+
 export function getUserCreatedCharacters(
-  creatorUUID?: string,
-  page: number = 1,
-  itemsPerPage: number = 20,
-  refreshCharacters: boolean = false,
-  sortBy: 'created_at' | 'chat_messages_count' = 'chat_messages_count'
+  creatorUUID: string | null,
+  perPage: number = 20
 ): UseUserCreatedCharactersResponse {
-  const [characters, setCharacters] = useState<Character[]>([]);
   const [userData, setUserData] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [isOwner, setIsOwner] = useState(false);
+  const [characters, setCharacters] = useState<Character[]>([]);
+  const [userLoading, setUserLoading] = useState(!creatorUUID);  
+  const [characterLoading, setCharacterLoading] = useState(false);
   const [maxPage, setMaxPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentPage = Number(searchParams.get('page')) || 1;
+
+  const fetchCharacterData = useHandleCharacterFetchClick();
+
+  const setStoreCurrentPage = (page: number) => {
+    const updated = new URLSearchParams(searchParams);
+    updated.set('page', String(page));
+    setSearchParams(updated);
+  };
+
+  const goToNextPage = () => {
+    if (currentPage < maxPage) {
+      setStoreCurrentPage(currentPage + 1);
+    }
+  };
+
+  const goToPrevPage = () => {
+    if (currentPage > 1) {
+      setStoreCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleButtonClick = async (
+    type: 'hot' | 'latest' | 'random' | 'tags',
+    maxCharacter: number = 20,
+    page: number = 1,
+    tag?: string,
+    gender?: string,
+    search?: string
+  ): Promise<Character[]> => {
+    if (!creatorUUID) {
+      setCharacterLoading(true);  
+      return [];
+    }
+
+    setStoreCurrentPage(page);
+    setCharacterLoading(true);
+
+    try {
+      const result = await fetchCharacterData(
+        type,
+        maxCharacter,
+        page,
+        creatorUUID,
+        tag,
+        gender,
+        search
+      );
+
+      setCharacters(result.characters);
+      setMaxPage(result.totalPages);
+      setTotalItems(result.totalItems);
+      return result.characters;
+    } catch (err) {
+      console.error('Fetch character failed:', err);
+      return [];
+    } finally {
+      setCharacterLoading(false);
+    }
+  };
+
+  const handleButtonTagClicked = (tag: string) => {
+    handleButtonClick('tags', perPage, 1, tag);
+  };
 
   useEffect(() => {
-    async function fetchUserDataByUuid(uuid: string): Promise<User | null> {
+    if (!creatorUUID) {
+      setUserLoading(true);  
+      return;
+    }
+
+    const fetchUserData = async (uuid: string): Promise<User | null> => {
       try {
         const userRes = await Utils.db.select<{
           username?: string;
@@ -38,8 +119,8 @@ export function getUserCreatedCharacters(
           tables: 'user_data',
           columns: 'username, avatar_url, user_uuid',
           match: { user_uuid: uuid },
-          countOption: null,
           paging: false,
+          countOption: null,
         });
 
         const subRes = await Utils.db.select<{
@@ -49,77 +130,52 @@ export function getUserCreatedCharacters(
           tables: 'subscription_plan',
           columns: 'is_subscribed, subscription_plan',
           match: { user_uuid: uuid },
-          countOption: null,
           paging: false,
+          countOption: null,
         });
 
-        const userData = userRes.data?.[0];
-        const subData = subRes.data?.[0];
+        const user = userRes.data?.[0];
+        const sub = subRes.data?.[0];
 
-        if (!userData) return null;
+        if (!user) return null;
 
-        const validPlans: SubscriptionPlan[] = ['Melon', 'Durian', 'Pineapple'];
-        const plan = validPlans.includes(
-          subData?.subscription_plan as SubscriptionPlan
+        const plan = ['Melon', 'Durian', 'Pineapple'].includes(
+          sub?.subscription_plan ?? ''
         )
-          ? (subData?.subscription_plan as SubscriptionPlan)
+          ? (sub?.subscription_plan as SubscriptionPlan)
           : undefined;
 
         return {
-          username: userData.username,
-          user_avatar: userData.avatar_url ?? '',
-          user_uuid: userData.user_uuid,
-          is_subscribed: subData?.is_subscribed ?? false,
+          username: user.username,
+          user_avatar: user.avatar_url ?? '',
+          user_uuid: user.user_uuid,
+          is_subscribed: sub?.is_subscribed ?? false,
           subscription_plan: plan,
         };
       } catch (err) {
-        console.error('Failed to fetch user/subscription data:', err);
+        console.error('User fetch error:', err);
         return null;
       }
-    }
+    };
 
-    async function fetchData() {
-      setLoading(true);
-      let uuid = creatorUUID;
+    (async () => {
+      setUserLoading(true);
+      const user = await fetchUserData(creatorUUID);
+      setUserData(user);
+      setUserLoading(false);
+    })();
+  }, [creatorUUID]);
 
-      if (!uuid) {
-        try {
-          const userResponse = await Utils.db.client.auth.getUser();
-          uuid = userResponse.data.user?.id;
-        } catch {
-          uuid = undefined;
-        }
-      }
-
-      if (!uuid) {
-        setLoading(false);
-        return;
-      }
-
-      const user = await fetchUserDataByUuid(uuid);
-      const currentUserUUID = await GetUserUUID();
-
-      if (user) {
-        const { characters, totalPages } = await fetchCharacters({
-          currentPage: page,
-          itemsPerPage,
-          sortBy,
-          genderFilter: null,
-          tagsFilter: null,
-          filterCreatorUUID: uuid,
-        });
-
-        setUserData(user);
-        setIsOwner(user.user_uuid === currentUserUUID);
-        setCharacters(characters);
-        setMaxPage(totalPages);
-      }
-
-      setLoading(false);
-    }
-
-    fetchData();
-  }, [creatorUUID, page, itemsPerPage, refreshCharacters, sortBy]);
-
-  return { characters, userData, loading, isOwner, maxPage };
+  return {
+    userData,
+    currentPage,
+    maxPage,
+    totalItems,
+    characters,
+    loading: userLoading || characterLoading,
+    handleButtonClick,
+    handleButtonTagClicked,
+    goToNextPage,
+    goToPrevPage,
+  };
 }

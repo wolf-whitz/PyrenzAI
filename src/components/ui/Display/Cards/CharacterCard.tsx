@@ -65,7 +65,7 @@ export function CharacterCard({ character }: CharacterCardProps) {
           )}
           <PyrenzCharacterCardImageImg
             src={character.profile_image}
-            alt={character.name}
+            alt={character.title}
             className={character.is_nsfw ? 'nsfw' : ''}
           />
         </PyrenzCharacterCardImage>
@@ -78,7 +78,7 @@ export function CharacterCard({ character }: CharacterCardProps) {
           >
             <Box display="flex" flexDirection="column">
               <PyrenzCharacterCardTitle>
-                {character.name}
+                {character.title}
               </PyrenzCharacterCardTitle>
               <Box
                 display="flex"

@@ -53,13 +53,13 @@ export function ChatHeader() {
               aria-label="Character profile"
             >
               <Avatar
-                alt={char?.title || 'Anon'}
+                alt={char?.name || 'Anon'}
                 src={char?.profile_image || ''}
                 sx={{ width: 40, height: 40 }}
               />
             </IconButton>
             <Typography variant="h6" sx={{ fontSize: '1rem' }}>
-              {char?.title || 'Anon'}
+              {char?.name || 'Anon'}
             </Typography>
           </Box>
         </Box>

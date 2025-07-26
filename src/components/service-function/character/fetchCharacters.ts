@@ -4,8 +4,8 @@ import { Character } from '@shared-types';
 import { useHomeStore, useUserStore } from '~/store';
 
 interface FetchCharactersProps {
-  currentPage: number;
-  itemsPerPage: number;
+  currentPage?: number;
+  itemsPerPage?: number;
   genderFilter?: string | null;
   tagsFilter?: string[] | null;
   sortBy?: string;

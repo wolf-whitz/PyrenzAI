@@ -33,14 +33,16 @@ export function Home() {
     totalPages,
     t,
     itemsPerPage,
-    handleButtonClick,
+    handleCharacterFetchClick,
     onButtonTagClicked,
+    setCurrentPage,
   } = useHomepageAPI(currentPage);
 
   const setPage = (page: number) => {
     const newParams = new URLSearchParams(searchParams);
     newParams.set('page', String(page));
     setSearchParams(newParams);
+    setCurrentPage(page);
   };
 
   const toggleMode = () => {
@@ -124,7 +126,7 @@ export function Home() {
                 {t('ariaLabels.customActionButton')}
               </h2>
               <CustomButton
-                onButtonClick={handleButtonClick}
+                onButtonClick={handleCharacterFetchClick}
                 onButtonTagClicked={onButtonTagClicked}
                 aria-label={t('ariaLabels.customActionButton')}
               />
@@ -143,7 +145,13 @@ export function Home() {
             </Box>
 
             {!loading && (
-              <Pagination totalPages={totalPages} isLoading={loading} />
+              <Pagination
+  totalPages={totalPages}
+  currentPage={currentPage}
+  isLoading={loading}
+  onNext={() => setPage(currentPage + 1)}
+  onPrev={() => setPage(currentPage - 1)}
+/>
             )}
           </Box>
         </Container>

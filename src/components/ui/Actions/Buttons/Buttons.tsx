@@ -1,5 +1,5 @@
-import { motion } from 'framer-motion';
 import React, { useState, useRef } from 'react';
+import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { buttons } from '@shared-types';
 import { MoreButtonsModal } from '@components';
@@ -7,13 +7,14 @@ import { PyrenzBlueButton, NSFWSwitch } from '~/theme';
 
 interface CustomButtonProps {
   onButtonClick: (
-    type: string,
-    maxCharacter?: number,
-    page?: number,
-    tag?: string,
-    gender?: 'male' | 'female',
-    searchQuery?: string
-  ) => void;
+    type: 'hot' | 'latest' | 'random' | 'tags',
+    page: number,
+    options?: {
+      tag?: string;
+      gender?: 'male' | 'female';
+      searchQuery?: string;
+    }
+  ) => Promise<void>;
   onButtonTagClicked: (tag: string) => void;
 }
 
@@ -28,16 +29,23 @@ export function CustomButton({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const { t } = useTranslation();
 
-  const handleButtonClick = async (
-    type: string,
-    maxCharacter?: number,
-    page?: number,
+  const handleCharacterFetchClick = async (
+    type: 'hot' | 'latest' | 'random' | 'tags',
+    page: number,
     tag?: string,
-    gender?: 'male' | 'female'
+    gender?: string
   ) => {
     setLoading(true);
-    await onButtonClick(type, maxCharacter, page, tag, gender, searchQuery);
-    console.log(type);
+
+    await onButtonClick(type, page, {
+      tag,
+      gender:
+        gender === 'male' || gender === 'female'
+          ? (gender as 'male' | 'female')
+          : undefined,
+      searchQuery,
+    });
+
     setLoading(false);
   };
 
@@ -67,14 +75,11 @@ export function CustomButton({
             variant="contained"
             startIcon={React.createElement(btn.icon, { size: 18 })}
             onClick={() =>
-              handleButtonClick(
-                btn.type,
-                btn.max_character,
-                btn.page,
+              handleCharacterFetchClick(
+                btn.type as 'hot' | 'latest' | 'random' | 'tags',
+                btn.page ?? 1,
                 btn.tag,
-                btn.gender === 'male' || btn.gender === 'female'
-                  ? btn.gender
-                  : undefined
+                btn.gender
               )
             }
           >
@@ -99,7 +104,10 @@ export function CustomButton({
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: (visibleButtons.length + 1) * 0.1 }}
+        transition={{
+          duration: 0.5,
+          delay: (visibleButtons.length + 1) * 0.1,
+        }}
         style={{ display: 'flex', alignItems: 'center', height: 40 }}
       >
         <NSFWSwitch />

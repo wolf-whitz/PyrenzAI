@@ -45,9 +45,7 @@ const AppContent = () => {
           return;
         }
 
-        const {
-          data: { user },
-        } = await utils.db.client.auth.getUser();
+        const user = await utils.db.getUser();
 
         if (user) {
           const userId = user.id;
@@ -109,7 +107,6 @@ const AppContent = () => {
   }, [location, navigate, setIsDeleted, setIsBanned]);
 
   if (loading) return <Spinner />;
-
   if (isBlocked) return <BlockedPage />;
 
   return (

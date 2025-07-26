@@ -1,8 +1,11 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { select, rpc, insert, update, remove } from './SupabaseFunctions';
+import { getCachedUser } from './Cache/AuthCache';
 
 export const withClient = (client: SupabaseClient) => {
   return {
+    getUser: () => getCachedUser(client),
+
     select: async <T>(req: Parameters<typeof select<T>>[1]) => {
       const result = await select<T>(client, req);
       return result;

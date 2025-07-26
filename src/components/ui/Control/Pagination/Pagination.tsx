@@ -3,36 +3,22 @@ import { Box, IconButton, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { useSearchParams } from 'react-router-dom';
 
 interface PaginationProps {
   totalPages: number;
+  currentPage: number;
   isLoading: boolean;
+  onNext: () => void;
+  onPrev: () => void;
 }
 
-export function Pagination({ totalPages, isLoading }: PaginationProps) {
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const currentPage = Number(searchParams.get('page')) || 1;
-
-  const setPage = (page: number) => {
-    const newParams = new URLSearchParams(searchParams);
-    newParams.set('page', String(page));
-    setSearchParams(newParams);
-  };
-
-  const handlePrev = () => {
-    if (!isLoading && currentPage > 1) {
-      setPage(currentPage - 1);
-    }
-  };
-
-  const handleNext = () => {
-    if (!isLoading && currentPage < totalPages) {
-      setPage(currentPage + 1);
-    }
-  };
-
+export function Pagination({
+  totalPages,
+  currentPage,
+  isLoading,
+  onNext,
+  onPrev,
+}: PaginationProps) {
   return (
     <Box
       display="flex"
@@ -47,7 +33,7 @@ export function Pagination({ totalPages, isLoading }: PaginationProps) {
         transition={{ duration: 0.2 }}
       >
         <IconButton
-          onClick={handlePrev}
+          onClick={onPrev}
           disabled={currentPage <= 1 || isLoading}
           sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
         >
@@ -62,7 +48,7 @@ export function Pagination({ totalPages, isLoading }: PaginationProps) {
         transition={{ duration: 0.2 }}
       >
         <IconButton
-          onClick={handleNext}
+          onClick={onNext}
           disabled={currentPage >= totalPages || isLoading}
           sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
         >
