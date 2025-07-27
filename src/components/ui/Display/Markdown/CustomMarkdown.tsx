@@ -18,16 +18,17 @@ export function CustomMarkdown({
   ai_message = '',
   dataState,
 }: CustomMarkdownProps) {
-  const [replacedText, setReplacedText] = useState(text);
+  const [replacedText, setReplacedText] = useState('');
   const { customization, username, personaName } = useUserStore();
 
   useEffect(() => {
-    const replace = (content: string) =>
+    const replace = (content: string = '') =>
       content
         .replace(/{{char}}/g, char?.name || 'Anon')
         .replace(/{{user}}/g, personaName || username || 'Anon')
         .replace(/{{you}}:/g, '')
         .replace(/{{ai_message}}/g, ai_message);
+
     setReplacedText(replace(text));
   }, [text, char, username, personaName, ai_message]);
 
@@ -119,7 +120,7 @@ export function CustomMarkdown({
             </Box>
           ),
           code: ({ children }) => (
-            <Typography
+            <Box
               component="code"
               sx={{
                 backgroundColor: '#2d2d2d',
@@ -128,11 +129,13 @@ export function CustomMarkdown({
                 fontSize: '0.8rem',
                 borderRadius: '6px',
                 padding: '2px 6px',
-                lineHeight: 1.5,
+                whiteSpace: 'pre-wrap',
+                wordWrap: 'break-word',
+                overflowWrap: 'anywhere',
               }}
             >
               {children}
-            </Typography>
+            </Box>
           ),
           pre: ({ children }) => (
             <Box
@@ -144,15 +147,18 @@ export function CustomMarkdown({
                 fontSize: '0.8rem',
                 borderRadius: '8px',
                 padding: '16px',
-                overflowX: 'auto',
+                whiteSpace: 'pre-wrap',
+                wordWrap: 'break-word',
+                overflowWrap: 'anywhere',
               }}
             >
               <Typography
                 component="code"
                 sx={{
                   display: 'block',
-                  whiteSpace: 'pre',
                   lineHeight: 1.6,
+                  whiteSpace: 'pre-wrap',
+                  wordWrap: 'break-word',
                 }}
               >
                 {children}
@@ -175,7 +181,7 @@ export function CustomMarkdown({
           hr: () => <Box sx={{ borderBottom: '1px solid #555' }} />,
         }}
       >
-        {replacedText}
+        {typeof replacedText === 'string' ? replacedText : ''}
       </ReactMarkdown>
     </Box>
   );

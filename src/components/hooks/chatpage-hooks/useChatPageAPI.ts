@@ -99,7 +99,7 @@ export const useChatPageAPI = (
 
     try {
       await generateMessage(
-        '', // text not needed, handled inside useGenerateMessage via Supabase fetch
+        '',
         user,
         char,
         chat_uuid,

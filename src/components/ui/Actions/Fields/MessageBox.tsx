@@ -1,44 +1,32 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {
-  TypingIndicator,
-  CustomMarkdown,
-  MessageContextMenu,
-} from '@components';
+import { MessageContextMenu } from '~/components';
 import { Box, useTheme } from '@mui/material';
 import { PyrenzMessageBox, PyrenzDialog } from '~/theme';
 import type { MessageBoxProps } from '@shared-types';
 
-export const MessageBox = React.memo(function MessageBox({
-  msg,
-  index,
-  isGenerating,
-  isLastMessage,
-  user,
-  char,
-  onRegenerate,
-  onRemove,
-  handleSpeak,
-  editingMessageId,
-  editingMessageType,
-  isLoading,
-  onEditClick,
-  onSaveEdit,
-  onCancelEdit,
-  onGenerateImage,
-}: MessageBoxProps) {
+export const MessageBox: React.FC<MessageBoxProps> = React.memo(({
+  msg, index, isGenerating, isLastMessage, user, char,
+  onRegenerate, onRemove, handleSpeak,
+  editingMessageId, editingMessageType, isLoading,
+  onEditClick, onSaveEdit, onCancelEdit, onGenerateImage,
+}) => {
   const dataState = msg.type;
-  const displayName =
-    dataState === 'user' ? msg.username || user.username : msg.name || char.name;
-  const isEditingThisMessage =
-    editingMessageId === msg.id && editingMessageType === dataState;
+  const displayName = dataState === 'user'
+    ? msg.username || user.username
+    : msg.name || char.name;
+
+  const isEditingThisMessage = editingMessageId === msg.id && editingMessageType === dataState;
 
   const [localEditedMessage, setLocalEditedMessage] = useState(msg.text || '');
   const [debouncedValue, setDebouncedValue] = useState(localEditedMessage);
   const [openDialog, setOpenDialog] = useState(false);
   const [altIndex, setAltIndex] = useState(0);
 
-  const alternatives =
-    msg.alternative_messages?.length > 0 ? msg.alternative_messages : (msg.text ? [msg.text] : []);
+  const alternatives = msg.alternative_messages?.length
+    ? msg.alternative_messages
+    : msg.text
+      ? [msg.text]
+      : [];
   const totalMessages = alternatives.length;
 
   useEffect(() => {
@@ -48,112 +36,59 @@ export const MessageBox = React.memo(function MessageBox({
 
   useEffect(() => {
     if (!isEditingThisMessage) return;
-    const handler = setTimeout(() => {
-      setDebouncedValue(localEditedMessage);
-    }, 500);
-    return () => clearTimeout(handler);
+    const timer = setTimeout(() => setDebouncedValue(localEditedMessage), 500);
+    return () => clearTimeout(timer);
   }, [localEditedMessage, isEditingThisMessage]);
 
   useEffect(() => {
-    if (altIndex >= alternatives.length) {
-      setAltIndex(0);
-    }
-  }, [alternatives.length]);
+    if (altIndex >= alternatives.length) setAltIndex(0);
+  }, [totalMessages, altIndex]);
+
+  const handlePrev = (e: React.MouseEvent) => { e.stopPropagation(); setAltIndex(prev => (prev === 0 ? totalMessages - 1 : prev - 1)); };
+  const handleNext = (e: React.MouseEvent) => { e.stopPropagation(); setAltIndex(prev => (prev + 1) % totalMessages); };
+
+  const currentText = alternatives[altIndex] ?? '';
+  const isEmptyCharMessage = dataState === 'char' && isLastMessage && currentText.trim() === '';
 
   const theme = useTheme();
-  const [menuPosition, setMenuPosition] = useState<{ top: number; left: number } | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const [menuPosition, setMenuPosition] = useState<{ top: number, left: number } | null>(null);
 
-  const handleMessageBoxClick = (event: React.MouseEvent) => {
+  const handleMessageBoxClick = (e: React.MouseEvent) => {
     if (!isEditingThisMessage && index !== 0) {
-      setMenuPosition({ top: event.clientY, left: event.clientX });
+      setMenuPosition({ top: e.clientY, left: e.clientX });
     }
   };
-
-  const handleCloseMenu = () => {
-    setMenuPosition(null);
-  };
-
+  const handleCloseMenu = () => setMenuPosition(null);
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        handleCloseMenu();
-      }
+    const onOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) handleCloseMenu();
     };
-    if (menuPosition) {
-      document.addEventListener('mousedown', handleClickOutside);
-    } else {
-      document.removeEventListener('mousedown', handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    if (menuPosition) document.addEventListener('mousedown', onOutside);
+    else document.removeEventListener('mousedown', onOutside);
+    return () => document.removeEventListener('mousedown', onOutside);
   }, [menuPosition]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(msg.text || '');
     handleCloseMenu();
   };
-
-  const handleSaveEdit = () => {
-    if (msg.id) {
-      onSaveEdit(msg.id, debouncedValue, dataState);
-    }
-  };
-
-  const handleOpenDialog = () => {
-    setOpenDialog(true);
-    handleCloseMenu();
-  };
-
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-  };
-
   const handleConfirmDelete = () => {
-    if (msg.id) {
-      onRemove(msg.id);
-    }
+    if (msg.id) onRemove(msg.id);
     setOpenDialog(false);
   };
-
-  const handleNextAlt = (event: React.MouseEvent) => {
-    event.stopPropagation();
-    if (totalMessages === 0) return;
-    setAltIndex((prev) => (prev + 1) % totalMessages);
-  };
-
-  const handlePrevAlt = (event: React.MouseEvent) => {
-    event.stopPropagation();
-    if (totalMessages === 0) return;
-    setAltIndex((prev) => (prev === 0 ? totalMessages - 1 : prev - 1));
-  };
-  
-  const isEmptyCharMessage =
-    dataState === 'char' && isLastMessage && (msg.text?.trim() === '');
 
   if (!msg.id && !isGenerating) return null;
 
   return (
     <Box
-      key={msg.id ? `${msg.id}-${index}` : `temp-${index}`}
+      key={msg.id ? `${msg.id}-${altIndex}` : `temp-${index}-${altIndex}`}
       display="flex"
       alignItems="flex-start"
       justifyContent={dataState === 'user' ? 'flex-end' : 'flex-start'}
-      sx={{ position: 'relative', width: '100%', mb: 2 }}
+      sx={{ mb: 2, width: '100%', position: 'relative' }}
     >
-      <Box
-        display="flex"
-        flexDirection="column"
-        alignItems={dataState === 'user' ? 'flex-end' : 'flex-start'}
-        sx={{
-          width: '100%',
-          maxWidth: '80%',
-          '@media (max-width: 600px)': {
-            maxWidth: '90%',
-          },
-        }}
-      >
+      <Box sx={{ width: '100%', maxWidth: { xs: '90%', sm: '80%' }, display: 'flex', flexDirection: 'column', alignItems: dataState === 'user' ? 'flex-end' : 'flex-start' }}>
         <PyrenzMessageBox
           onClick={handleMessageBoxClick}
           dataState={dataState}
@@ -162,57 +97,38 @@ export const MessageBox = React.memo(function MessageBox({
           charAvatar={char.profile_image}
           isEditing={isEditingThisMessage}
           localEditedMessage={localEditedMessage}
-          onChange={(e) => setLocalEditedMessage(e.target.value)}
-          onSaveEdit={handleSaveEdit}
+          onChange={e => setLocalEditedMessage(e.target.value)}
+          onSaveEdit={() => msg.id && onSaveEdit(msg.id, debouncedValue, dataState)}
           onCancelEdit={onCancelEdit}
           isLoading={isLoading}
-          onGoPrev={handlePrevAlt}
-          onGoNext={handleNextAlt}
+          onGoPrev={handlePrev}
+          onGoNext={handleNext}
           showNav={totalMessages > 1}
           currentMessageIndex={altIndex}
-          totalMessages={totalMessages}
           alternativeMessages={alternatives}
-          sx={{
-            p: 2,
-            borderRadius: '8px',
-            boxShadow: 1,
-            whiteSpace: 'pre-wrap',
-            wordBreak: 'break-word',
-            overflowWrap: 'anywhere',
-            cursor: 'pointer',
-            width: isEditingThisMessage ? '100%' : 'fit-content',
-            maxWidth: '100%',
-          }}
+          isGeneratingEmptyCharMessage={isEmptyCharMessage}
+          ai_message={currentText}
+          char={char}
+          sx={{ cursor: 'pointer', width: isEditingThisMessage ? '100%' : 'fit-content', maxWidth: '100%' }}
         >
-          {isEmptyCharMessage ? (
-            <TypingIndicator />
-          ) : (
-            <CustomMarkdown
-              text={msg.text}
-              char={char}
-              dataState={dataState}
-            />
-          )}
+          {currentText}
         </PyrenzMessageBox>
       </Box>
 
       {menuPosition && !isEditingThisMessage && index !== 0 && (
-        <Box
-          ref={menuRef}
-          sx={{
-            position: 'fixed',
-            top: `${menuPosition.top}px`,
-            left: `${menuPosition.left}px`,
-            zIndex: 1300,
-            backgroundColor: theme.palette.background.paper,
-            borderRadius: '8px',
-            boxShadow: 3,
-          }}
-        >
+        <Box ref={menuRef} sx={{
+          position: 'fixed',
+          top: menuPosition.top,
+          left: menuPosition.left,
+          zIndex: 1300,
+          bgcolor: theme.palette.background.paper,
+          borderRadius: 1,
+          boxShadow: 3
+        }}>
           <MessageContextMenu
             msg={msg}
-            onRegenerate={onRegenerate}
-            onRemove={handleOpenDialog}
+            onRegenerate={() => msg.id && onRegenerate(msg.id)}
+            onRemove={() => setOpenDialog(true)}
             handleSpeak={handleSpeak}
             onEditClick={onEditClick}
             handleCopy={handleCopy}
@@ -224,9 +140,9 @@ export const MessageBox = React.memo(function MessageBox({
 
       <PyrenzDialog
         open={openDialog}
-        onClose={handleCloseDialog}
+        onClose={() => setOpenDialog(false)}
         title="Confirm Deletion"
-        content="Are you sure you want to delete this message? This will also remove all messages below it."
+        content="Are you sure you want to delete this and everything below?"
         onConfirm={handleConfirmDelete}
       />
     </Box>
