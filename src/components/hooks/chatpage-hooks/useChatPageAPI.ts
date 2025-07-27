@@ -42,74 +42,74 @@ export const useChatPageAPI = (
   const generateMessage = useGenerateMessage();
   const { setMessages } = useChatStore();
 
-  const toggleSettings = (): void => {
+  const toggleSettings = () => {
     setIsSettingsOpen((prev) => !prev);
   };
 
-  const handleSend = async (message: string): Promise<void> => {
-    const trimmedMessage = message.trim();
-    if (!trimmedMessage) return;
+  const handleSend = async (message: string) => {
+    const trimmed = message.trim();
+    if (!trimmed) return;
 
     try {
       const response = await generateMessage(
-        trimmedMessage,
+        trimmed,
         user,
         char,
         chat_uuid,
         setMessages,
-        setIsGenerating
+        setIsGenerating,
+        'Generate'
       );
+
       if (!response.isSubscribed && response.remainingMessages === 0) {
         setIsAdModalOpen(true);
       }
-    } catch (error) {
-      console.error('Error:', error);
+    } catch (err) {
+      console.error('Error:', err);
     }
   };
 
-  const handleRemoveMessage = async (messageId: string): Promise<void> => {
+  const handleRemoveMessage = async (messageId: string) => {
     if (!messageId) return;
 
     const index = previous_message.findIndex((msg) => msg.id === messageId);
     if (index === -1) return;
 
-    const messagesToDelete = previous_message
+    const ids = previous_message
       .slice(index)
       .map((msg) => msg.id)
       .filter((id): id is string => !!id);
 
-    if (!messagesToDelete.length) return;
+    if (!ids.length) return;
 
     try {
       await Utils.db.remove({
         tables: 'chat_messages',
-        match: { id: messagesToDelete },
+        match: { id: ids },
       });
 
-      setMessages((prevMessages) =>
-        prevMessages.filter(
-          (msg) =>
-            typeof msg.id === 'string' && !messagesToDelete.includes(msg.id)
-        )
-      );
-    } catch (error) {
-      console.error('Error deleting messages:', error);
+      setMessages((prev) => prev.filter((msg) => !ids.includes(msg.id!)));
+    } catch (err) {
+      console.error('Error deleting messages:', err);
     }
   };
 
-  const handleRegenerateMessage = async (messageId: string): Promise<void> => {
+  const handleRegenerateMessage = async (messageId: string) => {
     if (!messageId) return;
 
     try {
-      const userMessage = previous_message.find(
-        (msg) => msg.id === messageId && msg.type === 'user'
+      await generateMessage(
+        '', // text not needed, handled inside useGenerateMessage via Supabase fetch
+        user,
+        char,
+        chat_uuid,
+        setMessages,
+        setIsGenerating,
+        'Regenerate',
+        messageId
       );
-      if (!userMessage) return;
-
-      await handleRemoveMessage(messageId);
-      await handleSend(userMessage.text);
-    } catch (error) {
-      console.error('Error regenerating message:', error);
+    } catch (err) {
+      console.error('Error regenerating message:', err);
     }
   };
 
@@ -117,83 +117,70 @@ export const useChatPageAPI = (
     messageId: string,
     editedMessage: string,
     type: 'user' | 'char'
-  ): Promise<void> => {
+  ) => {
     if (!messageId || !editedMessage) return;
 
     try {
-      const columnName = type === 'user' ? 'user_message' : 'char_message';
       await Utils.db.update({
         tables: 'chat_messages',
-        values: { [columnName]: editedMessage },
+        values: {
+          [type === 'user' ? 'user_message' : 'char_message']: editedMessage,
+        },
         match: {
           id: messageId,
           user_uuid: user.user_uuid,
-          chat_uuid: chat_uuid,
+          chat_uuid,
         },
       });
 
-      setMessages((prevMessages) =>
-        prevMessages.map((msg) =>
+      setMessages((prev) =>
+        prev.map((msg) =>
           msg.id === messageId && msg.type === type
-            ? {
-                ...msg,
-                text: editedMessage,
-                ...(type === 'user'
-                  ? { user_message: editedMessage }
-                  : { char_message: editedMessage }),
-              }
+            ? { ...msg, text: editedMessage }
             : msg
         )
       );
-    } catch (error) {
-      console.error('Error updating message:', error);
+    } catch (err) {
+      console.error('Error updating message:', err);
     }
   };
 
-  const onGenerateImage = async (messageId: string): Promise<void> => {
+  const onGenerateImage = async (messageId: string) => {
     try {
-      const lastTenMessages = previous_message.slice(-10);
-      const personaPrompt = `The character's persona is: ${char.persona}. `;
-      const prompt = lastTenMessages
-        .map((msg) => {
-          return `${personaPrompt}${msg.text}. The expressions are vivid, capturing every nuance of the characters involved.`;
-        })
+      const prompt = previous_message
+        .slice(-10)
+        .map((msg) => `${char.persona}. ${msg.text}`)
         .join(' ');
 
-      const response = await Utils.post('/api/ImageGen', {
+      const res = await Utils.post('/api/ImageGen', {
         type: 'Anime',
         query: prompt,
       });
 
-      const imageResponse = response as ImageGenerationResponse;
-      if (
-        imageResponse.data &&
-        imageResponse.data.data &&
-        imageResponse.data.data.length > 0
-      ) {
-        const imageUrl = imageResponse.data.data[0].url;
-        const newImageMessage: Message = {
-          id: `image-${Date.now()}`,
-          type: 'char',
-          text: `![Generated Image](${imageUrl})`,
-          name: char.name,
-          profile_image: char.profile_image,
-        };
+      const imageUrl = (res as ImageGenerationResponse)?.data?.data?.[0]?.url;
+      if (!imageUrl) return;
 
-        await Utils.db.insert({
-          tables: 'chat_messages',
-          data: {
-            user_uuid: user.user_uuid,
-            chat_uuid: chat_uuid,
-            char_message: newImageMessage.text,
-            is_image: true,
-          },
-        });
+      const newMsg: Message = {
+        id: `image-${Date.now()}`,
+        type: 'char',
+        text: `![Generated Image](${imageUrl})`,
+        name: char.name,
+        profile_image: char.profile_image,
+      };
 
-        setMessages((prevMessages) => [...prevMessages, newImageMessage]);
-      }
-    } catch (error) {
-      console.error('Error generating image:', error);
+      await Utils.db.insert({
+        tables: 'chat_messages',
+        data: {
+          user_uuid: user.user_uuid,
+          chat_uuid,
+          char_message: newMsg.text,
+          is_image: true,
+        },
+      });
+
+      setMessages((prev) => [...prev, newMsg]);
+    } catch (err) {
+      console.error('Error generating image:', err);
     }
   };
 

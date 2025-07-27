@@ -1,6 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { ExtraFilter, Match, Range, OrderBy } from '@sdk/Types';
-import { getCached, setCached } from '../Cache/cacheWorkerManager';
+import { getCached, setCached } from '@sdk/cache';
 
 const inflightSelects = new Map<string, Promise<any>>();
 
@@ -19,18 +19,21 @@ export async function select<T>(
     orderBy?: OrderBy;
     extraFilters?: ExtraFilter[];
     paging?: boolean;
+    nocache?: boolean;
   }
 ): Promise<{ data: T[]; count: number | null; pages?: T[][] }> {
   const key = makeCacheKey(req);
 
-  const cached = await getCached<{
-    data: T[];
-    count: number | null;
-    pages?: T[][];
-  }>(key);
+  if (!req.nocache) {
+    const cached = await getCached<{
+      data: T[];
+      count: number | null;
+      pages?: T[][];
+    }>(key);
 
-  if (cached) return cached;
-  if (inflightSelects.has(key)) return inflightSelects.get(key);
+    if (cached) return cached;
+    if (inflightSelects.has(key)) return inflightSelects.get(key)!;
+  }
 
   const promise = (async () => {
     const {
@@ -126,7 +129,10 @@ export async function select<T>(
       pages,
     };
 
-    await setCached(key, response);
+    if (!req.nocache) {
+      await setCached(key, response);
+    }
+
     inflightSelects.delete(key);
     return response;
   })();

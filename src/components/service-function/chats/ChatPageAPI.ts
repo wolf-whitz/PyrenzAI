@@ -10,6 +10,7 @@ interface ChatMessageWithId {
   char_message: string | null;
   chat_uuid: string;
   created_at: string;
+  alternative_messages?: string[];
 }
 
 interface FetchChatDataResult {
@@ -42,9 +43,11 @@ export const fetchChatData = async (
     try {
       const result = await utils.db.select<ChatMessageWithId>({
         tables: 'chat_messages',
-        columns: '*',
+        columns:
+          'chat_uuid, user_message, char_message, created_at, alternative_messages, id',
         match: { chat_uuid },
         orderBy: { column: 'created_at', ascending: false },
+        nocache: true 
       });
 
       messages = result?.data ?? [];
@@ -54,12 +57,15 @@ export const fetchChatData = async (
     }
 
     const reversedMessages = messages.reverse();
+    const formattedMessages: Message[] = [];
 
-    const formattedMessages: Message[] = reversedMessages.flatMap((msg) => {
-      const messages: Message[] = [];
+    let lastUserText: string | null = null;
 
+    for (const msg of reversedMessages) {
       if (msg.user_message) {
-        messages.push({
+        lastUserText = msg.user_message;
+
+        formattedMessages.push({
           id: msg.id,
           name: userData.username || 'Anon',
           text: msg.user_message,
@@ -70,7 +76,7 @@ export const fetchChatData = async (
       }
 
       if (msg.char_message) {
-        messages.push({
+        const charMsg: Message = {
           id: msg.id,
           name: characterData.name || 'Anon',
           text: msg.char_message,
@@ -78,11 +84,13 @@ export const fetchChatData = async (
           type: 'char',
           chat_uuid,
           gender: characterData.gender,
-        });
-      }
+          alternative_messages: msg.alternative_messages ?? [],
+          meta: lastUserText ? { queryText: lastUserText } : undefined,
+        };
 
-      return messages;
-    });
+        formattedMessages.push(charMsg);
+      }
+    }
 
     useChatStore.getState().setMessages(formattedMessages);
 

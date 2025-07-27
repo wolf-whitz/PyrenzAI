@@ -28,34 +28,40 @@ export const MessageBox = React.memo(function MessageBox({
 }: MessageBoxProps) {
   const dataState = msg.type;
   const displayName =
-    dataState === 'user'
-      ? msg.username || user.username
-      : msg.name || char.name;
+    dataState === 'user' ? msg.username || user.username : msg.name || char.name;
   const isEditingThisMessage =
     editingMessageId === msg.id && editingMessageType === dataState;
+
   const [localEditedMessage, setLocalEditedMessage] = useState(msg.text || '');
   const [debouncedValue, setDebouncedValue] = useState(localEditedMessage);
   const [openDialog, setOpenDialog] = useState(false);
+  const [altIndex, setAltIndex] = useState(0);
+
+  const alternatives =
+    msg.alternative_messages?.length > 0 ? msg.alternative_messages : (msg.text ? [msg.text] : []);
+  const totalMessages = alternatives.length;
 
   useEffect(() => {
     setLocalEditedMessage(msg.text || '');
-  }, [msg.text]);
+    setAltIndex(0);
+  }, [msg.text, msg.alternative_messages]);
 
   useEffect(() => {
     if (!isEditingThisMessage) return;
     const handler = setTimeout(() => {
       setDebouncedValue(localEditedMessage);
     }, 500);
-    return () => {
-      clearTimeout(handler);
-    };
+    return () => clearTimeout(handler);
   }, [localEditedMessage, isEditingThisMessage]);
 
+  useEffect(() => {
+    if (altIndex >= alternatives.length) {
+      setAltIndex(0);
+    }
+  }, [alternatives.length]);
+
   const theme = useTheme();
-  const [menuPosition, setMenuPosition] = useState<{
-    top: number;
-    left: number;
-  } | null>(null);
+  const [menuPosition, setMenuPosition] = useState<{ top: number; left: number } | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
   const handleMessageBoxClick = (event: React.MouseEvent) => {
@@ -111,6 +117,21 @@ export const MessageBox = React.memo(function MessageBox({
     setOpenDialog(false);
   };
 
+  const handleNextAlt = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    if (totalMessages === 0) return;
+    setAltIndex((prev) => (prev + 1) % totalMessages);
+  };
+
+  const handlePrevAlt = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    if (totalMessages === 0) return;
+    setAltIndex((prev) => (prev === 0 ? totalMessages - 1 : prev - 1));
+  };
+  
+  const isEmptyCharMessage =
+    dataState === 'char' && isLastMessage && (msg.text?.trim() === '');
+
   if (!msg.id && !isGenerating) return null;
 
   return (
@@ -145,6 +166,12 @@ export const MessageBox = React.memo(function MessageBox({
           onSaveEdit={handleSaveEdit}
           onCancelEdit={onCancelEdit}
           isLoading={isLoading}
+          onGoPrev={handlePrevAlt}
+          onGoNext={handleNextAlt}
+          showNav={totalMessages > 1}
+          currentMessageIndex={altIndex}
+          totalMessages={totalMessages}
+          alternativeMessages={alternatives}
           sx={{
             p: 2,
             borderRadius: '8px',
@@ -157,20 +184,18 @@ export const MessageBox = React.memo(function MessageBox({
             maxWidth: '100%',
           }}
         >
-          {isGenerating &&
-          dataState === 'char' &&
-          isLastMessage &&
-          !msg.text ? (
+          {isEmptyCharMessage ? (
             <TypingIndicator />
           ) : (
             <CustomMarkdown
-              text={msg.text || ''}
+              text={msg.text}
               char={char}
               dataState={dataState}
             />
           )}
         </PyrenzMessageBox>
       </Box>
+
       {menuPosition && !isEditingThisMessage && index !== 0 && (
         <Box
           ref={menuRef}
@@ -196,6 +221,7 @@ export const MessageBox = React.memo(function MessageBox({
           />
         </Box>
       )}
+
       <PyrenzDialog
         open={openDialog}
         onClose={handleCloseDialog}

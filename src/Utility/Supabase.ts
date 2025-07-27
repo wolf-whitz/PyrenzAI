@@ -1,6 +1,6 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from '~/config';
-import { SupabaseUtil } from '~/sdk/SupabaseUtils';
+import { SupabaseUtil } from '@sdk/SupabaseUtils';
 
 let _client: SupabaseClient | null = null;
 

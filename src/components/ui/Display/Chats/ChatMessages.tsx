@@ -27,9 +27,7 @@ export function ChatMessages({
   onGenerateImage,
 }: ChatMessagesExtendedProps) {
   const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
-  const [editingMessageType, setEditingMessageType] = useState<
-    'user' | 'char' | null
-  >(null);
+  const [editingMessageType, setEditingMessageType] = useState<'user' | 'char' | null>(null);
   const [editedMessage, setEditedMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -66,11 +64,9 @@ export function ChatMessages({
     editedMessage: string,
     type: 'user' | 'char'
   ) => {
-    if (onEditMessage) {
-      setIsLoading(true);
-      await onEditMessage(messageId, editedMessage, type);
-      setIsLoading(false);
-    }
+    setIsLoading(true);
+    await onEditMessage(messageId, editedMessage, type);
+    setIsLoading(false);
     setEditingMessageId(null);
     setEditingMessageType(null);
   };
@@ -80,23 +76,33 @@ export function ChatMessages({
     setEditingMessageType(null);
   };
 
-  const messages = firstMessage
-    ? [
+  const messages: Message[] = (() => {
+    const alreadyIncludesFirst = previous_message?.some(
+      (m) => m.text === firstMessage && m.type === 'char'
+    );
+
+    if (firstMessage && !alreadyIncludesFirst) {
+      return [
         {
           id: 'first-message',
           type: 'char',
           text: firstMessage,
           name: char?.name,
           profile_image: char?.profile_image,
+          alternative_messages: [],
         },
         ...previous_message,
-      ]
-    : previous_message;
+      ];
+    }
+
+    return previous_message;
+  })();
 
   return (
     <Box className="space-y-4 p-4 max-w-2xl mx-auto">
-      {messages.map((msg: Message, index: number) => {
+      {messages.map((msg, index) => {
         const isLastMessage = index === messages.length - 1;
+
         return (
           <MessageBox
             key={`${msg.type}-${msg.id ?? `temp-${index}`}`}
@@ -108,17 +114,17 @@ export function ChatMessages({
             char={char}
             onRegenerate={onRegenerate}
             onRemove={onRemove}
-            onEditMessage={onEditMessage}
             handleSpeak={handleSpeak}
             setIsGenerating={setIsGenerating}
             editingMessageId={editingMessageId}
             editingMessageType={editingMessageType}
             editedMessage={editedMessage}
-            isLoading={isLoading}
             onEditClick={handleEditClick}
+            onEditMessage={onEditMessage}
             onSaveEdit={handleSaveEdit}
             onCancelEdit={handleCancelEdit}
             setEditedMessage={setEditedMessage}
+            isLoading={isLoading}
             onGenerateImage={onGenerateImage}
           />
         );

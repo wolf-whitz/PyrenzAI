@@ -14,6 +14,14 @@ export const MessageSchema = z.object({
   chat_uuid: z.string().optional(),
   error: z.boolean().optional(),
   gender: z.string().optional(),
+  user_id: z.number().optional(),
+  char_id: z.number().optional(),
+  alternative_messages: z.array(z.string()).optional(),
+  meta: z
+    .object({
+      queryText: z.string(),
+    })
+    .optional(),
 });
 
 export const UserSchema = z.object({
@@ -50,6 +58,8 @@ export const GenerateResponseSchema = z.object({
   MessageID: z.string(),
   remainingMessages: z.number(),
   isSubscribed: z.boolean().optional(),
+  user_id: z.number().optional(),
+  char_id: z.number().optional(),
 });
 
 export const ChatSchema = z.object({

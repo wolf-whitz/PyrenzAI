@@ -1,13 +1,18 @@
 import React from 'react';
-import { Box, Avatar, TextField, styled } from '@mui/material';
+import {
+  Box,
+  Avatar,
+  TextField,
+  styled,
+  IconButton,
+  Typography,
+} from '@mui/material';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { SxProps } from '@mui/system';
 import { PyrenzBlueButton } from '~/theme';
 
 interface PyrenzMessageBoxProps {
-  children: React.ReactNode;
-  onClick?: (event: React.MouseEvent) => void;
-  sx?: SxProps;
-  className?: string;
   dataState: 'user' | 'char';
   displayName?: string;
   userAvatar?: string;
@@ -18,6 +23,16 @@ interface PyrenzMessageBoxProps {
   onSaveEdit?: () => void;
   onCancelEdit?: () => void;
   isLoading?: boolean;
+  onGoPrev?: (event: React.MouseEvent) => void;
+  onGoNext?: (event: React.MouseEvent) => void;
+  showNav?: boolean;
+  currentMessageIndex?: number;
+  totalMessages?: number;
+  children?: React.ReactNode;
+  onClick?: (event: React.MouseEvent) => void;
+  sx?: SxProps;
+  className?: string;
+  alternativeMessages?: string[];
 }
 
 const StyledPyrenzMessageBox = styled(Box, {
@@ -74,94 +89,151 @@ export const PyrenzMessageBox = ({
   onSaveEdit,
   onCancelEdit,
   isLoading,
+  onGoPrev,
+  onGoNext,
+  showNav,
+  currentMessageIndex = 0,
+  alternativeMessages = [],
 }: PyrenzMessageBoxProps) => {
   const handleClick = (event: React.MouseEvent) => {
     if (onClick) onClick(event);
   };
 
+  const handleGoPrev = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    if (onGoPrev) onGoPrev(event);
+  };
+
+  const handleGoNext = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    if (onGoNext) onGoNext(event);
+  };
+
+  const currentText =
+    alternativeMessages.length > 0
+      ? alternativeMessages[currentMessageIndex] ?? ''
+      : (children as string);
+
   return (
     <Box
       display="flex"
-      alignItems="flex-start"
-      justifyContent={dataState === 'user' ? 'flex-end' : 'flex-start'}
+      flexDirection="column"
+      alignItems={dataState === 'user' ? 'flex-end' : 'flex-start'}
       sx={{ width: '100%' }}
     >
-      {dataState !== 'user' && charAvatar && (
-        <HoverableAvatar
-          alt={displayName}
-          src={charAvatar}
-          sx={{ width: 32, height: 32, mr: 1 }}
-          className="rounded-full"
-        />
-      )}
-      <StyledPyrenzMessageBox
-        onClick={handleClick}
-        sx={sx}
-        className={className}
-        dataState={dataState}
-      >
-        {isEditing ? (
-          <Box display="flex" flexDirection="column" width="100%">
-            <TextField
-              value={localEditedMessage}
-              onChange={onChange}
-              autoFocus
-              multiline
-              fullWidth
-              minRows={3}
-              maxRows={20}
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  padding: '8px',
-                  '& fieldset': {
-                    border: 'none',
-                  },
-                },
-                '& textarea': {
-                  overflow: 'auto',
-                },
-              }}
-            />
-            <Box display="flex" justifyContent="flex-end" gap={1} mt={1}>
-              <PyrenzBlueButton
-                onClick={onSaveEdit}
-                disabled={isLoading}
-                sx={{ backgroundColor: 'transparent', color: '#fff' }}
-              >
-                {isLoading ? 'Saving...' : 'Submit'}
-              </PyrenzBlueButton>
-              <PyrenzBlueButton
-                onClick={onCancelEdit}
-                disabled={isLoading}
-                sx={{ backgroundColor: 'transparent', color: '#fff' }}
-              >
-                Cancel
-              </PyrenzBlueButton>
-            </Box>
-          </Box>
-        ) : (
-          <Box
-            display="flex"
-            flexDirection="column"
-            sx={{
-              whiteSpace: 'pre-wrap',
-              wordBreak: 'break-word',
-              overflowWrap: 'anywhere',
-              lineHeight: 1.5,
-            }}
-          >
-            {children}
-          </Box>
+      <Box display="flex" alignItems="flex-start">
+        {dataState !== 'user' && charAvatar && (
+          <HoverableAvatar
+            alt={displayName}
+            src={charAvatar}
+            sx={{ width: 32, height: 32, mr: 1 }}
+            className="rounded-full"
+          />
         )}
-      </StyledPyrenzMessageBox>
-      {dataState === 'user' && userAvatar && (
-        <HoverableAvatar
-          alt={displayName}
-          src={userAvatar}
-          sx={{ width: 32, height: 32, ml: 1 }}
-          className="rounded-full"
-        />
-      )}
+        <StyledPyrenzMessageBox
+          onClick={handleClick}
+          sx={sx}
+          className={className}
+          dataState={dataState}
+        >
+          {isEditing ? (
+            <Box display="flex" flexDirection="column" width="100%">
+              <TextField
+                value={localEditedMessage}
+                onChange={onChange}
+                autoFocus
+                multiline
+                fullWidth
+                minRows={3}
+                maxRows={20}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    padding: '8px',
+                    '& fieldset': {
+                      border: 'none',
+                    },
+                  },
+                  '& textarea': {
+                    overflow: 'auto',
+                  },
+                }}
+              />
+              <Box display="flex" justifyContent="flex-end" gap={1} mt={1}>
+                <PyrenzBlueButton
+                  onClick={onSaveEdit}
+                  disabled={isLoading}
+                  sx={{ backgroundColor: 'transparent', color: '#fff' }}
+                >
+                  {isLoading ? 'Saving...' : 'Submit'}
+                </PyrenzBlueButton>
+                <PyrenzBlueButton
+                  onClick={onCancelEdit}
+                  disabled={isLoading}
+                  sx={{ backgroundColor: 'transparent', color: '#fff' }}
+                >
+                  Cancel
+                </PyrenzBlueButton>
+              </Box>
+            </Box>
+          ) : (
+            <Box
+              display="flex"
+              flexDirection="column"
+              sx={{
+                whiteSpace: 'pre-wrap',
+                wordBreak: 'break-word',
+                overflowWrap: 'anywhere',
+                lineHeight: 1.5,
+              }}
+            >
+              {currentText}
+            </Box>
+          )}
+          {showNav && alternativeMessages.length > 0 && (
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              mt={1}
+              gap={1}
+            >
+              <IconButton
+                size="small"
+                onClick={handleGoPrev}
+                sx={{
+                  color: '#fff',
+                  backgroundColor: '#333',
+                  '&:hover': { backgroundColor: '#444' },
+                }}
+              >
+                <ChevronLeftIcon />
+              </IconButton>
+              <Typography variant="caption" color="inherit">
+                {currentMessageIndex + 1}/{alternativeMessages.length}
+              </Typography>
+              <IconButton
+                size="small"
+                onClick={handleGoNext}
+                sx={{
+                  color: '#fff',
+                  backgroundColor: '#333',
+                  '&:hover': { backgroundColor: '#444' },
+                }}
+              >
+                <ChevronRightIcon />
+              </IconButton>
+            </Box>
+          )}
+        </StyledPyrenzMessageBox>
+        {dataState === 'user' && userAvatar && (
+          <HoverableAvatar
+            alt={displayName}
+            src={userAvatar}
+            sx={{ width: 32, height: 32, ml: 1 }}
+            className="rounded-full"
+          />
+        )}
+      </Box>
     </Box>
   );
 };

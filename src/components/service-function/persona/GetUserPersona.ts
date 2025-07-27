@@ -1,18 +1,10 @@
 import { Utils } from '~/Utility';
 import { useUserStore } from '~/store';
 import { GetUserUUID } from '@function';
-import { getCached, setCached } from '@sdk/Cache/cacheWorkerManager';
-
-const USER_CACHE_KEY_PREFIX = 'user:data:';
 
 export async function GetUserData(): Promise<any> {
   const user_uuid = await GetUserUUID();
   if (!user_uuid) return { error: 'User UUID not found' };
-
-  const cacheKey = `${USER_CACHE_KEY_PREFIX}${user_uuid}`;
-  const cached = await getCached<any>(cacheKey);
-
-  if (cached) return cached;
 
   try {
     const response = await Utils.post<any>('/api/GetUserData', { user_uuid });
@@ -22,6 +14,7 @@ export async function GetUserData(): Promise<any> {
     }
 
     const store = useUserStore.getState();
+
     store.setUserUUID(response.user_uuid);
     store.setUsername(response.username);
     store.setPersonaName(response.persona_name || '');
@@ -44,8 +37,6 @@ export async function GetUserData(): Promise<any> {
 
     store.setModelIdentifiers(modelIdentifiers);
     store.setMaxTokenLimit(response.subscription_data.max_token);
-
-    await setCached(cacheKey, response);
 
     return response;
   } catch {
