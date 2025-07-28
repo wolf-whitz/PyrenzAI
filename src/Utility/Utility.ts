@@ -1,4 +1,4 @@
-import { SupabaseUtil } from '@sdk/SupabaseUtils';
+import { SupabaseUtil } from '~/sdk/SupabaseUtils';
 import { db } from './Supabase';
 
 const FetcherClient = SupabaseUtil.instance.fetcher;
