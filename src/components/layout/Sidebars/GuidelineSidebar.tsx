@@ -54,32 +54,44 @@ export function CommunityGuidelines({ className }: CommunityGuidelinesProps) {
       timeout={500}
     >
       <div
-        className={`bg-gray-900 text-white p-6 rounded-lg shadow-xl sm:fixed sm:top-0 sm:right-0 sm:h-screen sm:w-72 sm:overflow-y-auto md:fixed md:top-0 md:right-0 md:h-screen md:w-72 md:overflow-y-auto relative ${className}`}
+        className={`backdrop-blur-2xl bg-white/10 border border-white/20 text-white p-6 rounded-2xl shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] sm:fixed sm:top-0 sm:right-0 sm:h-screen sm:w-80 sm:overflow-y-auto md:fixed md:top-0 md:right-0 md:h-screen md:w-80 md:overflow-y-auto relative transition-all duration-500 ease-in-out overflow-hidden ${className}`}
       >
-        <div className="flex justify-between items-center mb-4">
+        <div className="absolute inset-0 pointer-events-none z-0 rounded-2xl border-2 border-transparent bg-gradient-to-br from-purple-500/30 via-pink-500/30 to-blue-500/30 blur-2xl opacity-30" />
+
+        <div className="relative z-10 flex justify-between items-start mb-6">
           <Typography
             variant="h5"
             component="h2"
-            className="text-2xl font-bold pb-2"
+            className="text-2xl font-bold tracking-wide drop-shadow-lg"
           >
             Community Guidelines
           </Typography>
           <IconButton
             onClick={handleRemove}
-            className="text-white sm:absolute sm:right-6 sm:top-6"
+            className="text-white hover:scale-110 hover:text-red-400 transition-all duration-300 ease-in-out sm:absolute sm:right-6 sm:top-6"
           >
             <CloseIcon />
           </IconButton>
         </div>
-        <Divider className="border-gray-700 mb-6 w-full" />
+
+        <Divider className="border-white/30 mb-6 w-full" />
+
         <Fade in={isVisible} timeout={300}>
           <div className="overflow-hidden">
-            <List className="space-y-4 list-disc list-inside pl-4 marker:text-white">
+            <List className="space-y-6 pl-2 custom-scrollbar pr-2">
               {guidelines.map((item, index) => (
-                <ListItem key={index}>
+                <ListItem
+                  key={index}
+                  className="group bg-white/5 backdrop-blur-sm rounded-xl px-4 py-3 transition-all duration-300 hover:bg-white/10 hover:shadow-lg"
+                >
                   <ListItemText
                     primary={
-                      <Typography variant="body1">{item.primary}</Typography>
+                      <Typography
+                        variant="body1"
+                        className="text-sm leading-relaxed text-white/90 group-hover:text-white"
+                      >
+                        {item.primary}
+                      </Typography>
                     }
                   />
                 </ListItem>

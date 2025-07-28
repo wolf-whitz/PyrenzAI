@@ -107,8 +107,10 @@ export const PyrenzMessageBox = ({
   };
 
   const getDisplayedText = () => {
-    if (currentMessageIndex === 0) return children;
-    return alternativeMessages?.[currentMessageIndex - 1] ?? '';
+    if (alternativeMessages.length > 0) {
+      return alternativeMessages[currentMessageIndex] ?? '';
+    }
+    return children;
   };
 
   const renderContent = () => {
@@ -164,7 +166,7 @@ export const PyrenzMessageBox = ({
           ai_message={ai_message}
         />
 
-        {showNav && (alternativeMessages?.length ?? 0) > 0 && (
+        {showNav && alternativeMessages.length > 1 && (
           <Box display="flex" justifyContent="center" alignItems="center" mt={1} gap={1}>
             <IconButton
               size="small"
@@ -178,7 +180,7 @@ export const PyrenzMessageBox = ({
               <ChevronLeftIcon />
             </IconButton>
             <Typography variant="caption" color="inherit">
-              {currentMessageIndex + 1}/{1 + alternativeMessages.length}
+              {currentMessageIndex + 1}/{alternativeMessages.length}
             </Typography>
             <IconButton
               size="small"

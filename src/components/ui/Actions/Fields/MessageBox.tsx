@@ -1,15 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageContextMenu } from '~/components';
 import { Box, useTheme } from '@mui/material';
+import { MessageContextMenu } from '~/components';
 import { PyrenzMessageBox, PyrenzDialog } from '~/theme';
 import type { MessageBoxProps } from '@shared-types';
 
-export const MessageBox: React.FC<MessageBoxProps> = React.memo(({
-  msg, index, isGenerating, isLastMessage, user, char,
-  onRegenerate, onRemove, handleSpeak,
-  editingMessageId, editingMessageType, isLoading,
-  onEditClick, onSaveEdit, onCancelEdit, onGenerateImage,
-}) => {
+export function MessageBox(props: MessageBoxProps) {
+  const {
+    msg, index, isGenerating, isLastMessage, user, char,
+    onRegenerate, onRemove, handleSpeak,
+    editingMessageId, editingMessageType, isLoading,
+    onEditClick, onSaveEdit, onCancelEdit, onGenerateImage,
+  } = props;
+
   const dataState = msg.type;
   const displayName = dataState === 'user'
     ? msg.username || user.username
@@ -27,6 +29,7 @@ export const MessageBox: React.FC<MessageBoxProps> = React.memo(({
     : msg.text
       ? [msg.text]
       : [];
+
   const totalMessages = alternatives.length;
 
   useEffect(() => {
@@ -44,8 +47,15 @@ export const MessageBox: React.FC<MessageBoxProps> = React.memo(({
     if (altIndex >= alternatives.length) setAltIndex(0);
   }, [totalMessages, altIndex]);
 
-  const handlePrev = (e: React.MouseEvent) => { e.stopPropagation(); setAltIndex(prev => (prev === 0 ? totalMessages - 1 : prev - 1)); };
-  const handleNext = (e: React.MouseEvent) => { e.stopPropagation(); setAltIndex(prev => (prev + 1) % totalMessages); };
+  const handlePrev = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setAltIndex(prev => (prev === 0 ? totalMessages - 1 : prev - 1));
+  };
+
+  const handleNext = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setAltIndex(prev => (prev + 1) % totalMessages);
+  };
 
   const currentText = alternatives[altIndex] ?? '';
   const isEmptyCharMessage = dataState === 'char' && isLastMessage && currentText.trim() === '';
@@ -59,13 +69,22 @@ export const MessageBox: React.FC<MessageBoxProps> = React.memo(({
       setMenuPosition({ top: e.clientY, left: e.clientX });
     }
   };
+
   const handleCloseMenu = () => setMenuPosition(null);
+
   useEffect(() => {
     const onOutside = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) handleCloseMenu();
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        handleCloseMenu();
+      }
     };
-    if (menuPosition) document.addEventListener('mousedown', onOutside);
-    else document.removeEventListener('mousedown', onOutside);
+
+    if (menuPosition) {
+      document.addEventListener('mousedown', onOutside);
+    } else {
+      document.removeEventListener('mousedown', onOutside);
+    }
+
     return () => document.removeEventListener('mousedown', onOutside);
   }, [menuPosition]);
 
@@ -73,6 +92,7 @@ export const MessageBox: React.FC<MessageBoxProps> = React.memo(({
     navigator.clipboard.writeText(msg.text || '');
     handleCloseMenu();
   };
+
   const handleConfirmDelete = () => {
     if (msg.id) onRemove(msg.id);
     setOpenDialog(false);
@@ -80,15 +100,24 @@ export const MessageBox: React.FC<MessageBoxProps> = React.memo(({
 
   if (!msg.id && !isGenerating) return null;
 
+  console.log("Alternative Messages:", alternatives);
   return (
     <Box
-      key={msg.id ? `${msg.id}-${altIndex}` : `temp-${index}-${altIndex}`}
+      key={msg.id ?? `temp-${index}`}
       display="flex"
       alignItems="flex-start"
       justifyContent={dataState === 'user' ? 'flex-end' : 'flex-start'}
       sx={{ mb: 2, width: '100%', position: 'relative' }}
     >
-      <Box sx={{ width: '100%', maxWidth: { xs: '90%', sm: '80%' }, display: 'flex', flexDirection: 'column', alignItems: dataState === 'user' ? 'flex-end' : 'flex-start' }}>
+      <Box
+        sx={{
+          width: '100%',
+          maxWidth: { xs: '90%', sm: '80%' },
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: dataState === 'user' ? 'flex-end' : 'flex-start',
+        }}
+      >
         <PyrenzMessageBox
           onClick={handleMessageBoxClick}
           dataState={dataState}
@@ -109,22 +138,29 @@ export const MessageBox: React.FC<MessageBoxProps> = React.memo(({
           isGeneratingEmptyCharMessage={isEmptyCharMessage}
           ai_message={currentText}
           char={char}
-          sx={{ cursor: 'pointer', width: isEditingThisMessage ? '100%' : 'fit-content', maxWidth: '100%' }}
+          sx={{
+            cursor: 'pointer',
+            width: isEditingThisMessage ? '100%' : 'fit-content',
+            maxWidth: '100%',
+          }}
         >
           {currentText}
         </PyrenzMessageBox>
       </Box>
 
       {menuPosition && !isEditingThisMessage && index !== 0 && (
-        <Box ref={menuRef} sx={{
-          position: 'fixed',
-          top: menuPosition.top,
-          left: menuPosition.left,
-          zIndex: 1300,
-          bgcolor: theme.palette.background.paper,
-          borderRadius: 1,
-          boxShadow: 3
-        }}>
+        <Box
+          ref={menuRef}
+          sx={{
+            position: 'fixed',
+            top: menuPosition.top,
+            left: menuPosition.left,
+            zIndex: 1300,
+            bgcolor: theme.palette.background.paper,
+            borderRadius: 1,
+            boxShadow: 3,
+          }}
+        >
           <MessageContextMenu
             msg={msg}
             onRegenerate={() => msg.id && onRegenerate(msg.id)}
@@ -147,4 +183,4 @@ export const MessageBox: React.FC<MessageBoxProps> = React.memo(({
       />
     </Box>
   );
-});
+}

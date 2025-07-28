@@ -6,13 +6,14 @@ import {
   Box,
   Button,
   IconButton,
-  Popover,
   MenuItem,
 } from '@mui/material';
 import { Utils } from '~/Utility';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { motion } from 'framer-motion';
-import { PyrenzDialog } from '~/theme';
+import { PyrenzDialog, PyrenzMenu } from '~/theme';
+import { v4 as uuidv4 } from 'uuid';
+import { useNavigate } from 'react-router-dom';
 
 export function PreviousChat() {
   const [chats, setChats] = useState<any[]>([]);
@@ -25,12 +26,13 @@ export function PreviousChat() {
   const [selectedChatUuid, setSelectedChatUuid] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const PAGE_SIZE = 15;
+  const navigate = useNavigate();
 
   const truncateMessage = (msg: string, max = 80) =>
     msg.length > max ? msg.slice(0, max) + '...' : msg;
 
   const handleMessageClick = (uuid: string) => {
-    console.log('Clicked chat', uuid);
+    navigate(`/chat/${uuid}`);
   };
 
   const handleDelete = async (uuid: string) => {
@@ -41,7 +43,6 @@ export function PreviousChat() {
       });
       setChats((prev) => prev.filter((chat) => chat.chat_uuid !== uuid));
     } catch (err: any) {
-      console.error('Error deleting chat:', err);
       setError(err.message || 'Failed to delete chat');
     }
   };
@@ -82,10 +83,18 @@ export function PreviousChat() {
         },
         orderBy: { column: 'created_at', ascending: false },
       });
-      setChats((prev) => [...prev, ...data]);
+
+      setChats((prev) => {
+        const map = new Map();
+        [...prev, ...data].forEach(chat => {
+          const id = chat.chat_uuid || uuidv4();
+          map.set(id, { ...chat, chat_uuid: id });
+        });
+        return [...map.values()];
+      });
+
       setHasMore(data.length === PAGE_SIZE);
     } catch (err: any) {
-      console.error('Error fetching chats:', err);
       setError(err.message || 'Failed to load chats');
     } finally {
       setIsInitialLoading(false);
@@ -220,20 +229,13 @@ export function PreviousChat() {
           )}
         </Box>
       </Box>
-      <Popover
+
+      <PyrenzMenu
         open={Boolean(anchorEl)}
         anchorEl={anchorEl}
         onClose={() => {
           setAnchorEl(null);
           setSelectedChatUuid(null);
-        }}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
         }}
       >
         <MenuItem
@@ -244,7 +246,8 @@ export function PreviousChat() {
         >
           Delete
         </MenuItem>
-      </Popover>
+      </PyrenzMenu>
+
       <PyrenzDialog
         open={dialogOpen}
         onClose={handleCancelDelete}

@@ -18,6 +18,7 @@ interface UserDataRow {
 interface RawMessageRow {
   user_message: string | null;
   char_message: string | null;
+  alternative_messages: string[] | null;
 }
 
 export const useGenerateMessage = () => {
@@ -42,6 +43,7 @@ export const useGenerateMessage = () => {
       let userQueryText = text;
       let charMessageText: string | null = null;
       let previousCharMsg: string | null = null;
+      let previousAlternatives: string[] = [];
 
       if (generationType === 'Generate') {
         const userMessage: Message = {
@@ -75,7 +77,7 @@ export const useGenerateMessage = () => {
         try {
           const result = await Utils.db.select<RawMessageRow>({
             tables: 'chat_messages',
-            columns: 'user_message, char_message',
+            columns: 'user_message, char_message, alternative_messages',
             match: { id: messageId },
             nocache: true,
           });
@@ -90,6 +92,7 @@ export const useGenerateMessage = () => {
           userQueryText = row.user_message;
           charMessageText = row.char_message;
           previousCharMsg = row.char_message;
+          previousAlternatives = row.alternative_messages ?? [];
         } catch {
           showAlert('Failed to fetch messages for regeneration', 'Alert');
           setIsGenerating(false);
@@ -155,18 +158,22 @@ export const useGenerateMessage = () => {
         }
 
         if (generationType === 'Regenerate' && messageId) {
+          const cleanPrevMsg = previousCharMsg?.trim() ?? '';
+          const shouldAddOriginal = cleanPrevMsg && !previousAlternatives.includes(cleanPrevMsg);
+
           setMessages((prev) =>
             prev.map((msg) => {
               if (msg.id === messageId && msg.type === 'char') {
-                const newAlt = previousCharMsg
-                  ? [...(msg.alternative_messages ?? []), previousCharMsg]
-                  : msg.alternative_messages;
+                const existing = msg.alternative_messages ?? [];
+                const newAlternatives = shouldAddOriginal
+                  ? [...existing, cleanPrevMsg]
+                  : existing;
 
                 return {
                   ...msg,
                   text: generatedMessage,
                   isGenerate: false,
-                  alternative_messages: newAlt,
+                  alternative_messages: newAlternatives,
                 };
               }
               return msg;
