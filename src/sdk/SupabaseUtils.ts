@@ -6,7 +6,7 @@
 
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { withClient } from './client';
-import { checkCacheHealth } from '@sdk/cache';
+import { checkCacheHealth } from './cache';
 import { createFetcherClient } from './Fetcher'; 
 
 let _instance: SupabaseUtil | null = null;
