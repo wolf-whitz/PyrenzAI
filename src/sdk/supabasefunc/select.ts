@@ -1,5 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { ExtraFilter, Match, Range, OrderBy } from '~/sdk/types';
+import type { ExtraFilter, Match, Range, OrderBy } from './SelectTypes';
 import { getCached, setCached } from '~/sdk/caches';
 
 const inflightSelects = new Map<string, Promise<any>>();
