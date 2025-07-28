@@ -1,6 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { select, rpc, insert, update, remove } from './supabasefunc';
-import { getCachedUser } from './cache';
+import { getCachedUser } from './caches';
 
 export const withClient = (client: SupabaseClient) => {
   return {
