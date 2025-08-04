@@ -10,7 +10,7 @@ export async function GetUserData(): Promise<any> {
     const response = await Utils.post<any>(
       '/api/GetUserData',
       { user_uuid },
-      { cache: true }  
+      { cache: true }
     );
 
     if (!response || typeof response.username === 'undefined') {
@@ -18,6 +18,7 @@ export async function GetUserData(): Promise<any> {
     }
 
     const store = useUserStore.getState();
+
     store.setUserUUID(response.user_uuid);
     store.setUsername(response.username);
     store.setPersonaName(response.persona_name || '');
@@ -42,7 +43,7 @@ export async function GetUserData(): Promise<any> {
     store.setMaxTokenLimit(response.subscription_data.max_token);
 
     return response;
-  } catch (error) {
+  } catch {
     return { error: 'An error occurred while fetching user data' };
   }
 }
