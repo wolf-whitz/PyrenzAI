@@ -1,4 +1,4 @@
-export * from './AuthCache'
-export * from './cacheWorker'
+export * from './AuthCache';
+export * from './cacheWorker';
 
-export * from './cacheWorkerManager'
+export * from './cacheWorkerManager';

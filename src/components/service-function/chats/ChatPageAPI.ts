@@ -47,7 +47,7 @@ export const fetchChatData = async (
           'chat_uuid, user_message, char_message, created_at, alternative_messages, id',
         match: { chat_uuid },
         orderBy: { column: 'created_at', ascending: false },
-        nocache: true 
+        nocache: true,
       });
 
       messages = result?.data ?? [];

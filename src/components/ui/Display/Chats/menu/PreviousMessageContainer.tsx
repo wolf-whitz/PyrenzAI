@@ -86,7 +86,7 @@ export function PreviousChat() {
 
       setChats((prev) => {
         const map = new Map();
-        [...prev, ...data].forEach(chat => {
+        [...prev, ...data].forEach((chat) => {
           const id = chat.chat_uuid || uuidv4();
           map.set(id, { ...chat, chat_uuid: id });
         });

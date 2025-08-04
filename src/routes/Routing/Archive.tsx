@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   CircularProgress,
   Typography,
   Box,
   useMediaQuery,
   useTheme,
+  TextField,
 } from '@mui/material';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
@@ -23,6 +24,7 @@ export function Archive() {
   const [open, setOpen] = useState<boolean>(true);
   const [showLoginModal, setShowLoginModal] = useState<boolean>(false);
   const [itemsToShow, setItemsToShow] = useState<number>(30);
+  const [searchTerm, setSearchTerm] = useState<string>('');
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -42,6 +44,23 @@ export function Archive() {
     goToNextPage,
     goToPreviousPage,
   } = useArchiveChatPageAPI(open, handleClose, itemsToShow);
+
+  const allChats = useMemo(() => {
+    const seen = new Set();
+    return chats.filter((chat) => {
+      if (seen.has(chat.char_uuid)) return false;
+      seen.add(chat.char_uuid);
+      return true;
+    });
+  }, [chats]);
+
+  const filteredChats = useMemo(() => {
+    return allChats.filter((chat) =>
+      characters[chat.char_uuid]
+        ?.toLowerCase()
+        .includes(searchTerm.trim().toLowerCase())
+    );
+  }, [allChats, characters, searchTerm]);
 
   return (
     <Box
@@ -77,8 +96,22 @@ export function Archive() {
             </Box>
           ) : (
             <>
+              <Box mb={3} display="flex" justifyContent="center">
+                <TextField
+                  variant="outlined"
+                  placeholder="Search characters from chats"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  sx={{
+                    width: '100%',
+                    maxWidth: 400,
+                    backgroundColor: 'background.paper',
+                    borderRadius: 1,
+                  }}
+                />
+              </Box>
               <Box display="flex" flexWrap="wrap" justifyContent="center">
-                {chats.map((chat: Chat) => (
+                {(searchTerm ? filteredChats : chats).map((chat: Chat) => (
                   <Box key={chat.chat_uuid} mx={2} mb={4} position="relative">
                     <PyrenzChatsCharacterCard
                       sx={{
@@ -101,44 +134,46 @@ export function Archive() {
                   </Box>
                 ))}
               </Box>
-              <Box
-                display="flex"
-                justifyContent="center"
-                mt={2}
-                alignItems="center"
-              >
-                <PyrenzBlueButton
-                  onClick={goToPreviousPage}
-                  disabled={currentPage === 0}
-                  sx={{
-                    backgroundColor: 'transparent',
-                    color: 'white',
-                    '&:hover': {
-                      backgroundColor: 'transparent',
-                    },
-                  }}
+              {!searchTerm && (
+                <Box
+                  display="flex"
+                  justifyContent="center"
+                  mt={2}
+                  alignItems="center"
                 >
-                  <NavigateBeforeIcon />
-                </PyrenzBlueButton>
-                <Box mx={2}>
-                  <Typography variant="body1">
-                    Page {currentPage + 1} of {totalPages}
-                  </Typography>
+                  <PyrenzBlueButton
+                    onClick={goToPreviousPage}
+                    disabled={currentPage === 0}
+                    sx={{
+                      backgroundColor: 'transparent',
+                      color: 'white',
+                      '&:hover': {
+                        backgroundColor: 'transparent',
+                      },
+                    }}
+                  >
+                    <NavigateBeforeIcon />
+                  </PyrenzBlueButton>
+                  <Box mx={2}>
+                    <Typography variant="body1">
+                      Page {currentPage + 1} of {totalPages}
+                    </Typography>
+                  </Box>
+                  <PyrenzBlueButton
+                    onClick={goToNextPage}
+                    disabled={currentPage >= totalPages - 1}
+                    sx={{
+                      backgroundColor: 'transparent',
+                      color: 'white',
+                      '&:hover': {
+                        backgroundColor: 'transparent',
+                      },
+                    }}
+                  >
+                    <NavigateNextIcon />
+                  </PyrenzBlueButton>
                 </Box>
-                <PyrenzBlueButton
-                  onClick={goToNextPage}
-                  disabled={currentPage >= totalPages - 1}
-                  sx={{
-                    backgroundColor: 'transparent',
-                    color: 'white',
-                    '&:hover': {
-                      backgroundColor: 'transparent',
-                    },
-                  }}
-                >
-                  <NavigateNextIcon />
-                </PyrenzBlueButton>
-              </Box>
+              )}
             </>
           )}
         </Box>

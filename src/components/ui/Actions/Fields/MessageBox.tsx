@@ -6,18 +6,32 @@ import type { MessageBoxProps } from '@shared-types';
 
 export function MessageBox(props: MessageBoxProps) {
   const {
-    msg, index, isGenerating, isLastMessage, user, char,
-    onRegenerate, onRemove, handleSpeak,
-    editingMessageId, editingMessageType, isLoading,
-    onEditClick, onSaveEdit, onCancelEdit, onGenerateImage,
+    msg,
+    index,
+    isGenerating,
+    isLastMessage,
+    user,
+    char,
+    onRegenerate,
+    onRemove,
+    handleSpeak,
+    editingMessageId,
+    editingMessageType,
+    isLoading,
+    onEditClick,
+    onSaveEdit,
+    onCancelEdit,
+    onGenerateImage,
   } = props;
 
   const dataState = msg.type;
-  const displayName = dataState === 'user'
-    ? msg.username || user.username
-    : msg.name || char.name;
+  const displayName =
+    dataState === 'user'
+      ? msg.username || user.username
+      : msg.name || char.name;
 
-  const isEditingThisMessage = editingMessageId === msg.id && editingMessageType === dataState;
+  const isEditingThisMessage =
+    editingMessageId === msg.id && editingMessageType === dataState;
 
   const [localEditedMessage, setLocalEditedMessage] = useState(msg.text || '');
   const [debouncedValue, setDebouncedValue] = useState(localEditedMessage);
@@ -49,23 +63,27 @@ export function MessageBox(props: MessageBoxProps) {
 
   const handlePrev = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setAltIndex(prev => (prev === 0 ? totalMessages - 1 : prev - 1));
+    setAltIndex((prev) => (prev === 0 ? totalMessages - 1 : prev - 1));
   };
 
   const handleNext = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setAltIndex(prev => (prev + 1) % totalMessages);
+    setAltIndex((prev) => (prev + 1) % totalMessages);
   };
 
   const currentText = alternatives[altIndex] ?? '';
-  const isEmptyCharMessage = dataState === 'char' && isLastMessage && currentText.trim() === '';
+  const isEmptyCharMessage =
+    dataState === 'char' && isLastMessage && currentText.trim() === '';
 
   const theme = useTheme();
   const menuRef = useRef<HTMLDivElement>(null);
-  const [menuPosition, setMenuPosition] = useState<{ top: number, left: number } | null>(null);
+  const [menuPosition, setMenuPosition] = useState<{
+    top: number;
+    left: number;
+  } | null>(null);
 
   const handleMessageBoxClick = (e: React.MouseEvent) => {
-    if (!isEditingThisMessage && index !== 0) {
+    if (!isEditingThisMessage && index !== 0 && !isGenerating) {
       setMenuPosition({ top: e.clientY, left: e.clientX });
     }
   };
@@ -100,7 +118,6 @@ export function MessageBox(props: MessageBoxProps) {
 
   if (!msg.id && !isGenerating) return null;
 
-  console.log("Alternative Messages:", alternatives);
   return (
     <Box
       key={msg.id ?? `temp-${index}`}
@@ -126,8 +143,10 @@ export function MessageBox(props: MessageBoxProps) {
           charAvatar={char.profile_image}
           isEditing={isEditingThisMessage}
           localEditedMessage={localEditedMessage}
-          onChange={e => setLocalEditedMessage(e.target.value)}
-          onSaveEdit={() => msg.id && onSaveEdit(msg.id, debouncedValue, dataState)}
+          onChange={(e) => setLocalEditedMessage(e.target.value)}
+          onSaveEdit={() =>
+            msg.id && onSaveEdit(msg.id, debouncedValue, dataState)
+          }
           onCancelEdit={onCancelEdit}
           isLoading={isLoading}
           onGoPrev={handlePrev}
@@ -148,31 +167,34 @@ export function MessageBox(props: MessageBoxProps) {
         </PyrenzMessageBox>
       </Box>
 
-      {menuPosition && !isEditingThisMessage && index !== 0 && (
-        <Box
-          ref={menuRef}
-          sx={{
-            position: 'fixed',
-            top: menuPosition.top,
-            left: menuPosition.left,
-            zIndex: 1300,
-            bgcolor: theme.palette.background.paper,
-            borderRadius: 1,
-            boxShadow: 3,
-          }}
-        >
-          <MessageContextMenu
-            msg={msg}
-            onRegenerate={() => msg.id && onRegenerate(msg.id)}
-            onRemove={() => setOpenDialog(true)}
-            handleSpeak={handleSpeak}
-            onEditClick={onEditClick}
-            handleCopy={handleCopy}
-            onGenerateImage={onGenerateImage}
-            onClose={handleCloseMenu}
-          />
-        </Box>
-      )}
+      {menuPosition &&
+        !isEditingThisMessage &&
+        index !== 0 &&
+        !isGenerating && (
+          <Box
+            ref={menuRef}
+            sx={{
+              position: 'fixed',
+              top: menuPosition.top,
+              left: menuPosition.left,
+              zIndex: 1300,
+              bgcolor: theme.palette.background.paper,
+              borderRadius: 1,
+              boxShadow: 3,
+            }}
+          >
+            <MessageContextMenu
+              msg={msg}
+              onRegenerate={() => msg.id && onRegenerate(msg.id)}
+              onRemove={() => setOpenDialog(true)}
+              handleSpeak={handleSpeak}
+              onEditClick={onEditClick}
+              handleCopy={handleCopy}
+              onGenerateImage={onGenerateImage}
+              onClose={handleCloseMenu}
+            />
+          </Box>
+        )}
 
       <PyrenzDialog
         open={openDialog}

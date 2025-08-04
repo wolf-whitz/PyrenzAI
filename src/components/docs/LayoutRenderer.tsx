@@ -51,17 +51,32 @@ export function LayoutRenderer({
 
   const components: Components = {
     h1: ({ children }) => (
-      <Typography variant="h4" gutterBottom fontWeight={700} data-pyrenz-type="heading1">
+      <Typography
+        variant="h4"
+        gutterBottom
+        fontWeight={700}
+        data-pyrenz-type="heading1"
+      >
         {children}
       </Typography>
     ),
     h2: ({ children }) => (
-      <Typography variant="h5" gutterBottom fontWeight={600} data-pyrenz-type="heading2">
+      <Typography
+        variant="h5"
+        gutterBottom
+        fontWeight={600}
+        data-pyrenz-type="heading2"
+      >
         {children}
       </Typography>
     ),
     h3: ({ children }) => (
-      <Typography variant="h6" gutterBottom fontWeight={600} data-pyrenz-type="heading3">
+      <Typography
+        variant="h6"
+        gutterBottom
+        fontWeight={600}
+        data-pyrenz-type="heading3"
+      >
         {children}
       </Typography>
     ),
@@ -108,7 +123,12 @@ export function LayoutRenderer({
 
       return (
         <Box
-          sx={{ position: 'relative', my: 3, borderRadius: 2, overflow: 'hidden' }}
+          sx={{
+            position: 'relative',
+            my: 3,
+            borderRadius: 2,
+            overflow: 'hidden',
+          }}
           data-pyrenz-type="code-block"
         >
           <SyntaxHighlighter
@@ -131,7 +151,11 @@ export function LayoutRenderer({
             {codeText}
           </SyntaxHighlighter>
           <Fade in timeout={300}>
-            <Tooltip title={copied === key ? 'Copied!' : 'Copy'} arrow placement="top">
+            <Tooltip
+              title={copied === key ? 'Copied!' : 'Copy'}
+              arrow
+              placement="top"
+            >
               <IconButton
                 onClick={() => handleCopy(codeText, key)}
                 sx={{
@@ -179,24 +203,36 @@ export function LayoutRenderer({
       />
     ),
     ul: ({ children }) => (
-      <List sx={{ listStyle: 'disc inside', pl: 2 }} data-pyrenz-type="unordered-list">
+      <List
+        sx={{ listStyle: 'disc inside', pl: 2 }}
+        data-pyrenz-type="unordered-list"
+      >
         {children}
       </List>
     ),
     ol: ({ children }) => (
-      <List sx={{ listStyle: 'decimal inside', pl: 2 }} data-pyrenz-type="ordered-list">
+      <List
+        sx={{ listStyle: 'decimal inside', pl: 2 }}
+        data-pyrenz-type="ordered-list"
+      >
         {children}
       </List>
     ),
     li: ({ children }) => (
-      <ListItem sx={{ display: 'list-item', py: 0.5 }} data-pyrenz-type="list-item">
+      <ListItem
+        sx={{ display: 'list-item', py: 0.5 }}
+        data-pyrenz-type="list-item"
+      >
         {children}
       </ListItem>
     ),
   };
 
   return (
-    <Paper elevation={0} sx={{ p: { xs: 2, sm: 3, md: 4 }, bgcolor: 'background.default' }}>
+    <Paper
+      elevation={0}
+      sx={{ p: { xs: 2, sm: 3, md: 4 }, bgcolor: 'background.default' }}
+    >
       <ReactMarkdown components={components} remarkPlugins={[remarkGfm]}>
         {content}
       </ReactMarkdown>

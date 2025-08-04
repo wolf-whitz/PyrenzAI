@@ -11,28 +11,34 @@ export const handleSaveDraft = async (
   character: Character,
   creatorUuid: string
 ): Promise<SaveDraftResponse> => {
-  try {
-    if (!creatorUuid) {
-      return { success: false, error: 'Creator UUID is missing.' };
-    }
-
-    const filteredCharacter = {
-      creator_uuid: creatorUuid,
-      ...character,
+  if (!creatorUuid) {
+    return {
+      success: false,
+      error: 'Creator UUID is missing.',
     };
+  }
+
+  try {
+    const { id, ...characterWithoutId } = character;
 
     await utils.db.insert({
       tables: 'draft_characters',
-      data: filteredCharacter,
+      data: {
+        ...characterWithoutId,
+        creator_uuid: creatorUuid,
+      },
     });
 
     return { success: true };
   } catch (error: any) {
-    console.error('Unexpected error:', error);
     Sentry.captureException(error);
+
     return {
       success: false,
-      error: error.message || 'An unexpected error occurred.',
+      error:
+        typeof error?.message === 'string'
+          ? error.message
+          : 'An unexpected error occurred.',
     };
   }
 };

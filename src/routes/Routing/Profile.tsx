@@ -62,7 +62,7 @@ export function ProfilePage() {
       <Box display="flex" flex={1}>
         <Sidebar className="flex-shrink-0" />
         <Box flex={1} overflow="auto">
-          {loading? (
+          {loading ? (
             <Box display="flex" justifyContent="center" pt={10}>
               <CircularProgress />
             </Box>
@@ -124,7 +124,8 @@ export function ProfilePage() {
                     variant="h6"
                     sx={{ gridColumn: '1 / -1', textAlign: 'center' }}
                   >
-                    This user hasn’t created anything yet or that character doesn't exist. 💤
+                    This user hasn’t created anything yet or that character
+                    doesn't exist. 💤
                   </Typography>
                 )}
               </Box>

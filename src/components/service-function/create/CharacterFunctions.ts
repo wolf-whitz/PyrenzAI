@@ -1,7 +1,7 @@
 import { Utils as utils } from '~/Utility';
 import * as Sentry from '@sentry/react';
 import { v4 as uuidv4 } from 'uuid';
-import { handleSaveDraft } from '@components';
+import { handleSaveDraft, GetUserData } from '@components';
 import { useCharacterStore } from '~/store';
 import { Character } from '@shared-types';
 
@@ -36,26 +36,19 @@ const validateCharacterData = (character: Character) => {
   };
 };
 
-interface UserData {
-  username: string;
-}
-
 export const fetchUserName = async (userUuid: string) => {
   try {
-    const { data } = await utils.db.select<UserData>({
-      tables: 'user_data',
-      columns: '*',
-      match: { user_uuid: userUuid },
-    });
-    if (!data || data.length === 0) return '';
-    return data[0].username;
+    const userData = await GetUserData();
+    return userData?.username || '';
   } catch (error) {
     Sentry.captureException(error);
     return '';
   }
 };
 
-export const handleClearCharacter = (setCharacter: (c: Character) => void) => {
+export const handleClearCharacter = (
+  setCharacter: (c: Partial<Character>) => void
+) => {
   setCharacter({
     title: '',
     persona: '',
@@ -84,7 +77,7 @@ export const handleClearCharacter = (setCharacter: (c: Character) => void) => {
 
 export const handleDeleteCharacter = async (
   character: Character,
-  setCharacter: (c: Character) => void,
+  setCharacter: (c: Partial<Character>) => void,
   showAlert: (msg: string, type: string) => void
 ) => {
   if (!character.char_uuid) {
@@ -111,20 +104,20 @@ export const handleSaveCharacter = async (
   setSaveLoading: (v: boolean) => void,
   showAlert: (msg: string, type: string) => void
 ) => {
+  const setError = useCharacterStore.getState().setError;
   setSaveLoading(true);
   try {
     if (!userUuid) {
-      showAlert('User UUID is missing.', 'Alert');
-      setSaveLoading(false);
+      const msg = 'User UUID is missing.';
+      showAlert(msg, 'Alert');
+      setError(msg);
       return;
     }
     const validation = validateCharacterData(character);
     if (!validation.isValid) {
-      showAlert(
-        `Missing or undefined fields: ${validation.missingFields.join(', ')}`,
-        'Alert'
-      );
-      setSaveLoading(false);
+      const msg = `Missing or undefined fields: ${validation.missingFields.join(', ')}`;
+      showAlert(msg, 'Alert');
+      setError(msg);
       return;
     }
     const char_uuid = uuidv4();
@@ -132,12 +125,14 @@ export const handleSaveCharacter = async (
       ...character,
       char_uuid,
     };
-    const response = await handleSaveDraft(characterWithUUID, userUuid);
-    if (!response.success) {
-      showAlert(`Error saving draft: ${response.error}`, 'Alert');
-    } else {
-      showAlert('Draft saved successfully!', 'Success');
-    }
+    await handleSaveDraft(characterWithUUID, userUuid);
+    showAlert('Draft saved successfully!', 'Success');
+    setError(null);
+  } catch (err: any) {
+    const msg = err?.message || 'Unexpected error while saving character.';
+    setError(msg);
+    Sentry.captureException(err);
+    showAlert('Failed to save draft.', 'Alert');
   } finally {
     setSaveLoading(false);
   }
@@ -169,92 +164,72 @@ export const handleSubmitCharacter = async (
   ) => Promise<{ chat_uuid?: string; error?: string }>
 ) => {
   e.preventDefault();
+  const setError = useCharacterStore.getState().setError;
   setLoading(true);
   try {
     if (!userUuid) {
-      const result = { success: false, message: 'User UUID is missing.' };
-      showAlert(result.message, 'Alert');
-      setLoading(false);
-      return result;
+      const msg = 'User UUID is missing.';
+      showAlert(msg, 'Alert');
+      setError(msg);
+      return;
     }
+
     const validation = validateCharacterData(character);
     if (!validation.isValid) {
-      const result = {
-        success: false,
-        message: `Missing or undefined fields: ${validation.missingFields.join(', ')}`,
-      };
-      showAlert(result.message, 'Alert');
-      setLoading(false);
-      return result;
+      const msg = `Missing or undefined fields: ${validation.missingFields.join(', ')}`;
+      showAlert(msg, 'Alert');
+      setError(msg);
+      return;
     }
-    let response;
-    if (character_update) {
-      response = await updateCharacter(character);
-    } else {
-      response = await createCharacter(character);
+
+    let response = character_update
+      ? await updateCharacter(character)
+      : await createCharacter(character);
+
+    if (response.error) {
+      showAlert(response.error, 'Alert');
+      setError(response.error);
+      return;
     }
+
     if (response.is_moderated) {
-      const result = { success: false, message: response.moderated_message };
-      useCharacterStore.getState().setError(result.message);
-      showAlert(result.message, 'Alert');
-      setLoading(false);
-      return result;
-    } else if (response.error) {
-      Sentry.captureException(new Error(response.error));
-      const result = {
-        success: false,
-        message: `Error creating/updating character: ${response.error}`,
-      };
-      useCharacterStore.getState().setError(result.message);
-      showAlert(result.message, 'Alert');
-      setLoading(false);
-      return result;
+      const msg =
+        response.moderated_message ||
+        '⚠️ Your character triggered moderation filters. Please revise and try again.';
+      showAlert(msg, 'Alert');
+      setError(msg);
+      return;
     }
-    const characterUuid = response.char_uuid;
-    if (characterUuid) {
-      const chatResponse = await CreateNewChat(characterUuid, userUuid);
-      if (chatResponse.error) {
-        Sentry.captureException(new Error(chatResponse.error));
-        const result = {
-          success: false,
-          message: `Error creating chat: ${chatResponse.error}`,
-        };
-        useCharacterStore.getState().setError(result.message);
-        showAlert(result.message, 'Alert');
-        setLoading(false);
-        return result;
-      }
-      const chatUuid = chatResponse.chat_uuid;
-      if (chatUuid) {
-        navigate(`/chat/${chatUuid}`);
-        return {
-          success: true,
-          message: 'Character and chat created successfully.',
-        };
-      }
-      const errorMsg = 'Chat created but no chat UUID returned.';
-      Sentry.captureException(new Error(errorMsg));
-      const result = { success: false, message: errorMsg };
-      useCharacterStore.getState().setError(result.message);
-      showAlert(result.message, 'Alert');
-      setLoading(false);
-      return result;
+
+    if (!response.char_uuid) {
+      const msg = 'Character creation failed. No UUID returned.';
+      showAlert(msg, 'Alert');
+      setError(msg);
+      return;
     }
-    const errorMsg =
-      'Character created/updated but no character UUID returned.';
-    Sentry.captureException(new Error(errorMsg));
-    const result = { success: false, message: errorMsg };
-    useCharacterStore.getState().setError(result.message);
-    showAlert(result.message, 'Alert');
-    setLoading(false);
-    return result;
-  } catch (error) {
+
+    const chatResponse = await CreateNewChat(response.char_uuid, userUuid);
+
+    if (chatResponse.error) {
+      const msg = chatResponse.error;
+      Sentry.captureException(new Error(msg));
+      showAlert('Error creating chat.', 'Alert');
+      setError(msg);
+      return;
+    }
+
+    if (chatResponse.chat_uuid) {
+      setError(null);
+      navigate(`/chat/${chatResponse.chat_uuid}`);
+    } else {
+      showAlert('Chat created successfully.', 'Success');
+      setError(null);
+    }
+  } catch (error: any) {
+    const msg = error?.message || 'An unexpected error occurred.';
     Sentry.captureException(error);
-    const result = { success: false, message: 'An unexpected error occurred.' };
-    useCharacterStore.getState().setError(result.message);
-    showAlert(result.message, 'Alert');
-    setLoading(false);
-    return result;
+    showAlert(msg, 'Alert');
+    setError(msg);
   } finally {
     setLoading(false);
   }

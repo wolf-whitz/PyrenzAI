@@ -7,7 +7,7 @@ import {
 } from '@components';
 import { TextareaForm } from './Childrens/TextareaForm';
 import { useNavigate } from 'react-router-dom';
-import { Typography, Paper, Box } from '@mui/material';
+import { Typography, Paper, Box, Alert } from '@mui/material';
 import { useCharacterStore } from '~/store';
 
 interface CharacterFormProps {
@@ -22,7 +22,6 @@ export function CharacterForm({
   creator,
 }: CharacterFormProps) {
   const navigate = useNavigate();
-  const error = useCharacterStore((state) => state.error);
 
   const {
     loading,
@@ -30,9 +29,11 @@ export function CharacterForm({
     handleClear,
     handleSave,
     handleSelectDraft,
-    handleSubmit,
     handleDelete,
+    handleSubmit,
   } = useCreateAPI(navigate, character_update, user_uuid, creator);
+
+  const error = useCharacterStore((state) => state.error);
 
   return (
     <Box className="flex items-center justify-center min-h-screen p-4 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
@@ -67,20 +68,9 @@ export function CharacterForm({
         </Typography>
 
         {error && (
-          <Typography
-            variant="body2"
-            sx={{
-              color: '#ff6b6b',
-              fontWeight: 500,
-              textAlign: 'center',
-              backgroundColor: 'rgba(255, 0, 0, 0.1)',
-              borderRadius: 2,
-              px: 2,
-              py: 1,
-            }}
-          >
+          <Alert severity="error" sx={{ fontSize: '0.9rem' }}>
             {error}
-          </Typography>
+          </Alert>
         )}
 
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>

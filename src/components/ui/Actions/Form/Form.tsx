@@ -1,15 +1,17 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { CircularProgress, Typography, Link } from '@mui/material';
-import { CreateButton, DraftsModal } from '@components';
 import {
   SaveOutlined as SaveIcon,
   DescriptionOutlined as DescriptionIcon,
   DeleteOutlined as DeleteIcon,
+  Mood as EmotionIcon,
 } from '@mui/icons-material';
+import { CreateButton, DraftsModal, Emotion } from '@components';
 import { Draft } from '@shared-types';
 import { PyrenzBlueButton } from '~/theme';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useCharacterStore } from '~/store';
 
 interface FormActionsProps {
   onClear: () => void;
@@ -30,15 +32,27 @@ export function FormActions({
   onSelectDraft,
   character_update,
 }: FormActionsProps) {
-  const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
   const navigate = useNavigate();
+  const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
+  const [emotionModalOpen, setEmotionModalOpen] = useState(false);
+  const addEmotion = useCharacterStore((state) => state.addEmotion);
 
   const handleOpenDraftModal = () => setIsDraftModalOpen(true);
   const handleCloseDraftModal = () => setIsDraftModalOpen(false);
+  const handleOpenEmotion = () => setEmotionModalOpen(true);
+  const handleCloseEmotion = () => setEmotionModalOpen(false);
   const handleGuideClick = () => navigate('/Docs');
 
-  const handleSelectDraft = (draft: Draft) => {
-    onSelectDraft(draft);
+  const handleSaveEmotion = (result: {
+    triggerWords?: string[];
+    imageUrl?: string;
+    file: File | null;
+  }) => {
+    addEmotion({
+      triggerWords: result.triggerWords || [],
+      imageUrl: result.imageUrl || null,
+      file: result.file ?? null,
+    });
   };
 
   return (
@@ -78,6 +92,14 @@ export function FormActions({
       >
         Drafts
       </PyrenzBlueButton>
+      <PyrenzBlueButton
+        variant="contained"
+        onClick={handleOpenEmotion}
+        startIcon={<EmotionIcon />}
+        className="w-full sm:w-auto"
+      >
+        Add Emotion
+      </PyrenzBlueButton>
       {character_update && (
         <PyrenzBlueButton
           variant="contained"
@@ -95,9 +117,13 @@ export function FormActions({
         character_update={character_update}
       />
       {isDraftModalOpen && (
-        <DraftsModal
-          onClose={handleCloseDraftModal}
-          onSelect={handleSelectDraft}
+        <DraftsModal onClose={handleCloseDraftModal} onSelect={onSelectDraft} />
+      )}
+      {emotionModalOpen && (
+        <Emotion
+          open={emotionModalOpen}
+          onClose={handleCloseEmotion}
+          onSave={handleSaveEmotion}
         />
       )}
       <Typography

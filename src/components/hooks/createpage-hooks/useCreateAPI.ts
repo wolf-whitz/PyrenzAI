@@ -43,12 +43,17 @@ export const useCreateAPI = (
   const [saveLoading, setSaveLoading] = useState(false);
   const [showRequiredFieldsPopup, setShowRequiredFieldsPopup] = useState(false);
 
-  const characterState = useCharacterStore((state) => state);
+  const { error, setError, ...characterStateWithoutError } = useCharacterStore(
+    (state) => state
+  );
+
   const setCharacter = useCharacterStore((state) => state.setCharacter);
   const showAlert = usePyrenzAlert();
 
-  const rawTags = characterState.tags as string[] | string | undefined;
-
+  const rawTags = characterStateWithoutError.tags as
+    | string[]
+    | string
+    | undefined;
   const tags = Array.isArray(rawTags)
     ? rawTags
     : typeof rawTags === 'string'
@@ -63,17 +68,19 @@ export const useCreateAPI = (
   };
 
   const character: Character = {
-    ...(characterState as Character),
+    ...(characterStateWithoutError as Character),
     tags,
     creator: creator || '',
     creator_uuid: user_uuid || '',
+    emotions: characterStateWithoutError.emotions,
   };
 
   const handleClear = () => {
     handleClearCharacter(setCharacter);
-    if (characterState.profile_image) {
-      URL.revokeObjectURL(characterState.profile_image);
+    if (characterStateWithoutError.profile_image) {
+      URL.revokeObjectURL(characterStateWithoutError.profile_image);
     }
+    setError(null);
     showAlert('Character cleared successfully!', 'success');
   };
 
@@ -86,7 +93,7 @@ export const useCreateAPI = (
   };
 
   const handleSelectDraft = (draft: Draft) => {
-    setCharacter({ ...draft, tags: tags });
+    setCharacter({ ...draft, tags });
     showAlert('Draft selected successfully!', 'success');
   };
 
@@ -105,16 +112,14 @@ export const useCreateAPI = (
     );
   };
 
-  const formState = {
-    ...character,
-  };
+  const formState = { ...character };
 
   return {
     loading,
     saveLoading,
     showRequiredFieldsPopup,
     setShowRequiredFieldsPopup,
-    characterState,
+    characterState: characterStateWithoutError,
     character,
     setCharacter,
     handleClear,

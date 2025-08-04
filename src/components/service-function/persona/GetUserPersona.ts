@@ -7,7 +7,11 @@ export async function GetUserData(): Promise<any> {
   if (!user_uuid) return { error: 'User UUID not found' };
 
   try {
-    const response = await Utils.post<any>('/api/GetUserData', { user_uuid });
+    const response = await Utils.post<any>(
+      '/api/GetUserData',
+      { user_uuid },
+      { cache: true }
+    );
 
     if (!response || typeof response.username === 'undefined') {
       return { error: 'Failed to fetch user data' };

@@ -27,7 +27,9 @@ export function ChatMessages({
   onGenerateImage,
 }: ChatMessagesExtendedProps) {
   const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
-  const [editingMessageType, setEditingMessageType] = useState<'user' | 'char' | null>(null);
+  const [editingMessageType, setEditingMessageType] = useState<
+    'user' | 'char' | null
+  >(null);
   const [editedMessage, setEditedMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const bottomRef = useRef<HTMLDivElement>(null);

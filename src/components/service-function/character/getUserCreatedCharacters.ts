@@ -32,7 +32,7 @@ export function getUserCreatedCharacters(
 ): UseUserCreatedCharactersResponse {
   const [userData, setUserData] = useState<User | null>(null);
   const [characters, setCharacters] = useState<Character[]>([]);
-  const [userLoading, setUserLoading] = useState(!creatorUUID);  
+  const [userLoading, setUserLoading] = useState(!creatorUUID);
   const [characterLoading, setCharacterLoading] = useState(false);
   const [maxPage, setMaxPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
@@ -69,7 +69,7 @@ export function getUserCreatedCharacters(
     search?: string
   ): Promise<Character[]> => {
     if (!creatorUUID) {
-      setCharacterLoading(true);  
+      setCharacterLoading(true);
       return [];
     }
 
@@ -105,7 +105,7 @@ export function getUserCreatedCharacters(
 
   useEffect(() => {
     if (!creatorUUID) {
-      setUserLoading(true);  
+      setUserLoading(true);
       return;
     }
 

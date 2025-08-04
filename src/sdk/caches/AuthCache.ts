@@ -9,7 +9,9 @@ const CACHE_DURATION = 5 * 60 * 1000;
 let cachedUser: CachedUser | null = null;
 let inflightRequest: Promise<User | null> | null = null;
 
-export const getCachedUser = async (client: SupabaseClient): Promise<User | null> => {
+export const getCachedUser = async (
+  client: SupabaseClient
+): Promise<User | null> => {
   const now = Date.now();
 
   if (cachedUser && now - cachedUser.fetchedAt < CACHE_DURATION) {

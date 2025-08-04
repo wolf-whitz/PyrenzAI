@@ -16,19 +16,20 @@ import { Character } from '@shared-types';
 import { User } from '@supabase/supabase-js';
 
 export function CreatePage() {
-  const [showLoginModal, setShowLoginModal] = useState(false);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
   const [characterUpdate, setCharacterUpdate] = useState(false);
   const [creatorName, setCreatorName] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [userUUID, setUserUUID] = useState<string | null>(null);
+
   const setCharacter = useCharacterStore((state) => state.setCharacter);
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { char_uuid } = useParams();
 
   useEffect(() => {
-    const init = async () => {
+    async function init() {
       const fetchedUUID = await GetUserUUID();
       setUserUUID(fetchedUUID);
 
@@ -53,7 +54,7 @@ export function CreatePage() {
             match: { char_uuid },
           });
 
-          let character: Character | null = publicData?.[0] ?? null;
+          let character = publicData?.[0] ?? null;
 
           if (!character) {
             const { data: privateData } = await Utils.db.select<Character>({
@@ -61,7 +62,6 @@ export function CreatePage() {
               columns: '*',
               match: { char_uuid, creator_uuid: fetchedUUID },
             });
-
             character = privateData?.[0] ?? null;
           }
 
@@ -71,7 +71,17 @@ export function CreatePage() {
                 .split(',')
                 .map((tag) => tag.trim());
             }
-            setCharacter(character);
+
+            setCharacter({
+              ...character,
+              emotions:
+                character.emotions?.map((e) => ({
+                  triggerWords: e.triggerWords ?? [],
+                  imageUrl: e.imageUrl ?? null,
+                  file: null,
+                })) ?? [],
+            });
+
             setCharacterUpdate(true);
           }
         } catch (e) {
@@ -80,7 +90,7 @@ export function CreatePage() {
       }
 
       setIsDataLoaded(true);
-    };
+    }
 
     init();
   }, [char_uuid, setCharacter]);
@@ -98,6 +108,7 @@ export function CreatePage() {
         <Box component="aside" width={{ xs: '100%', sm: '256px' }}>
           <Sidebar />
         </Box>
+
         <Box component="main" flex={1} display="flex" flexDirection="column">
           {!user ? (
             <Box
@@ -116,7 +127,7 @@ export function CreatePage() {
               minHeight="100vh"
             >
               <Typography variant="h5" color="error">
-                Unknown error: Unable to get user_uuid
+                Error: Unable to get user_uuid
               </Typography>
             </Box>
           ) : (
@@ -134,13 +145,15 @@ export function CreatePage() {
             </>
           )}
         </Box>
+
         <Box
           component="aside"
           sx={{ display: { xs: 'none', sm: 'block' }, width: '256px' }}
         >
           <CommunityGuidelines />
         </Box>
-        {isMobile && <MobileNav setShowLoginModal={setShowLoginModal} />}
+
+        {isMobile && <MobileNav setShowLoginModal={() => {}} />}
       </Box>
     </Suspense>
   );

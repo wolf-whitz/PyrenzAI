@@ -15,7 +15,8 @@ export const PyrenzCharacterCard = styled('article')(({ theme }) => ({
   border: '1px solid rgba(255, 255, 255, 0.08)',
   overflow: 'hidden',
   boxShadow: '0 8px 24px rgba(0,0,0,0.25)',
-  transition: 'transform 0.4s ease, box-shadow 0.4s ease, background-color 0.4s ease',
+  transition:
+    'transform 0.4s ease, box-shadow 0.4s ease, background-color 0.4s ease',
   transformStyle: 'preserve-3d',
   cursor: 'pointer',
   outline: 'none',
@@ -88,19 +89,21 @@ export const PyrenzCharacterCardTitle = styled(Typography)(({ theme }) => ({
   },
 }));
 
-export const PyrenzCharacterCardDescription = styled(Typography)(({ theme }) => ({
-  fontSize: '0.875rem',
-  color: '#cbd5e1',
-  marginBottom: '16px',
-  overflow: 'hidden',
-  display: '-webkit-box',
-  WebkitLineClamp: 3,
-  WebkitBoxOrient: 'vertical',
-  [theme.breakpoints.down('sm')]: {
-    WebkitLineClamp: 2,
-    fontSize: '0.8rem',
-  },
-}));
+export const PyrenzCharacterCardDescription = styled(Typography)(
+  ({ theme }) => ({
+    fontSize: '0.875rem',
+    color: '#cbd5e1',
+    marginBottom: '16px',
+    overflow: 'hidden',
+    display: '-webkit-box',
+    WebkitLineClamp: 3,
+    WebkitBoxOrient: 'vertical',
+    [theme.breakpoints.down('sm')]: {
+      WebkitLineClamp: 2,
+      fontSize: '0.8rem',
+    },
+  })
+);
 
 export const PyrenzCharacterCardTags = styled(Box)({
   display: 'flex',

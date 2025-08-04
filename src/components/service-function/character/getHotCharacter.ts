@@ -18,19 +18,14 @@ export async function getHotCharacter(
 ): Promise<GetHotCharacterResponse> {
   if (type !== 'hot') throw new Error('Invalid type');
 
-  const {
-    filter_creator_uuid,
-    gender,
-    tags,
-    searchQuery,
-  } = extraFilters || {};
+  const { filter_creator_uuid, gender, tags, searchQuery } = extraFilters || {};
 
   const genderFilter = typeof gender === 'string' ? gender : null;
   const tagsFilter = Array.isArray(tags)
     ? tags
     : typeof tags === 'string'
-    ? [tags]
-    : null;
+      ? [tags]
+      : null;
 
   const { characters, totalItems, totalPages } = await fetchCharacters({
     currentPage: page,

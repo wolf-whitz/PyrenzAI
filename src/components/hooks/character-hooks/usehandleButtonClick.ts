@@ -42,9 +42,15 @@ export const useHandleCharacterFetchClick = () => {
 
       switch (type) {
         case 'hot':
-          return await GetHotCharacters('hot', maxCharacter, page, 'chat_messages_count', {
-            filter_creator_uuid: creatorUUID,
-          });
+          return await GetHotCharacters(
+            'hot',
+            maxCharacter,
+            page,
+            'chat_messages_count',
+            {
+              filter_creator_uuid: creatorUUID,
+            }
+          );
 
         case 'latest':
           return await GetLatestCharacters('latest', maxCharacter, page, {

@@ -146,12 +146,12 @@ export function Home() {
 
             {!loading && (
               <Pagination
-  totalPages={totalPages}
-  currentPage={currentPage}
-  isLoading={loading}
-  onNext={() => setPage(currentPage + 1)}
-  onPrev={() => setPage(currentPage - 1)}
-/>
+                totalPages={totalPages}
+                currentPage={currentPage}
+                isLoading={loading}
+                onNext={() => setPage(currentPage + 1)}
+                onPrev={() => setPage(currentPage - 1)}
+              />
             )}
           </Box>
         </Container>

@@ -167,7 +167,13 @@ export const PyrenzMessageBox = ({
         />
 
         {showNav && alternativeMessages.length > 1 && (
-          <Box display="flex" justifyContent="center" alignItems="center" mt={1} gap={1}>
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            mt={1}
+            gap={1}
+          >
             <IconButton
               size="small"
               onClick={handleGoPrev}

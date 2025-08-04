@@ -1,1 +1,1 @@
-export * from './ssehandler'
+export * from './ssehandler';

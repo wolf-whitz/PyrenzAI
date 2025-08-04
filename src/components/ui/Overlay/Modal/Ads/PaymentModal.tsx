@@ -19,7 +19,7 @@ export function PaymentModal({
   isMonthly,
 }: PaymentModalProps) {
   const handleGumroadClick = () => {
-    window.location.href = 'https://gumroad.com/your_gumroad_username';
+    window.location.href = 'https://whitzscott.gumroad.com/';
   };
 
   const price = isMonthly

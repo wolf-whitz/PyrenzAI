@@ -32,8 +32,7 @@ export const docPath = {
       slug: 'what-is-a-jailbreak',
       file: 'jailbreak.md',
       title: 'What is a Jailbreak?',
-      description:
-        `In the AI world, **“jailbreaking”** means finding a clever way to *bypass restrictions* built into language models like this one. Think of it like trying to trick the AI into doing something it's normally not allowed to do — whether that's by rephrasing a request, changing context, or injecting sneaky commands. It’s not hacking the system directly, but more like **social engineering for AI** — wordplay that gets around the rules.`,
+      description: `In the AI world, **“jailbreaking”** means finding a clever way to *bypass restrictions* built into language models like this one. Think of it like trying to trick the AI into doing something it's normally not allowed to do — whether that's by rephrasing a request, changing context, or injecting sneaky commands. It’s not hacking the system directly, but more like **social engineering for AI** — wordplay that gets around the rules.`,
       layout: 'default',
     },
   ],

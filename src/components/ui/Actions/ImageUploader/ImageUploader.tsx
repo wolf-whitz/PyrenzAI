@@ -54,7 +54,7 @@ export function ImageUploader({
     >
       <Dropzone
         onDrop={handleDrop}
-        label="Drop a banner image here (ᵕ—ᴗ—)"
+        label="Drop image here Please (ᵕ—ᴗ—)"
         initialImage={bannerImagePreview}
         className="w-full mb-4"
       />

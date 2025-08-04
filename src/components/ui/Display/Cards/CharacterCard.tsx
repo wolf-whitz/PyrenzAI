@@ -93,7 +93,9 @@ export function CharacterCard({ character }: CharacterCardProps) {
             mb={1}
           >
             <Box display="flex" flexDirection="column">
-              <PyrenzCharacterCardTitle>{character.title}</PyrenzCharacterCardTitle>
+              <PyrenzCharacterCardTitle>
+                {character.title}
+              </PyrenzCharacterCardTitle>
               <Box
                 display="flex"
                 alignItems="center"
@@ -107,7 +109,11 @@ export function CharacterCard({ character }: CharacterCardProps) {
                 <PyrenzAltTag>@{character.creator}</PyrenzAltTag>
               </Box>
             </Box>
-            <Box display={{ xs: 'none', md: 'flex' }} alignItems="center" gap={0.5}>
+            <Box
+              display={{ xs: 'none', md: 'flex' }}
+              alignItems="center"
+              gap={0.5}
+            >
               <ChatIcon fontSize="small" sx={{ color: '#e2e8f0' }} />
               <Typography
                 variant="caption"

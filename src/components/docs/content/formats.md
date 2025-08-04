@@ -7,7 +7,7 @@ Enhanced Influence: Formats provide a stronger influence on the AI’s responses
 
 Now that we’ve covered what format is, let’s move on to explaining formats!
 
-## Formats 
+## Formats
 
 Formats are an efficient way to simplify the bot creation process and reduce the number of tokens used when creating bots.
 
@@ -62,4 +62,3 @@ One of the most universally accepted formats is prose, which involves writing in
 When utilizing prose, it's advisable to connect personality traits to a character’s backstory. For example, here’s a paragraph that highlights Rod’s romantic and empathetic nature:
 
 ![Prose example](/Markdowns/Formats/ProseExample.png)
-

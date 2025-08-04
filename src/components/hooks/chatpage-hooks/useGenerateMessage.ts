@@ -159,7 +159,8 @@ export const useGenerateMessage = () => {
 
         if (generationType === 'Regenerate' && messageId) {
           const cleanPrevMsg = previousCharMsg?.trim() ?? '';
-          const shouldAddOriginal = cleanPrevMsg && !previousAlternatives.includes(cleanPrevMsg);
+          const shouldAddOriginal =
+            cleanPrevMsg && !previousAlternatives.includes(cleanPrevMsg);
 
           setMessages((prev) =>
             prev.map((msg) => {

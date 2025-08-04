@@ -7,7 +7,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { withClient } from './client';
 import { checkCacheHealth } from './caches';
-import { createFetcherClient } from './Fetcher'; 
+import { createFetcherClient } from './Fetcher';
 
 let _instance: SupabaseUtil | null = null;
 
@@ -32,8 +32,8 @@ export class SupabaseUtil {
     if (_instance) {
       throw new Error(
         `❌ SupabaseUtil already initialized.\n` +
-        `🛑 Only one instance allowed.\n` +
-        `✅ Use 'SupabaseUtil.instance.db' or 'instance.fetcher' instead.\n`
+          `🛑 Only one instance allowed.\n` +
+          `✅ Use 'SupabaseUtil.instance.db' or 'instance.fetcher' instead.\n`
       );
     }
 
@@ -45,7 +45,7 @@ export class SupabaseUtil {
     if (!_instance) {
       throw new Error(
         `❌ SupabaseUtil not initialized.\n` +
-        `⚠️ Call 'SupabaseUtil.init(client)' first.\n`
+          `⚠️ Call 'SupabaseUtil.init(client)' first.\n`
       );
     }
 

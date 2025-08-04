@@ -1,5 +1,10 @@
 import { z } from 'zod';
 
+export const EmotionSchema = z.object({
+  triggerWords: z.array(z.string()),
+  imageUrl: z.string().nullable(),
+});
+
 export const CharacterSchema = z.object({
   id: z.number().optional(),
   char_uuid: z.string(),
@@ -32,6 +37,8 @@ export const CharacterSchema = z.object({
 
   lorebook: z.string(),
   attribute: z.string().optional(),
+
+  emotions: z.array(EmotionSchema).optional(),
 });
 
 export const DraftSchema = z.object({

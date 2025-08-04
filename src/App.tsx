@@ -6,13 +6,13 @@ import {
   useNavigate,
 } from 'react-router-dom';
 import { AppRoutes } from '~/routes/routes';
-import { Spinner } from '@components';
+import { Spinner, ProofOfWorkModal } from '@components';
 import { Utils as utils } from '~/Utility';
 import { useUserStore } from '~/store';
 import { Box, useTheme } from '@mui/material';
 import { BlockedPage } from './routes/Routing';
 import { HelmetProvider } from 'react-helmet-async';
-import { HelmetWrapper } from '~/HelmetWrapper'; 
+import { HelmetWrapper } from '~/HelmetWrapper';
 
 interface UserData {
   is_deleted: boolean;
@@ -25,8 +25,11 @@ interface BannedUser {
 const AppContent = () => {
   const [loading, setLoading] = useState(true);
   const [isBlocked, setIsBlocked] = useState(false);
+  const [showPoWModal, setShowPoWModal] = useState(true);
+
   const setIsDeleted = useUserStore((state) => state.setIsDeleted);
   const setIsBanned = useUserStore((state) => state.setIsBanned);
+
   const theme = useTheme();
   const currentTheme = theme.palette.mode;
   const location = useLocation();
@@ -71,33 +74,24 @@ const AppContent = () => {
           if (isDeletedUser) {
             setIsDeleted(true);
             await utils.db.client.auth.signOut();
-            if (
-              location.pathname !== '/Blocked' ||
-              location.search !== '?type=deleted'
-            ) {
-              navigate('/Blocked?type=deleted', { replace: true });
-            }
+            navigate('/Blocked?type=deleted', { replace: true });
             return;
-          } else if (isBannedUser) {
+          }
+
+          if (isBannedUser) {
             setIsBanned(true);
             await utils.db.client.auth.signOut();
-            if (
-              location.pathname !== '/Blocked' ||
-              location.search !== '?type=banned'
-            ) {
-              navigate('/Blocked?type=banned', { replace: true });
-            }
+            navigate('/Blocked?type=banned', { replace: true });
             return;
-          } else {
-            setIsDeleted(false);
-            setIsBanned(false);
           }
+
+          setIsDeleted(false);
+          setIsBanned(false);
         } else {
           setIsDeleted(false);
           setIsBanned(false);
         }
-      } catch (err) {
-        console.error('Init check error:', err);
+      } catch {
         setIsDeleted(false);
         setIsBanned(false);
       } finally {
@@ -140,6 +134,13 @@ const AppContent = () => {
         }}
       >
         <Routes>{AppRoutes}</Routes>
+        {showPoWModal && (
+          <ProofOfWorkModal
+            open={showPoWModal}
+            onClose={() => setShowPoWModal(false)}
+            onSuccess={() => setShowPoWModal(false)}
+          />
+        )}
       </Box>
     </HelmetWrapper>
   );

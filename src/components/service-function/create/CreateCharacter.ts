@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
 import * as Sentry from '@sentry/react';
 import { Character } from '@shared-types';
 import { NotificationManager, Utils } from '~/Utility';
@@ -17,7 +16,6 @@ const notifySuccess = async (
 ) => {
   if (typeof document === 'undefined' || document.visibilityState === 'visible')
     return;
-
   await NotificationManager.fire({
     title: 'Character Saved',
     body: message,
@@ -30,104 +28,99 @@ const notifySuccess = async (
 const postCharacter = async (
   type: 'create' | 'update',
   character: Character,
-  profileImageFile: File | null
+  profileImageFile: File | null,
+  emotionImageFile: File | null
 ): Promise<CreateCharacterResponse> => {
-  const data = profileImageFile
-    ? (() => {
-        const formData = new FormData();
-        formData.append('type', type);
-        formData.append('character', JSON.stringify(character));
-        formData.append('profileImageFile', profileImageFile);
-        return formData;
-      })()
-    : {
-        type,
-        character,
-      };
+  const data =
+    profileImageFile || emotionImageFile
+      ? (() => {
+          const formData = new FormData();
+          formData.append('type', type);
+          formData.append('character', JSON.stringify({ ...character }));
+          if (profileImageFile)
+            formData.append('profileImageFile', profileImageFile);
+          if (emotionImageFile)
+            formData.append('emotionImageFile', emotionImageFile);
+          return formData;
+        })()
+      : { type, character: { ...character } };
 
-  try {
-    const res = await Utils.post<CreateCharacterResponse>(
-      '/api/CreateCharacter',
-      data
-    );
-    return res;
-  } catch (err) {
-    Sentry.captureException(err);
-    return { error: 'Failed to reach the server.' };
+  const res = await Utils.post<CreateCharacterResponse>(
+    '/api/CreateCharacter',
+    data
+  );
+
+  if (res.error) throw new Error(res.error);
+
+  if (res.is_moderated) {
+    const msg =
+      res.moderated_message ||
+      '⚠️ Your character triggered moderation filters. Please revise and try again.';
+    throw new Error(msg);
   }
+
+  return res;
 };
 
-export const createCharacter = async (
+const handleCharacterPost = async (
+  type: 'create' | 'update',
   character: Character,
-  profileImageFile: File | null = null
+  profileImageFile: File | null,
+  emotionImageFile: File | null,
+  successMsg: string
 ): Promise<CreateCharacterResponse> => {
+  character.emotions ??= [];
+
   if (!character.creator?.trim()) {
     return { error: 'Creator is required.' };
   }
 
-  if (!character.char_uuid) {
+  if (type === 'create' && !character.char_uuid) {
     try {
-      character.char_uuid = uuidv4();
+      character.char_uuid = crypto.randomUUID();
     } catch (err) {
       Sentry.captureException(err);
       return { error: 'Failed to generate character ID.' };
     }
   }
 
-  const res = await postCharacter('create', character, profileImageFile);
-
-  if (res.is_moderated) {
-    return {
-      is_moderated: true,
-      moderated_message:
-        res.moderated_message ||
-        '⚠️ Your character triggered moderation filters. Please revise and try again.',
-    };
-  }
-
-  if (res.error) {
-    return { error: res.error };
-  }
-
-  await notifySuccess(
-    'Successfully created {{char}}.',
-    character.creator,
-    character.name
-  );
-  return { char_uuid: character.char_uuid };
-};
-
-export const updateCharacter = async (
-  character: Character,
-  profileImageFile: File | null = null
-): Promise<CreateCharacterResponse> => {
-  if (!character.creator?.trim()) {
-    return { error: 'Creator is required.' };
-  }
-
-  if (!character.char_uuid) {
+  if (type === 'update' && !character.char_uuid) {
     return { error: 'Character UUID is required for updating.' };
   }
 
-  const res = await postCharacter('update', character, profileImageFile);
-
-  if (res.is_moderated) {
-    return {
-      is_moderated: true,
-      moderated_message:
-        res.moderated_message ||
-        '⚠️ Your character triggered moderation filters. Please revise and try again.',
-    };
+  try {
+    await postCharacter(type, character, profileImageFile, emotionImageFile);
+    await notifySuccess(successMsg, character.creator, character.name);
+    return { char_uuid: character.char_uuid };
+  } catch (err: any) {
+    return { error: err.message || 'Something went wrong.' };
   }
+};
 
-  if (res.error) {
-    return { error: res.error };
-  }
-
-  await notifySuccess(
-    'Successfully updated {{char}}.',
-    character.creator,
-    character.name
+export const createCharacter = (
+  character: Character,
+  profileImageFile: File | null = null,
+  emotionImageFile: File | null = null
+): Promise<CreateCharacterResponse> => {
+  return handleCharacterPost(
+    'create',
+    character,
+    profileImageFile,
+    emotionImageFile,
+    'Successfully created {{char}}.'
   );
-  return { char_uuid: character.char_uuid };
+};
+
+export const updateCharacter = (
+  character: Character,
+  profileImageFile: File | null = null,
+  emotionImageFile: File | null = null
+): Promise<CreateCharacterResponse> => {
+  return handleCharacterPost(
+    'update',
+    character,
+    profileImageFile,
+    emotionImageFile,
+    'Successfully updated {{char}}.'
+  );
 };

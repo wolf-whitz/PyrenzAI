@@ -33,7 +33,15 @@ export const useHomepageAPI = (pageFromURL: number) => {
   const fetchCharacterData = useHandleCharacterFetchClick();
 
   const onButtonTagClicked = async (tag: string) => {
-    const res = await fetchCharacterData('tags', itemsPerPage, pageFromURL, undefined, tag, undefined, search);
+    const res = await fetchCharacterData(
+      'tags',
+      itemsPerPage,
+      pageFromURL,
+      undefined,
+      tag,
+      undefined,
+      search
+    );
     setCharacters(res.characters);
     setMaxPage(res.totalPages);
   };

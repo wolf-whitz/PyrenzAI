@@ -14,19 +14,15 @@ export async function getRandomCharacters(
   if (type !== 'random') throw new Error('Invalid type');
 
   try {
-    const {
-      filter_creator_uuid,
-      gender,
-      tags,
-      searchQuery,
-    } = extraFilters || {};
+    const { filter_creator_uuid, gender, tags, searchQuery } =
+      extraFilters || {};
 
     const genderFilter = typeof gender === 'string' ? gender : null;
     const tagsFilter = Array.isArray(tags)
       ? tags
       : typeof tags === 'string'
-      ? [tags]
-      : null;
+        ? [tags]
+        : null;
 
     const {
       characters: allCharacters,

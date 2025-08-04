@@ -26,8 +26,8 @@ export async function getLatestCharacter(
   const tagsFilter = Array.isArray(tags)
     ? tags
     : typeof tags === 'string'
-    ? [tags]
-    : null;
+      ? [tags]
+      : null;
 
   const genderFilter = typeof gender === 'string' ? gender : null;
 

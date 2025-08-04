@@ -1,5 +1,11 @@
 import { create } from 'zustand';
 
+interface EmotionData {
+  triggerWords: string[];
+  imageUrl: string | null;
+  file: File | null;
+}
+
 interface CharacterState {
   char_uuid: string;
   persona: string;
@@ -16,14 +22,16 @@ interface CharacterState {
   gender: string;
   creator: string | null;
   profile_image: string | undefined;
-  tokenTotal: number;
-  error: string | null;
+  emotions: EmotionData[];
 }
 
 interface CharacterActions {
+  tokenTotal: number;
+  error: string | null;
   setCharacter: (data: Partial<CharacterState>) => void;
   setGender: (gender: string) => void;
   setTokenTotal: (tokenTotal: number) => void;
+  addEmotion: (emotion: EmotionData) => void;
   setError: (error: string | null) => void;
 }
 
@@ -44,6 +52,7 @@ export const useCharacterStore = create<CharacterState & CharacterActions>()(
     gender: '',
     creator: null,
     profile_image: undefined,
+    emotions: [],
     tokenTotal: 0,
     error: null,
     setCharacter: (data) =>
@@ -53,6 +62,10 @@ export const useCharacterStore = create<CharacterState & CharacterActions>()(
       })),
     setGender: (gender) => set(() => ({ gender })),
     setTokenTotal: (tokenTotal) => set(() => ({ tokenTotal })),
+    addEmotion: (emotion) =>
+      set((state) => ({
+        emotions: [...state.emotions, emotion],
+      })),
     setError: (error) => set(() => ({ error })),
   })
 );
