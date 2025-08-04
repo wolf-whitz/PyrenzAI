@@ -2,6 +2,7 @@ import { getCached, setCached } from '~/sdk/caches';
 import { useUserStore } from '~/store';
 import { SERVER_API_URL_1, SERVER_API_URL_2 } from '~/config';
 import { handleSSE } from './handler';
+import { GetUserData } from '@components';
 
 type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 
@@ -33,6 +34,8 @@ export async function request<T>(
   isImage = false,
   options?: SSEOptions
 ): Promise<T> {
+  await GetUserData();
+
   const { userUUID, purchase_id } = useUserStore.getState();
   const BASE = purchase_id && userUUID ? SERVER_API_URL_1 : SERVER_API_URL_2;
   const url = new URL(`${BASE}${endpoint}`);
@@ -48,7 +51,6 @@ export async function request<T>(
     if (inFlightRequests.has(cacheKey)) {
       return inFlightRequests.get(cacheKey)!;
     }
-
     const cached = await getCached<T>(cacheKey);
     if (cached !== null && cached !== undefined) {
       return cached;
