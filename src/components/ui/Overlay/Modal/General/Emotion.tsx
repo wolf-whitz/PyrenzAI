@@ -1,4 +1,13 @@
-import { TextField, IconButton, Typography, Stack } from '@mui/material';
+import {
+  TextField,
+  IconButton,
+  Typography,
+  Stack,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { ImageUploader } from '@components';
 import {
@@ -21,9 +30,39 @@ interface EmotionProps {
   ) => void;
 }
 
+const EMOTION_TYPES = [
+  'joy',
+  'fear',
+  'love',
+  'anger',
+  'grief',
+  'pride',
+  'caring',
+  'desire',
+  'relief',
+  'disgust',
+  'neutral',
+  'remorse',
+  'sadness',
+  'approval',
+  'optimism',
+  'surprise',
+  'amusement',
+  'annoyance',
+  'confusion',
+  'curiosity',
+  'gratitude',
+  'admiration',
+  'excitement',
+  'disapproval',
+  'nervousness',
+  'realization',
+  'embarrassment',
+  'disappointment',
+];
+
 export function Emotion({ open, onClose, onSave }: EmotionProps) {
-  const [triggerInput, setTriggerInput] = useState('');
-  const [allTriggers, setAllTriggers] = useState<string[]>([]);
+  const [selectedEmotion, setSelectedEmotion] = useState('');
   const [uploading, setUploading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -33,16 +72,8 @@ export function Emotion({ open, onClose, onSave }: EmotionProps) {
   const emotions = useCharacterStore((s) => s.emotions);
 
   useEffect(() => {
-    const triggers = triggerInput
-      .split(',')
-      .map((w) => w.trim())
-      .filter(Boolean);
-    setAllTriggers(triggers);
-  }, [triggerInput]);
-
-  useEffect(() => {
     if (open) return;
-    setTriggerInput('');
+    setSelectedEmotion('');
     setImageUrl(null);
     setImageFile(null);
     setUploadError(null);
@@ -68,23 +99,13 @@ export function Emotion({ open, onClose, onSave }: EmotionProps) {
   }
 
   function handleSave() {
-    const triggerWords = triggerInput
-      .split(',')
-      .map((w) => w.trim())
-      .filter(Boolean);
-
     const payload = {
-      triggerWords,
+      triggerWords: [selectedEmotion],
       imageUrl,
       file: imageFile,
     } satisfies z.infer<typeof EmotionSchema> & { file: File | null };
 
-    addEmotion({
-      triggerWords,
-      imageUrl,
-      file: imageFile,
-    });
-
+    addEmotion(payload);
     onSave(payload);
     onClose();
   }
@@ -110,23 +131,13 @@ export function Emotion({ open, onClose, onSave }: EmotionProps) {
           </Stack>
 
           <Stack spacing={3}>
-            <ImageUploader onImageSelect={handleImageSelect} />
-            {uploading && (
-              <Typography color="primary">Uploading image...</Typography>
-            )}
-            {uploadError && (
-              <Typography color="error">{uploadError}</Typography>
-            )}
-
-            <TextField
-              label="Trigger Words (comma-separated)"
-              value={triggerInput}
-              onChange={(e) => setTriggerInput(e.target.value)}
-              variant="outlined"
-              fullWidth
-              InputLabelProps={{ style: { color: '#ccc' } }}
-              InputProps={{
-                sx: {
+            <FormControl fullWidth>
+              <InputLabel sx={{ color: '#ccc' }}>Emotion Type</InputLabel>
+              <Select
+                value={selectedEmotion}
+                label="Emotion Type"
+                onChange={(e) => setSelectedEmotion(e.target.value)}
+                sx={{
                   color: '#fff',
                   '& fieldset': {
                     borderColor: 'rgba(255,255,255,0.2)',
@@ -134,32 +145,22 @@ export function Emotion({ open, onClose, onSave }: EmotionProps) {
                   '&:hover fieldset': {
                     borderColor: '#8b5cf6',
                   },
-                },
-              }}
-            />
+                }}
+              >
+                {EMOTION_TYPES.map((emotion) => (
+                  <MenuItem key={emotion} value={emotion}>
+                    {emotion.charAt(0).toUpperCase() + emotion.slice(1)}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
-            {allTriggers.length > 0 && (
-              <PyrenzCard>
-                <Typography variant="body2" color="textSecondary" gutterBottom>
-                  Current Triggers:
-                </Typography>
-                <Stack direction="row" flexWrap="wrap" gap={1}>
-                  {allTriggers.map((trigger, i) => (
-                    <Typography
-                      key={i}
-                      sx={{
-                        background: 'rgba(139, 92, 246, 0.2)',
-                        px: 1,
-                        py: 0.5,
-                        borderRadius: 1,
-                        fontSize: 14,
-                      }}
-                    >
-                      {trigger}
-                    </Typography>
-                  ))}
-                </Stack>
-              </PyrenzCard>
+            <ImageUploader onImageSelect={handleImageSelect} />
+            {uploading && (
+              <Typography color="primary">Uploading image...</Typography>
+            )}
+            {uploadError && (
+              <Typography color="error">{uploadError}</Typography>
             )}
 
             {emotions.length > 0 && (
@@ -205,7 +206,7 @@ export function Emotion({ open, onClose, onSave }: EmotionProps) {
               <PyrenzBlueButton
                 variant="contained"
                 onClick={handleSave}
-                disabled={!imageUrl || uploading}
+                disabled={!imageUrl || uploading || !selectedEmotion}
               >
                 Save Emotion
               </PyrenzBlueButton>

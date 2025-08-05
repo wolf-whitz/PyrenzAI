@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { GenerateResponse, Message } from '@shared-types';
+import { Message } from '@shared-types';
 import { GetUserUUID, useTabFocus } from '@components';
 import { usePyrenzAlert } from '~/provider';
 import { NotificationManager, Utils } from '~/Utility';
@@ -9,6 +9,7 @@ interface GenerateMessageResponse {
   remainingMessages?: number;
   showAd?: boolean;
   isSubscribed?: boolean;
+  emotion_type?: string;
 }
 
 interface UserDataRow {
@@ -37,7 +38,6 @@ export const useGenerateMessage = () => {
       messageId?: string
     ): Promise<GenerateMessageResponse> => {
       if (!user || !char || !chat_uuid) return { isSubscribed: false };
-
       setIsGenerating(true);
 
       let userQueryText = text;
@@ -83,6 +83,7 @@ export const useGenerateMessage = () => {
           });
 
           const row = result?.data?.[0];
+
           if (!row?.user_message || !row?.char_message) {
             showAlert('Could not find original messages for regen', 'Alert');
             setIsGenerating(false);
@@ -102,7 +103,6 @@ export const useGenerateMessage = () => {
 
       try {
         const user_uuid = await GetUserUUID();
-
         const { data: userData } = await Utils.db.select<UserDataRow>({
           tables: 'user_data',
           columns: 'inference_settings',
@@ -129,11 +129,11 @@ export const useGenerateMessage = () => {
 
         const url = `/api/Generate?user_uuid=${user_uuid}`;
         const res = await Utils.post<any>(url, body);
-
         const generatedMessage = res.message?.content;
         const responseId = res.message?.MessageID;
         const user_id = res.message?.user_id;
         const char_id = res.message?.char_id;
+        const emotion_type = res.message?.emotion_type;
 
         if (!generatedMessage) throw new Error('No valid response from API');
 
@@ -148,6 +148,7 @@ export const useGenerateMessage = () => {
                   isGenerate: false,
                   char_id: Number(char_id),
                   alternative_messages: [],
+                  ...(emotion_type && { emotion_type }),
                 };
               } else if (msg.type === 'user' && msg.id === undefined) {
                 return { ...msg, id: responseId, user_id: Number(user_id) };
@@ -169,12 +170,12 @@ export const useGenerateMessage = () => {
                 const newAlternatives = shouldAddOriginal
                   ? [...existing, cleanPrevMsg]
                   : existing;
-
                 return {
                   ...msg,
                   text: generatedMessage,
                   isGenerate: false,
                   alternative_messages: newAlternatives,
+                  ...(emotion_type && { emotion_type }),
                 };
               }
               return msg;

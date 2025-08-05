@@ -22,6 +22,7 @@ export const MessageSchema = z.object({
       queryText: z.string(),
     })
     .optional(),
+  emotion_type: z.string().optional(),
 });
 
 export const UserSchema = z.object({

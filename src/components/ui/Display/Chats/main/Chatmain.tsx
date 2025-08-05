@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   AdModal,
   ChatMessages,
@@ -32,15 +32,29 @@ export function ChatMain({
     onGenerateImage,
   } = useChatPageAPI(messages, user, char, chat_uuid, setIsGenerating);
 
-  const firstEmotionImage = char?.emotions?.[0]?.imageUrl ?? null;
+  const currentEmotionImage = useMemo(() => {
+    const lastCharMessage = [...messages]
+      .reverse()
+      .find((msg) => msg.type === 'char' && (msg.meta as any)?.emotion_type);
+
+    const emotionType = (lastCharMessage?.meta as any)?.emotion_type;
+
+    if (!emotionType || !char?.emotions) return null;
+
+    const match = char.emotions.find((emotion) =>
+      emotion.triggerWords.includes(emotionType)
+    );
+
+    return match?.imageUrl ?? null;
+  }, [messages, char?.emotions]);
 
   return (
     <Fade in={true} timeout={500}>
       <Box className="flex flex-col h-screen w-full text-white relative">
-        {firstEmotionImage && (
+        {currentEmotionImage && (
           <Box className="w-full max-w-6xl mx-auto pb-4">
             <img
-              src={firstEmotionImage}
+              src={currentEmotionImage}
               alt="Character emotion"
               className="rounded-lg w-full max-h-64 object-cover"
             />

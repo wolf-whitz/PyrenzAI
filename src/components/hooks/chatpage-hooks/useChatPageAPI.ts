@@ -35,7 +35,8 @@ export const useChatPageAPI = (
   user: User,
   char: Character,
   chat_uuid: string,
-  setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>
+  setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>,
+  onEmotionDetected?: (emotion: string) => void
 ): ChatPageAPI => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isAdModalOpen, setIsAdModalOpen] = useState(false);
@@ -60,6 +61,10 @@ export const useChatPageAPI = (
         setIsGenerating,
         'Generate'
       );
+
+      if (response?.emotion_type && onEmotionDetected) {
+        onEmotionDetected(response.emotion_type);
+      }
 
       if (!response.isSubscribed && response.remainingMessages === 0) {
         setIsAdModalOpen(true);
@@ -98,7 +103,7 @@ export const useChatPageAPI = (
     if (!messageId) return;
 
     try {
-      await generateMessage(
+      const response = await generateMessage(
         '',
         user,
         char,
@@ -108,6 +113,11 @@ export const useChatPageAPI = (
         'Regenerate',
         messageId
       );
+
+      if (response?.emotion_type && onEmotionDetected) {
+        onEmotionDetected(response.emotion_type);
+      }
+
     } catch (err) {
       console.error('Error regenerating message:', err);
     }
