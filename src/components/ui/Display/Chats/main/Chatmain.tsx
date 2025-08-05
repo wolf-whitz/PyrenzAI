@@ -32,9 +32,20 @@ export function ChatMain({
     onGenerateImage,
   } = useChatPageAPI(messages, user, char, chat_uuid, setIsGenerating);
 
+  const firstEmotionImage = char?.emotions?.[0]?.imageUrl ?? null;
+
   return (
     <Fade in={true} timeout={500}>
       <Box className="flex flex-col h-screen w-full text-white relative">
+        {firstEmotionImage && (
+          <Box className="w-full max-w-6xl mx-auto pb-4">
+            <img
+              src={firstEmotionImage}
+              alt="Character emotion"
+              className="rounded-lg w-full max-h-64 object-cover"
+            />
+          </Box>
+        )}
         <Box className="w-full max-w-6xl mx-auto pt-4">
           <ChatHeader />
         </Box>
