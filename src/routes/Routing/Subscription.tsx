@@ -18,7 +18,7 @@ interface Plan {
   color?: string;
   backgroundImage?: string;
 }
-// To-Do: Change this to another file
+
 const subscriptionPlans: Plan[] = [
   {
     title: 'Solara (Strawberry)',
@@ -65,9 +65,7 @@ const subscriptionPlans: Plan[] = [
 ];
 
 export function Subscription() {
-  const [selectedPlanTitle, setSelectedPlanTitle] = useState<string | null>(
-    null
-  );
+  const [selectedPlanTitle, setSelectedPlanTitle] = useState<string | null>(null);
   const [isMonthly, setIsMonthly] = useState<boolean>(true);
   const [hoveredPlanTitle, setHoveredPlanTitle] = useState<string | null>(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -112,73 +110,73 @@ export function Subscription() {
         {!isMobile && <Sidebar />}
         <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
           {isMobile && <MobileNav setShowLoginModal={setShowLoginModal} />}
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              p: isMobile ? 2 : 5,
-              flex: 1,
-            }}
-          >
-            <Box display="flex" gap={4} mb={5}>
-              <PyrenzBlueButton
-                onClick={() => setIsMonthly(true)}
-                sx={getButtonStyle(isMonthly)}
-              >
-                Monthly
-              </PyrenzBlueButton>
-              <PyrenzBlueButton
-                onClick={() => setIsMonthly(false)}
-                sx={getButtonStyle(!isMonthly)}
-              >
-                Yearly
-              </PyrenzBlueButton>
-            </Box>
+          <Box sx={{ marginTop: isMobile ? '56px' : 0 }}>
             <Box
               sx={{
                 display: 'flex',
-                flexDirection: isMobile ? 'column' : 'row',
-                justifyContent: 'center',
-                width: '100%',
+                flexDirection: 'column',
+                alignItems: 'center',
+                p: isMobile ? 2 : 5,
+                flex: 1,
               }}
             >
-              {subscriptionPlans.map((plan) => {
-                const isSubscribed = userSubscriptionPlan
-                  ? userSubscriptionPlan
-                      .map((planId) => planId.toLowerCase())
-                      .includes(plan.plan_identifier.toLowerCase())
-                  : false;
-
-                const isHighlighted =
-                  hoveredPlanTitle === null
-                    ? isSubscribed ||
-                      (userSubscriptionPlan === null &&
-                        plan.title === 'Azura (Blueberry)')
-                    : hoveredPlanTitle === plan.title;
-
-                return (
-                  <SubscriptionCard
-                    key={plan.title}
-                    plan={plan}
-                    isSubscribed={isSubscribed}
-                    onSubscribe={handleSubscribeClick}
-                    isMonthly={isMonthly}
-                    isHighlighted={isHighlighted}
-                    onMouseEnter={() => setHoveredPlanTitle(plan.title)}
-                    onMouseLeave={() => setHoveredPlanTitle(null)}
-                  />
-                );
-              })}
+              <Box display="flex" gap={4} mb={5}>
+                <PyrenzBlueButton
+                  onClick={() => setIsMonthly(true)}
+                  sx={getButtonStyle(isMonthly)}
+                >
+                  Monthly
+                </PyrenzBlueButton>
+                <PyrenzBlueButton
+                  onClick={() => setIsMonthly(false)}
+                  sx={getButtonStyle(!isMonthly)}
+                >
+                  Yearly
+                </PyrenzBlueButton>
+              </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: isMobile ? 'column' : 'row',
+                  justifyContent: 'center',
+                  width: '100%',
+                }}
+              >
+                {subscriptionPlans.map((plan) => {
+                  const isSubscribed = userSubscriptionPlan
+                    ? userSubscriptionPlan
+                        .map((planId) => planId.toLowerCase())
+                        .includes(plan.plan_identifier.toLowerCase())
+                    : false;
+                  const isHighlighted =
+                    hoveredPlanTitle === null
+                      ? isSubscribed ||
+                        (userSubscriptionPlan === null &&
+                          plan.title === 'Azura (Blueberry)')
+                      : hoveredPlanTitle === plan.title;
+                  return (
+                    <SubscriptionCard
+                      key={plan.title}
+                      plan={plan}
+                      isSubscribed={isSubscribed}
+                      onSubscribe={handleSubscribeClick}
+                      isMonthly={isMonthly}
+                      isHighlighted={isHighlighted}
+                      onMouseEnter={() => setHoveredPlanTitle(plan.title)}
+                      onMouseLeave={() => setHoveredPlanTitle(null)}
+                    />
+                  );
+                })}
+              </Box>
+              {selectedPlan && (
+                <PaymentModal
+                  plan={selectedPlan}
+                  isOpen={!!selectedPlan}
+                  onClose={handleCloseModal}
+                  isMonthly={isMonthly}
+                />
+              )}
             </Box>
-            {selectedPlan && (
-              <PaymentModal
-                plan={selectedPlan}
-                isOpen={!!selectedPlan}
-                onClose={handleCloseModal}
-                isMonthly={isMonthly}
-              />
-            )}
           </Box>
         </Box>
       </Box>
