@@ -5,20 +5,24 @@ localforage.config({
   storeName: 'images',
 });
 
-export const saveImageToDB = async (imageBlob) => {
+export const saveImageToDB = async (imageBlob: Blob): Promise<void> => {
   await localforage.setItem('bgImage', imageBlob);
 };
 
-export const getImageFromDB = async () => {
+export const getImageFromDB = async (): Promise<Blob | null> => {
   try {
-    const result = await localforage.getItem('bgImage');
+    const result = await localforage.getItem<Blob>('bgImage');
     return result ?? null;
   } catch {
     return null;
   }
 };
 
-export const insertData = async (storeName, data, key) => {
+export const insertData = async <T>(
+  storeName: string,
+  data: T,
+  key: IDBValidKey
+): Promise<void> => {
   const customStore = localforage.createInstance({
     name: 'ImageDatabase',
     storeName: storeName,
@@ -26,15 +30,9 @@ export const insertData = async (storeName, data, key) => {
   await customStore.setItem(String(key), data);
 };
 
-export const createTable = async (tableName) => {
+export const createTable = async (tableName: string): Promise<void> => {
   localforage.createInstance({
     name: 'ImageDatabase',
     storeName: tableName,
-  });
-};
-
-export const createDatabase = async (dbName) => {
-  localforage.createInstance({
-    name: dbName,
   });
 };
