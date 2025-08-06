@@ -68,7 +68,6 @@ export function Emotion({ open, onClose, onSave }: EmotionProps) {
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
 
-  const addEmotion = useCharacterStore((s) => s.addEmotion);
   const emotions = useCharacterStore((s) => s.emotions);
 
   useEffect(() => {
@@ -105,7 +104,6 @@ export function Emotion({ open, onClose, onSave }: EmotionProps) {
       file: imageFile,
     } satisfies z.infer<typeof EmotionSchema> & { file: File | null };
 
-    addEmotion(payload);
     onSave(payload);
     onClose();
   }

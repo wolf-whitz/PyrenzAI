@@ -7,7 +7,14 @@ import {
 } from '@components';
 import { TextareaForm } from './Childrens/TextareaForm';
 import { useNavigate } from 'react-router-dom';
-import { Typography, Paper, Box, Alert } from '@mui/material';
+import {
+  Typography,
+  Paper,
+  Box,
+  Alert,
+  useTheme,
+  useMediaQuery,
+} from '@mui/material';
 import { useCharacterStore } from '~/store';
 
 interface CharacterFormProps {
@@ -22,6 +29,8 @@ export function CharacterForm({
   creator,
 }: CharacterFormProps) {
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isMdUp = useMediaQuery(theme.breakpoints.up('md'));
 
   const {
     loading,
@@ -36,7 +45,16 @@ export function CharacterForm({
   const error = useCharacterStore((state) => state.error);
 
   return (
-    <Box className="flex items-center justify-center min-h-screen p-4 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+    <Box
+      sx={{
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        py: { xs: 4, sm: 6 },
+        px: { xs: 2, sm: 4 },
+      }}
+    >
       <Paper
         elevation={3}
         component="form"
@@ -46,8 +64,8 @@ export function CharacterForm({
           backdropFilter: 'blur(6px)',
           borderRadius: 3,
           width: '100%',
-          maxWidth: 700,
-          p: 4,
+          maxWidth: { xs: '100%', sm: '640px', md: '700px' },
+          p: { xs: 2, md: 4 },
           display: 'flex',
           flexDirection: 'column',
           gap: 4,
@@ -56,7 +74,7 @@ export function CharacterForm({
         }}
       >
         <Typography
-          variant="h6"
+          variant={isMdUp ? 'h5' : 'h6'}
           sx={{
             color: '#e5e5e5',
             fontWeight: 600,

@@ -105,17 +105,25 @@ export function CreatePage() {
         width="100%"
         minHeight="100vh"
       >
-        <Box component="aside" width={{ xs: '100%', sm: '256px' }}>
+        <Box component="aside" flexShrink={0} zIndex={2}>
           <Sidebar />
         </Box>
 
-        <Box component="main" flex={1} display="flex" flexDirection="column">
+        <Box
+          component="main"
+          sx={{
+            flex: 1,
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
           {!user ? (
             <Box
               display="flex"
               justifyContent="center"
               alignItems="center"
-              minHeight="100vh"
+              height="100%"
             >
               <Typography variant="h4">Please Log In</Typography>
             </Box>
@@ -124,7 +132,7 @@ export function CreatePage() {
               display="flex"
               justifyContent="center"
               alignItems="center"
-              minHeight="100vh"
+              height="100%"
             >
               <Typography variant="h5" color="error">
                 Error: Unable to get user_uuid
@@ -132,14 +140,20 @@ export function CreatePage() {
             </Box>
           ) : (
             <>
-              <Box flex={1} overflow="auto">
+              <Box
+                position="relative"
+                width="100%"
+                height="100%"
+                overflow="hidden"
+              >
                 <CharacterForm
                   character_update={characterUpdate}
                   user_uuid={userUUID}
                   creator={creatorName}
                 />
               </Box>
-              <Box sx={{ display: { xs: 'block', sm: 'none' }, mt: 2 }}>
+
+              <Box sx={{ display: { xs: 'block', sm: 'none' }, mt: 2, px: 2 }}>
                 <CommunityGuidelines />
               </Box>
             </>
@@ -148,7 +162,11 @@ export function CreatePage() {
 
         <Box
           component="aside"
-          sx={{ display: { xs: 'none', sm: 'block' }, width: '256px' }}
+          sx={{
+            display: { xs: 'none', sm: 'block' },
+            flexShrink: 0,
+            zIndex: 2,
+          }}
         >
           <CommunityGuidelines />
         </Box>
