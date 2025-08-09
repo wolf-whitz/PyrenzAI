@@ -160,14 +160,12 @@ export const useGenerateMessage = () => {
 
         if (generationType === 'Regenerate' && messageId) {
           const cleanPrevMsg = previousCharMsg?.trim() ?? '';
-          const shouldAddOriginal =
-            cleanPrevMsg && !previousAlternatives.includes(cleanPrevMsg);
-
+          
           setMessages((prev) =>
             prev.map((msg) => {
               if (msg.id === messageId && msg.type === 'char') {
                 const existing = msg.alternative_messages ?? [];
-                const newAlternatives = shouldAddOriginal
+                const newAlternatives = cleanPrevMsg 
                   ? [...existing, cleanPrevMsg]
                   : existing;
                 return {

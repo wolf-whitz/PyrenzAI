@@ -38,11 +38,10 @@ export function MessageBox(props: MessageBoxProps) {
   const [openDialog, setOpenDialog] = useState(false);
   const [altIndex, setAltIndex] = useState(0);
 
-  const alternatives = msg.alternative_messages?.length
-    ? msg.alternative_messages
-    : msg.text
-      ? [msg.text]
-      : [];
+  const alternatives = msg.alternative_messages ?? [];
+  if (msg.text && !alternatives.includes(msg.text)) {
+    alternatives.unshift(msg.text);
+  }
 
   const totalMessages = alternatives.length;
 
