@@ -35,13 +35,6 @@ export function Dropzone({
           showAlert('Please upload an image file.', 'Alert');
           return;
         }
-        if (file.size > 1024 * 1024) {
-          showAlert(
-            'File size exceeds 1 MB. Please choose a smaller file.',
-            'Alert'
-          );
-          return;
-        }
         const reader = new FileReader();
         reader.onloadend = () => {
           const base64data = reader.result as string;

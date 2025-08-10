@@ -13,19 +13,22 @@ export async function uploadImage(
 ): Promise<UploadResult> {
   try {
     const isImageType = file.type.startsWith('image/') || file instanceof Blob;
-
     if (!isImageType) {
       return { url: null, error: 'Only image files or blobs are allowed.' };
     }
 
-    const maxSizeInBytes = 1 * 1024 * 1024;
+    const maxSizeInBytes = 5 * 1024 * 1024;
     if ('size' in file && file.size > maxSizeInBytes) {
-      return { url: null, error: 'File size must be less than 1MB.' };
+      return { url: null, error: 'File size must be less than or equal to 5MB.' };
     }
 
     const webpBlob = await convertToWebP(file);
     if (!webpBlob) {
       return { url: null, error: 'Failed to convert image to WebP.' };
+    }
+
+    if (webpBlob.size > maxSizeInBytes) {
+      return { url: null, error: 'Converted image size must be less than or equal to 5MB.' };
     }
 
     const fileName = `${uuidv4()}.webp`;
@@ -66,10 +69,8 @@ async function convertToWebP(input: File | Blob): Promise<Blob | null> {
       img.onload = () => {
         try {
           let { width, height } = img;
-
           if (width > MAX_DIMENSION || height > MAX_DIMENSION) {
             const aspectRatio = width / height;
-
             if (aspectRatio > 1) {
               width = MAX_DIMENSION;
               height = Math.round(MAX_DIMENSION / aspectRatio);
@@ -78,22 +79,28 @@ async function convertToWebP(input: File | Blob): Promise<Blob | null> {
               width = Math.round(MAX_DIMENSION * aspectRatio);
             }
           }
-
           const canvas = document.createElement('canvas');
           canvas.width = width;
           canvas.height = height;
-
           const ctx = canvas.getContext('2d');
           if (!ctx) {
             URL.revokeObjectURL(objectUrl);
             return resolve(null);
           }
-
           ctx.drawImage(img, 0, 0, width, height);
           canvas.toBlob(
             (blob) => {
               URL.revokeObjectURL(objectUrl);
-              resolve(blob ?? null);
+              if (blob) {
+                const sizeInKB = blob.size / 1024;
+                if (sizeInKB <= 5120) {
+                  resolve(blob);
+                } else {
+                  resolve(null);
+                }
+              } else {
+                resolve(null);
+              }
             },
             'image/webp',
             0.9
