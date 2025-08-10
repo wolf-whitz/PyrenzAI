@@ -117,7 +117,6 @@ export const useChatPageAPI = (
       if (response?.emotion_type && onEmotionDetected) {
         onEmotionDetected(response.emotion_type);
       }
-
     } catch (err) {
       console.error('Error regenerating message:', err);
     }

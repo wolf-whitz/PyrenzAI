@@ -15,17 +15,17 @@ interface PyrenzDialogProps {
   open: boolean;
   onClose: () => void;
   title: string;
-  content: string;
+  content: React.ReactNode;
   onConfirm: () => void;
 }
 
-export const PyrenzDialog = ({
+export function PyrenzDialog({
   open,
   onClose,
   title,
   content,
   onConfirm,
-}: PyrenzDialogProps) => {
+}: PyrenzDialogProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -60,12 +60,16 @@ export const PyrenzDialog = ({
       </DialogTitle>
 
       <DialogContent>
-        <DialogContentText
-          id="pyrenz-dialog-description"
-          sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
-        >
-          {content}
-        </DialogContentText>
+        {typeof content === 'string' ? (
+          <DialogContentText
+            id="pyrenz-dialog-description"
+            sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
+          >
+            {content}
+          </DialogContentText>
+        ) : (
+          content
+        )}
       </DialogContent>
 
       <DialogActions sx={{ padding: '16px' }}>
@@ -109,4 +113,4 @@ export const PyrenzDialog = ({
       </DialogActions>
     </Dialog>
   );
-};
+}

@@ -99,16 +99,16 @@ export const PyrenzMessageBox = ({
   const handleClick = (event: React.MouseEvent) => onClick?.(event);
   const handleGoPrev = (event: React.MouseEvent) => {
     event.stopPropagation();
-    onGoPrev?.(event);
+    onGoNext?.(event);
   };
   const handleGoNext = (event: React.MouseEvent) => {
     event.stopPropagation();
-    onGoNext?.(event);
+    onGoPrev?.(event);
   };
 
   const getDisplayedText = () => {
     if (alternativeMessages.length > 0) {
-      return alternativeMessages[currentMessageIndex] ?? '';
+      return alternativeMessages[alternativeMessages.length - 1 - currentMessageIndex] ?? '';
     }
     return children;
   };
@@ -185,9 +185,9 @@ export const PyrenzMessageBox = ({
             >
               <ChevronLeftIcon />
             </IconButton>
-            <Typography variant="caption" color="inherit">
-              {currentMessageIndex + 1}/{alternativeMessages.length}
-            </Typography>
+              <Typography variant="caption" color="inherit">
+              {alternativeMessages.length - currentMessageIndex}/{alternativeMessages.length}
+              </Typography>
             <IconButton
               size="small"
               onClick={handleGoNext}

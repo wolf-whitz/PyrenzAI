@@ -159,20 +159,14 @@ export const useGenerateMessage = () => {
         }
 
         if (generationType === 'Regenerate' && messageId) {
-          const cleanPrevMsg = previousCharMsg?.trim() ?? '';
-          
           setMessages((prev) =>
             prev.map((msg) => {
               if (msg.id === messageId && msg.type === 'char') {
-                const existing = msg.alternative_messages ?? [];
-                const newAlternatives = cleanPrevMsg 
-                  ? [...existing, cleanPrevMsg]
-                  : existing;
                 return {
                   ...msg,
                   text: generatedMessage,
                   isGenerate: false,
-                  alternative_messages: newAlternatives,
+                  alternative_messages: previousAlternatives,
                   ...(emotion_type && { emotion_type }),
                 };
               }

@@ -8,7 +8,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { Utils } from '~/Utility';
-import { Sidebar, MobileNav, CharacterReport } from '@components';
+import { Sidebar, MobileNav, CharacterReport, InsertModelForm } from '@components';
 import { PyrenzDialog } from '~/theme';
 
 interface CharacterReportType {
@@ -96,12 +96,7 @@ export function AdminPanel() {
 
   if (loading) {
     return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="100%"
-      >
+      <Box display="flex" justifyContent="center" alignItems="center" height="100%">
         <CircularProgress />
       </Box>
     );
@@ -109,12 +104,7 @@ export function AdminPanel() {
 
   if (!isAdmin) {
     return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="52vh"
-      >
+      <Box display="flex" justifyContent="center" alignItems="center" height="52vh">
         <Typography variant="h6" color="textSecondary">
           Access Denied: Admins Only
         </Typography>
@@ -132,6 +122,7 @@ export function AdminPanel() {
           <Typography variant="h4" gutterBottom textAlign="center">
             Admin Panel
           </Typography>
+
           <Box mt={4}>
             <Typography variant="h6" gutterBottom>
               Character Reports
@@ -142,14 +133,14 @@ export function AdminPanel() {
               <CharacterReport
                 reports={reports}
                 onBanCharacter={(id) => openBanDialog(id, 'ban', 'character')}
-                onUnbanCharacter={(id) =>
-                  openBanDialog(id, 'unban', 'character')
-                }
+                onUnbanCharacter={(id) => openBanDialog(id, 'unban', 'character')}
                 onBanUser={(id) => openBanDialog(id, 'ban', 'user')}
                 onUnbanUser={(id) => openBanDialog(id, 'unban', 'user')}
               />
             )}
           </Box>
+
+          <InsertModelForm />
         </Box>
       </Box>
       {isMobile && <MobileNav setShowLoginModal={() => {}} />}

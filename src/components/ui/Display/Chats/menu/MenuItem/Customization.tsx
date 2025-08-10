@@ -34,9 +34,8 @@ export function Customization({
   customization,
   subscriptionPlan,
 }: CustomizationProps) {
-  const [showPopover, setShowPopover] = useState<
-    keyof typeof sliderDescriptions | null
-  >(null);
+  const [showPopover, setShowPopover] = useState<keyof typeof sliderDescriptions | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const {
     maxTokens,
@@ -51,6 +50,15 @@ export function Customization({
     stateSetters,
     handleSubmit,
   } = useCustomizeAPI({ customization, subscriptionPlan });
+
+  const onSubmit = async () => {
+    setSubmitting(true);
+    try {
+      await handleSubmit();
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <Box>
@@ -137,12 +145,13 @@ export function Customization({
         </Box>
         <PyrenzBlueButton
           variant="contained"
-          onClick={handleSubmit}
+          onClick={onSubmit}
           fullWidth
           startIcon={<InfoIcon />}
           sx={{ mt: 2 }}
+          disabled={submitting}
         >
-          Submit
+          {submitting ? 'Submitting...' : 'Submit'}
         </PyrenzBlueButton>
       </Box>
     </Box>
