@@ -1,42 +1,18 @@
 import { Utils as utils } from '~/Utility';
 import * as Sentry from '@sentry/react';
 import { v4 as uuidv4 } from 'uuid';
-import { handleSaveDraft, GetUserData } from '@components';
+import { GetUserData } from '@components';
 import { useCharacterStore } from '~/store';
 import { Character } from '@shared-types';
+import {
+  createCharacter,
+  createDraft,
+  updateCharacter,
+} from '@components';
 
-const requiredCharacterFields: (keyof Character)[] = [
-  'title',
-  'persona',
-  'name',
-  'model_instructions',
-  'scenario',
-  'description',
-  'first_message',
-  'tags',
-  'gender',
-  'creator',
-  'profile_image',
-  'attribute',
-];
+type ActionType = 'Create' | 'Update' | 'Draft';
 
-const validateCharacterData = (character: Character) => {
-  const missingFields = requiredCharacterFields.filter((field) => {
-    const value = character[field];
-    return (
-      value === undefined ||
-      value === null ||
-      value === '' ||
-      (Array.isArray(value) && value.length === 0)
-    );
-  });
-  return {
-    isValid: missingFields.length === 0,
-    missingFields,
-  };
-};
-
-export const fetchUserName = async (userUuid: string) => {
+export const fetchUserName = async (): Promise<string> => {
   try {
     const userData = await GetUserData();
     return userData?.username || '';
@@ -56,7 +32,7 @@ export const handleClearCharacter = (
     model_instructions: '',
     scenario: '',
     description: '',
-    first_message: '',
+    first_message: [],
     tags: [],
     gender: '',
     creator: '',
@@ -83,111 +59,59 @@ export const handleDeleteCharacter = async (
   if (!character.char_uuid) {
     handleClearCharacter(setCharacter);
     showAlert('Character data cleared.', 'success');
-  } else {
-    try {
-      await utils.db.remove({
-        tables: 'characters',
-        match: { char_uuid: character.char_uuid },
-      });
-      handleClearCharacter(setCharacter);
-      showAlert('Character deleted successfully.', 'success');
-    } catch (error) {
-      Sentry.captureException(error);
-      showAlert('Error deleting character.', 'alert');
-    }
+    return;
   }
-};
-
-export const handleSaveCharacter = async (
-  character: Character,
-  userUuid: string,
-  setSaveLoading: (v: boolean) => void,
-  showAlert: (msg: string, type: string) => void
-) => {
-  const setError = useCharacterStore.getState().setError;
-  setSaveLoading(true);
   try {
-    if (!userUuid) {
-      const msg = 'User UUID is missing.';
-      showAlert(msg, 'Alert');
-      setError(msg);
-      return;
-    }
-    const validation = validateCharacterData(character);
-    if (!validation.isValid) {
-      const msg = `Missing or undefined fields: ${validation.missingFields.join(', ')}`;
-      showAlert(msg, 'Alert');
-      setError(msg);
-      return;
-    }
-    const char_uuid = uuidv4();
-    const characterWithUUID: Character = {
-      ...character,
-      char_uuid,
-    };
-    await handleSaveDraft(characterWithUUID, userUuid);
-    showAlert('Draft saved successfully!', 'Success');
-    setError(null);
-  } catch (err: any) {
-    const msg = err?.message || 'Unexpected error while saving character.';
-    setError(msg);
-    Sentry.captureException(err);
-    showAlert('Failed to save draft.', 'Alert');
-  } finally {
-    setSaveLoading(false);
+    await utils.db.remove({
+      tables: 'characters',
+      match: { char_uuid: character.char_uuid },
+    });
+    handleClearCharacter(setCharacter);
+    showAlert('Character deleted successfully.', 'success');
+  } catch (error) {
+    Sentry.captureException(error);
+    showAlert('Error deleting character.', 'alert');
   }
 };
 
 export const handleSubmitCharacter = async (
-  e: React.FormEvent,
   character: Character,
-  character_update: boolean,
+  type: ActionType,
   userUuid: string,
-  setLoading: (b: boolean) => void,
   showAlert: (msg: string, type: string) => void,
   navigate: (url: string) => void,
-  createCharacter: (char: Character) => Promise<{
-    char_uuid?: string;
-    error?: string;
-    is_moderated?: boolean;
-    moderated_message?: string;
-  }>,
-  updateCharacter: (char: Character) => Promise<{
-    char_uuid?: string;
-    error?: string;
-    is_moderated?: boolean;
-    moderated_message?: string;
-  }>,
   CreateNewChat: (
     char_uuid: string,
     userUuid: string
-  ) => Promise<{ chat_uuid?: string; error?: string }>
+  ) => Promise<{ chat_uuid: string; error?: string }>
 ) => {
-  e.preventDefault();
   const setError = useCharacterStore.getState().setError;
-  setLoading(true);
   try {
     if (!userUuid) {
       const msg = 'User UUID is missing.';
-      showAlert(msg, 'Alert');
+      showAlert(msg, 'alert');
       setError(msg);
       return;
     }
+    const char_uuid = character.char_uuid || uuidv4();
+    const characterWithUUID: Character = { ...character, char_uuid };
+    let response: {
+      error?: string;
+      is_moderated?: boolean;
+      moderated_message?: string;
+      char_uuid?: string;
+    };
 
-    const validation = validateCharacterData(character);
-    if (!validation.isValid) {
-      const msg = `Missing or undefined fields: ${validation.missingFields.join(', ')}`;
-      showAlert(msg, 'Alert');
-      setError(msg);
-      return;
+    if (type === 'Draft') {
+      response = await createDraft(characterWithUUID, userUuid);
+    } else if (type === 'Create') {
+      response = await createCharacter(characterWithUUID);
+    } else {
+      response = await updateCharacter(characterWithUUID);
     }
-
-    let response = character_update
-      ? await updateCharacter(character)
-      : await createCharacter(character);
 
     if (response.error) {
-      showAlert(response.error, 'Alert');
+      showAlert(response.error, 'alert');
       setError(response.error);
       return;
     }
@@ -196,41 +120,46 @@ export const handleSubmitCharacter = async (
       const msg =
         response.moderated_message ||
         '⚠️ Your character triggered moderation filters. Please revise and try again.';
-      showAlert(msg, 'Alert');
+      showAlert(msg, 'alert');
       setError(msg);
       return;
     }
 
-    if (!response.char_uuid) {
-      const msg = 'Character creation failed. No UUID returned.';
-      showAlert(msg, 'Alert');
+    if (!response.char_uuid && type !== 'Draft') {
+      const msg = 'Character save failed. No UUID returned.';
+      showAlert(msg, 'alert');
       setError(msg);
       return;
     }
 
-    const chatResponse = await CreateNewChat(response.char_uuid, userUuid);
-
-    if (chatResponse.error) {
-      const msg = chatResponse.error;
-      Sentry.captureException(new Error(msg));
-      showAlert('Error creating chat.', 'Alert');
-      setError(msg);
-      return;
-    }
-
-    if (chatResponse.chat_uuid) {
+    if (type === 'Draft') {
+      showAlert('Draft saved successfully!', 'success');
       setError(null);
-      navigate(`/chat/${chatResponse.chat_uuid}`);
-    } else {
-      showAlert('Chat created successfully.', 'Success');
+      return;
+    }
+
+    if ((type === 'Create' || type === 'Update') && CreateNewChat && navigate) {
+      const chatResponse = await CreateNewChat(response.char_uuid, userUuid);
+      if (chatResponse.error) {
+        Sentry.captureException(new Error(chatResponse.error));
+        showAlert('Error creating chat.', 'alert');
+        setError(chatResponse.error);
+        return;
+      }
+      if (chatResponse.chat_uuid) {
+        setError(null);
+        navigate(`/chat/${chatResponse.chat_uuid}`);
+      }
+      const successMessage = type === 'Create'
+        ? 'Chat created successfully.'
+        : 'Character updated successfully!';
+      showAlert(successMessage, 'success');
       setError(null);
     }
   } catch (error: any) {
     const msg = error?.message || 'An unexpected error occurred.';
     Sentry.captureException(error);
-    showAlert(msg, 'Alert');
+    showAlert(msg, 'alert');
     setError(msg);
-  } finally {
-    setLoading(false);
   }
 };

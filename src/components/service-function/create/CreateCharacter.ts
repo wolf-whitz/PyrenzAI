@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/react';
-import { Character } from '@shared-types';
-import { NotificationManager, Utils } from '~/Utility';
+import { CharacterPayload, CharacterPayloadSchema } from '@shared-types';
+import { NotificationManager, Utils as utils } from '~/Utility';
 
 interface CreateCharacterResponse {
   char_uuid?: string;
@@ -9,13 +9,56 @@ interface CreateCharacterResponse {
   moderated_message?: string;
 }
 
+const requiredCharacterFields: (keyof CharacterPayload)[] = [
+  'title',
+  'persona',
+  'name',
+  'model_instructions',
+  'scenario',
+  'description',
+  'first_message',
+  'tags',
+  'gender',
+  'creator',
+  'profile_image',
+  'attribute',
+];
+
+const validateCharacterData = (character: CharacterPayload) => {
+  const missingFields = requiredCharacterFields.filter((field) => {
+    const value = character[field];
+    return (
+      value === undefined ||
+      value === null ||
+      value === '' ||
+      (Array.isArray(value) && value.length === 0)
+    );
+  });
+
+  if (missingFields.length > 0) {
+    return {
+      error: `Missing or undefined fields: ${missingFields.join(', ')}`,
+    };
+  }
+
+  try {
+    const parsed = CharacterPayloadSchema.parse(character);
+    parsed.emotions ??= [];
+    if (!parsed.creator?.trim()) {
+      return { error: 'Creator is required.' };
+    }
+    return { parsed };
+  } catch (err: any) {
+    return { error: err.message || 'Invalid character format.' };
+  }
+};
+
 const notifySuccess = async (
   message: string,
   userName?: string,
   charName?: string
 ) => {
-  if (typeof document === 'undefined' || document.visibilityState === 'visible')
-    return;
+  if (typeof document === 'undefined' || document.visibilityState === 'visible') return;
   await NotificationManager.fire({
     title: 'Character Saved',
     body: message,
@@ -27,100 +70,89 @@ const notifySuccess = async (
 
 const postCharacter = async (
   type: 'create' | 'update',
-  character: Character,
-  profileImageFile: File | null,
-  emotionImageFile: File | null
+  filteredCharacter: CharacterPayload
 ): Promise<CreateCharacterResponse> => {
-  const data =
-    profileImageFile || emotionImageFile
-      ? (() => {
-          const formData = new FormData();
-          formData.append('type', type);
-          formData.append('character', JSON.stringify({ ...character }));
-          if (profileImageFile)
-            formData.append('profileImageFile', profileImageFile);
-          if (emotionImageFile)
-            formData.append('emotionImageFile', emotionImageFile);
-          return formData;
-        })()
-      : { type, character: { ...character } };
+  const data = { type, character: filteredCharacter };
 
-  const res = await Utils.post<CreateCharacterResponse>(
-    '/api/CreateCharacter',
-    data
-  );
-
+  const res = await utils.post<CreateCharacterResponse>('/api/CreateCharacter', data);
   if (res.error) throw new Error(res.error);
-
   if (res.is_moderated) {
-    const msg =
+    throw new Error(
       res.moderated_message ||
-      '⚠️ Your character triggered moderation filters. Please revise and try again.';
-    throw new Error(msg);
+        '⚠️ Your character triggered moderation filters. Please revise and try again.'
+    );
   }
-
   return res;
 };
 
 const handleCharacterPost = async (
   type: 'create' | 'update',
-  character: Character,
-  profileImageFile: File | null,
-  emotionImageFile: File | null,
+  character: CharacterPayload,
   successMsg: string
 ): Promise<CreateCharacterResponse> => {
-  character.emotions ??= [];
+  const { parsed, error } = validateCharacterData(character);
+  if (error) return { error };
 
-  if (!character.creator?.trim()) {
-    return { error: 'Creator is required.' };
-  }
-
-  if (type === 'create' && !character.char_uuid) {
+  if (type === 'create' && !parsed!.char_uuid) {
     try {
-      character.char_uuid = crypto.randomUUID();
+      parsed!.char_uuid = crypto.randomUUID();
     } catch (err) {
       Sentry.captureException(err);
       return { error: 'Failed to generate character ID.' };
     }
   }
 
-  if (type === 'update' && !character.char_uuid) {
+  if (type === 'update' && !parsed!.char_uuid) {
     return { error: 'Character UUID is required for updating.' };
   }
 
   try {
-    await postCharacter(type, character, profileImageFile, emotionImageFile);
-    await notifySuccess(successMsg, character.creator, character.name);
-    return { char_uuid: character.char_uuid };
+    await postCharacter(type, parsed!);
+    await notifySuccess(successMsg, parsed!.creator, parsed!.name);
+    return { char_uuid: parsed!.char_uuid };
   } catch (err: any) {
     return { error: err.message || 'Something went wrong.' };
   }
 };
 
 export const createCharacter = (
-  character: Character,
-  profileImageFile: File | null = null,
-  emotionImageFile: File | null = null
+  character: CharacterPayload
 ): Promise<CreateCharacterResponse> => {
   return handleCharacterPost(
     'create',
     character,
-    profileImageFile,
-    emotionImageFile,
     'Successfully created {{char}}.'
   );
 };
 
 export const updateCharacter = (
-  character: Character,
-  profileImageFile: File | null = null,
-  emotionImageFile: File | null = null
+  character: CharacterPayload
 ): Promise<CreateCharacterResponse> => {
   return handleCharacterPost(
     'update',
     character,
-    profileImageFile,
-    emotionImageFile,
     'Successfully updated {{char}}.'
   );
+};
+
+export const createDraft = async (
+  character: CharacterPayload,
+  creatorUuid: string
+): Promise<{ error?: string }> => {
+  const { parsed, error } = validateCharacterData(character);
+  if (error) return { error };
+
+  try {
+    await utils.db.insert({
+      tables: 'draft_characters',
+      data: {
+        ...parsed!,
+        creator_uuid: creatorUuid,
+      },
+    });
+    return {};
+  } catch (err: any) {
+    Sentry.captureException(err);
+    return { error: err.message || 'Failed to create draft.' };
+  }
 };

@@ -1,18 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Avatar,
   TextField,
   styled,
-  IconButton,
-  Typography,
-  CircularProgress,
+  SxProps,
 } from '@mui/material';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { SxProps } from '@mui/system';
 import { PyrenzBlueButton } from '~/theme';
-import { CustomMarkdown, TypingIndicator } from '~/components';
+import { CustomMarkdown, TypingIndicator, MessageNav } from '@components';
 
 interface PyrenzMessageBoxProps {
   dataState: 'user' | 'char';
@@ -37,6 +32,7 @@ interface PyrenzMessageBoxProps {
   char?: { name?: string };
   ai_message?: string;
   isGeneratingEmptyCharMessage?: boolean;
+  alternation_first?: boolean;
 }
 
 const StyledPyrenzMessageBox = styled(Box, {
@@ -95,23 +91,38 @@ export const PyrenzMessageBox = ({
   char = {},
   ai_message = '',
   isGeneratingEmptyCharMessage = false,
+  alternation_first = true,
 }: PyrenzMessageBoxProps) => {
-  const handleClick = (event: React.MouseEvent) => onClick?.(event);
-  const handleGoPrev = (event: React.MouseEvent) => {
-    event.stopPropagation();
-    onGoNext?.(event);
-  };
-  const handleGoNext = (event: React.MouseEvent) => {
-    event.stopPropagation();
-    onGoPrev?.(event);
-  };
+  const [altIndex, setAltIndex] = useState(
+    alternation_first ? 0 : alternativeMessages.length - 1
+  );
+
+  useEffect(() => {
+    setAltIndex(alternation_first ? 0 : alternativeMessages.length - 1);
+  }, [alternativeMessages, alternation_first]);
+
+  const totalMessages = alternativeMessages.length;
 
   const getDisplayedText = () => {
-    if (alternativeMessages.length > 0) {
-      return alternativeMessages[alternativeMessages.length - 1 - currentMessageIndex] ?? '';
+    if (totalMessages > 0) {
+      return alternativeMessages[altIndex] ?? '';
     }
     return children;
   };
+
+  const handleGoPrev = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    setAltIndex((prev) => (prev === 0 ? totalMessages - 1 : prev - 1));
+    onGoPrev?.(event);
+  };
+
+  const handleGoNext = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    setAltIndex((prev) => (prev + 1) % totalMessages);
+    onGoNext?.(event);
+  };
+
+  const handleClick = (event: React.MouseEvent) => onClick?.(event);
 
   const renderContent = () => {
     if (isEditing) {
@@ -165,41 +176,13 @@ export const PyrenzMessageBox = ({
           char={char}
           ai_message={ai_message}
         />
-
-        {showNav && alternativeMessages.length > 1 && (
-          <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            mt={1}
-            gap={1}
-          >
-            <IconButton
-              size="small"
-              onClick={handleGoPrev}
-              sx={{
-                color: '#fff',
-                backgroundColor: '#333',
-                '&:hover': { backgroundColor: '#444' },
-              }}
-            >
-              <ChevronLeftIcon />
-            </IconButton>
-              <Typography variant="caption" color="inherit">
-              {alternativeMessages.length - currentMessageIndex}/{alternativeMessages.length}
-              </Typography>
-            <IconButton
-              size="small"
-              onClick={handleGoNext}
-              sx={{
-                color: '#fff',
-                backgroundColor: '#333',
-                '&:hover': { backgroundColor: '#444' },
-              }}
-            >
-              <ChevronRightIcon />
-            </IconButton>
-          </Box>
+        {showNav && totalMessages > 1 && (
+          <MessageNav
+            altIndex={altIndex}
+            totalMessages={totalMessages}
+            onGoPrev={handleGoPrev}
+            onGoNext={handleGoNext}
+          />
         )}
       </>
     );
@@ -207,6 +190,7 @@ export const PyrenzMessageBox = ({
 
   return (
     <Box
+      className="hover-container"
       display="flex"
       flexDirection="column"
       alignItems={dataState === 'user' ? 'flex-end' : 'flex-start'}
@@ -224,7 +208,7 @@ export const PyrenzMessageBox = ({
         <StyledPyrenzMessageBox
           onClick={handleClick}
           sx={sx}
-          className={className}
+          className="hover-container"
           dataState={dataState}
         >
           {renderContent()}

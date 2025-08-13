@@ -15,33 +15,27 @@ import {
   DeleteOutlined as DeleteIcon,
 } from '@mui/icons-material';
 import { GetUserUUID } from '@components';
-import { Draft } from '@shared-types';
-import {
-  PyrenzModal,
-  PyrenzModalContent,
-  PyrenzCard,
-  PyrenzMenu,
-} from '~/theme';
+import { PyrenzModal, PyrenzModalContent, PyrenzCard, PyrenzMenu } from '~/theme';
 import { Utils } from '~/Utility';
+import type { CharacterPayload } from '@shared-types';
 
 interface DraftsModalProps {
   onClose: () => void;
-  onSelect: (draft: Draft) => void;
+  onSelect: (draft: CharacterPayload) => void;
 }
 
 const ITEMS_PER_PAGE = 3;
 
 export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
-  const [drafts, setDrafts] = useState<Draft[]>([]);
+  const [drafts, setDrafts] = useState<CharacterPayload[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
-  const [displayedDrafts, setDisplayedDrafts] = useState<Draft[]>([]);
+  const [displayedDrafts, setDisplayedDrafts] = useState<CharacterPayload[]>([]);
   const [userUuid, setUserUuid] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const hasFetched = useRef(false);
-
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-  const [selectedDraftId, setSelectedDraftId] = useState<number | null>(null);
+  const [selectedDraftId, setSelectedDraftId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUserUuid = async () => {
@@ -61,7 +55,7 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
       if (hasFetched.current || !userUuid) return;
       hasFetched.current = true;
       try {
-        const { data } = await Utils.db.select<Draft>({
+        const { data } = await Utils.db.select<CharacterPayload>({
           tables: 'draft_characters',
           columns: '*',
           match: { creator_uuid: userUuid },
@@ -104,7 +98,7 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
 
   const handleOpenMenu = (
     event: React.MouseEvent<HTMLElement>,
-    draftId: number
+    draftId: string
   ) => {
     event.stopPropagation();
     setMenuAnchor(event.currentTarget);
@@ -121,10 +115,10 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
     try {
       await Utils.db.remove({
         tables: 'draft_characters',
-        match: { id: selectedDraftId },
+        match: { char_uuid: selectedDraftId },
       });
       const updatedDrafts = drafts.filter(
-        (draft) => draft.id !== selectedDraftId
+        (draft) => draft.char_uuid !== selectedDraftId
       );
       setDrafts(updatedDrafts);
       setDisplayedDrafts(
@@ -141,7 +135,7 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
     }
   };
 
-  const handleSelectDraft = (draft: Draft) => {
+  const handleSelectDraft = (draft: CharacterPayload) => {
     onSelect(draft);
     onClose();
   };
@@ -156,13 +150,11 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
         >
           Select a Draft
         </Typography>
-
         {error && (
           <Typography color="error" sx={{ textAlign: 'center', mb: 2 }}>
             {error}
           </Typography>
         )}
-
         {loading ? (
           <>
             {[...Array(3)].map((_, i) => (
@@ -180,7 +172,7 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
           <>
             {displayedDrafts.map((draft) => (
               <PyrenzCard
-                key={draft.id}
+                key={draft.char_uuid}
                 sx={{
                   mb: 4,
                   color: 'white',
@@ -191,13 +183,12 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
               >
                 <CardActions sx={{ position: 'absolute', top: 0, right: 0 }}>
                   <IconButton
-                    onClick={(e) => handleOpenMenu(e, draft.id)}
+                    onClick={(e) => handleOpenMenu(e, draft.char_uuid)}
                     sx={{ color: 'white' }}
                   >
                     <MoreVertIcon />
                   </IconButton>
                 </CardActions>
-
                 <CardContent>
                   <Typography variant="h6" sx={{ mb: 1 }}>
                     {draft.name || 'Untitled Draft'}
@@ -211,7 +202,6 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
                 </CardContent>
               </PyrenzCard>
             ))}
-
             <PyrenzMenu
               anchorEl={menuAnchor}
               open={Boolean(menuAnchor)}
@@ -222,7 +212,6 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
                 Delete Draft
               </MenuItem>
             </PyrenzMenu>
-
             <Box
               sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}
             >

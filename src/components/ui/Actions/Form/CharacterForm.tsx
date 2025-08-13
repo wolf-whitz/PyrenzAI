@@ -16,6 +16,7 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import { useCharacterStore } from '~/store';
+import { CharacterPayload } from '@shared-types';
 
 interface CharacterFormProps {
   character_update: boolean;
@@ -36,9 +37,8 @@ export function CharacterForm({
     loading,
     saveLoading,
     handleClear,
-    handleSave,
-    handleSelectDraft,
     handleDelete,
+    handleSelectDraft,
     handleSubmit,
   } = useCreateAPI(navigate, character_update, user_uuid, creator);
 
@@ -58,7 +58,7 @@ export function CharacterForm({
       <Paper
         elevation={3}
         component="form"
-        onSubmit={handleSubmit}
+        onSubmit={(e) => handleSubmit(character_update ? 'Update' : 'Create', e)}
         sx={{
           backgroundColor: 'rgba(30, 30, 30, 0.75)',
           backdropFilter: 'blur(6px)',
@@ -84,29 +84,36 @@ export function CharacterForm({
         >
           {character_update ? 'Update Character' : 'Create Character'}
         </Typography>
-
         {error && (
           <Alert severity="error" sx={{ fontSize: '0.9rem' }}>
             {error}
           </Alert>
         )}
-
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <TextareaForm />
           <GenderDropdown />
           <VisibilityDropdown />
           <TokenSummary />
         </Box>
-
-        <FormActions
-          onClear={handleClear}
-          onSave={handleSave}
-          onDelete={handleDelete}
-          loading={loading}
-          saveLoading={saveLoading}
-          onSelectDraft={handleSelectDraft}
-          character_update={character_update}
-        />
+        <Box
+          sx={{
+            display: 'flex',
+            gap: 2,
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+          }}
+        >
+          <FormActions
+            onClear={handleClear}
+            onCreate={() => handleSubmit(character_update ? 'Update' : 'Create')}
+            onSave={() => handleSubmit('Draft')}
+            onDelete={handleDelete}
+            saveLoading={saveLoading}
+            loading={loading}
+            onSelectDraft={handleSelectDraft}
+            character_update={character_update}
+          />
+        </Box>
       </Paper>
     </Box>
   );

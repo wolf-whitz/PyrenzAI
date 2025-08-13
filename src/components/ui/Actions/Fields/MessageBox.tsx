@@ -4,7 +4,7 @@ import { MessageContextMenu } from '~/components';
 import { PyrenzMessageBox, PyrenzDialog } from '~/theme';
 import type { MessageBoxProps } from '@shared-types';
 
-export function MessageBox(props: MessageBoxProps) {
+export function MessageBox(props: MessageBoxProps & { alternation_first?: boolean }) {
   const {
     msg,
     index,
@@ -22,6 +22,7 @@ export function MessageBox(props: MessageBoxProps) {
     onSaveEdit,
     onCancelEdit,
     onGenerateImage,
+    alternation_first = true,
   } = props;
 
   const dataState = msg.type;
@@ -29,26 +30,28 @@ export function MessageBox(props: MessageBoxProps) {
     dataState === 'user'
       ? msg.username || user.username
       : msg.name || char.name;
-
   const isEditingThisMessage =
     editingMessageId === msg.id && editingMessageType === dataState;
-
   const [localEditedMessage, setLocalEditedMessage] = useState(msg.text || '');
   const [debouncedValue, setDebouncedValue] = useState(localEditedMessage);
   const [openDialog, setOpenDialog] = useState(false);
-  const [altIndex, setAltIndex] = useState(0);
-
   const alternatives = msg.alternative_messages ?? [];
   if (msg.text && !alternatives.includes(msg.text)) {
     alternatives.unshift(msg.text);
   }
-
   const totalMessages = alternatives.length;
+  const prevMsgIdRef = useRef<string | number | undefined>(msg.id);
+  const [altIndex, setAltIndex] = useState(
+    alternation_first ? 0 : totalMessages > 0 ? totalMessages - 1 : 0
+  );
 
   useEffect(() => {
-    setLocalEditedMessage(msg.text || '');
-    setAltIndex(0);
-  }, [msg.text, msg.alternative_messages]);
+    if (msg.id !== prevMsgIdRef.current) {
+      setLocalEditedMessage(msg.text || '');
+      setAltIndex(alternation_first ? 0 : alternatives.length > 0 ? alternatives.length - 1 : 0);
+      prevMsgIdRef.current = msg.id;
+    }
+  }, [msg.id, alternation_first, alternatives.length, msg.text]);
 
   useEffect(() => {
     if (!isEditingThisMessage) return;
@@ -57,15 +60,15 @@ export function MessageBox(props: MessageBoxProps) {
   }, [localEditedMessage, isEditingThisMessage]);
 
   useEffect(() => {
-    if (altIndex >= alternatives.length) setAltIndex(0);
+    if (altIndex >= totalMessages) setAltIndex(0);
   }, [totalMessages, altIndex]);
 
-  const handlePrev = (e: React.MouseEvent) => {
+  const handlePrev = (e) => {
     e.stopPropagation();
     setAltIndex((prev) => (prev === 0 ? totalMessages - 1 : prev - 1));
   };
 
-  const handleNext = (e: React.MouseEvent) => {
+  const handleNext = (e) => {
     e.stopPropagation();
     setAltIndex((prev) => (prev + 1) % totalMessages);
   };
@@ -75,13 +78,10 @@ export function MessageBox(props: MessageBoxProps) {
     dataState === 'char' && isLastMessage && currentText.trim() === '';
 
   const theme = useTheme();
-  const menuRef = useRef<HTMLDivElement>(null);
-  const [menuPosition, setMenuPosition] = useState<{
-    top: number;
-    left: number;
-  } | null>(null);
+  const menuRef = useRef(null);
+  const [menuPosition, setMenuPosition] = useState(null);
 
-  const handleMessageBoxClick = (e: React.MouseEvent) => {
+  const handleMessageBoxClick = (e) => {
     if (!isEditingThisMessage && index !== 0 && !isGenerating) {
       setMenuPosition({ top: e.clientY, left: e.clientX });
     }
@@ -90,18 +90,16 @@ export function MessageBox(props: MessageBoxProps) {
   const handleCloseMenu = () => setMenuPosition(null);
 
   useEffect(() => {
-    const onOutside = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+    const onOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
         handleCloseMenu();
       }
     };
-
     if (menuPosition) {
       document.addEventListener('mousedown', onOutside);
     } else {
       document.removeEventListener('mousedown', onOutside);
     }
-
     return () => document.removeEventListener('mousedown', onOutside);
   }, [menuPosition]);
 
@@ -156,6 +154,7 @@ export function MessageBox(props: MessageBoxProps) {
           isGeneratingEmptyCharMessage={isEmptyCharMessage}
           ai_message={currentText}
           char={char}
+          alternation_first={alternation_first}
           sx={{
             cursor: 'pointer',
             width: isEditingThisMessage ? '100%' : 'fit-content',
@@ -165,7 +164,6 @@ export function MessageBox(props: MessageBoxProps) {
           {currentText}
         </PyrenzMessageBox>
       </Box>
-
       {menuPosition &&
         !isEditingThisMessage &&
         index !== 0 &&
@@ -194,7 +192,6 @@ export function MessageBox(props: MessageBoxProps) {
             />
           </Box>
         )}
-
       <PyrenzDialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}

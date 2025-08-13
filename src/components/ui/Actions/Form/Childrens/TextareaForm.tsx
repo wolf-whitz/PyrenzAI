@@ -1,27 +1,18 @@
-import React, { useState, useEffect, ChangeEvent, useMemo } from 'react';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import {
   ImageUploader,
-  Textarea,
-  TagsMenu,
   useTextareaFormAPI,
   textareasByCategory,
+  FirstMessageAlternatives,
+  MemoizedTextarea,
+  MemoizedTagsMenu,
 } from '@components';
 import { useCharacterStore } from '~/store';
 import { Character } from '@shared-types';
-import llamaTokenizer from 'llama-tokenizer-js';
 import { Box, Typography } from '@mui/material';
-import { uploadImage } from '~/Utility';
-import { usePyrenzAlert } from '~/provider';
-import debounce from 'lodash.debounce';
-
-const MemoizedTextarea = React.memo(Textarea);
-const MemoizedTagsMenu = React.memo(TagsMenu);
 
 export function TextareaForm() {
   const character = useCharacterStore((state) => state) as Character;
-  const setCharacter = useCharacterStore((state) => state.setCharacter);
-  const setTokenTotal = useCharacterStore((state) => state.setTokenTotal);
-  const showAlert = usePyrenzAlert();
 
   const {
     anchorEl,
@@ -29,77 +20,31 @@ export function TextareaForm() {
     handleCloseDropdown,
     handleTagClick,
     handleChange,
+    handleImageSelect,
+    alternativeMessages,
+    setAlternativeMessages,
+    currentIndex,
+    setCurrentIndex,
+    maxAlternatives,
+    isAlternatives,
   } = useTextareaFormAPI();
 
   const [tagsInputRaw, setTagsInputRaw] = useState<string>(
     (character.tags || []).join(', ')
   );
 
-  const debouncedSetCharacter = useMemo(
-    () =>
-      debounce((tagsArray: string[]) => {
-        setCharacter({ tags: tagsArray });
-      }, 300),
-    [setCharacter]
-  );
+  useEffect(() => {
+    setTagsInputRaw((character.tags || []).join(', '));
+  }, [character.tags]);
 
-  const handleTagsChange = (
-    e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
-  ) => {
+  const handleTagsChange = (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     const raw = e.target.value;
     setTagsInputRaw(raw);
-
-    const tagsArray = raw
-      .split(/[\s,]+/)
-      .map((tag) => tag.trim())
-      .filter((tag) => tag.length > 0);
-
-    debouncedSetCharacter(tagsArray);
+    handleChange({
+      ...e,
+      target: { ...e.target, name: 'tags', value: raw },
+    } as ChangeEvent<HTMLInputElement>);
   };
-
-  const handleImageSelect = async (input: File | Blob | string | null) => {
-    if (!input) return;
-
-    if (typeof input === 'string') {
-      setCharacter({ profile_image: input });
-      return;
-    }
-
-    const { url, error } = await uploadImage('character-image', input);
-    if (error) {
-      showAlert(error, 'alert');
-    } else if (url) {
-      setCharacter({ profile_image: url });
-    }
-  };
-
-  useEffect(() => {
-    const fieldsToCount = [
-      character.name,
-      character.persona,
-      character.model_instructions,
-      character.scenario,
-      character.first_message,
-      character.lorebook,
-      character.attribute,
-    ];
-
-    const totalTokens = fieldsToCount.reduce((sum, field) => {
-      if (!field || typeof field !== 'string') return sum;
-      const tokens = llamaTokenizer.encode(field);
-      return sum + tokens.length;
-    }, 0);
-
-    setTokenTotal(totalTokens);
-  }, [
-    character.name,
-    character.persona,
-    character.model_instructions,
-    character.scenario,
-    character.first_message,
-    character.lorebook,
-    setTokenTotal,
-  ]);
 
   return (
     <>
@@ -108,15 +53,29 @@ export function TextareaForm() {
           <Typography variant="h5" gutterBottom>
             {section.category}
           </Typography>
-
           {section.fields.map((field) => {
+            if (field.name === 'first_message' && isAlternatives) {
+              return (
+                <FirstMessageAlternatives
+                  key="first_message_pagination"
+                  alternativeMessages={alternativeMessages}
+                  currentIndex={currentIndex}
+                  maxAlternatives={maxAlternatives}
+                  placeholder={field.placeholder}
+                  showTokenizer={field.showTokenizer}
+                  maxLength={field.maxLength}
+                  setCurrentIndex={setCurrentIndex}
+                  setAlternativeMessages={setAlternativeMessages}
+                />
+              );
+            }
+
             const value =
               field.name === 'tags'
                 ? tagsInputRaw
                 : (character as any)[field.name] || '';
 
-            const onChange =
-              field.name === 'tags' ? handleTagsChange : handleChange;
+            const onChange = field.name === 'tags' ? handleTagsChange : handleChange;
 
             return (
               <MemoizedTextarea
@@ -129,14 +88,11 @@ export function TextareaForm() {
                 placeholder={field.placeholder}
                 is_tag={field.is_tag}
                 maxLength={field.maxLength}
-                onTagPressed={
-                  field.name === 'tags' ? handleOpenDropdown : undefined
-                }
+                onTagPressed={field.name === 'tags' ? handleOpenDropdown : undefined}
                 showTokenizer={field.showTokenizer}
               />
             );
           })}
-
           {section.category === 'Basic Information' && (
             <ImageUploader
               onImageSelect={handleImageSelect}

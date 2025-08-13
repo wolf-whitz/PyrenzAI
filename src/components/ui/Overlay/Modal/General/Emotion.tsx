@@ -67,15 +67,15 @@ export function Emotion({ open, onClose, onSave }: EmotionProps) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
-
-  const emotions = useCharacterStore((s) => s.emotions);
+  const emotions = useCharacterStore((state) => state.emotions) ?? [];
 
   useEffect(() => {
-    if (open) return;
-    setSelectedEmotion('');
-    setImageUrl(null);
-    setImageFile(null);
-    setUploadError(null);
+    if (!open) {
+      setSelectedEmotion('');
+      setImageUrl(null);
+      setImageFile(null);
+      setUploadError(null);
+    }
   }, [open]);
 
   async function handleImageSelect(file: File | null) {
@@ -90,7 +90,6 @@ export function Emotion({ open, onClose, onSave }: EmotionProps) {
     setUploadError(null);
 
     const { url, error } = await uploadImage('character-image', file);
-
     setImageUrl(url);
     setImageFile(file);
     setUploadError(error);
@@ -127,7 +126,6 @@ export function Emotion({ open, onClose, onSave }: EmotionProps) {
               <CloseIcon />
             </IconButton>
           </Stack>
-
           <Stack spacing={3}>
             <FormControl fullWidth>
               <InputLabel sx={{ color: '#ccc' }}>Emotion Type</InputLabel>
@@ -152,7 +150,6 @@ export function Emotion({ open, onClose, onSave }: EmotionProps) {
                 ))}
               </Select>
             </FormControl>
-
             <ImageUploader onImageSelect={handleImageSelect} />
             {uploading && (
               <Typography color="primary">Uploading image...</Typography>
@@ -160,7 +157,6 @@ export function Emotion({ open, onClose, onSave }: EmotionProps) {
             {uploadError && (
               <Typography color="error">{uploadError}</Typography>
             )}
-
             {emotions.length > 0 && (
               <PyrenzCard>
                 <Typography variant="body2" color="textSecondary" gutterBottom>
@@ -196,7 +192,6 @@ export function Emotion({ open, onClose, onSave }: EmotionProps) {
                 </Stack>
               </PyrenzCard>
             )}
-
             <Stack direction="row" justifyContent="flex-end" gap={2}>
               <PyrenzBlueButton onClick={onClose} variant="outlined">
                 Cancel

@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import type { CharacterPayload } from '@shared-types';
 
 interface EmotionData {
   triggerWords: string[];
@@ -6,66 +7,61 @@ interface EmotionData {
   file: File | null;
 }
 
-interface CharacterState {
-  char_uuid: string;
-  persona: string;
-  name: string;
-  model_instructions: string;
-  scenario: string;
-  description: string;
-  first_message: string;
-  lorebook: string;
-  is_public: boolean;
-  is_nsfw: boolean;
-  is_details_private: boolean;
-  tags: string[];
-  gender: string;
-  creator: string | null;
-  profile_image: string | undefined;
-  emotions: EmotionData[];
+interface StoreState {
+  max_alternatives: number;
+  tokenTotal: number;
+  error: string | null;
 }
 
 interface CharacterActions {
-  tokenTotal: number;
-  error: string | null;
-  setCharacter: (data: Partial<CharacterState>) => void;
+  setCharacter: (data: Partial<CharacterPayload>) => void;
   setGender: (gender: string) => void;
   setTokenTotal: (tokenTotal: number) => void;
   addEmotion: (emotion: EmotionData) => void;
   setError: (error: string | null) => void;
+  setFirstMessageAlternatives: (alternatives: string[]) => void;
+  setMaxAlternatives: (max: number) => void;
+  loadDraft: (draft: CharacterPayload) => void;
 }
 
-export const useCharacterStore = create<CharacterState & CharacterActions>()(
+export const useCharacterStore = create<CharacterPayload & StoreState & CharacterActions>()(
   (set) => ({
     char_uuid: '',
+    title: '',
+    name: 'Anon',
+    description: '',
     persona: '',
-    is_public: false,
-    is_nsfw: false,
-    is_details_private: false,
-    name: '',
     model_instructions: '',
     scenario: '',
-    description: '',
-    first_message: '',
-    lorebook: '',
-    tags: [],
     gender: '',
-    creator: null,
-    profile_image: undefined,
+    first_message: [],
+    creator: '',
+    creator_uuid: '',
+    tags: [],
+    profile_image: '',
+    is_public: false,
+    is_nsfw: false,
+    is_owner: false,
+    is_details_private: false,
+    is_banned: false,
+    lorebook: '',
+    attribute: '',
     emotions: [],
+    profileImageFile: null,
+    emotionImageFile: null,
+
+    max_alternatives: 5,
     tokenTotal: 0,
     error: null,
-    setCharacter: (data) =>
-      set((state) => ({
-        ...state,
-        ...data,
-      })),
-    setGender: (gender) => set(() => ({ gender })),
-    setTokenTotal: (tokenTotal) => set(() => ({ tokenTotal })),
+
+    setCharacter: (data) => set((state) => ({ ...state, ...data })),
+    setGender: (gender) => set({ gender }),
+    setTokenTotal: (tokenTotal) => set({ tokenTotal }),
     addEmotion: (emotion) =>
-      set((state) => ({
-        emotions: [...state.emotions, emotion],
-      })),
-    setError: (error) => set(() => ({ error })),
+      set((state) => ({ emotions: [...(state.emotions ?? []), emotion] })),
+    setError: (error) => set({ error }),
+    setFirstMessageAlternatives: (alternatives) => set({ first_message: alternatives }),
+    setMaxAlternatives: (max) => set({ max_alternatives: max }),
+    loadDraft: (draft) => set(() => ({ ...draft })),
   })
 );

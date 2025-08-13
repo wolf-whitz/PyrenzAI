@@ -1,46 +1,82 @@
-import { motion } from 'framer-motion';
-import { CircularProgress, Typography, Link } from '@mui/material';
+import React, { useState } from 'react';
+import { CircularProgress, Typography, Link, Box } from '@mui/material';
 import {
   SaveOutlined as SaveIcon,
   DescriptionOutlined as DescriptionIcon,
   DeleteOutlined as DeleteIcon,
   Mood as EmotionIcon,
+  ImportExportOutlined as ImportIcon,
 } from '@mui/icons-material';
-import { CreateButton, DraftsModal, Emotion } from '@components';
-import { Draft } from '@shared-types';
+import { CreateButton, DraftsModal, Emotion, ImportModal } from '@components';
+import { CharacterPayload } from '@shared-types';
 import { PyrenzBlueButton } from '~/theme';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
 import { useCharacterStore } from '~/store';
 
 interface FormActionsProps {
   onClear: () => void;
+  onCreate: () => void;
   onSave: () => void;
   onDelete: () => void;
-  loading: boolean;
   saveLoading: boolean;
-  onSelectDraft: (draft: Draft) => void;
+  loading: boolean;
+  onSelectDraft: (draft: CharacterPayload) => void;
   character_update: boolean;
 }
 
 export function FormActions({
   onClear,
+  onCreate,
   onSave,
   onDelete,
-  loading,
   saveLoading,
+  loading,
   onSelectDraft,
   character_update,
 }: FormActionsProps) {
   const navigate = useNavigate();
   const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
   const [emotionModalOpen, setEmotionModalOpen] = useState(false);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [clearPressed, setClearPressed] = useState(false);
+  const [savePressed, setSavePressed] = useState(false);
+  const [draftPressed, setDraftPressed] = useState(false);
+  const [emotionPressed, setEmotionPressed] = useState(false);
+  const [importPressed, setImportPressed] = useState(false);
+  const [deletePressed, setDeletePressed] = useState(false);
+
   const addEmotion = useCharacterStore((state) => state.addEmotion);
 
-  const handleOpenDraftModal = () => setIsDraftModalOpen(true);
-  const handleCloseDraftModal = () => setIsDraftModalOpen(false);
-  const handleOpenEmotion = () => setEmotionModalOpen(true);
-  const handleCloseEmotion = () => setEmotionModalOpen(false);
+  const handleOpenDraftModal = () => {
+    setDraftPressed(true);
+    setIsDraftModalOpen(true);
+  };
+
+  const handleCloseDraftModal = () => {
+    setDraftPressed(false);
+    setIsDraftModalOpen(false);
+  };
+
+  const handleOpenEmotion = () => {
+    setEmotionPressed(true);
+    setEmotionModalOpen(true);
+  };
+
+  const handleCloseEmotion = () => {
+    setEmotionPressed(false);
+    setEmotionModalOpen(false);
+  };
+
+  const handleOpenImportModal = () => {
+    setImportPressed(true);
+    setIsImportModalOpen(true);
+  };
+
+  const handleCloseImportModal = () => {
+    setImportPressed(false);
+    setIsImportModalOpen(false);
+  };
+
   const handleGuideClick = () => navigate('/Docs');
 
   const handleSaveEmotion = (result: {
@@ -55,98 +91,89 @@ export function FormActions({
     });
   };
 
+  const handleClear = () => {
+    setClearPressed(true);
+    onClear();
+    setClearPressed(false);
+  };
+
+  const handleSave = () => {
+    setSavePressed(true);
+    onSave();
+    setSavePressed(false);
+  };
+
+  const handleDelete = () => {
+    setDeletePressed(true);
+    onDelete();
+    setDeletePressed(false);
+  };
+
   return (
-    <motion.div
-      className="flex flex-wrap justify-end gap-2 mt-4"
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-    >
+    <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-end', gap: 2, mt: 4 }}>
       <PyrenzBlueButton
         variant="contained"
-        onClick={onClear}
-        className="w-full sm:w-auto"
+        onClick={handleClear}
+        disabled={clearPressed || loading}
       >
         Clear
       </PyrenzBlueButton>
       <PyrenzBlueButton
         variant="contained"
-        onClick={onSave}
-        disabled={saveLoading}
-        startIcon={
-          saveLoading ? (
-            <CircularProgress size={20} color="inherit" />
-          ) : (
-            <SaveIcon />
-          )
-        }
-        className="w-full sm:w-auto"
+        onClick={handleSave}
+        disabled={saveLoading || savePressed || loading}
+        startIcon={saveLoading ? <CircularProgress size={20} color="inherit" /> : <SaveIcon />}
       >
         {saveLoading ? 'Saving...' : 'Save'}
       </PyrenzBlueButton>
       <PyrenzBlueButton
         variant="contained"
         onClick={handleOpenDraftModal}
+        disabled={draftPressed || loading}
         startIcon={<DescriptionIcon />}
-        className="w-full sm:w-auto"
       >
         Drafts
       </PyrenzBlueButton>
       <PyrenzBlueButton
         variant="contained"
         onClick={handleOpenEmotion}
+        disabled={emotionPressed || loading}
         startIcon={<EmotionIcon />}
-        className="w-full sm:w-auto"
       >
         Add Emotion
+      </PyrenzBlueButton>
+      <PyrenzBlueButton
+        variant="contained"
+        onClick={handleOpenImportModal}
+        disabled={importPressed || loading}
+        startIcon={<ImportIcon />}
+      >
+        Import
       </PyrenzBlueButton>
       {character_update && (
         <PyrenzBlueButton
           variant="contained"
           color="error"
-          onClick={onDelete}
+          onClick={handleDelete}
+          disabled={deletePressed || loading}
           startIcon={<DeleteIcon />}
-          className="w-full sm:w-auto"
         >
           Delete
         </PyrenzBlueButton>
       )}
       <CreateButton
-        loading={loading}
-        className="w-full sm:w-auto"
+        onClick={onCreate}
         character_update={character_update}
+        disabled={loading}
       />
-      {isDraftModalOpen && (
-        <DraftsModal onClose={handleCloseDraftModal} onSelect={onSelectDraft} />
-      )}
-      {emotionModalOpen && (
-        <Emotion
-          open={emotionModalOpen}
-          onClose={handleCloseEmotion}
-          onSave={handleSaveEmotion}
-        />
-      )}
-      <Typography
-        variant="body1"
-        align="center"
-        sx={{ width: '100%', marginTop: '16px', color: 'grey.600' }}
-      >
-        <Link
-          component="button"
-          variant="body1"
-          onClick={handleGuideClick}
-          sx={{
-            textDecoration: 'underline',
-            cursor: 'pointer',
-            color: 'inherit',
-            background: 'none',
-            border: 0,
-            p: 0,
-          }}
-        >
+      {isDraftModalOpen && <DraftsModal onClose={handleCloseDraftModal} onSelect={onSelectDraft} />}
+      {emotionModalOpen && <Emotion open={emotionModalOpen} onClose={handleCloseEmotion} onSave={handleSaveEmotion} />}
+      {isImportModalOpen && <ImportModal open={isImportModalOpen} onClose={handleCloseImportModal} />}
+      <Typography variant="body1" align="center" sx={{ width: '100%', mt: 2, color: 'grey.600' }}>
+        <Link component="button" variant="body1" onClick={handleGuideClick} sx={{ textDecoration: 'underline', cursor: 'pointer', color: 'inherit' }}>
           Not sure where to start? Check out our starter guide! ദ്ദി(ᵔᗜᵔ)
         </Link>
       </Typography>
-    </motion.div>
+    </Box>
   );
 }

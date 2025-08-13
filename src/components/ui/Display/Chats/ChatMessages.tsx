@@ -34,7 +34,7 @@ export function ChatMessages({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  const { user, char } = useChatStore();
+  const { user, char, alternativeFirstMessages } = useChatStore();
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -79,10 +79,12 @@ export function ChatMessages({
   };
 
   const messages: Message[] = (() => {
-    const alreadyIncludesFirst = previous_message?.some(
+    if (!previous_message) return [];
+  
+    const alreadyIncludesFirst = previous_message.some(
       (m) => m.text === firstMessage && m.type === 'char'
     );
-
+  
     if (firstMessage && !alreadyIncludesFirst) {
       return [
         {
@@ -91,14 +93,16 @@ export function ChatMessages({
           text: firstMessage,
           name: char?.name,
           profile_image: char?.profile_image,
-          alternative_messages: [],
+          alternative_messages: alternativeFirstMessages,
         },
         ...previous_message,
       ];
     }
-
+  
     return previous_message;
   })();
+  
+  
 
   return (
     <Box className="space-y-4 p-4 max-w-2xl mx-auto">

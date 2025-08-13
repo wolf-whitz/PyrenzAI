@@ -5,6 +5,8 @@ export interface TextareaField {
   is_tag?: boolean;
   maxLength?: number;
   showTokenizer?: boolean;
+  is_alternatives?: boolean;
+  max_alternatives?: number;
 }
 
 export interface TextareaCategory {
@@ -70,6 +72,8 @@ export const textareasByCategory: TextareaCategory[] = [
         label: 'First Message',
         placeholder: 'What is the first message...',
         showTokenizer: true,
+        is_alternatives: true,
+        max_alternatives: 15,
       },
     ],
   },

@@ -17,6 +17,8 @@ interface FetchChatDataResult {
   is_error: boolean;
   Character?: Character;
   firstMessage?: string;
+  alternativeFirstMessages?: string[];
+  currentFirstMessageIndex?: number;
   error?: string;
 }
 
@@ -39,7 +41,6 @@ export const fetchChatData = async (
     }
 
     let messages: ChatMessageWithId[] = [];
-
     try {
       const result = await utils.db.select<ChatMessageWithId>({
         tables: 'chat_messages',
@@ -49,7 +50,6 @@ export const fetchChatData = async (
         orderBy: { column: 'created_at', ascending: false },
         nocache: true,
       });
-
       messages = result?.data ?? [];
     } catch (err) {
       Sentry.captureException(err);
@@ -58,37 +58,41 @@ export const fetchChatData = async (
 
     const reversedMessages = messages.reverse();
     const formattedMessages: Message[] = [];
-
     let lastUserText: string | null = null;
+
+    const firstMessagesArray: string[] = Array.isArray(characterData.first_message)
+      ? characterData.first_message
+      : characterData.first_message
+      ? [characterData.first_message]
+      : [];
+
+    const currentFirstMessageIndex = 0;
 
     for (const msg of reversedMessages) {
       if (msg.user_message) {
         lastUserText = msg.user_message;
-
         formattedMessages.push({
           id: msg.id,
           name: userData.username || 'Anon',
           text: msg.user_message,
           profile_image: userData.user_avatar || '',
           type: 'user',
-          chat_uuid,
+          chat_uuid: msg.chat_uuid,
         });
       }
-
       if (msg.char_message) {
-        const charMsg: Message = {
+        formattedMessages.push({
           id: msg.id,
           name: characterData.name || 'Anon',
           text: msg.char_message,
           profile_image: characterData.profile_image || '',
           type: 'char',
-          chat_uuid,
+          chat_uuid: msg.chat_uuid,
           gender: characterData.gender,
           alternative_messages: msg.alternative_messages ?? [],
+          alternation_first: currentFirstMessageIndex,
           meta: lastUserText ? { queryText: lastUserText } : undefined,
-        };
-
-        formattedMessages.push(charMsg);
+        });
       }
     }
 
@@ -97,7 +101,9 @@ export const fetchChatData = async (
     return {
       is_error: false,
       Character: characterData,
-      firstMessage: characterData.first_message,
+      firstMessage: firstMessagesArray[0] ?? '',
+      alternativeFirstMessages: firstMessagesArray.slice(1),
+      currentFirstMessageIndex,
     };
   } catch (err) {
     Sentry.captureException(

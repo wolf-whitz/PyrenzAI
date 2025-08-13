@@ -1,34 +1,36 @@
-import { CircularProgress } from '@mui/material';
-import clsx from 'clsx';
 import { AddOutlined as AddIcon } from '@mui/icons-material';
 import { PyrenzBlueButton } from '~/theme';
+import clsx from 'clsx';
 
 interface CreateButtonProps {
-  loading: boolean;
   className?: string;
   character_update: boolean;
+  onClick: () => void;
+  disabled?: boolean;
 }
 
 export function CreateButton({
-  loading,
   className,
   character_update,
+  onClick,
+  disabled = false,
 }: CreateButtonProps) {
+  const handleClick = () => {
+    if (!disabled) {
+      onClick();
+    }
+  };
+
   return (
     <PyrenzBlueButton
-      type="submit"
-      disabled={loading}
+      type="button"
+      disabled={disabled}
       variant="contained"
       className={clsx('flex items-center', className)}
-      startIcon={
-        loading ? (
-          <CircularProgress size={20} color="inherit" />
-        ) : (
-          <AddIcon className="mr-2" />
-        )
-      }
+      startIcon={!disabled && <AddIcon className="mr-2" />}
+      onClick={handleClick}
     >
-      {loading ? 'Submitting...' : character_update ? 'Update' : 'Create'}
+      {disabled ? 'Submitting...' : character_update ? 'Update' : 'Create'}
     </PyrenzBlueButton>
   );
 }

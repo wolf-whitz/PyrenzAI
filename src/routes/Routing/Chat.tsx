@@ -16,7 +16,7 @@ export function ChatPage() {
   const { chat_uuid } = useParams<{ chat_uuid: string }>();
   const navigate = useNavigate();
 
-  const { setFirstMessage, setUser, setChar, user, char } = useChatStore();
+  const { setFirstMessage, setAlternativeFirstMessages, setUser, setChar, user, char } = useChatStore();
 
   const [loading, setLoading] = useState(true);
   const [userUuid, setUserUuid] = useState<string | null>(null);
@@ -52,13 +52,11 @@ export function ChatPage() {
           return;
         }
 
-        const updatedUserData = {
+        setUser({
           user_uuid: userUuid,
           username: response.username,
           user_avatar: response.user_avatar || '',
-        };
-
-        setUser(updatedUserData);
+        });
       } catch (error) {
         console.error('Error fetching user data:', error);
         setUserDataError(true);
@@ -78,19 +76,16 @@ export function ChatPage() {
         console.error('Error fetching chat data:', result.error);
         setFetchError(true);
       } else {
-        const updatedChar = {
-          ...result.Character,
-        };
-
-        setChar(updatedChar as Character);
-        setFirstMessage(result.firstMessage ?? updatedChar.first_message ?? '');
+        setChar(result.Character as Character);
+        setFirstMessage(result.firstMessage ?? '');
+        setAlternativeFirstMessages(result.alternativeFirstMessages ?? []);
         setFetchError(false);
       }
       setLoading(false);
     };
 
     getChatData();
-  }, [chat_uuid, userUuid, user, setChar, setFirstMessage]);
+  }, [chat_uuid, userUuid, user, setChar, setFirstMessage, setAlternativeFirstMessages]);
 
   if (loading || !user) {
     return (
@@ -108,7 +103,7 @@ export function ChatPage() {
 
   if (fetchError || !chat_uuid || userDataError || !char) {
     return (
-      <Fade in={true} timeout={600}>
+      <Fade in timeout={600}>
         <Box
           display="flex"
           minHeight="100vh"
@@ -131,9 +126,9 @@ export function ChatPage() {
               src="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MascotCrying.avif"
               alt="Mascot Crying"
               style={{
-                width: '96px',
-                height: '96px',
-                marginBottom: '20px',
+                width: 96,
+                height: 96,
+                marginBottom: 20,
                 cursor: 'pointer',
               }}
               onClick={() => navigate('/Home')}
@@ -148,7 +143,7 @@ export function ChatPage() {
   }
 
   return (
-    <Fade in={true} timeout={600}>
+    <Fade in timeout={600}>
       <Box
         display="flex"
         minHeight="100vh"
@@ -165,7 +160,7 @@ export function ChatPage() {
           <ChatContainer chat_uuid={chat_uuid} />
         </Box>
 
-        <Box position="absolute" top="0" right="0">
+        <Box position="absolute" top={0} right={0}>
           <PreviousChat />
         </Box>
       </Box>

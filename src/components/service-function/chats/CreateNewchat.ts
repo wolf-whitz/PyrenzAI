@@ -3,8 +3,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { Character } from '@shared-types';
 
 interface CreateChatResponse {
+  chat_uuid: string;
   error?: string;
-  chat_uuid?: string;
 }
 
 export async function CreateNewChat(
@@ -12,7 +12,6 @@ export async function CreateNewChat(
   userUUID: string
 ): Promise<CreateChatResponse> {
   const chatUuid = uuidv4();
-
   try {
     let character: Character | undefined;
 
@@ -34,7 +33,6 @@ export async function CreateNewChat(
       if (!privateCharacter || privateCharacter.length === 0) {
         throw new Error('Character not found');
       }
-
       character = privateCharacter[0];
     }
 
@@ -72,6 +70,6 @@ export async function CreateNewChat(
     return { chat_uuid: chatUuid };
   } catch (error: any) {
     console.error('Error creating new chat:', error);
-    return { error: error.message || 'An unexpected error occurred' };
+    return { chat_uuid: '', error: error.message || 'An unexpected error occurred' };
   }
 }

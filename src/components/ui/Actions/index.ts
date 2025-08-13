@@ -14,3 +14,6 @@ export * from './Selectors/ModelSelection';
 export * from './Slider/SliderComponent';
 
 export * from './Textarea/Textarea';
+export * from './Alters'
+
+export * from './Memoized'
