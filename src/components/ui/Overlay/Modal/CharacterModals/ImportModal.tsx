@@ -1,26 +1,9 @@
 import React, { useState } from 'react';
-import { z } from 'zod';
+import { CharacterPayloadSchema, CharacterPayload } from '@components';
 import { useCharacterStore } from '~/store';
 import { PyrenzModal, PyrenzModalContent, PyrenzBlueButton } from '~/theme';
 import { Textarea } from '@components';
 import { Box, Typography } from '@mui/material';
-
-const characterSchema = z.object({
-  name: z.string(),
-  description: z.string().optional(),
-  persona: z.string().optional(),
-  model_instructions: z.string().optional(),
-  scenario: z.string().optional(),
-  gender: z.string().optional(),
-  first_message: z.string(),
-  creator: z.string().optional(),
-  tags: z.array(z.string()).optional(),
-  profile_image: z.string(),
-  is_public: z.boolean().optional(),
-  is_nsfw: z.boolean().optional(),
-  is_details_private: z.boolean().optional(),
-  lorebook: z.string().optional(),
-});
 
 interface ImportModalProps {
   open: boolean;
@@ -32,17 +15,26 @@ export function ImportModal({ open, onClose }: ImportModalProps) {
   const [error, setError] = useState<string | null>(null);
   const [rawInput, setRawInput] = useState<string>('');
 
+  const parseAndSetCharacter = (data: any) => {
+    if (typeof data.first_message === 'string') {
+      data.first_message = [data.first_message];
+    }
+
+    const parsed: CharacterPayload = CharacterPayloadSchema.parse(data);
+    setCharacter(parsed);
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
     const reader = new FileReader();
     reader.onload = (event) => {
       try {
         const text = event.target?.result;
         if (typeof text !== 'string') throw new Error('File content invalid');
         const data = JSON.parse(text);
-        const parsed = characterSchema.parse(data);
-        setCharacter(parsed);
+        parseAndSetCharacter(data);
         setError(null);
         setRawInput('');
         onClose();
@@ -56,8 +48,7 @@ export function ImportModal({ open, onClose }: ImportModalProps) {
   const handleRawImport = () => {
     try {
       const data = JSON.parse(rawInput);
-      const parsed = characterSchema.parse(data);
-      setCharacter(parsed);
+      parseAndSetCharacter(data);
       setError(null);
       setRawInput('');
       onClose();
@@ -82,11 +73,7 @@ export function ImportModal({ open, onClose }: ImportModalProps) {
           className="w-full mb-3 font-mono"
         />
         <Box display="flex" gap={2}>
-          <PyrenzBlueButton
-            component="label"
-            variant="contained"
-            sx={{ flexShrink: 0 }}
-          >
+          <PyrenzBlueButton component="label" variant="contained" sx={{ flexShrink: 0 }}>
             Choose File
             <input
               type="file"

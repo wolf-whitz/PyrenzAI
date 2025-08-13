@@ -18,7 +18,6 @@ interface FetchChatDataResult {
   Character?: Character;
   firstMessage?: string;
   alternativeFirstMessages?: string[];
-  currentFirstMessageIndex?: number;
   error?: string;
 }
 
@@ -41,6 +40,7 @@ export const fetchChatData = async (
     }
 
     let messages: ChatMessageWithId[] = [];
+
     try {
       const result = await utils.db.select<ChatMessageWithId>({
         tables: 'chat_messages',
@@ -50,6 +50,7 @@ export const fetchChatData = async (
         orderBy: { column: 'created_at', ascending: false },
         nocache: true,
       });
+
       messages = result?.data ?? [];
     } catch (err) {
       Sentry.captureException(err);
@@ -58,19 +59,13 @@ export const fetchChatData = async (
 
     const reversedMessages = messages.reverse();
     const formattedMessages: Message[] = [];
+
     let lastUserText: string | null = null;
-
-    const firstMessagesArray: string[] = Array.isArray(characterData.first_message)
-      ? characterData.first_message
-      : characterData.first_message
-      ? [characterData.first_message]
-      : [];
-
-    const currentFirstMessageIndex = 0;
 
     for (const msg of reversedMessages) {
       if (msg.user_message) {
         lastUserText = msg.user_message;
+
         formattedMessages.push({
           id: msg.id,
           name: userData.username || 'Anon',
@@ -80,6 +75,7 @@ export const fetchChatData = async (
           chat_uuid: msg.chat_uuid,
         });
       }
+
       if (msg.char_message) {
         formattedMessages.push({
           id: msg.id,
@@ -90,7 +86,6 @@ export const fetchChatData = async (
           chat_uuid: msg.chat_uuid,
           gender: characterData.gender,
           alternative_messages: msg.alternative_messages ?? [],
-          alternation_first: currentFirstMessageIndex,
           meta: lastUserText ? { queryText: lastUserText } : undefined,
         });
       }
@@ -98,12 +93,16 @@ export const fetchChatData = async (
 
     useChatStore.getState().setMessages(formattedMessages);
 
+    const firstMessagesArray = characterData.first_message ?? [];
+
     return {
       is_error: false,
       Character: characterData,
-      firstMessage: firstMessagesArray[0] ?? '',
-      alternativeFirstMessages: firstMessagesArray.slice(1),
-      currentFirstMessageIndex,
+      firstMessage: firstMessagesArray.length > 0 ? firstMessagesArray[0] : '',
+      alternativeFirstMessages:
+        firstMessagesArray.length > 1
+          ? firstMessagesArray.slice(1)
+          : [],
     };
   } catch (err) {
     Sentry.captureException(
