@@ -1,9 +1,11 @@
 import React, { ChangeEvent } from 'react';
 import { Box, Typography, IconButton } from '@mui/material';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
+import {
+  ChevronLeft as ChevronLeftIcon,
+  ChevronRight as ChevronRightIcon,
+  Add as AddIcon,
+  Remove as RemoveIcon,
+} from '@mui/icons-material';
 import { MemoizedTextarea } from '@components';
 
 interface FirstMessageAlternativesProps {
@@ -15,6 +17,7 @@ interface FirstMessageAlternativesProps {
   maxLength?: number;
   setCurrentIndex: React.Dispatch<React.SetStateAction<number>>;
   updateAlternativeMessage: (newValue: string, index?: number) => void;
+  removeAlternative: (index: number) => void;
 }
 
 export function FirstMessageAlternatives({
@@ -26,6 +29,7 @@ export function FirstMessageAlternatives({
   maxLength,
   setCurrentIndex,
   updateAlternativeMessage,
+  removeAlternative,
 }: FirstMessageAlternativesProps) {
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     updateAlternativeMessage(e.target.value, currentIndex);
@@ -38,15 +42,18 @@ export function FirstMessageAlternatives({
     }
   };
 
-  const removeAlternative = () => {
-    if (alternativeMessages.length <= 1) return;
-    const newMsgs = alternativeMessages.filter((_, i) => i !== currentIndex);
-    newMsgs.forEach((msg, i) => updateAlternativeMessage(msg, i));
-    setCurrentIndex((prev) => (prev > 0 ? prev - 1 : 0));
+  const handleRemove = () => {
+    if (alternativeMessages.length > 1) {
+      removeAlternative(currentIndex);
+      setCurrentIndex((prev) =>
+        prev >= alternativeMessages.length - 1 ? prev - 1 : prev
+      );
+    }
   };
 
   const prev = () => setCurrentIndex((i) => (i > 0 ? i - 1 : i));
-  const next = () => setCurrentIndex((i) => (i < alternativeMessages.length - 1 ? i + 1 : i));
+  const next = () =>
+    setCurrentIndex((i) => (i < alternativeMessages.length - 1 ? i + 1 : i));
 
   return (
     <Box sx={{ mb: 3 }}>
@@ -85,7 +92,7 @@ export function FirstMessageAlternatives({
         </Box>
 
         <Box sx={{ display: 'flex', gap: 0.5 }}>
-          <IconButton onClick={removeAlternative} disabled={alternativeMessages.length <= 1}>
+          <IconButton onClick={handleRemove} disabled={alternativeMessages.length <= 1}>
             <RemoveIcon />
           </IconButton>
 

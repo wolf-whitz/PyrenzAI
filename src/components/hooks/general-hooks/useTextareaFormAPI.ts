@@ -19,26 +19,47 @@ export const useTextareaFormAPI = () => {
   const showAlert = usePyrenzAlert();
 
   useEffect(() => {
-    if (character.profile_image && !imageBlobUrl) setImageBlobUrl(character.profile_image);
+    if (character.profile_image && !imageBlobUrl) {
+      setImageBlobUrl(character.profile_image);
+    }
   }, [character.profile_image, imageBlobUrl]);
 
-  const handleOpenDropdown = useCallback((e: React.MouseEvent<HTMLElement>) => setAnchorEl(e.currentTarget), []);
+  const handleOpenDropdown = useCallback(
+    (e: React.MouseEvent<HTMLElement>) => setAnchorEl(e.currentTarget),
+    []
+  );
   const handleCloseDropdown = useCallback(() => setAnchorEl(null), []);
 
+  const handleTagsUpdate = useCallback(
+    (tags: string[]) => {
+      setCharacter({ tags });
+    },
+    [setCharacter]
+  );
+
   const handleTagClick = useCallback(
-    (tag: string) => {
+    (tag: string, syncRaw?: (tags: string[]) => void) => {
       const tagsArray = Array.isArray(character.tags) ? character.tags : [];
-      setCharacter({ tags: [...tagsArray, tag] });
+      const updated = [...tagsArray, tag];
+      setCharacter({ tags: updated });
+      if (syncRaw) syncRaw(updated);
       handleCloseDropdown();
     },
     [character.tags, setCharacter, handleCloseDropdown]
   );
 
-  const { max_alternatives: maxAlternatives = 1, is_alternatives: isAlternatives = false } =
-    textareasByCategory.flatMap((cat) => cat.fields).find((f) => f.name === 'first_message') ?? {};
+  const {
+    max_alternatives: maxAlternatives = 1,
+    is_alternatives: isAlternatives = false,
+  } =
+    textareasByCategory
+      .flatMap((cat) => cat.fields)
+      .find((f) => f.name === 'first_message') ?? {};
 
   const [alternativeMessages, setAlternativeMessages] = useState<string[]>(() =>
-    Array.isArray(character.first_message) && character.first_message.length > 0 ? character.first_message : ['']
+    Array.isArray(character.first_message) && character.first_message.length > 0
+      ? character.first_message
+      : ['']
   );
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -47,21 +68,26 @@ export const useTextareaFormAPI = () => {
 
   const updateTokenCounts = useCallback(
     (updatedCharacter: CharacterPayload, updatedAlternatives: string[]) => {
-      const altTokens = updatedAlternatives.reduce((sum, msg) => sum + countTokens(msg), 0);
+      const altTokens = updatedAlternatives.reduce(
+        (sum, msg) => sum + countTokens(msg),
+        0
+      );
       let permanent = 0;
       let temporary = altTokens;
 
-      textareasByCategory.flatMap((cat) => cat.fields).forEach((field) => {
-        if (!field.showTokenizer) return;
-        const value = (updatedCharacter as any)[field.name];
-        const values = Array.isArray(value) ? value : [value];
-        const fieldCount = values.reduce(
-          (sum, v) => (typeof v === 'string' ? sum + countTokens(v) : sum),
-          0
-        );
-        if (field.is_permanent) permanent += fieldCount;
-        else temporary += fieldCount;
-      });
+      textareasByCategory
+        .flatMap((cat) => cat.fields)
+        .forEach((field) => {
+          if (!field.showTokenizer) return;
+          const value = (updatedCharacter as any)[field.name];
+          const values = Array.isArray(value) ? value : [value];
+          const fieldCount = values.reduce(
+            (sum, v) => (typeof v === 'string' ? sum + countTokens(v) : sum),
+            0
+          );
+          if (field.is_permanent) permanent += fieldCount;
+          else temporary += fieldCount;
+        });
 
       const total = permanent + temporary;
       setPermanentTokens(permanent);
@@ -73,7 +99,11 @@ export const useTextareaFormAPI = () => {
   );
 
   const debouncedUpdateTokenCounts = useMemo(
-    () => createDebouncedTokenizer((count) => updateTokenCounts(character, alternativeMessages), 500),
+    () =>
+      createDebouncedTokenizer(
+        () => updateTokenCounts(character, alternativeMessages),
+        500
+      ),
     [updateTokenCounts, character, alternativeMessages]
   );
 
@@ -92,34 +122,59 @@ export const useTextareaFormAPI = () => {
     [currentIndex, setCharacter, debouncedUpdateTokenCounts, setIsCounting]
   );
 
+  const removeAlternative = useCallback(
+    (index: number) => {
+      setAlternativeMessages((prev) => {
+        if (prev.length <= 1) return prev;
+        const updated = prev.filter((_, i) => i !== index);
+        setCharacter({ first_message: updated });
+        setIsCounting(true);
+        debouncedUpdateTokenCounts.cancel();
+        debouncedUpdateTokenCounts(updated.join(' '));
+        return updated;
+      });
+    },
+    [setCharacter, debouncedUpdateTokenCounts, setIsCounting]
+  );
+
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-      const { name, value: rawValue, type, checked } = e.target as HTMLInputElement;
-      const value = type === 'checkbox' ? checked : rawValue;
+      const target = e.target;
+      const { name, type } = target;
 
-      if (name === 'tags') {
-        const tagsArray = (value as string)
-          .split(/[\s,]+/)
-          .map((t) => t.trim())
-          .filter(Boolean);
-        setCharacter({ tags: tagsArray });
-      } else if (name === 'first_message') {
-        updateAlternativeMessage(value as string, 0);
+      if (name === 'first_message') {
+        updateAlternativeMessage(target.value, 0);
       } else {
+        let value: string | boolean = target.value;
+        if (type === 'checkbox') {
+          value = (target as HTMLInputElement).checked;
+        }
+
         const updatedCharacter = { ...character, [name]: value };
         setCharacter(updatedCharacter);
         setIsCounting(true);
         debouncedUpdateTokenCounts.cancel();
-        debouncedUpdateTokenCounts(value as string);
+
+        if (typeof value === 'string') {
+          debouncedUpdateTokenCounts(value);
+        }
       }
     },
-    [updateAlternativeMessage, setCharacter, character, debouncedUpdateTokenCounts, setIsCounting]
+    [
+      updateAlternativeMessage,
+      setCharacter,
+      character,
+      debouncedUpdateTokenCounts,
+      setIsCounting,
+    ]
   );
 
   const handleImageSelect = useCallback(
     async (input: File | Blob | string | null) => {
       if (!input) return;
-      if (typeof input === 'string') return setCharacter({ profile_image: input });
+      if (typeof input === 'string') {
+        return setCharacter({ profile_image: input });
+      }
       const { url, error } = await uploadImage('character-image', input);
       if (error) showAlert(error, 'alert');
       else if (url) setCharacter({ profile_image: url });
@@ -147,9 +202,11 @@ export const useTextareaFormAPI = () => {
     handleCloseDropdown,
     handleTagClick,
     handleChange,
+    handleTagsUpdate,
     handleImageSelect,
     alternativeMessages,
     updateAlternativeMessage,
+    removeAlternative,
     currentIndex,
     setCurrentIndex,
     maxAlternatives,

@@ -20,9 +20,11 @@ export function TextareaForm() {
     handleCloseDropdown,
     handleTagClick,
     handleChange,
+    handleTagsUpdate,
     handleImageSelect,
     alternativeMessages,
     updateAlternativeMessage,
+    removeAlternative,
     currentIndex,
     setCurrentIndex,
     maxAlternatives,
@@ -30,22 +32,18 @@ export function TextareaForm() {
   } = useTextareaFormAPI();
 
   const [tagsInputRaw, setTagsInputRaw] = useState<string>(
-    (character.tags || []).join(', ')
+    (character.tags || []).join('\n')
   );
 
   useEffect(() => {
-    setTagsInputRaw((character.tags || []).join(', '));
+    setTagsInputRaw((character.tags || []).join('\n'));
   }, [character.tags]);
 
-  function handleTagsChange(
-    e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
-  ) {
+  function handleTagsChange(e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) {
     const raw = e.target.value;
     setTagsInputRaw(raw);
-    handleChange({
-      ...e,
-      target: { ...e.target, name: 'tags', value: raw },
-    } as ChangeEvent<HTMLInputElement>);
+    const parsedTags = raw.split(/\r?\n/).map((t) => t.trim()).filter(Boolean);
+    handleTagsUpdate(parsedTags);
   }
 
   return (
@@ -68,15 +66,15 @@ export function TextareaForm() {
                   maxLength={field.maxLength}
                   setCurrentIndex={setCurrentIndex}
                   updateAlternativeMessage={updateAlternativeMessage}
+                  removeAlternative={removeAlternative}
                 />
               );
             }
+
             const value =
-              field.name === 'tags'
-                ? tagsInputRaw
-                : (character as any)[field.name] || '';
-            const onChange =
-              field.name === 'tags' ? handleTagsChange : handleChange;
+              field.name === 'tags' ? tagsInputRaw : (character as any)[field.name] || '';
+            const onChange = field.name === 'tags' ? handleTagsChange : handleChange;
+
             return (
               <MemoizedTextarea
                 key={field.name}
@@ -88,9 +86,7 @@ export function TextareaForm() {
                 placeholder={field.placeholder}
                 is_tag={field.is_tag}
                 maxLength={field.maxLength}
-                onTagPressed={
-                  field.name === 'tags' ? handleOpenDropdown : undefined
-                }
+                onTagPressed={field.name === 'tags' ? handleOpenDropdown : undefined}
                 showTokenizer={field.showTokenizer}
               />
             );
@@ -106,7 +102,9 @@ export function TextareaForm() {
       <MemoizedTagsMenu
         anchorEl={anchorEl}
         onClose={handleCloseDropdown}
-        onTagClick={handleTagClick}
+        onTagClick={(tag) =>
+          handleTagClick(tag, (updated) => setTagsInputRaw(updated.join('\n')))
+        }
       />
     </>
   );
