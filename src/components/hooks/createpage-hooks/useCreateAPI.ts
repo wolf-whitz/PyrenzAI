@@ -1,14 +1,14 @@
 import {
   handleDeleteCharacter,
   handleSubmitCharacter,
-  CreateNewChat
+  CreateNewChat,
 } from '@components';
-
 import { useState } from 'react';
 import { useCharacterStore } from '~/store';
-import { CharacterPayload } from '@shared-types';
+import { CharacterPayload, CharacterPayloadSchema } from '@shared-types';
 import { usePyrenzAlert } from '~/provider';
 import * as Sentry from '@sentry/react';
+import { z } from 'zod';
 
 type ActionType = 'Create' | 'Update' | 'Draft';
 
@@ -29,6 +29,7 @@ interface UseCreateAPIReturn {
   formState: CharacterPayload;
   handleImageSelect: (file: File | null) => void;
   handleSelectDraft: (draft: CharacterPayload) => void;
+  handleClear: () => void;
 }
 
 export const useCreateAPI = (
@@ -107,6 +108,36 @@ export const useCreateAPI = (
     showAlert('Draft loaded successfully!', 'success');
   };
 
+  const getEmptyValue = (schema: z.ZodTypeAny): unknown => {
+    if (schema.isOptional()) return null;
+    if (schema instanceof z.ZodDefault) {
+      return schema._def.defaultValue();
+    }
+    if (schema instanceof z.ZodString) return '';
+    if (schema instanceof z.ZodNumber) return 0;
+    if (schema instanceof z.ZodBoolean) return false;
+    if (schema instanceof z.ZodArray) return [];
+    if (schema instanceof z.ZodNullable) return null;
+    return null;
+  };
+
+const handleClear = () => {
+  const shape = CharacterPayloadSchema.shape;
+
+  const emptyCharacter = Object.keys(shape).reduce<
+    Partial<Record<keyof CharacterPayload, unknown>>
+  >((acc, key) => {
+    acc[key as keyof CharacterPayload] = getEmptyValue(
+      shape[key as keyof typeof shape]
+    );
+    return acc;
+  }, {});
+
+  setCharacter(emptyCharacter as Partial<CharacterPayload>);
+  showAlert('Form cleared!', 'success');
+};
+
+
   const formState = { ...character };
 
   return {
@@ -122,5 +153,6 @@ export const useCreateAPI = (
     formState,
     handleImageSelect,
     handleSelectDraft,
+    handleClear,
   };
 };

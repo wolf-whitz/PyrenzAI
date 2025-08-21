@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import {
   GenderDropdown,
   VisibilityDropdown,
@@ -6,7 +6,7 @@ import {
   FormActions,
   useCreateAPI,
 } from '@components';
-import { TextareaForm, TextareaFormHandle } from './Childrens/TextareaForm';
+import { TextareaForm } from './Childrens/TextareaForm';
 import { useNavigate } from 'react-router-dom';
 import {
   Typography,
@@ -32,7 +32,6 @@ export function CharacterForm({
   const navigate = useNavigate();
   const theme = useTheme();
   const isMdUp = useMediaQuery(theme.breakpoints.up('md'));
-  const textareaFormRef = useRef<TextareaFormHandle>(null);
 
   const {
     loading,
@@ -40,13 +39,10 @@ export function CharacterForm({
     handleDelete,
     handleSelectDraft,
     handleSubmit,
+    handleClear,
   } = useCreateAPI(navigate, character_update, user_uuid, creator);
 
   const error = useCharacterStore((state) => state.error);
-
-  const handleClear = () => {
-    textareaFormRef.current?.clearAllCategories();
-  };
 
   return (
     <Box
@@ -96,7 +92,7 @@ export function CharacterForm({
         )}
 
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <TextareaForm onClear={() => textareaClear?.()} />
+          <TextareaForm />
           <GenderDropdown />
           <VisibilityDropdown />
           <TokenSummary />
@@ -111,7 +107,7 @@ export function CharacterForm({
           }}
         >
           <FormActions
-            onClear={() => textareaClear?.()}
+            onClear={handleClear}
             onCreate={() => handleSubmit(character_update ? 'Update' : 'Create')}
             onSave={() => handleSubmit('Draft')}
             onDelete={handleDelete}
