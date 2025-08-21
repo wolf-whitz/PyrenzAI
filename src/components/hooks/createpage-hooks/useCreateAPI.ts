@@ -1,5 +1,4 @@
 import {
-  handleClearCharacter,
   handleDeleteCharacter,
   handleSubmitCharacter,
   CreateNewChat
@@ -25,7 +24,6 @@ interface UseCreateAPIReturn {
   characterState: CharacterState;
   character: CharacterPayload;
   setCharacter: (character: Partial<CharacterPayload>) => void;
-  handleClear: () => void;
   handleDelete: () => Promise<void>;
   handleSubmit: (type: ActionType, e?: React.FormEvent) => Promise<void>;
   formState: CharacterPayload;
@@ -78,15 +76,6 @@ export const useCreateAPI = (
     emotions: emotionsNormalized,
   };
 
-  const handleClear = () => {
-    handleClearCharacter(setCharacter);
-    if (characterStateWithoutError.profile_image) {
-      URL.revokeObjectURL(characterStateWithoutError.profile_image);
-    }
-    setError(null);
-    showAlert('Character cleared successfully!', 'success');
-  };
-
   const handleDelete = async () => {
     setLoading(true);
     try {
@@ -128,7 +117,6 @@ export const useCreateAPI = (
     characterState: characterStateWithoutError,
     character,
     setCharacter,
-    handleClear,
     handleDelete,
     handleSubmit,
     formState,

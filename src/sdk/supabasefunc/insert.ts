@@ -4,7 +4,7 @@ export const insert = async <T = any>(
   client: SupabaseClient,
   req: {
     tables: string;
-    data: T | T[];
+    data: Partial<T> | Partial<T>[]; // 👈 allow partials
     options?: { onConflict?: string[] };
   }
 ): Promise<T[]> => {

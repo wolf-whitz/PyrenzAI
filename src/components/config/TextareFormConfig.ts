@@ -7,6 +7,8 @@ export interface TextareaField {
   showTokenizer?: boolean;
   is_alternatives?: boolean;
   max_alternatives?: number;
+  is_permanent?: boolean;    
+  is_temporary?: boolean;    
 }
 
 export interface TextareaCategory {
@@ -24,6 +26,7 @@ export const textareasByCategory: TextareaCategory[] = [
         placeholder: 'Enter character title e.g., The Brave Warrior',
         maxLength: 100,
         showTokenizer: true,
+        is_permanent: false,
       },
       {
         name: 'name',
@@ -31,6 +34,7 @@ export const textareasByCategory: TextareaCategory[] = [
         placeholder: 'Enter character name e.g., John Doe',
         maxLength: 50,
         showTokenizer: true,
+        is_permanent: false,
       },
     ],
   },
@@ -48,12 +52,14 @@ export const textareasByCategory: TextareaCategory[] = [
         label: 'Persona',
         placeholder: "Define the character's persona...",
         showTokenizer: true,
+        is_permanent: true,
       },
       {
         name: 'scenario',
         label: 'Scenario',
         placeholder: 'Describe a scenario...',
         showTokenizer: true,
+        is_temporary: false,
       },
     ],
   },
@@ -64,8 +70,9 @@ export const textareasByCategory: TextareaCategory[] = [
         name: 'model_instructions',
         label: 'Model Instructions',
         placeholder:
-          "Provide instructions for the model... (Never use 'you' or 'your' always use {{char}})",
+          "Provide instructions for the model... (Never use 'you' or 'your', always use {{char}})",
         showTokenizer: true,
+        is_permanent: true,
       },
       {
         name: 'first_message',
@@ -74,6 +81,7 @@ export const textareasByCategory: TextareaCategory[] = [
         showTokenizer: true,
         is_alternatives: true,
         max_alternatives: 15,
+        is_temporary: false,
       },
     ],
   },
@@ -85,6 +93,7 @@ export const textareasByCategory: TextareaCategory[] = [
         label: 'Lorebook',
         placeholder: 'Enter lorebook details...',
         showTokenizer: true,
+        is_permanent: true,
       },
       {
         name: 'tags',
@@ -104,6 +113,7 @@ export const textareasByCategory: TextareaCategory[] = [
         label: 'Attribute',
         placeholder: 'Strength, Agility, Intelligence...',
         showTokenizer: true,
+        is_permanent: true,
       },
     ],
   },

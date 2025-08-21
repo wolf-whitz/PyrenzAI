@@ -1,3 +1,4 @@
+import React, { useRef } from 'react';
 import {
   GenderDropdown,
   VisibilityDropdown,
@@ -5,7 +6,7 @@ import {
   FormActions,
   useCreateAPI,
 } from '@components';
-import { TextareaForm } from './Childrens/TextareaForm';
+import { TextareaForm, TextareaFormHandle } from './Childrens/TextareaForm';
 import { useNavigate } from 'react-router-dom';
 import {
   Typography,
@@ -16,7 +17,6 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import { useCharacterStore } from '~/store';
-import { CharacterPayload } from '@shared-types';
 
 interface CharacterFormProps {
   character_update: boolean;
@@ -32,17 +32,21 @@ export function CharacterForm({
   const navigate = useNavigate();
   const theme = useTheme();
   const isMdUp = useMediaQuery(theme.breakpoints.up('md'));
+  const textareaFormRef = useRef<TextareaFormHandle>(null);
 
   const {
     loading,
     saveLoading,
-    handleClear,
     handleDelete,
     handleSelectDraft,
     handleSubmit,
   } = useCreateAPI(navigate, character_update, user_uuid, creator);
 
   const error = useCharacterStore((state) => state.error);
+
+  const handleClear = () => {
+    textareaFormRef.current?.clearAllCategories();
+  };
 
   return (
     <Box
@@ -84,17 +88,20 @@ export function CharacterForm({
         >
           {character_update ? 'Update Character' : 'Create Character'}
         </Typography>
+
         {error && (
           <Alert severity="error" sx={{ fontSize: '0.9rem' }}>
             {error}
           </Alert>
         )}
+
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <TextareaForm />
+          <TextareaForm onClear={() => textareaClear?.()} />
           <GenderDropdown />
           <VisibilityDropdown />
           <TokenSummary />
         </Box>
+
         <Box
           sx={{
             display: 'flex',
@@ -104,7 +111,7 @@ export function CharacterForm({
           }}
         >
           <FormActions
-            onClear={handleClear}
+            onClear={() => textareaClear?.()}
             onCreate={() => handleSubmit(character_update ? 'Update' : 'Create')}
             onSave={() => handleSubmit('Draft')}
             onDelete={handleDelete}

@@ -10,13 +10,21 @@ interface EmotionData {
 interface StoreState {
   max_alternatives: number;
   tokenTotal: number;
+  permanentTokens: number;
+  temporaryTokens: number;
   error: string | null;
+  isCounting: boolean;
 }
 
 interface CharacterActions {
-  setCharacter: (data: Partial<CharacterPayload>) => void;
+  setCharacter: (
+    data: Partial<CharacterPayload> | ((prev: CharacterPayload) => CharacterPayload)
+  ) => void;
   setGender: (gender: string) => void;
   setTokenTotal: (tokenTotal: number) => void;
+  setPermanentTokens: (tokens: number) => void;
+  setTemporaryTokens: (tokens: number) => void;
+  setIsCounting: (isCounting: boolean) => void;
   addEmotion: (emotion: EmotionData) => void;
   setError: (error: string | null) => void;
   setFirstMessageAlternatives: (alternatives: string[]) => void;
@@ -28,7 +36,7 @@ export const useCharacterStore = create<CharacterPayload & StoreState & Characte
   (set) => ({
     char_uuid: '',
     title: '',
-    name: 'Anon',
+    name: '',
     description: '',
     persona: '',
     model_instructions: '',
@@ -49,14 +57,22 @@ export const useCharacterStore = create<CharacterPayload & StoreState & Characte
     emotions: [],
     profileImageFile: null,
     emotionImageFile: null,
-
     max_alternatives: 5,
     tokenTotal: 0,
+    permanentTokens: 0,
+    temporaryTokens: 0,
     error: null,
-
-    setCharacter: (data) => set((state) => ({ ...state, ...data })),
+    isCounting: false,
+    setCharacter: (data) =>
+      set((state) => ({
+        ...state,
+        ...(typeof data === 'function' ? data(state) : data),
+      })),
     setGender: (gender) => set({ gender }),
     setTokenTotal: (tokenTotal) => set({ tokenTotal }),
+    setPermanentTokens: (tokens) => set({ permanentTokens: tokens }),
+    setTemporaryTokens: (tokens) => set({ temporaryTokens: tokens }),
+    setIsCounting: (isCounting) => set({ isCounting }),
     addEmotion: (emotion) =>
       set((state) => ({ emotions: [...(state.emotions ?? []), emotion] })),
     setError: (error) => set({ error }),

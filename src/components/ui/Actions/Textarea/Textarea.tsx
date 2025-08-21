@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import llamaTokenizer from 'llama-tokenizer-js';
 import { motion } from 'framer-motion';
 import {
   TextField,
@@ -10,7 +9,7 @@ import {
 } from '@mui/material';
 import clsx from 'clsx';
 import { z } from 'zod';
-import debounce from 'lodash/debounce';
+import { createDebouncedTokenizer } from '~/Utility';
 
 interface TextareaProps {
   name?: string;
@@ -61,12 +60,8 @@ export function Textarea({
 
   const displayValue = Array.isArray(value) ? value.join(', ') : value;
 
-  const tokenize = useMemo(
-    () =>
-      debounce((input: string) => {
-        const tokens = llamaTokenizer.encode(input);
-        setLocalTokenTotal(tokens.length);
-      }, 250),
+  const debouncedTokenizer = useMemo(
+    () => createDebouncedTokenizer(setLocalTokenTotal, 250),
     []
   );
 
@@ -75,13 +70,13 @@ export function Textarea({
     setCharacterCount(currentValue.length);
 
     if (showTokenizer) {
-      tokenize(currentValue);
+      debouncedTokenizer(currentValue);
     }
 
     return () => {
-      tokenize.cancel();
+      debouncedTokenizer.cancel();
     };
-  }, [value, showTokenizer]);
+  }, [value, showTokenizer, debouncedTokenizer]);
 
   return (
     <motion.div

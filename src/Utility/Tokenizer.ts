@@ -1,4 +1,5 @@
 import llamaTokenizer from 'llama-tokenizer-js';
+import debounce from 'lodash/debounce';
 
 /**
  * Tokenizes a string input using llamaTokenizer.
@@ -27,4 +28,19 @@ export const decodeTokenizer = (tokens: number[]): string => {
  */
 export const countTokens = (value: string): number => {
   return applyTokenizer(value).length;
+};
+
+/**
+ * Debounced version of countTokens.
+ * Useful for textareas or inputs where the user is typing.
+ * @param callback - A function to receive the debounced token count.
+ * @param delay - Debounce delay in ms (default: 250).
+ */
+export const createDebouncedTokenizer = (
+  callback: (tokenCount: number) => void,
+  delay = 250
+) => {
+  return debounce((value: string) => {
+    callback(countTokens(value));
+  }, delay);
 };

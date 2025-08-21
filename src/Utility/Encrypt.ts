@@ -2,7 +2,7 @@ import { Utils } from '~/Utility';
 
 interface EncryptionResponse {
   success: boolean;
-  encryptedText: string;
+  encrypted: string;
 }
 
 export const encrypt = async (plainText: string): Promise<string> => {
@@ -15,7 +15,7 @@ export const encrypt = async (plainText: string): Promise<string> => {
       throw new Error('Encryption was not successful');
     }
 
-    return response.encryptedText;
+    return response.encrypted;
   } catch (error) {
     console.error('Encryption API call failed:', error);
     throw error;

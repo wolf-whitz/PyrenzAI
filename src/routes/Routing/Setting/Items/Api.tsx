@@ -20,36 +20,48 @@ import {
   PyrenzSelect,
 } from '~/theme';
 
+interface Provider {
+  provider_name: string;
+  provider_description: string;
+  provider_link: string;
+}
+
+interface UserModel {
+  id: string;
+  model_name: string;
+  model_description: string;
+  model_api_key: string;
+  model_url: string;
+}
+
 export const Api = () => {
   const {
-    apiKey,
+    modelApiKey,
     modelName,
     modelDescription,
-    apiUrl,
+    modelUrl,
     providers,
     selectedProvider,
     userModels,
-    setApiKey,
+    setModelApiKey,
     setModelName,
     setModelDescription,
-    setApiUrl,
+    setModelUrl,
+    setSelectedProvider,
     handleProviderChange,
     handleSubmit,
-    handleEdit,
     handleDelete,
+    clearForm,
   } = useApiSettings();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedModelIndex, setSelectedModelIndex] = useState<number | null>(
-    null
-  );
+  const [selectedModelIndex, setSelectedModelIndex] = useState<number | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [modelToDelete, setModelToDelete] = useState<string | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingModelId, setEditingModelId] = useState<string | null>(null);
 
-  const handleMenuOpen = (
-    event: React.MouseEvent<HTMLElement>,
-    index: number
-  ) => {
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, index: number) => {
     setAnchorEl(event.currentTarget);
     setSelectedModelIndex(index);
   };
@@ -64,7 +76,13 @@ export const Api = () => {
       const model = userModels[selectedModelIndex];
       setModelName(model.model_name);
       setModelDescription(model.model_description);
-      handleEdit(model.id);
+      setModelApiKey(model.model_api_key || '');
+      setModelUrl(model.model_url || '');
+      setSelectedProvider(
+        providers.find((p) => p.provider_link === model.model_url)?.provider_name || ''
+      );
+      setIsEditing(true);
+      setEditingModelId(model.id);
     }
     handleMenuClose();
   };
@@ -78,9 +96,9 @@ export const Api = () => {
     handleMenuClose();
   };
 
-  const confirmDelete = () => {
-    if (modelToDelete !== null) {
-      handleDelete(modelToDelete);
+  const confirmDelete = async () => {
+    if (modelToDelete) {
+      await handleDelete(modelToDelete);
       setModelToDelete(null);
     }
     setDialogOpen(false);
@@ -91,23 +109,30 @@ export const Api = () => {
     setDialogOpen(false);
   };
 
+  const handleFormSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (isEditing && editingModelId) {
+      await handleSubmit(event, editingModelId);
+      setIsEditing(false);
+      setEditingModelId(null);
+    } else {
+      await handleSubmit(event);
+    }
+    clearForm();
+  };
+
   const truncate = (text: string, max: number) =>
-    text.length > max ? text.slice(0, max) + '...' : text;
+    text.length > max ? `${text.slice(0, max)}...` : text;
 
   return (
-    <Box
-      sx={{ p: 3, display: 'flex', flexDirection: 'column', height: '100%' }}
-    >
+    <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', height: '100%' }}>
       <Typography variant="h6" gutterBottom>
         API Settings
       </Typography>
-
-      <Box component="form" onSubmit={handleSubmit} sx={{ flex: 1 }}>
+      <Box component="form" onSubmit={handleFormSubmit} sx={{ flex: 1 }}>
         <Box mb={2}>
           <PyrenzFormControl fullWidth>
-            <PyrenzInputLabel id="provider-select-label">
-              Select Provider
-            </PyrenzInputLabel>
+            <PyrenzInputLabel id="provider-select-label">Select Provider</PyrenzInputLabel>
             <PyrenzSelect
               labelId="provider-select-label"
               id="provider-select"
@@ -115,14 +140,9 @@ export const Api = () => {
               label="Select Provider"
               onChange={handleProviderChange}
             >
-              {providers.map((provider, index) => (
+              {providers.map((provider: Provider, index: number) => (
                 <MenuItem key={index} value={provider.provider_name}>
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    width="100%"
-                  >
+                  <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
                     <Typography>{provider.provider_name}</Typography>
                     <Tooltip title={provider.provider_description} arrow>
                       <IconButton size="small" edge="end">
@@ -135,66 +155,55 @@ export const Api = () => {
             </PyrenzSelect>
           </PyrenzFormControl>
         </Box>
-
         <Box mb={2}>
           <Typography variant="subtitle1">API URL</Typography>
           <Textarea
-            value={apiUrl}
-            onChange={(e) => setApiUrl(e.target.value)}
+            value={modelUrl}
+            onChange={setModelUrl}
             placeholder="Enter the API URL"
-            require_link={true}
+            require_link
           />
         </Box>
-
         <Box mb={2}>
           <Typography variant="subtitle1">API Key</Typography>
           <Textarea
-            value={apiKey}
-            onChange={(e) => setApiKey(e.target.value)}
+            value={modelApiKey}
+            onChange={setModelApiKey}
             placeholder="Enter your API Key"
           />
         </Box>
-
         <Box mb={2}>
           <Typography variant="subtitle1">Model Name</Typography>
           <Textarea
             value={modelName}
-            onChange={(e) => setModelName(e.target.value)}
-            placeholder="Enter the Model Name or slug name eg moonshotai/kimi-k2:free"
+            onChange={setModelName}
+            placeholder="Enter the Model Name or slug name"
           />
         </Box>
-
         <Box mb={2}>
           <Typography variant="subtitle1">Model Description</Typography>
           <Textarea
             value={modelDescription}
-            onChange={(e) => setModelDescription(e.target.value)}
+            onChange={setModelDescription}
             placeholder="Describe your model's vibes"
           />
         </Box>
-
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-          <PyrenzBlueButton type="submit">Save Settings</PyrenzBlueButton>
+          <PyrenzBlueButton type="submit">
+            {isEditing ? 'Update Model' : 'Save Settings'}
+          </PyrenzBlueButton>
         </Box>
       </Box>
-
       <Box sx={{ mt: 4 }}>
         <Typography variant="h6" gutterBottom>
           Your Models
         </Typography>
-
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-          {userModels.map((model, index) => (
+          {userModels.map((model: UserModel, index: number) => (
             <PyrenzCard key={index} sx={{ minWidth: 275 }}>
               <CardContent>
-                <Box
-                  display="flex"
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
-                  <Typography variant="h5" component="div">
-                    {model.model_name}
-                  </Typography>
+                <Box display="flex" justifyContent="space-between" alignItems="center">
+                  <Typography variant="h5">{model.model_name}</Typography>
                   <IconButton
                     aria-label="more"
                     aria-controls="pyrenz-model-menu"
@@ -204,12 +213,8 @@ export const Api = () => {
                     <MoreHorizIcon />
                   </IconButton>
                 </Box>
-
-                <Typography variant="body2">
-                  {truncate(model.model_description, 100)}
-                </Typography>
+                <Typography variant="body2">{truncate(model.model_description, 100)}</Typography>
               </CardContent>
-
               <PyrenzMenu
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl) && selectedModelIndex === index}
@@ -222,7 +227,6 @@ export const Api = () => {
           ))}
         </Box>
       </Box>
-
       <PyrenzDialog
         open={dialogOpen}
         onClose={cancelDelete}

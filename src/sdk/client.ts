@@ -7,30 +7,48 @@ export const withClient = (client: SupabaseClient) => {
     getUser: () => getCachedUser(client),
 
     select: async <T>(req: Parameters<typeof select<T>>[1]) => {
-      const result = await select<T>(client, req);
-      return result;
+      return select<T>(client, req);
     },
 
-    insert: <T>(req: Parameters<typeof insert<T>>[1]) => {
+    insert: <T>(req: Parameters<typeof insert>[1]) => {
       return insert<T>(client, req);
     },
 
-    update: async <T, M = Partial<T>>(
-      req: Parameters<typeof update<T, M>>[1]
+    update: async <T>(
+      req: Parameters<typeof update>[1]
     ) => {
-      const res = await update<T, M>(client, req);
-      return res;
+      return update<T>(client, req);
     },
 
     remove: async <T extends Record<string, any>>(
-      req: Parameters<typeof remove<T>>[1]
+      req: Parameters<typeof remove>[1]
     ) => {
-      const res = await remove<T>(client, req);
-      return res;
+      return remove<T>(client, req);
     },
 
-    rpc: <T>(req: Parameters<typeof rpc<T>>[1]) => {
+    rpc: <T>(req: Parameters<typeof rpc>[1]) => {
       return rpc<T>(client, req);
+    },
+
+    upsertOrUpdate: async <T>(
+      req: {
+        tables: string;
+        data: Partial<T>;
+        match?: Partial<T>;
+      }
+    ) => {
+      if (req.match && Object.keys(req.match).length > 0) {
+        return update<T>(client, {
+          tables: req.tables,
+          values: req.data,
+          match: req.match,
+        });
+      } else {
+        return insert<T>(client, {
+          tables: req.tables,
+          data: req.data,
+        });
+      }
     },
 
     client,

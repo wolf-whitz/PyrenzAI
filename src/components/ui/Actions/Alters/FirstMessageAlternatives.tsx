@@ -14,7 +14,7 @@ interface FirstMessageAlternativesProps {
   showTokenizer?: boolean;
   maxLength?: number;
   setCurrentIndex: React.Dispatch<React.SetStateAction<number>>;
-  setAlternativeMessages: React.Dispatch<React.SetStateAction<string[]>>;
+  updateAlternativeMessage: (newValue: string, index?: number) => void;
 }
 
 export function FirstMessageAlternatives({
@@ -25,37 +25,28 @@ export function FirstMessageAlternatives({
   showTokenizer,
   maxLength,
   setCurrentIndex,
-  setAlternativeMessages,
+  updateAlternativeMessage,
 }: FirstMessageAlternativesProps) {
-  const handleAlternativeMessageChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    const newMsgs = [...alternativeMessages];
-    newMsgs[currentIndex] = e.target.value;
-    setAlternativeMessages(newMsgs);
+  const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    updateAlternativeMessage(e.target.value, currentIndex);
   };
 
-  const addAlternativeMessage = () => {
+  const addAlternative = () => {
     if (alternativeMessages.length < maxAlternatives) {
-      setAlternativeMessages([...alternativeMessages, '']);
+      updateAlternativeMessage('', alternativeMessages.length);
       setCurrentIndex(alternativeMessages.length);
     }
   };
 
-  const removeAlternativeMessage = () => {
-    if (alternativeMessages.length > 1) {
-      const newMsgs = [...alternativeMessages];
-      newMsgs.splice(currentIndex, 1);
-      setAlternativeMessages(newMsgs);
-      setCurrentIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0));
-    }
+  const removeAlternative = () => {
+    if (alternativeMessages.length <= 1) return;
+    const newMsgs = alternativeMessages.filter((_, i) => i !== currentIndex);
+    newMsgs.forEach((msg, i) => updateAlternativeMessage(msg, i));
+    setCurrentIndex((prev) => (prev > 0 ? prev - 1 : 0));
   };
 
-  const goPrev = () => {
-    setCurrentIndex((i) => (i > 0 ? i - 1 : i));
-  };
-
-  const goNext = () => {
-    setCurrentIndex((i) => (i < alternativeMessages.length - 1 ? i + 1 : i));
-  };
+  const prev = () => setCurrentIndex((i) => (i > 0 ? i - 1 : i));
+  const next = () => setCurrentIndex((i) => (i < alternativeMessages.length - 1 ? i + 1 : i));
 
   return (
     <Box sx={{ mb: 3 }}>
@@ -74,58 +65,43 @@ export function FirstMessageAlternatives({
         <Typography component="label" sx={{ flexShrink: 0 }}>
           First Message
         </Typography>
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 0.5,
-            ml: 1,
-            color: 'text.secondary',
-          }}
-        >
-          <IconButton
-            onClick={goPrev}
-            disabled={currentIndex === 0}
-            aria-label="Previous message"
-            size="small"
-            sx={{
-              color: currentIndex === 0 ? 'action.disabled' : 'text.secondary',
-              padding: '2px',
-              '&:hover': { backgroundColor: 'action.hover' },
-            }}
-          >
+
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, ml: 1 }}>
+          <IconButton onClick={prev} disabled={currentIndex === 0} size="small">
             <ChevronLeftIcon fontSize="small" />
           </IconButton>
+
           <Typography variant="body2" sx={{ minWidth: 30, textAlign: 'center' }}>
             {currentIndex + 1} / {alternativeMessages.length}
           </Typography>
+
           <IconButton
-            onClick={goNext}
+            onClick={next}
             disabled={currentIndex === alternativeMessages.length - 1}
-            aria-label="Next message"
             size="small"
-            sx={{
-              color: currentIndex === alternativeMessages.length - 1 ? 'action.disabled' : 'text.secondary',
-              padding: '2px',
-              '&:hover': { backgroundColor: 'action.hover' },
-            }}
           >
             <ChevronRightIcon fontSize="small" />
           </IconButton>
         </Box>
+
         <Box sx={{ display: 'flex', gap: 0.5 }}>
-          <IconButton onClick={removeAlternativeMessage} disabled={alternativeMessages.length <= 1}>
+          <IconButton onClick={removeAlternative} disabled={alternativeMessages.length <= 1}>
             <RemoveIcon />
           </IconButton>
-          <IconButton onClick={addAlternativeMessage} disabled={alternativeMessages.length >= maxAlternatives}>
+
+          <IconButton
+            onClick={addAlternative}
+            disabled={alternativeMessages.length >= maxAlternatives}
+          >
             <AddIcon />
           </IconButton>
         </Box>
       </Box>
+
       <MemoizedTextarea
         name={`first_message_alternatives_${currentIndex}`}
         value={alternativeMessages[currentIndex]}
-        onChange={handleAlternativeMessageChange}
+        onChange={handleChange}
         placeholder={placeholder}
         showTokenizer={showTokenizer}
         maxLength={maxLength}
