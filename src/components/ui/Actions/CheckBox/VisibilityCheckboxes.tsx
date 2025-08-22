@@ -15,9 +15,7 @@ export function VisibilityDropdown() {
   const setCharacter = useCharacterStore((state) => state.setCharacter);
   const isPublic = useCharacterStore((state) => state.is_public);
   const isNSFW = useCharacterStore((state) => state.is_nsfw);
-  const isDetailsPrivate = useCharacterStore(
-    (state) => state.is_details_private
-  );
+  const isDetailsPrivate = useCharacterStore((state) => state.is_details_private);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
@@ -47,14 +45,12 @@ export function VisibilityDropdown() {
               control={
                 <Checkbox
                   name="is_public"
-                  checked={isPublic}
+                  checked={!!isPublic}
                   onChange={handleChange}
                   inputProps={{ 'aria-label': 'Public' }}
                   sx={{
                     color: '#fff',
-                    '&.Mui-checked': {
-                      color: '#fff',
-                    },
+                    '&.Mui-checked': { color: '#fff' },
                   }}
                 />
               }
@@ -64,14 +60,12 @@ export function VisibilityDropdown() {
               control={
                 <Checkbox
                   name="is_nsfw"
-                  checked={isNSFW}
+                  checked={!!isNSFW}
                   onChange={handleChange}
                   inputProps={{ 'aria-label': 'NSFW' }}
                   sx={{
                     color: '#fff',
-                    '&.Mui-checked': {
-                      color: '#fff',
-                    },
+                    '&.Mui-checked': { color: '#fff' },
                   }}
                 />
               }
@@ -81,14 +75,12 @@ export function VisibilityDropdown() {
               control={
                 <Checkbox
                   name="is_details_private"
-                  checked={isDetailsPrivate}
+                  checked={!!isDetailsPrivate}
                   onChange={handleChange}
                   inputProps={{ 'aria-label': 'Hide Details' }}
                   sx={{
                     color: '#fff',
-                    '&.Mui-checked': {
-                      color: '#fff',
-                    },
+                    '&.Mui-checked': { color: '#fff' },
                   }}
                 />
               }

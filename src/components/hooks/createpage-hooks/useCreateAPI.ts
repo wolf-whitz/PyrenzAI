@@ -23,7 +23,9 @@ interface UseCreateAPIReturn {
   setShowRequiredFieldsPopup: React.Dispatch<React.SetStateAction<boolean>>;
   characterState: CharacterState;
   character: CharacterPayload;
-  setCharacter: (character: Partial<CharacterPayload>) => void;
+  setCharacter: (
+    character: Partial<CharacterPayload & ReturnType<typeof useCharacterStore>>
+  ) => void;
   handleDelete: () => Promise<void>;
   handleSubmit: (type: ActionType, e?: React.FormEvent) => Promise<void>;
   formState: CharacterPayload;
@@ -108,8 +110,8 @@ export const useCreateAPI = (
     showAlert('Draft loaded successfully!', 'success');
   };
 
-  const getEmptyValue = (schema: z.ZodTypeAny): unknown => {
-    if (schema.isOptional()) return null;
+  const getEmptyValue = (schema: z.ZodTypeAny): any => {
+    if (schema.isOptional()) return '';
     if (schema instanceof z.ZodDefault) {
       return schema._def.defaultValue();
     }
@@ -117,26 +119,30 @@ export const useCreateAPI = (
     if (schema instanceof z.ZodNumber) return 0;
     if (schema instanceof z.ZodBoolean) return false;
     if (schema instanceof z.ZodArray) return [];
-    if (schema instanceof z.ZodNullable) return null;
-    return null;
+    if (schema instanceof z.ZodNullable) return '';
+    return '';
   };
 
-const handleClear = () => {
-  const shape = CharacterPayloadSchema.shape;
+  const handleClear = () => {
+    const shape = CharacterPayloadSchema.shape;
 
-  const emptyCharacter = Object.keys(shape).reduce<
-    Partial<Record<keyof CharacterPayload, unknown>>
-  >((acc, key) => {
-    acc[key as keyof CharacterPayload] = getEmptyValue(
-      shape[key as keyof typeof shape]
-    );
-    return acc;
-  }, {});
+    const emptyCharacter = Object.keys(shape).reduce((acc, key) => {
+      (acc as any)[key] = getEmptyValue((shape as any)[key]);
+      return acc;
+    }, {} as any);
 
-  setCharacter(emptyCharacter as Partial<CharacterPayload>);
-  showAlert('Form cleared!', 'success');
-};
+    setCharacter({
+      ...emptyCharacter,
+      tokenTotal: 0,
+      permanentTokens: 0,
+      temporaryTokens: 0,
+      first_message: [],
+      error: null,
+      isCounting: false,
+    });
 
+    showAlert('Form cleared!', 'success');
+  };
 
   const formState = { ...character };
 

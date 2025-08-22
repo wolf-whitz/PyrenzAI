@@ -18,7 +18,9 @@ interface StoreState {
 
 interface CharacterActions {
   setCharacter: (
-    data: Partial<CharacterPayload> | ((prev: CharacterPayload) => CharacterPayload)
+    data:
+      | Partial<CharacterPayload & StoreState>
+      | ((prev: CharacterPayload & StoreState) => CharacterPayload & StoreState)
   ) => void;
   setGender: (gender: string) => void;
   setTokenTotal: (tokenTotal: number) => void;
@@ -32,52 +34,53 @@ interface CharacterActions {
   loadDraft: (draft: CharacterPayload) => void;
 }
 
-export const useCharacterStore = create<CharacterPayload & StoreState & CharacterActions>()(
-  (set) => ({
-    char_uuid: '',
-    title: '',
-    name: '',
-    description: '',
-    persona: '',
-    model_instructions: '',
-    scenario: '',
-    gender: '',
-    first_message: [],
-    creator: '',
-    creator_uuid: '',
-    tags: [],
-    profile_image: '',
-    is_public: false,
-    is_nsfw: false,
-    is_owner: false,
-    is_details_private: false,
-    is_banned: false,
-    lorebook: '',
-    attribute: '',
-    emotions: [],
-    profileImageFile: null,
-    emotionImageFile: null,
-    max_alternatives: 5,
-    tokenTotal: 0,
-    permanentTokens: 0,
-    temporaryTokens: 0,
-    error: null,
-    isCounting: false,
-    setCharacter: (data) =>
-      set((state) => ({
-        ...state,
-        ...(typeof data === 'function' ? data(state) : data),
-      })),
-    setGender: (gender) => set({ gender }),
-    setTokenTotal: (tokenTotal) => set({ tokenTotal }),
-    setPermanentTokens: (tokens) => set({ permanentTokens: tokens }),
-    setTemporaryTokens: (tokens) => set({ temporaryTokens: tokens }),
-    setIsCounting: (isCounting) => set({ isCounting }),
-    addEmotion: (emotion) =>
-      set((state) => ({ emotions: [...(state.emotions ?? []), emotion] })),
-    setError: (error) => set({ error }),
-    setFirstMessageAlternatives: (alternatives) => set({ first_message: alternatives }),
-    setMaxAlternatives: (max) => set({ max_alternatives: max }),
-    loadDraft: (draft) => set(() => ({ ...draft })),
-  })
-);
+export const useCharacterStore = create<
+  CharacterPayload & StoreState & CharacterActions
+>()((set) => ({
+  char_uuid: '',
+  title: '',
+  name: '',
+  description: '',
+  persona: '',
+  model_instructions: '',
+  scenario: '',
+  gender: '',
+  first_message: [],
+  creator: '',
+  creator_uuid: '',
+  tags: [],
+  profile_image: '',
+  is_public: false,
+  is_nsfw: false,
+  is_owner: false,
+  is_details_private: false,
+  is_banned: false,
+  lorebook: '',
+  attribute: '',
+  emotions: [],
+  profileImageFile: null,
+  emotionImageFile: null,
+  max_alternatives: 5,
+  tokenTotal: 0,
+  permanentTokens: 0,
+  temporaryTokens: 0,
+  error: null,
+  isCounting: false,
+  setCharacter: (data) =>
+    set((state) => ({
+      ...state,
+      ...(typeof data === 'function' ? data(state) : data),
+    })),
+  setGender: (gender) => set({ gender }),
+  setTokenTotal: (tokenTotal) => set({ tokenTotal }),
+  setPermanentTokens: (tokens) => set({ permanentTokens: tokens }),
+  setTemporaryTokens: (tokens) => set({ temporaryTokens: tokens }),
+  setIsCounting: (isCounting) => set({ isCounting }),
+  addEmotion: (emotion) =>
+    set((state) => ({ emotions: [...(state.emotions ?? []), emotion] })),
+  setError: (error) => set({ error }),
+  setFirstMessageAlternatives: (alternatives) =>
+    set({ first_message: alternatives }),
+  setMaxAlternatives: (max) => set({ max_alternatives: max }),
+  loadDraft: (draft) => set(() => ({ ...draft })),
+}));
