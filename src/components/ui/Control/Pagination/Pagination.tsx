@@ -7,7 +7,6 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 interface PaginationProps {
   totalPages: number;
   currentPage: number;
-  isLoading: boolean;
   onNext: () => void;
   onPrev: () => void;
 }
@@ -15,7 +14,6 @@ interface PaginationProps {
 export function Pagination({
   totalPages,
   currentPage,
-  isLoading,
   onNext,
   onPrev,
 }: PaginationProps) {
@@ -34,7 +32,7 @@ export function Pagination({
       >
         <IconButton
           onClick={onPrev}
-          disabled={currentPage <= 1 || isLoading}
+          disabled={currentPage <= 1}
           sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
         >
           <ChevronLeftIcon />
@@ -49,7 +47,7 @@ export function Pagination({
       >
         <IconButton
           onClick={onNext}
-          disabled={currentPage >= totalPages || isLoading}
+          disabled={currentPage >= totalPages}
           sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
         >
           <Typography variant="button">Next</Typography>

@@ -10,27 +10,16 @@ import {
 import { Character } from '@shared-types';
 
 const ellipsisAnimation = keyframes`
-  0% {
-    content: '';
-  }
-  25% {
-    content: '.';
-  }
-  50% {
-    content: '..';
-  }
-  75% {
-    content: '...';
-  }
-  100% {
-    content: '';
-  }
+  0% { content: ''; }
+  25% { content: '.'; }
+  50% { content: '..'; }
+  75% { content: '...'; }
+  100% { content: ''; }
 `;
 
 const LoadingText = styled(Typography)`
   position: relative;
   padding-right: 1.5em;
-
   &::after {
     content: '';
     position: absolute;
@@ -62,15 +51,14 @@ export function CharacterList({
       sx={{
         display: 'grid',
         gridTemplateColumns: {
-          xs: 'repeat(2, 1fr)',
-          sm: 'repeat(2, 1fr)',
-          md: 'repeat(3, 1fr)',
-          lg: 'repeat(4, 1fr)',
-          xl: 'repeat(5, 1fr)',
-          xxl: 'repeat(6, 1fr)',
+          xs: 'repeat(auto-fill, minmax(140px, 1fr))',
+          sm: 'repeat(auto-fill, minmax(160px, 1fr))',
+          md: 'repeat(auto-fill, minmax(200px, 1fr))',
+          lg: 'repeat(auto-fill, minmax(220px, 1fr))',
         },
+        gap: 2,
         minHeight: '50vh',
-        justifyContent: { xs: 'center', sm: 'flex-start' },
+        width: '100%',
       }}
     >
       {loading ? (
@@ -98,30 +86,12 @@ export function CharacterList({
           </Box>
         ) : (
           Array.from({ length: itemsPerPage }).map((_, i) => (
-            <Box
-              key={i}
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <SkeletonCard />
-            </Box>
+            <SkeletonCard key={i} />
           ))
         )
       ) : characters.length > 0 ? (
         characters.map((char) => (
-          <Box
-            key={char.id}
-            sx={{
-              transition: 'transform 0.3s ease-in-out',
-              p: 1,
-            }}
-            aria-labelledby={`character-${char.name}`}
-          >
-            <CharacterCard character={char} />
-          </Box>
+          <CharacterCard key={char.id} character={char} />
         ))
       ) : (
         <Box

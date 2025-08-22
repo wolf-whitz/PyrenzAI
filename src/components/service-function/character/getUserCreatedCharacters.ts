@@ -62,8 +62,8 @@ export function getUserCreatedCharacters(
 
   const handleButtonClick = async (
     type: 'hot' | 'latest' | 'random' | 'tags',
-    maxCharacter: number = 20,
-    page: number = 1,
+    maxCharacter: number = perPage,
+    page: number = currentPage,
     tag?: string,
     gender?: string,
     search?: string
@@ -88,8 +88,8 @@ export function getUserCreatedCharacters(
       );
 
       setCharacters(result.characters);
-      setMaxPage(result.totalPages);
-      setTotalItems(result.totalItems);
+      setMaxPage(result.totalPages > 0 ? result.totalPages : 1);
+      setTotalItems(result.totalItems ?? result.characters.length);
       return result.characters;
     } catch (err) {
       console.error('Fetch character failed:', err);

@@ -26,10 +26,12 @@ export const useHandleCharacterFetchClick = () => {
       totalPages: number;
       totalItems: number;
     }> => {
+      let result;
+
       if (type === 'tags') {
         if (!tag) throw new Error('Missing tag');
 
-        return await fetchCharacters({
+        result = await fetchCharacters({
           currentPage: page,
           itemsPerPage: maxCharacter,
           sortBy: 'chat_messages_count',
@@ -38,32 +40,39 @@ export const useHandleCharacterFetchClick = () => {
           filterCreatorUUID: creatorUUID,
           search: search ?? null,
         });
+
+        return {
+          characters: result.characters ?? [],
+          totalPages: result.totalPages ?? 1,
+          totalItems: result.totalItems ?? result.characters?.length ?? 0,
+        };
       }
 
       switch (type) {
         case 'hot':
-          return await GetHotCharacters(
+          result = await GetHotCharacters(
             'hot',
             maxCharacter,
             page,
             'chat_messages_count',
-            {
-              filter_creator_uuid: creatorUUID,
-            }
+            { filter_creator_uuid: creatorUUID }
           );
+          break;
 
         case 'latest':
-          return await GetLatestCharacters('latest', maxCharacter, page, {
+          result = await GetLatestCharacters('latest', maxCharacter, page, {
             filter_creator_uuid: creatorUUID,
           });
+          break;
 
         case 'random':
-          return await GetRandomCharacters('random', maxCharacter, page, {
+          result = await GetRandomCharacters('random', maxCharacter, page, {
             filter_creator_uuid: creatorUUID,
           });
+          break;
 
         default:
-          return await fetchCharacters({
+          result = await fetchCharacters({
             currentPage: page,
             itemsPerPage: maxCharacter,
             sortBy: 'chat_messages_count',
@@ -73,6 +82,12 @@ export const useHandleCharacterFetchClick = () => {
             search: search ?? null,
           });
       }
+
+      return {
+        characters: result.characters ?? [],
+        totalPages: result.totalPages ?? 1,
+        totalItems: result.totalItems ?? result.characters?.length ?? 0,
+      };
     },
     []
   );

@@ -100,10 +100,12 @@ export const useTextareaFormAPI = () => {
 
   const debouncedUpdateTokenCounts = useMemo(
     () =>
-      createDebouncedTokenizer(
-        () => updateTokenCounts(character, alternativeMessages),
-        500
-      ),
+      createDebouncedTokenizer((total) => {
+        updateTokenCounts(
+          { ...character, first_message: alternativeMessages },
+          alternativeMessages
+        );
+      }, 500),
     [updateTokenCounts, character, alternativeMessages]
   );
 
@@ -115,7 +117,7 @@ export const useTextareaFormAPI = () => {
         setCharacter({ first_message: updated });
         setIsCounting(true);
         debouncedUpdateTokenCounts.cancel();
-        debouncedUpdateTokenCounts(newValue);
+        debouncedUpdateTokenCounts(updated);
         return updated;
       });
     },
@@ -130,7 +132,7 @@ export const useTextareaFormAPI = () => {
         setCharacter({ first_message: updated });
         setIsCounting(true);
         debouncedUpdateTokenCounts.cancel();
-        debouncedUpdateTokenCounts(updated.join(' '));
+        debouncedUpdateTokenCounts(updated);
         return updated;
       });
     },
@@ -143,7 +145,7 @@ export const useTextareaFormAPI = () => {
       const { name, type } = target;
 
       if (name === 'first_message') {
-        updateAlternativeMessage(target.value, 0);
+        updateAlternativeMessage(target.value, currentIndex);
       } else {
         let value: string | boolean = target.value;
         if (type === 'checkbox') {
@@ -154,10 +156,7 @@ export const useTextareaFormAPI = () => {
         setCharacter(updatedCharacter);
         setIsCounting(true);
         debouncedUpdateTokenCounts.cancel();
-
-        if (typeof value === 'string') {
-          debouncedUpdateTokenCounts(value);
-        }
+        debouncedUpdateTokenCounts(alternativeMessages);
       }
     },
     [
@@ -166,6 +165,8 @@ export const useTextareaFormAPI = () => {
       character,
       debouncedUpdateTokenCounts,
       setIsCounting,
+      currentIndex,
+      alternativeMessages,
     ]
   );
 
@@ -187,12 +188,12 @@ export const useTextareaFormAPI = () => {
     setCharacter({} as CharacterPayload);
     setIsCounting(true);
     debouncedUpdateTokenCounts.cancel();
-    debouncedUpdateTokenCounts('');
+    debouncedUpdateTokenCounts(['']);
   }, [setCharacter, setIsCounting, debouncedUpdateTokenCounts]);
 
   useEffect(() => {
     setIsCounting(true);
-    debouncedUpdateTokenCounts(currentMessage);
+    debouncedUpdateTokenCounts(alternativeMessages);
   }, []);
 
   return {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Container, useMediaQuery, Box, useTheme } from '@mui/material';
 import {
@@ -144,15 +144,12 @@ export function Home() {
               />
             </Box>
 
-            {!loading && (
-              <Pagination
-                totalPages={totalPages}
-                currentPage={currentPage}
-                isLoading={loading}
-                onNext={() => setPage(currentPage + 1)}
-                onPrev={() => setPage(currentPage - 1)}
-              />
-            )}
+            <Pagination
+              totalPages={totalPages}
+              currentPage={currentPage}
+              onNext={() => setPage(currentPage + 1)}
+              onPrev={() => setPage(currentPage - 1)}
+            />
           </Box>
         </Container>
 

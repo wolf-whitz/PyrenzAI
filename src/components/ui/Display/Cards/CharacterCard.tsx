@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Typography, Fade } from '@mui/material';
+import { Box, Typography, Fade, useTheme, useMediaQuery } from '@mui/material';
 import {
   ChatBubbleOutlineRounded as ChatIcon,
   PublicRounded as PublicIcon,
@@ -27,6 +27,8 @@ interface CharacterCardProps {
 export function CharacterCard({ character }: CharacterCardProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoaded(true), 50);
@@ -93,7 +95,14 @@ export function CharacterCard({ character }: CharacterCardProps) {
             mb={1}
           >
             <Box display="flex" flexDirection="column">
-              <PyrenzCharacterCardTitle>
+              <PyrenzCharacterCardTitle
+                sx={{
+                  maxWidth: isMobile ? '100%' : 'auto',
+                  whiteSpace: isMobile ? 'nowrap' : 'normal',
+                  overflow: isMobile ? 'hidden' : 'visible',
+                  textOverflow: isMobile ? 'ellipsis' : 'unset',
+                }}
+              >
                 {character.title}
               </PyrenzCharacterCardTitle>
               <Box
@@ -123,7 +132,16 @@ export function CharacterCard({ character }: CharacterCardProps) {
               </Typography>
             </Box>
           </Box>
-          <PyrenzCharacterCardDescription>
+          <PyrenzCharacterCardDescription
+            sx={{
+              whiteSpace: isMobile ? 'normal' : 'nowrap',
+              overflow: isMobile ? 'visible' : 'hidden',
+              textOverflow: isMobile ? 'unset' : 'ellipsis',
+              display: isMobile ? 'block' : '-webkit-box',
+              WebkitLineClamp: isMobile ? 'unset' : 3,
+              WebkitBoxOrient: 'vertical',
+            }}
+          >
             {character.description?.length > 120
               ? `${character.description.slice(0, 120)}...`
               : character.description || 'No description available.'}

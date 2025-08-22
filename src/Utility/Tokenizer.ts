@@ -1,46 +1,28 @@
 import llamaTokenizer from 'llama-tokenizer-js';
 import debounce from 'lodash/debounce';
 
-/**
- * Tokenizes a string input using llamaTokenizer.
- * @param value - The input string to tokenize.
- * @returns An array of token integers.
- */
 export const applyTokenizer = (value: string): number[] => {
   if (typeof value !== 'string') return [];
   return llamaTokenizer.encode(value);
 };
 
-/**
- * Decodes an array of token integers back into a string.
- * @param tokens - The array of tokens to decode.
- * @returns The decoded string.
- */
 export const decodeTokenizer = (tokens: number[]): string => {
   if (!Array.isArray(tokens)) return '';
   return llamaTokenizer.decode(tokens);
 };
 
-/**
- * Returns the token count of a given string.
- * @param value - The input string.
- * @returns Number of tokens.
- */
 export const countTokens = (value: string): number => {
   return applyTokenizer(value).length;
 };
 
-/**
- * Debounced version of countTokens.
- * Useful for textareas or inputs where the user is typing.
- * @param callback - A function to receive the debounced token count.
- * @param delay - Debounce delay in ms (default: 250).
- */
 export const createDebouncedTokenizer = (
   callback: (tokenCount: number) => void,
   delay = 250
 ) => {
-  return debounce((value: string) => {
-    callback(countTokens(value));
+  return debounce((value: string | string[]) => {
+    const totalTokens = Array.isArray(value)
+      ? value.reduce((sum, v) => sum + countTokens(v), 0)
+      : countTokens(value);
+    callback(totalTokens);
   }, delay);
 };

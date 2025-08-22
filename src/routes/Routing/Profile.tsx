@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   Sidebar,
@@ -47,7 +47,6 @@ export function ProfilePage() {
         setCreatorUUID(urlParams.creator_uuid);
       }
     };
-
     fetchUUID();
   }, [urlParams.creator_uuid]);
 
@@ -57,11 +56,23 @@ export function ProfilePage() {
     }
   }, [creatorUUID, currentPage]);
 
+  useEffect(() => {
+    const scrollContainer = document.getElementById('profile-scroll-container');
+    if (scrollContainer) {
+      scrollContainer.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [currentPage]);
+
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
       <Box display="flex" flex={1}>
         <Sidebar className="flex-shrink-0" />
-        <Box flex={1} overflow="auto">
+        <Box
+          id="profile-scroll-container"
+          flex={1}
+          overflow="auto"
+          pb={isMobile ? 10 : 0}
+        >
           {loading ? (
             <Box display="flex" justifyContent="center" pt={10}>
               <CircularProgress />
@@ -73,7 +84,6 @@ export function ProfilePage() {
           ) : (
             <>
               <UserProfileHeader user={userData} />
-
               <Box px={3} pt={2}>
                 <CustomButton
                   onButtonClick={async (type, page, options) => {
@@ -89,7 +99,6 @@ export function ProfilePage() {
                   onButtonTagClicked={handleButtonTagClicked}
                 />
               </Box>
-
               <Box
                 display="grid"
                 gridTemplateColumns={{
@@ -104,18 +113,7 @@ export function ProfilePage() {
                 minHeight="50vh"
                 pl={{ md: 10 }}
               >
-                {loading ? (
-                  <Box
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                    width="100%"
-                    gridColumn="1 / -1"
-                    pt={4}
-                  >
-                    <CircularProgress />
-                  </Box>
-                ) : characters.length > 0 ? (
+                {characters.length > 0 ? (
                   characters.map((char) => (
                     <CharacterCard key={char.id} character={char} />
                   ))
@@ -129,11 +127,9 @@ export function ProfilePage() {
                   </Typography>
                 )}
               </Box>
-
               <Pagination
                 totalPages={maxPage}
                 currentPage={currentPage}
-                isLoading={loading}
                 onNext={goToNextPage}
                 onPrev={goToPrevPage}
               />
