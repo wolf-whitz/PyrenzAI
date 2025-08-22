@@ -65,12 +65,10 @@ export function Home() {
         exit={{ opacity: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <Box component="header" sx={{ width: '100%' }}>
-          <PreviewHeader
-            setShowLogin={setShowLogin}
-            setShowRegister={setShowRegister}
-          />
-        </Box>
+        <PreviewHeader
+          setShowLogin={setShowLogin}
+          setShowRegister={setShowRegister}
+        />
 
         <Container
           maxWidth={false}
