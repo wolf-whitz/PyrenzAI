@@ -70,7 +70,15 @@ export const textareasByCategory: TextareaCategory[] = [
         name: 'model_instructions',
         label: 'Model Instructions',
         placeholder:
-          "Provide instructions for the model... (Never use 'you' or 'your', always use {{char}})",
+          "Provide instructions for the model... (Never use 'you' or 'your', always use {{char}} or {{user}})",
+        showTokenizer: true,
+        is_permanent: true,
+      },
+       {
+        name: 'message_example',
+        label: 'Message Example',
+        placeholder:
+          "Provide examples of what the model should follow (Never use 'you' or 'your', always use {{char}} do not mention {{user}} here, This is mainly to instrut the model via examples.)",
         showTokenizer: true,
         is_permanent: true,
       },

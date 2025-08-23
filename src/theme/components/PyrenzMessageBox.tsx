@@ -40,7 +40,6 @@ const StyledPyrenzMessageBox = styled(Box, {
 })<{ dataState: 'user' | 'char' }>(({ dataState }) => ({
   display: 'flex',
   flexDirection: 'column',
-  maxWidth: '60%',
   padding: '10px 15px',
   borderRadius: '18px',
   margin: '10px',
@@ -68,7 +67,7 @@ const HoverableAvatar = styled(Avatar)({
   },
 });
 
-export const PyrenzMessageBox = ({
+export function PyrenzMessageBox({
   children = '',
   onClick,
   sx,
@@ -92,7 +91,7 @@ export const PyrenzMessageBox = ({
   ai_message = '',
   isGeneratingEmptyCharMessage = false,
   alternation_first = true,
-}: PyrenzMessageBoxProps) => {
+}: PyrenzMessageBoxProps) {
   const [altIndex, setAltIndex] = useState(
     alternation_first ? 0 : alternativeMessages.length - 1
   );
@@ -103,31 +102,33 @@ export const PyrenzMessageBox = ({
 
   const totalMessages = alternativeMessages.length;
 
-  const getDisplayedText = () => {
+  function getDisplayedText() {
     if (totalMessages > 0) {
       return alternativeMessages[altIndex] ?? '';
     }
     return children;
-  };
+  }
 
-  const handleGoPrev = (event: React.MouseEvent) => {
+  function handleGoPrev(event: React.MouseEvent) {
     event.stopPropagation();
     setAltIndex((prev) => (prev === 0 ? totalMessages - 1 : prev - 1));
     onGoPrev?.(event);
-  };
+  }
 
-  const handleGoNext = (event: React.MouseEvent) => {
+  function handleGoNext(event: React.MouseEvent) {
     event.stopPropagation();
     setAltIndex((prev) => (prev + 1) % totalMessages);
     onGoNext?.(event);
-  };
+  }
 
-  const handleClick = (event: React.MouseEvent) => onClick?.(event);
+  function handleClick(event: React.MouseEvent) {
+    onClick?.(event);
+  }
 
-  const renderContent = () => {
+  function renderContent() {
     if (isEditing) {
       return (
-        <Box display="flex" flexDirection="column" width="100%">
+        <Box display="flex" flexDirection="column" flex={1}>
           <TextField
             value={localEditedMessage ?? ''}
             onChange={onChange}
@@ -186,7 +187,7 @@ export const PyrenzMessageBox = ({
         )}
       </>
     );
-  };
+  }
 
   return (
     <Box
@@ -196,7 +197,7 @@ export const PyrenzMessageBox = ({
       alignItems={dataState === 'user' ? 'flex-end' : 'flex-start'}
       sx={{ width: '100%' }}
     >
-      <Box display="flex" alignItems="flex-start">
+      <Box display="flex" alignItems="flex-start" flex={1}>
         {dataState !== 'user' && charAvatar && (
           <HoverableAvatar
             alt={displayName ?? ''}
@@ -207,8 +208,8 @@ export const PyrenzMessageBox = ({
         )}
         <StyledPyrenzMessageBox
           onClick={handleClick}
-          sx={sx}
-          className="hover-container"
+          sx={{ ...sx, flex: 1 }}
+          className={className}
           dataState={dataState}
         >
           {renderContent()}
@@ -224,4 +225,4 @@ export const PyrenzMessageBox = ({
       </Box>
     </Box>
   );
-};
+}

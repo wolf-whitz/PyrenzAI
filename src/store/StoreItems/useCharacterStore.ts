@@ -46,6 +46,7 @@ export const useCharacterStore = create<
   scenario: '',
   gender: '',
   first_message: [],
+  message_example: '',
   creator: '',
   creator_uuid: '',
   tags: [],

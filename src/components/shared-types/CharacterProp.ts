@@ -53,6 +53,7 @@ export const CharacterPayloadSchema = z.object({
   model_instructions: z.string(),
   scenario: z.string(),
   gender: z.string(),
+  message_example: z.string(),
   first_message: z.array(z.string()),
   creator: z.string(),
   tags: z.array(z.string()).default([]),

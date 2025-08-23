@@ -1,6 +1,6 @@
 import { Utils as utils } from '~/Utility';
 import { v4 as uuidv4 } from 'uuid';
-import { Character } from '@shared-types';
+import { CharacterPayload } from '@shared-types';
 
 interface CreateChatResponse {
   chat_uuid: string;
@@ -13,9 +13,9 @@ export async function CreateNewChat(
 ): Promise<CreateChatResponse> {
   const chatUuid = uuidv4();
   try {
-    let character: Character | undefined;
+    let character: CharacterPayload | undefined;
 
-    const { data: publicCharacter } = await utils.db.select<Character>({
+    const { data: publicCharacter } = await utils.db.select<CharacterPayload>({
       tables: 'public_characters',
       columns: '*',
       match: { char_uuid: characterUuid },
@@ -24,7 +24,7 @@ export async function CreateNewChat(
     if (publicCharacter && publicCharacter.length > 0) {
       character = publicCharacter[0];
     } else {
-      const { data: privateCharacter } = await utils.db.select<Character>({
+      const { data: privateCharacter } = await utils.db.select<CharacterPayload>({
         tables: 'private_characters',
         columns: '*',
         match: { char_uuid: characterUuid },
@@ -46,6 +46,7 @@ export async function CreateNewChat(
       scenario,
       title,
       attribute,
+      message_example,
     } = character;
 
     await utils.db.insert({
@@ -64,6 +65,7 @@ export async function CreateNewChat(
         is_temporary: true,
         attribute,
         title,
+        message_example,
       },
     });
 

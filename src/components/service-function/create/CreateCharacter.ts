@@ -7,6 +7,7 @@ interface CreateCharacterResponse {
   error?: string;
   is_moderated?: boolean;
   moderated_message?: string;
+  issues?: string[];
 }
 
 const requiredCharacterFields: (keyof CharacterPayload)[] = [
@@ -20,13 +21,18 @@ const requiredCharacterFields: (keyof CharacterPayload)[] = [
   'tags',
   'gender',
   'creator',
-  'profile_image',
   'attribute',
 ];
 
 const validateCharacterData = (character: CharacterPayload) => {
+  const filteredCharacter = { ...character };
+  delete filteredCharacter.emotionImageFile;
+  delete filteredCharacter.profileImageFile;
+  delete filteredCharacter.is_banned;
+  delete filteredCharacter.is_owner;
+
   const missingFields = requiredCharacterFields.filter((field) => {
-    const value = character[field];
+    const value = filteredCharacter[field];
     return (
       value === undefined ||
       value === null ||
@@ -42,7 +48,7 @@ const validateCharacterData = (character: CharacterPayload) => {
   }
 
   try {
-    const parsed = CharacterPayloadSchema.parse(character);
+    const parsed = CharacterPayloadSchema.parse(filteredCharacter);
     parsed.emotions ??= [];
     if (!parsed.creator?.trim()) {
       return { error: 'Creator is required.' };
@@ -80,6 +86,11 @@ const postCharacter = async (
     throw new Error(
       res.moderated_message ||
         '⚠️ Your character triggered moderation filters. Please revise and try again.'
+    );
+  }
+  if (res.issues && res.issues.length > 0) {
+    throw new Error(
+      `Character moderation issues: ${res.issues.join('; ')}`
     );
   }
   return res;
