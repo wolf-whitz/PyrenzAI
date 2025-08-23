@@ -1,78 +1,80 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 
 interface ModelIdentifier {
-  name: string;
-  model_description: string;
+  name: string
+  model_description: string
 }
 
 interface InferenceSettings {
-  maxTokens: number;
-  temperature: number;
-  topP: number;
-  presencePenalty: number;
-  frequencyPenalty: number;
+  maxTokens: number
+  temperature: number
+  topP: number
+  presencePenalty: number
+  frequencyPenalty: number
 }
 
 interface Customization {
-  userTextColor: string;
-  charTextColor: string;
-  userItalicColor: string;
-  charItalicColor: string;
-  userQuotedColor: string;
-  charQuotedColor: string;
+  userTextColor: string
+  charTextColor: string
+  userItalicColor: string
+  charItalicColor: string
+  userQuotedColor: string
+  charQuotedColor: string
 }
 
 interface CachedUserData {
   data: {
-    country_name?: string;
-    is_deleted?: boolean;
-    is_banned?: boolean;
-  };
-  gotten_at: number;
+    country_name?: string
+    is_deleted?: boolean
+    is_banned?: boolean
+  }
+  gotten_at: number
 }
 
 interface UserStore {
-  userUUID: string | null;
-  username: string | null;
-  personaName: string | null;
-  userIcon: string | null;
-  is_login: boolean;
-  is_deleted: boolean | undefined;
-  is_banned: boolean | undefined;
-  is_admin: boolean;
-  subscription_plan: string[] | null;
-  imageURL: string | null;
-  preferredModel: string;
-  inferenceSettings: InferenceSettings;
-  modelIdentifiers: ModelIdentifier[];
-  maxTokenLimit: number;
-  customization: Customization;
-  show_nsfw: boolean;
-  blocked_tags: string[];
-  purchase_id: string | null;
-  cachedUserData?: CachedUserData;
-  setUserUUID: (uuid: string) => void;
-  setUsername: (name: string) => void;
-  setPersonaName: (name: string) => void;
-  setUserIcon: (icon: string) => void;
-  setIsLogin: (isLogin: boolean) => void;
-  setIsDeleted: (isDeleted: boolean | undefined) => void;
-  setIsBanned: (isBanned: boolean | undefined) => void;
-  setIsAdmin: (isAdmin: boolean) => void;
-  setSubscriptionPlan: (plan: string[]) => void;
-  setImageURL: (url: string | null) => void;
-  setPreferredModel: (model: string) => void;
-  setInferenceSettings: (settings: InferenceSettings) => void;
-  setModelIdentifiers: (models: ModelIdentifier[]) => void;
-  setMaxTokenLimit: (limit: number) => void;
-  setCustomization: (customization: Partial<Customization>) => void;
-  toggleShowNSFW: () => void;
-  setBlockedTags: (tags: string[]) => void;
-  setPurchaseId: (purchaseId: string) => void;
-  setCachedUserData: (cache: CachedUserData | undefined) => void;
-  clearCachedUserData: () => void;
-  clearData: () => void;
+  userUUID: string | null
+  username: string | null
+  personaName: string | null
+  userIcon: string | null
+  is_login: boolean
+  is_deleted: boolean | undefined
+  is_banned: boolean | undefined
+  is_admin: boolean
+  subscription_plan: string[] | null
+  imageURL: string | null
+  preferredModel: string
+  inferenceSettings: InferenceSettings
+  modelIdentifiers: ModelIdentifier[]
+  maxTokenLimit: number
+  customization: Customization
+  show_nsfw: boolean
+  blocked_tags: string[]
+  purchase_id: string | null
+  cachedUserData?: CachedUserData
+  token: string | null
+  setUserUUID: (uuid: string) => void
+  setUsername: (name: string) => void
+  setPersonaName: (name: string) => void
+  setUserIcon: (icon: string) => void
+  setIsLogin: (isLogin: boolean) => void
+  setIsDeleted: (isDeleted: boolean | undefined) => void
+  setIsBanned: (isBanned: boolean | undefined) => void
+  setIsAdmin: (isAdmin: boolean) => void
+  setSubscriptionPlan: (plan: string[]) => void
+  setImageURL: (url: string | null) => void
+  setPreferredModel: (model: string) => void
+  setInferenceSettings: (settings: InferenceSettings) => void
+  setModelIdentifiers: (models: ModelIdentifier[]) => void
+  setMaxTokenLimit: (limit: number) => void
+  setCustomization: (customization: Partial<Customization>) => void
+  toggleShowNSFW: () => void
+  setBlockedTags: (tags: string[]) => void
+  setPurchaseId: (purchaseId: string) => void
+  setCachedUserData: (cache: CachedUserData | undefined) => void
+  clearCachedUserData: () => void
+  clearData: () => void
+  setToken: (token: string | null) => void
 }
 
 export const useUserStore = create<UserStore>()(
@@ -110,6 +112,7 @@ export const useUserStore = create<UserStore>()(
       blocked_tags: [],
       purchase_id: null,
       cachedUserData: undefined,
+      token: null,
       setUserUUID: (uuid) => set({ userUUID: uuid }),
       setUsername: (name) => set({ username: name }),
       setPersonaName: (name) => set({ personaName: name }),
@@ -167,10 +170,12 @@ export const useUserStore = create<UserStore>()(
           blocked_tags: [],
           purchase_id: null,
           cachedUserData: undefined,
+          token: null,
         }),
+      setToken: (token) => set({ token }),
     }),
     {
       name: 'user-storage',
     }
   )
-);
+)

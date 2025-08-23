@@ -42,24 +42,21 @@ export async function fetchCharacters({
     const bannedCreatorUUIDs =
       bannedRes.data?.map((user) => user.user_uuid) ?? [];
 
-    const result = await Utils.db.rpc<{
+    const result = await Utils.post<{
       total_count: number;
       total_pages: number;
       characters: Character[];
-    }>({
-      func: 'get_characters',
-      params: {
-        limit_val: itemsPerPage,
-        page_num: currentPage,
-        show_nsfw,
-        gender_filter: genderFilter,
-        tags_filter: tagsFilter,
-        blocked_tags,
-        sort_by: sortBy,
-        filter_creator_uuid: filterCreatorUUID,
-        filter_char_uuid: filterCharUUID,
-        search,
-      },
+    }>('/api/Characters', {
+      limit: itemsPerPage,
+      page: currentPage,
+      show_nsfw,
+      gender: genderFilter,
+      tags: tagsFilter,
+      blocked_tags,
+      sort_by: sortBy,
+      filter_creator_uuid: filterCreatorUUID,
+      filter_char_uuid: filterCharUUID,
+      search,
     });
 
     const totalItems = result.total_count ?? 0;

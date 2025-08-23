@@ -1,6 +1,6 @@
 const SUPABASE_URL = 'https://wetxjqppusuquqtzhvfv.supabase.co';
 const SUPABASE_ANON_KEY =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndldHhqcXBwdXN1cXVxdHpodmZ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU0MTUzMzAsImV4cCI6MjA3MDk5MTMzMH0.oqDQ9-VO_0MbfhVeAWZFwvL1go-oHoeXmCKgndeg6ac';
+  'sb_publishable_Ik75DR_2FH08mUiUzo6dKw_mvr6mdPt';
 
 const SERVER_API_URL_1 =
   import.meta.env.VITE_SERVER_API_URL_1 ?? 'http://localhost:3000';

@@ -59,6 +59,14 @@ export function CharacterCard({ character }: CharacterCardProps) {
 
   if (character.isLoading) return null;
 
+  const formatTag = (tag: string) => {
+    // Remove emojis and punctuation
+    const cleaned = tag.replace(/[^\w\s]/g, '');
+    return cleaned.charAt(0).toUpperCase() + cleaned.slice(1).toLowerCase();
+  };
+
+  const filteredTags = (character.tags ?? []).map(formatTag).filter(tag => tag.length > 0);
+
   return (
     <Fade in={isLoaded} timeout={1500}>
       <PyrenzCharacterCard
@@ -160,7 +168,7 @@ export function CharacterCard({ character }: CharacterCardProps) {
                 </>
               )}
             </PyrenzCharacterCardTag>
-            {(character.tags ?? []).map((tag, index) => (
+            {filteredTags.map((tag, index) => (
               <PyrenzCharacterCardTag key={index}>{tag}</PyrenzCharacterCardTag>
             ))}
           </PyrenzCharacterCardTags>
