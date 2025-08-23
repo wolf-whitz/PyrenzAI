@@ -21,19 +21,18 @@ export async function CreateNewChat(
       match: { char_uuid: characterUuid },
     });
 
+    const { data: privateCharacter } = await utils.db.select<CharacterPayload>({
+      tables: 'private_characters',
+      columns: '*',
+      match: { char_uuid: characterUuid },
+    });
+
     if (publicCharacter && publicCharacter.length > 0) {
       character = publicCharacter[0];
-    } else {
-      const { data: privateCharacter } = await utils.db.select<CharacterPayload>({
-        tables: 'private_characters',
-        columns: '*',
-        match: { char_uuid: characterUuid },
-      });
-
-      if (!privateCharacter || privateCharacter.length === 0) {
-        throw new Error('Character not found');
-      }
+    } else if (privateCharacter && privateCharacter.length > 0) {
       character = privateCharacter[0];
+    } else {
+      throw new Error('Character not found');
     }
 
     const {
