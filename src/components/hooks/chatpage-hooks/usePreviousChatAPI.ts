@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GetUserUUID } from '@components';
-import { Utils } from '~/Utility';
+import { Utils } from '~/utility';
 
 interface CharactersData {
   Characters: Record<

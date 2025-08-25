@@ -1,4 +1,4 @@
-import { Utils } from '~/Utility';
+import { Utils } from '~/utility';
 import * as Sentry from '@sentry/react';
 import { Character } from '@shared-types';
 import { useHomeStore, useUserStore } from '~/store';

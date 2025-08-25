@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Utils } from '~/Utility';
+import { Utils } from '~/utility';
 
 type Chat = {
   chat_uuid: string;

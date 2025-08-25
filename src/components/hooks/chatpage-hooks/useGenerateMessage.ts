@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Message } from '@shared-types';
 import { GetUserUUID, useTabFocus } from '@components';
 import { usePyrenzAlert } from '~/provider';
-import { NotificationManager, Utils } from '~/Utility';
+import { NotificationManager, Utils } from '~/utility';
 
 interface GenerateMessageResponse {
   remainingMessages?: number;

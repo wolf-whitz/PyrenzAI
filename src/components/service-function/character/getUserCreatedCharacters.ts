@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useHandleCharacterFetchClick } from '@components';
 import { Character, User } from '@shared-types';
-import { Utils } from '~/Utility';
+import { Utils } from '~/utility';
 
 type SubscriptionPlan = 'Melon' | 'Durian' | 'Pineapple';
 

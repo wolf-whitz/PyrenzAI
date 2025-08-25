@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '~/store';
-import { Utils } from '~/Utility';
+import { Utils } from '~/utility';
 import { User } from '@supabase/supabase-js';
 
 export const useAccountAPI = () => {

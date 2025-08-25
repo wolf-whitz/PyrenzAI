@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/react';
 import { CharacterPayload, CharacterPayloadSchema } from '@shared-types';
-import { NotificationManager, Utils as utils } from '~/Utility';
+import { NotificationManager, Utils as utils } from '~/utility';
 
 interface CreateCharacterResponse {
   char_uuid?: string;

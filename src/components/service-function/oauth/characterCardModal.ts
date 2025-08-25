@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { usePyrenzAlert } from '~/provider';
 import { GetUserUUID, CreateNewChat } from '@components';
 import * as Sentry from '@sentry/react';
-import { Utils as utils } from '~/Utility';
+import { Utils as utils } from '~/utility';
 import { Character } from '@shared-types';
 
 interface UseCharacterModalApiProps {

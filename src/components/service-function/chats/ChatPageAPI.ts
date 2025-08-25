@@ -1,7 +1,7 @@
 import { useChatStore } from '~/store';
 import { Character, Message } from '@shared-types';
 import * as Sentry from '@sentry/react';
-import { Utils as utils } from '~/Utility';
+import { Utils as utils } from '~/utility';
 import { getChatData, GetUserData } from '@components';
 
 interface ChatMessageWithId {

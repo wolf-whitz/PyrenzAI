@@ -7,7 +7,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { Utils } from '~/Utility';
+import { Utils } from '~/utility';
 import { Sidebar, MobileNav, CharacterReport, InsertModelForm } from '@components';
 import { PyrenzDialog } from '~/theme';
 

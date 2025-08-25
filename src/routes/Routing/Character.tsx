@@ -11,7 +11,7 @@ import {
   AuthenticationModal,
 } from '@components';
 import { CreateNewChat } from '@function';
-import { Utils } from '~/Utility';
+import { Utils } from '~/utility';
 
 export function CharacterPage() {
   const { char_uuid } = useParams<{ char_uuid: string }>();

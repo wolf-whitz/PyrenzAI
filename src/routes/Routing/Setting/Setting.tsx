@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Sidebar, MobileNav } from '@components';
-import { Utils } from '~/Utility';
+import { Utils } from '~/utility';
 import type { User } from '@supabase/supabase-js';
 import {
   Box,

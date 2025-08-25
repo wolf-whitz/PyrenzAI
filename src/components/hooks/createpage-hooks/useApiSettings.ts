@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { SelectChangeEvent } from '@mui/material/Select';
 import { GetUserUUID } from '@components';
-import { encrypt, Utils } from '~/Utility';
+import { encrypt, Utils } from '~/utility';
 import { usePyrenzAlert } from '~/provider';
 
 interface Provider {

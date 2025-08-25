@@ -1,5 +1,5 @@
-export * from './Actions';
-export * from './Control';
-export * from './Display';
+export * from './actions';
+export * from './control';
+export * from './display';
 
-export * from './Overlay';
+export * from './overlay';

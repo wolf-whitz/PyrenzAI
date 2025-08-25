@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useCharacterStore } from '~/store';
-import { createDebouncedTokenizer, countTokens, uploadImage } from '~/Utility';
+import { createDebouncedTokenizer, countTokens, uploadImage } from '~/utility';
 import { usePyrenzAlert } from '~/provider';
 import { textareasByCategory } from '@components';
 import type { CharacterPayload } from '@shared-types';

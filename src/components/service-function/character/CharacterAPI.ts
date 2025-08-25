@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { GetUserUUID, fetchCharacters } from '@components';
-import { Utils } from '~/Utility';
+import { Utils } from '~/utility';
 import { usePyrenzAlert } from '~/provider';
 
 export const useCharacterData = (char_uuid: string | undefined) => {

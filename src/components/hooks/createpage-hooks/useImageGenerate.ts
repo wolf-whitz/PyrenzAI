@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Utils } from '~/Utility';
+import { Utils } from '~/utility';
 import { usePyrenzAlert } from '~/provider';
 
 interface ShuttleImage {

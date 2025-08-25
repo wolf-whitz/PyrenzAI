@@ -1,4 +1,4 @@
-import { Utils as utils } from '~/Utility';
+import { Utils as utils } from '~/utility';
 import { useUserStore } from '~/store';
 
 export const GetUserUUID = async (): Promise<string | null> => {

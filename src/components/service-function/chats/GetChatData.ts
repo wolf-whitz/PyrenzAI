@@ -1,4 +1,4 @@
-import { Utils as utils } from '~/Utility';
+import { Utils as utils } from '~/utility';
 import { Character } from '@shared-types';
 
 type ChatDataResult = Character | { error: string };

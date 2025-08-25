@@ -9,8 +9,9 @@ import {
 import { PyrenzBlueButton } from '~/theme';
 import { CustomMarkdown, TypingIndicator, MessageNav } from '@components';
 
-interface PyrenzMessageBoxProps {
-  dataState: 'user' | 'char';
+export interface PyrenzMessageBoxProps {
+  role: 'user' | 'char';
+  content?: string;
   displayName?: string;
   userAvatar?: string;
   charAvatar?: string;
@@ -24,7 +25,6 @@ interface PyrenzMessageBoxProps {
   onGoNext?: (event: React.MouseEvent) => void;
   showNav?: boolean;
   currentMessageIndex?: number;
-  children?: string;
   onClick?: (event: React.MouseEvent) => void;
   sx?: SxProps;
   className?: string;
@@ -36,14 +36,14 @@ interface PyrenzMessageBoxProps {
 }
 
 const StyledPyrenzMessageBox = styled(Box, {
-  shouldForwardProp: (prop) => prop !== 'dataState',
-})<{ dataState: 'user' | 'char' }>(({ dataState }) => ({
+  shouldForwardProp: (prop) => prop !== 'role',
+})<{ role: 'user' | 'char' }>(({ role }) => ({
   display: 'flex',
   flexDirection: 'column',
   padding: '10px 15px',
   borderRadius: '18px',
   margin: '10px',
-  backgroundColor: dataState === 'user' ? '#555' : 'rgba(20,24,28,0.6)',
+  backgroundColor: role === 'user' ? '#555' : 'rgba(20,24,28,0.6)',
   backdropFilter: 'blur(14px)',
   WebkitBackdropFilter: 'blur(14px)',
   border: '1px solid rgba(255,255,255,0.08)',
@@ -54,7 +54,7 @@ const StyledPyrenzMessageBox = styled(Box, {
   cursor: 'pointer',
   transition: 'all 0.25s ease',
   '&:hover': {
-    backgroundColor: dataState === 'user' ? '#444' : 'rgba(20,24,28,0.5)',
+    backgroundColor: role === 'user' ? '#444' : 'rgba(20,24,28,0.5)',
     boxShadow: '0px 4px 8px rgba(0,0,0,0.2)',
     transform: 'translateY(-2px)',
   },
@@ -68,11 +68,11 @@ const HoverableAvatar = styled(Avatar)({
 });
 
 export function PyrenzMessageBox({
-  children = '',
+  content = '',
   onClick,
   sx,
   className,
-  dataState,
+  role,
   displayName,
   userAvatar,
   charAvatar,
@@ -85,7 +85,6 @@ export function PyrenzMessageBox({
   onGoPrev,
   onGoNext,
   showNav = false,
-  currentMessageIndex = 0,
   alternativeMessages = [],
   char = {},
   ai_message = '',
@@ -106,7 +105,7 @@ export function PyrenzMessageBox({
     if (totalMessages > 0) {
       return alternativeMessages[altIndex] ?? '';
     }
-    return children;
+    return content;
   }
 
   function handleGoPrev(event: React.MouseEvent) {
@@ -173,7 +172,7 @@ export function PyrenzMessageBox({
       <>
         <CustomMarkdown
           text={getDisplayedText()}
-          dataState={dataState}
+          dataState={role}
           char={char}
           ai_message={ai_message}
         />
@@ -194,11 +193,11 @@ export function PyrenzMessageBox({
       className="hover-container"
       display="flex"
       flexDirection="column"
-      alignItems={dataState === 'user' ? 'flex-end' : 'flex-start'}
+      alignItems={role === 'user' ? 'flex-end' : 'flex-start'}
       sx={{ width: '100%' }}
     >
       <Box display="flex" alignItems="flex-start" flex={1}>
-        {dataState !== 'user' && charAvatar && (
+        {role !== 'user' && charAvatar && (
           <HoverableAvatar
             alt={displayName ?? ''}
             src={charAvatar}
@@ -210,11 +209,11 @@ export function PyrenzMessageBox({
           onClick={handleClick}
           sx={{ ...sx, flex: 1 }}
           className={className}
-          dataState={dataState}
+          role={role}
         >
           {renderContent()}
         </StyledPyrenzMessageBox>
-        {dataState === 'user' && userAvatar && (
+        {role === 'user' && userAvatar && (
           <HoverableAvatar
             alt={displayName ?? ''}
             src={userAvatar}

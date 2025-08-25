@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom'
 import { AppRoutes } from '~/routes/routes'
 import { Spinner, ProofOfWorkModal } from '@components'
-import { Utils as utils } from '~/Utility'
+import { Utils as utils } from '~/utility'
 import { useUserStore } from '~/store'
 import { Box, useTheme } from '@mui/material'
 import { BlockedPage } from './routes/Routing'

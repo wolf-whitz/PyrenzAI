@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { Utils as utils } from '~/Utility';
+import { Utils as utils } from '~/utility';
 import { GetUserUUID, GetUserData } from '@components';
 import { usePyrenzAlert } from '~/provider';
 

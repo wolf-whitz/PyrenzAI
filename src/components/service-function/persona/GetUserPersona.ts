@@ -1,4 +1,4 @@
-import { Utils } from '~/Utility';
+import { Utils } from '~/utility';
 import { useUserStore } from '~/store';
 import { GetUserUUID } from '@function';
 

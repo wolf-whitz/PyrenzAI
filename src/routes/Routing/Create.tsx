@@ -9,7 +9,7 @@ import {
 } from '@components';
 import { GetUserData } from '@function';
 import { useMediaQuery, useTheme, Box, Typography } from '@mui/material';
-import { Utils } from '~/Utility';
+import { Utils } from '~/utility';
 import { useParams } from 'react-router-dom';
 import { useCharacterStore } from '~/store';
 import { Character } from '@shared-types';

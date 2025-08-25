@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useGenerateMessage } from '@components';
 import { useChatStore } from '~/store';
 import { Message, User, Character } from '@shared-types';
-import { Utils } from '~/Utility';
+import { Utils } from '~/utility';
 
 interface ImageGenerationResponse {
   data: {

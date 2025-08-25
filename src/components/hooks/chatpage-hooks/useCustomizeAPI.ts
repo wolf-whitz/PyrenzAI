@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useUserStore } from '~/store';
-import { Utils } from '~/Utility';
+import { Utils } from '~/utility';
 import * as Sentry from '@sentry/react';
 import { GetUserUUID, GetUserData } from '@function';
 import { usePyrenzAlert } from '~/provider';

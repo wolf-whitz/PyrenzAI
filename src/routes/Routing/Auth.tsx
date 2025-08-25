@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Utils } from '~/Utility';
+import { Utils } from '~/utility';
 import { Box, Typography, CircularProgress } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 

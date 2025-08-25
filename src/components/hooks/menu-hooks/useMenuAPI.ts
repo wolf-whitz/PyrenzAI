@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Character } from '@shared-types';
 import { GetUserData } from '@components';
-import { Utils } from '~/Utility';
+import { Utils } from '~/utility';
 import * as Sentry from '@sentry/react';
 
 interface MenuAPIProps {

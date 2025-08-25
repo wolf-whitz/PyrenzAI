@@ -5,7 +5,7 @@ import { PyrenzBlueButton } from '~/theme';
 import { usePyrenzAlert } from '~/provider';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '~/store';
-import { uploadImage, Utils } from '~/Utility';
+import { uploadImage, Utils } from '~/utility';
 
 export function Profile() {
   const [username, setUsername] = useState('');

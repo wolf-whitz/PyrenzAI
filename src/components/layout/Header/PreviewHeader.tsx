@@ -22,7 +22,7 @@ import {
 import { FaDiscord } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Utils } from '~/Utility';
+import { Utils } from '~/utility';
 import { PyrenzBlueButtonWithLoading, PyrenzMenu } from '~/theme';
 import { useUserStore } from '~/store';
 

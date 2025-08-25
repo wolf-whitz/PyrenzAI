@@ -1,4 +1,4 @@
-import { Utils as utils } from '~/Utility';
+import { Utils as utils } from '~/utility';
 import { v4 as uuidv4 } from 'uuid';
 import { CharacterPayload } from '@shared-types';
 
