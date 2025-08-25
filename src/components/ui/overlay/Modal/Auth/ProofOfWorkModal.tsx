@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Typography } from '@mui/material';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { PyrenzModal, PyrenzModalContent } from '~/theme';
 import { Utils as utils } from '~/utility';
 
@@ -11,27 +11,11 @@ interface ProofOfWorkModalProps {
 
 export function ProofOfWorkModal({ open, onClose, onSuccess }: ProofOfWorkModalProps) {
   const [loading, setLoading] = useState(false);
-  const [verifying, setVerifying] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const verifiedRef = useRef(false);
-  const challengeFetchedRef = useRef(false);
-  const activeChallengeRef = useRef<string | null>(null);
 
-  const sha256 = async (input: string): Promise<string> => {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(input);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = new Uint8Array(hashBuffer);
-    return Array.from(hashArray)
-      .map((b) => b.toString(16).padStart(2, '0'))
-      .join('');
-  };
-
-  const challengeAndVerify = async () => {
-    if (challengeFetchedRef.current) return;
-    challengeFetchedRef.current = true;
+  const startPoW = async () => {
     setLoading(true);
-    setVerifying(false);
     setError(null);
 
     try {
@@ -39,31 +23,23 @@ export function ProofOfWorkModal({ open, onClose, onSuccess }: ProofOfWorkModalP
         '/api/GetProofChallenge',
         {}
       );
+
       const { challenge, difficulty } = res;
-
-      if (!challenge || typeof difficulty !== 'number') throw new Error('Missing challenge/difficulty');
-
-      activeChallengeRef.current = challenge;
-
-      setLoading(false);
-      setVerifying(true);
-
-      let nonce = 0;
-      let found = false;
       const maxAttempts = 500_000;
 
-      while (nonce < maxAttempts) {
-        const inputString = `${challenge}:${nonce}`;
-        const hashHex = await sha256(inputString);
+      const worker = new Worker('/powWorker.js');
 
-        if (hashHex.startsWith('0'.repeat(difficulty))) {
+      worker.postMessage({ challenge, difficulty, maxAttempts });
+
+      worker.onmessage = async (e: any) => {
+        if (e.data.success) {
           try {
             const verifyRes = await utils.post<{ success: boolean }>('/api/VerifyProof', {
               challenge,
-              solution: nonce,
+              solution: e.data.nonce,
             });
 
-            if (verifyRes?.success) {
+            if (verifyRes.success) {
               verifiedRef.current = true;
               onSuccess();
               onClose();
@@ -73,74 +49,41 @@ export function ProofOfWorkModal({ open, onClose, onSuccess }: ProofOfWorkModalP
           } catch {
             setError('Verification request failed.');
           }
-
-          found = true;
-          break;
+          worker.terminate();
+          setLoading(false);
+        } else if (e.data.progress) {
+          console.log('PoW progress nonce:', e.data.nonce);
+        } else {
+          setError('Failed to solve challenge.');
+          worker.terminate();
+          setLoading(false);
         }
-
-        nonce++;
-      }
-
-      if (!found) setError('Failed to solve challenge.');
+      };
     } catch (err) {
-      console.error('[PoW] Challenge/verification failed:', err);
-      setError('Challenge or verification failed.');
-    } finally {
+      console.error('[PoW] Failed to fetch challenge:', err);
+      setError('Failed to fetch challenge.');
       setLoading(false);
-      setVerifying(false);
     }
   };
 
   useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (!verifiedRef.current) {
-        e.preventDefault();
-        e.returnValue = '';
-        return '';
-      }
-    };
-
-    if (open && !verifiedRef.current) {
-      window.addEventListener('beforeunload', handleBeforeUnload);
-    }
-
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
-  }, [open]);
-
-  useEffect(() => {
-    if (open && !verifiedRef.current && !loading && !verifying) {
-      challengeAndVerify();
-    }
-
-    if (!open) {
-      challengeFetchedRef.current = false;
-      activeChallengeRef.current = null;
-    }
+    if (open && !verifiedRef.current) startPoW();
   }, [open]);
 
   return (
     <PyrenzModal open={open && !verifiedRef.current} onClose={() => {}}>
       <PyrenzModalContent>
-        <Box display="flex" justifyContent="center" alignItems="center" mb={3}>
+        <Box display="flex" justifyContent="center" mb={3}>
           <Typography variant="h6" sx={{ color: '#fff', fontWeight: 600 }}>
             Security Check
           </Typography>
         </Box>
-
         <Box display="flex" flexDirection="column" alignItems="center" textAlign="center" gap={2.5}>
-          <Typography sx={{ color: '#ccc', fontSize: '1rem' }}>
+          <Typography sx={{ color: '#ccc' }}>
             Solving a quick proof-of-work challenge to verify you’re human.
           </Typography>
-
-          {error && <Typography color="error" sx={{ mt: 1 }}>{error}</Typography>}
-
-          {(loading || verifying) && (
-            <Box display="flex" justifyContent="center" mt={3}>
-              <CircularProgress color="primary" />
-            </Box>
-          )}
+          {error && <Typography color="error">{error}</Typography>}
+          {loading && <CircularProgress color="primary" />}
         </Box>
       </PyrenzModalContent>
     </PyrenzModal>
