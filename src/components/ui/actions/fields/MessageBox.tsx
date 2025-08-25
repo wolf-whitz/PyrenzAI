@@ -4,7 +4,9 @@ import { MessageContextMenu } from '~/components';
 import { PyrenzMessageBox, PyrenzDialog } from '~/theme';
 import type { MessageBoxProps } from '@shared-types';
 
-export function MessageBox(props: MessageBoxProps & { alternation_first?: boolean }) {
+export function MessageBox(
+  props: MessageBoxProps & { alternation_first?: boolean }
+) {
   const {
     msg,
     index,
@@ -25,22 +27,25 @@ export function MessageBox(props: MessageBoxProps & { alternation_first?: boolea
     alternation_first = true,
   } = props;
 
-  const dataState = msg.type;
+  const role = msg.type; // 'user' | 'char'
   const displayName =
-    dataState === 'user'
-      ? msg.username || user.username
-      : msg.name || char.name;
+    role === 'user' ? msg.username || user.username : msg.name || char.name;
+
   const isEditingThisMessage =
-    editingMessageId === msg.id && editingMessageType === dataState;
+    editingMessageId === msg.id && editingMessageType === role;
+
   const [localEditedMessage, setLocalEditedMessage] = useState(msg.text || '');
   const [debouncedValue, setDebouncedValue] = useState(localEditedMessage);
   const [openDialog, setOpenDialog] = useState(false);
+
   const alternatives = msg.alternative_messages ?? [];
   if (msg.text && !alternatives.includes(msg.text)) {
     alternatives.unshift(msg.text);
   }
+
   const totalMessages = alternatives.length;
   const prevMsgIdRef = useRef<string | number | undefined>(msg.id);
+
   const [altIndex, setAltIndex] = useState(
     alternation_first ? 0 : totalMessages > 0 ? totalMessages - 1 : 0
   );
@@ -48,7 +53,13 @@ export function MessageBox(props: MessageBoxProps & { alternation_first?: boolea
   useEffect(() => {
     if (msg.id !== prevMsgIdRef.current) {
       setLocalEditedMessage(msg.text || '');
-      setAltIndex(alternation_first ? 0 : alternatives.length > 0 ? alternatives.length - 1 : 0);
+      setAltIndex(
+        alternation_first
+          ? 0
+          : alternatives.length > 0
+          ? alternatives.length - 1
+          : 0
+      );
       prevMsgIdRef.current = msg.id;
     }
   }, [msg.id, alternation_first, alternatives.length, msg.text]);
@@ -63,25 +74,28 @@ export function MessageBox(props: MessageBoxProps & { alternation_first?: boolea
     if (altIndex >= totalMessages) setAltIndex(0);
   }, [totalMessages, altIndex]);
 
-  const handlePrev = (e) => {
+  const handlePrev = (e: React.MouseEvent) => {
     e.stopPropagation();
     setAltIndex((prev) => (prev === 0 ? totalMessages - 1 : prev - 1));
   };
 
-  const handleNext = (e) => {
+  const handleNext = (e: React.MouseEvent) => {
     e.stopPropagation();
     setAltIndex((prev) => (prev + 1) % totalMessages);
   };
 
   const currentText = alternatives[altIndex] ?? '';
   const isEmptyCharMessage =
-    dataState === 'char' && isLastMessage && currentText.trim() === '';
+    role === 'char' && isLastMessage && currentText.trim() === '';
 
   const theme = useTheme();
-  const menuRef = useRef(null);
-  const [menuPosition, setMenuPosition] = useState(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+  const [menuPosition, setMenuPosition] = useState<{
+    top: number;
+    left: number;
+  } | null>(null);
 
-  const handleMessageBoxClick = (e) => {
+  const handleMessageBoxClick = (e: React.MouseEvent) => {
     if (!isEditingThisMessage && index !== 0 && !isGenerating) {
       setMenuPosition({ top: e.clientY, left: e.clientX });
     }
@@ -90,8 +104,12 @@ export function MessageBox(props: MessageBoxProps & { alternation_first?: boolea
   const handleCloseMenu = () => setMenuPosition(null);
 
   useEffect(() => {
-    const onOutside = (e) => {
-      if (menuRef.current && !menuRef.current.contains(e.target)) {
+    const onOutside = (e: MouseEvent) => {
+      if (
+        menuRef.current &&
+        e.target instanceof Node &&
+        !menuRef.current.contains(e.target)
+      ) {
         handleCloseMenu();
       }
     };
@@ -120,7 +138,7 @@ export function MessageBox(props: MessageBoxProps & { alternation_first?: boolea
       key={msg.id ?? `temp-${index}`}
       display="flex"
       alignItems="flex-start"
-      justifyContent={dataState === 'user' ? 'flex-end' : 'flex-start'}
+      justifyContent={role === 'user' ? 'flex-end' : 'flex-start'}
       sx={{ mb: 2, width: '100%', position: 'relative' }}
     >
       <Box
@@ -129,12 +147,13 @@ export function MessageBox(props: MessageBoxProps & { alternation_first?: boolea
           maxWidth: { xs: '90%', sm: '80%' },
           display: 'flex',
           flexDirection: 'column',
-          alignItems: dataState === 'user' ? 'flex-end' : 'flex-start',
+          alignItems: role === 'user' ? 'flex-end' : 'flex-start',
         }}
       >
         <PyrenzMessageBox
           onClick={handleMessageBoxClick}
-          dataState={dataState}
+          role={role}
+          content={msg.text}
           displayName={displayName}
           userAvatar={user.user_avatar}
           charAvatar={char.profile_image}
@@ -142,7 +161,7 @@ export function MessageBox(props: MessageBoxProps & { alternation_first?: boolea
           localEditedMessage={localEditedMessage}
           onChange={(e) => setLocalEditedMessage(e.target.value)}
           onSaveEdit={() =>
-            msg.id && onSaveEdit(msg.id, debouncedValue, dataState)
+            msg.id && onSaveEdit(msg.id, debouncedValue, role)
           }
           onCancelEdit={onCancelEdit}
           isLoading={isLoading}
@@ -160,10 +179,9 @@ export function MessageBox(props: MessageBoxProps & { alternation_first?: boolea
             width: isEditingThisMessage ? '100%' : 'fit-content',
             maxWidth: '100%',
           }}
-        >
-          {currentText}
-        </PyrenzMessageBox>
+        />
       </Box>
+
       {menuPosition &&
         !isEditingThisMessage &&
         index !== 0 &&
@@ -192,6 +210,7 @@ export function MessageBox(props: MessageBoxProps & { alternation_first?: boolea
             />
           </Box>
         )}
+
       <PyrenzDialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
