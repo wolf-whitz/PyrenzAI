@@ -28,15 +28,16 @@ export function ProofOfWorkModal({ open, onClose, onSuccess }: ProofOfWorkModalP
       const maxAttempts = 500_000;
 
       const worker = new Worker('worker/powWorker.js');
-
       worker.postMessage({ challenge, difficulty, maxAttempts });
 
       worker.onmessage = async (e: any) => {
-        if (e.data.success) {
+        const data = e.data;
+
+        if (data.success) {
           try {
             const verifyRes = await utils.post<{ success: boolean }>('/api/VerifyProof', {
               challenge,
-              solution: e.data.nonce,
+              solution: data.nonce,
             });
 
             if (verifyRes.success) {
@@ -51,7 +52,7 @@ export function ProofOfWorkModal({ open, onClose, onSuccess }: ProofOfWorkModalP
           }
           worker.terminate();
           setLoading(false);
-        } else {
+        } else if (!data.progress) {
           setError('Failed to solve challenge.');
           worker.terminate();
           setLoading(false);
