@@ -51,8 +51,6 @@ export function ProofOfWorkModal({ open, onClose, onSuccess }: ProofOfWorkModalP
           }
           worker.terminate();
           setLoading(false);
-        } else if (e.data.progress) {
-          console.log('PoW progress nonce:', e.data.nonce);
         } else {
           setError('Failed to solve challenge.');
           worker.terminate();
