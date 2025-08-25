@@ -10,7 +10,8 @@
     "https://*.adtrafficquality.google",
     "https://*.hcaptcha.com",
     "https://*.google.com",
-    "https://*.cloudflareinsights.com"
+    "https://*.cloudflareinsights.com",
+    "https://*.cloudflare.com/"
   ],
   "style-src": [
     "'self'",
