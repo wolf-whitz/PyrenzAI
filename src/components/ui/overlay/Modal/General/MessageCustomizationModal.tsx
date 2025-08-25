@@ -99,21 +99,19 @@ export function MessageCustomizationModal({
 
         <Box sx={{ mt: 2, p: 2, border: '1px solid #ccc', borderRadius: 1 }}>
           <PyrenzMessageBox
-            dataState="char"
+            role="char"
             charAvatar={charAvatarUrl}
             displayName="AI Character"
+            content="Character: Hello!"
             sx={{ color: colors.charTextColor }}
-          >
-            Character: Hello!
-          </PyrenzMessageBox>
+          />
           <PyrenzMessageBox
-            dataState="user"
+            role="user"
             userAvatar={userAvatarUrl}
             displayName="You"
+            content="User: Hi there!"
             sx={{ color: colors.userTextColor, mt: 1 }}
-          >
-            User: Hi there!
-          </PyrenzMessageBox>
+          />
         </Box>
 
         <PyrenzBlueButton
