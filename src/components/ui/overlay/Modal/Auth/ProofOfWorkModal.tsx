@@ -9,11 +9,7 @@ interface ProofOfWorkModalProps {
   onSuccess: () => void;
 }
 
-export function ProofOfWorkModal({
-  open,
-  onClose,
-  onSuccess,
-}: ProofOfWorkModalProps) {
+export function ProofOfWorkModal({ open, onClose, onSuccess }: ProofOfWorkModalProps) {
   const [loading, setLoading] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -45,8 +41,7 @@ export function ProofOfWorkModal({
       );
       const { challenge, difficulty } = res;
 
-      if (!challenge || typeof difficulty !== 'number')
-        throw new Error('Missing challenge/difficulty');
+      if (!challenge || typeof difficulty !== 'number') throw new Error('Missing challenge/difficulty');
 
       activeChallengeRef.current = challenge;
 
@@ -63,13 +58,10 @@ export function ProofOfWorkModal({
 
         if (hashHex.startsWith('0'.repeat(difficulty))) {
           try {
-            const verifyRes = await utils.post<{ success: boolean }>(
-              '/api/VerifyProof',
-              {
-                challenge,
-                solution: nonce,
-              }
-            );
+            const verifyRes = await utils.post<{ success: boolean }>('/api/VerifyProof', {
+              challenge,
+              solution: nonce,
+            });
 
             if (verifyRes?.success) {
               verifiedRef.current = true;
@@ -89,9 +81,7 @@ export function ProofOfWorkModal({
         nonce++;
       }
 
-      if (!found) {
-        setError('Failed to solve challenge.');
-      }
+      if (!found) setError('Failed to solve challenge.');
     } catch (err) {
       console.error('[PoW] Challenge/verification failed:', err);
       setError('Challenge or verification failed.');
@@ -100,6 +90,24 @@ export function ProofOfWorkModal({
       setVerifying(false);
     }
   };
+
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (!verifiedRef.current) {
+        e.preventDefault();
+        e.returnValue = '';
+        return '';
+      }
+    };
+
+    if (open && !verifiedRef.current) {
+      window.addEventListener('beforeunload', handleBeforeUnload);
+    }
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [open]);
 
   useEffect(() => {
     if (open && !verifiedRef.current && !loading && !verifying) {
@@ -121,22 +129,12 @@ export function ProofOfWorkModal({
           </Typography>
         </Box>
 
-        <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          textAlign="center"
-          gap={2.5}
-        >
+        <Box display="flex" flexDirection="column" alignItems="center" textAlign="center" gap={2.5}>
           <Typography sx={{ color: '#ccc', fontSize: '1rem' }}>
             Solving a quick proof-of-work challenge to verify you’re human.
           </Typography>
 
-          {error && (
-            <Typography color="error" sx={{ mt: 1 }}>
-              {error}
-            </Typography>
-          )}
+          {error && <Typography color="error" sx={{ mt: 1 }}>{error}</Typography>}
 
           {(loading || verifying) && (
             <Box display="flex" justifyContent="center" mt={3}>
