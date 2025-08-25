@@ -1,11 +1,12 @@
-import { Select, MenuItem } from '@mui/material';
+import { useCharacterStore } from '~/store';
 import {
   PyrenzFormControl,
   PyrenzOutlinedInput,
   PyrenzInputLabel,
-  PyrenzAccordionInput,
+  PyrenzSelect,
+  PyrenzMenuItem,
 } from '~/theme';
-import { useCharacterStore } from '~/store';
+import { SelectChangeEvent } from '@mui/material';
 
 export function GenderDropdown() {
   const gender = useCharacterStore((state) => state.gender);
@@ -17,25 +18,27 @@ export function GenderDropdown() {
     { value: 'female', label: 'Female' },
   ];
 
+  const handleChange = (event: SelectChangeEvent<string>) => {
+    setGender(event.target.value as string);
+  };
+
   return (
-    <PyrenzAccordionInput label="Gender">
-      <PyrenzFormControl fullWidth>
-        <PyrenzInputLabel id="gender-label">Gender</PyrenzInputLabel>
-        <Select
-          labelId="gender-label"
-          id="gender"
-          value={gender}
-          onChange={(event) => setGender(event.target.value)}
-          input={<PyrenzOutlinedInput label="Gender" />}
-          aria-label="Gender"
-        >
-          {genderOptions.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </Select>
-      </PyrenzFormControl>
-    </PyrenzAccordionInput>
+    <PyrenzFormControl fullWidth>
+      <PyrenzInputLabel id="gender-label">Gender</PyrenzInputLabel>
+      <PyrenzSelect
+        labelId="gender-label"
+        id="gender"
+        value={gender}
+        onChange={handleChange}
+        input={<PyrenzOutlinedInput label="Gender" />}
+        aria-label="Gender"
+      >
+        {genderOptions.map((option) => (
+          <PyrenzMenuItem key={option.value} value={option.value}>
+            {option.label}
+          </PyrenzMenuItem>
+        ))}
+      </PyrenzSelect>
+    </PyrenzFormControl>
   );
 }
