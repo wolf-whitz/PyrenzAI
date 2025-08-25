@@ -18,7 +18,7 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "public/worker/cacheWorker.js"],
   "exclude": [
     "node_modules",
     "dist",

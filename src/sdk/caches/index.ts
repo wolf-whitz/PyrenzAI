@@ -1,4 +1,4 @@
 export * from './AuthCache';
-export * from './cacheWorker';
+export * from '../../../public/worker/cacheWorker.js';
 
 export * from './cacheWorkerManager';

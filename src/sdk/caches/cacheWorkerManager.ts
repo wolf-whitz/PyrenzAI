@@ -1,6 +1,4 @@
-const worker = new Worker(new URL('./cacheWorker.ts', import.meta.url), {
-  type: 'module',
-});
+const worker = new Worker('/worker/cacheWorker.js');
 
 const listeners = new Map<string, (data: any) => void>();
 

@@ -1,19 +1,18 @@
-import localforage from 'localforage';
+importScripts('https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js');
 
 const TTL_MS = 3 * 60 * 1000;
-
-const memCache = new Map<string, { data: any; timestamp: number }>();
+const memCache = new Map();
 
 localforage.config({
   name: 'SupabaseCache',
   storeName: 'cacheStore',
 });
 
-function isValid(timestamp: number) {
+function isValid(timestamp) {
   return Date.now() - timestamp < TTL_MS;
 }
 
-async function getFromCache(key: string) {
+async function getFromCache(key) {
   const mem = memCache.get(key);
   if (mem && isValid(mem.timestamp)) {
     return { hit: true, data: mem.data };
@@ -22,9 +21,7 @@ async function getFromCache(key: string) {
   memCache.delete(key);
 
   try {
-    const entry = await localforage.getItem<{ data: any; timestamp: number }>(
-      key
-    );
+    const entry = await localforage.getItem(key);
     if (entry && isValid(entry.timestamp)) {
       memCache.set(key, entry);
       return { hit: true, data: entry.data };
@@ -36,7 +33,7 @@ async function getFromCache(key: string) {
   return { hit: false };
 }
 
-async function setToCache(key: string, value: any) {
+async function setToCache(key, value) {
   const entry = { data: value, timestamp: Date.now() };
   memCache.set(key, entry);
   try {
@@ -46,7 +43,7 @@ async function setToCache(key: string, value: any) {
   }
 }
 
-async function removeFromCache(key: string) {
+async function removeFromCache(key) {
   memCache.delete(key);
   try {
     await localforage.removeItem(key);
@@ -55,13 +52,13 @@ async function removeFromCache(key: string) {
   }
 }
 
-self.onmessage = async (e: MessageEvent) => {
+self.onmessage = async function (e) {
   const { type, key, value } = e.data;
 
   switch (type) {
     case 'get': {
       const { hit, data } = await getFromCache(key);
-      postMessage(hit ? { type: 'hit', key, data } : { type: 'miss', key });
+      self.postMessage(hit ? { type: 'hit', key, data } : { type: 'miss', key });
       break;
     }
     case 'set': {
@@ -73,7 +70,7 @@ self.onmessage = async (e: MessageEvent) => {
       break;
     }
     case '__health_check__': {
-      postMessage({ type: '__health_check__', status: 'ok' });
+      self.postMessage({ type: '__health_check__', status: 'ok' });
       break;
     }
   }

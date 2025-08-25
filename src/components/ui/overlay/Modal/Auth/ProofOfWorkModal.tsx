@@ -27,7 +27,7 @@ export function ProofOfWorkModal({ open, onClose, onSuccess }: ProofOfWorkModalP
       const { challenge, difficulty } = res;
       const maxAttempts = 500_000;
 
-      const worker = new Worker('/powWorker.js');
+      const worker = new Worker('worker/powWorker.js');
 
       worker.postMessage({ challenge, difficulty, maxAttempts });
 
