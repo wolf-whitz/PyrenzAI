@@ -14,18 +14,17 @@ import {
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-const glassyBg = 'rgba(255, 255, 255, 0.06)';
 const border = '1px solid rgba(255, 255, 255, 0.15)';
 const textColor = '#e0e0e0';
 const accentColor = '#b0d0ff';
 
 export const PyrenzFormControl = styled(FormControl)({
-  backdropFilter: 'blur(8px)',
   borderRadius: '8px',
   padding: '6px 10px',
   border,
   minWidth: 100,
   width: '100%',
+  backgroundColor: 'transparent',
 
   '& .MuiOutlinedInput-root': {
     borderRadius: '6px',
@@ -37,9 +36,11 @@ export const PyrenzFormControl = styled(FormControl)({
     },
     '&:hover fieldset': {
       borderColor: 'transparent',
+      backgroundColor: 'transparent',
     },
     '&.Mui-focused fieldset': {
       borderColor: 'transparent',
+      backgroundColor: 'transparent',
     },
   },
 
@@ -63,9 +64,11 @@ export const PyrenzOutlinedInput = styled(MuiOutlinedInput)({
   },
   '&:hover .MuiOutlinedInput-notchedOutline': {
     borderColor: 'transparent',
+    backgroundColor: 'transparent',
   },
   '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
     borderColor: 'transparent',
+    backgroundColor: 'transparent',
   },
 });
 
@@ -82,8 +85,7 @@ export const PyrenzSelect = styled((props: SelectProps) => (
     MenuProps={{
       PaperProps: {
         sx: {
-          backgroundColor: glassyBg,
-          backdropFilter: 'blur(8px)',
+          backgroundColor: 'transparent',
           borderRadius: '8px',
           border,
           color: textColor,
@@ -107,7 +109,7 @@ export const PyrenzSelect = styled((props: SelectProps) => (
   '& .MuiSelect-select': {
     padding: '6px 10px',
     fontSize: '0.875rem',
-    backgroundColor: 'rgba(255, 255, 255, 0.02)',
+    backgroundColor: 'transparent',
     borderRadius: '6px',
     display: 'flex',
     alignItems: 'center',
@@ -117,9 +119,7 @@ export const PyrenzSelect = styled((props: SelectProps) => (
   },
 });
 
-export const PyrenzMenuItem = styled((props: MenuItemProps) => (
-  <MenuItem {...props} />
-))({
+export const PyrenzMenuItem = styled((props: MenuItemProps) => <MenuItem {...props} />)({
   display: 'flex',
   alignItems: 'center',
   gap: '8px',
@@ -127,15 +127,16 @@ export const PyrenzMenuItem = styled((props: MenuItemProps) => (
   borderRadius: '6px',
   transition: 'all 0.2s ease',
   color: textColor,
+  backgroundColor: 'transparent',
 
   '&:hover': {
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    backgroundColor: 'transparent',
   },
 
   '&.Mui-selected': {
-    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    backgroundColor: 'transparent',
     '&:hover': {
-      backgroundColor: 'rgba(255, 255, 255, 0.15)',
+      backgroundColor: 'transparent',
     },
   },
 });
@@ -153,8 +154,7 @@ export function PyrenzAccordionInput({
       elevation={0}
       square
       sx={{
-        background: glassyBg,
-        backdropFilter: 'blur(8px)',
+        background: 'transparent',
         borderRadius: '8px',
         border,
         color: textColor,

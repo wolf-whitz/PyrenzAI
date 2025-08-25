@@ -130,7 +130,7 @@ export function Api() {
       <Typography variant="h6" gutterBottom>
         API Settings
       </Typography>
-      <Box component="form" onSubmit={handleFormSubmit} sx={{ flex: 1 }}>
+      <Box component="form" onSubmit={handleFormSubmit} sx={{ flex: 1, backgroundColor: 'transparent' }}>
         <Box mb={2}>
           <PyrenzFormControl fullWidth>
             <PyrenzInputLabel id="provider-select-label">Select Provider</PyrenzInputLabel>
@@ -138,66 +138,38 @@ export function Api() {
               labelId="provider-select-label"
               id="provider-select"
               value={selectedProvider}
-              label="Select Provider"
               onChange={handleProviderChange}
             >
-              {providers.map(function (provider: Provider, index: number) {
-                return (
-                  <MenuItem key={index} value={provider.provider_name}>
-                    <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
-                      <Typography>{provider.provider_name}</Typography>
-                      <Tooltip title={provider.provider_description} arrow>
-                        <IconButton size="small" edge="end">
-                          <InfoOutlinedIcon sx={{ fontSize: 18 }} />
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
-                  </MenuItem>
-                );
-              })}
+              {providers.map((provider, index) => (
+                <MenuItem key={index} value={provider.provider_name}>
+                  <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
+                    <Typography>{provider.provider_name}</Typography>
+                    <Tooltip title={provider.provider_description} arrow>
+                      <IconButton size="small" edge="end">
+                        <InfoOutlinedIcon sx={{ fontSize: 18 }} />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                </MenuItem>
+              ))}
             </PyrenzSelect>
           </PyrenzFormControl>
         </Box>
         <Box mb={2}>
           <Typography variant="subtitle1">API URL</Typography>
-          <Textarea
-            value={modelUrl}
-            onChange={function (e) {
-              setModelUrl(e.target.value);
-            }}
-            placeholder="Enter the API URL"
-            require_link
-          />
+          <Textarea value={modelUrl} onChange={(e) => setModelUrl(e.target.value)} placeholder="Enter the API URL" require_link />
         </Box>
         <Box mb={2}>
           <Typography variant="subtitle1">API Key</Typography>
-          <Textarea
-            value={modelApiKey}
-            onChange={function (e) {
-              setModelApiKey(e.target.value);
-            }}
-            placeholder="Enter your API Key"
-          />
+          <Textarea value={modelApiKey} onChange={(e) => setModelApiKey(e.target.value)} placeholder="Enter your API Key" />
         </Box>
         <Box mb={2}>
           <Typography variant="subtitle1">Model Name</Typography>
-          <Textarea
-            value={modelName}
-            onChange={function (e) {
-              setModelName(e.target.value);
-            }}
-            placeholder="Enter the Model Name or slug name"
-          />
+          <Textarea value={modelName} onChange={(e) => setModelName(e.target.value)} placeholder="Enter the Model Name or slug name" />
         </Box>
         <Box mb={2}>
           <Typography variant="subtitle1">Model Description</Typography>
-          <Textarea
-            value={modelDescription}
-            onChange={function (e) {
-              setModelDescription(e.target.value);
-            }}
-            placeholder="Describe your model's vibes"
-          />
+          <Textarea value={modelDescription} onChange={(e) => setModelDescription(e.target.value)} placeholder="Describe your model's vibes" />
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
           <PyrenzBlueButton type="submit">
@@ -210,36 +182,23 @@ export function Api() {
           Your Models
         </Typography>
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-          {userModels.map(function (model: UserModel, index: number) {
-            return (
-              <PyrenzCard key={index} sx={{ minWidth: 275 }}>
-                <CardContent>
-                  <Box display="flex" justifyContent="space-between" alignItems="center">
-                    <Typography variant="h5">{model.model_name}</Typography>
-                    <IconButton
-                      aria-label="more"
-                      aria-controls="pyrenz-model-menu"
-                      aria-haspopup="true"
-                      onClick={function (event) {
-                        handleMenuOpen(event, index);
-                      }}
-                    >
-                      <MoreHorizIcon />
-                    </IconButton>
-                  </Box>
-                  <Typography variant="body2">{truncate(model.model_description, 100)}</Typography>
-                </CardContent>
-                <PyrenzMenu
-                  anchorEl={anchorEl}
-                  open={Boolean(anchorEl) && selectedModelIndex === index}
-                  onClose={handleMenuClose}
-                >
-                  <MenuItem onClick={handleEditClick}>Edit</MenuItem>
-                  <MenuItem onClick={handleDeleteClick}>Delete</MenuItem>
-                </PyrenzMenu>
-              </PyrenzCard>
-            );
-          })}
+          {userModels.map((model, index) => (
+            <PyrenzCard key={index} sx={{ minWidth: 275 }}>
+              <CardContent>
+                <Box display="flex" justifyContent="space-between" alignItems="center">
+                  <Typography variant="h5">{model.model_name}</Typography>
+                  <IconButton aria-label="more" aria-controls="pyrenz-model-menu" aria-haspopup="true" onClick={(event) => handleMenuOpen(event, index)}>
+                    <MoreHorizIcon />
+                  </IconButton>
+                </Box>
+                <Typography variant="body2">{truncate(model.model_description, 100)}</Typography>
+              </CardContent>
+              <PyrenzMenu anchorEl={anchorEl} open={Boolean(anchorEl) && selectedModelIndex === index} onClose={handleMenuClose}>
+                <MenuItem onClick={handleEditClick}>Edit</MenuItem>
+                <MenuItem onClick={handleDeleteClick}>Delete</MenuItem>
+              </PyrenzMenu>
+            </PyrenzCard>
+          ))}
         </Box>
       </Box>
       <PyrenzDialog
