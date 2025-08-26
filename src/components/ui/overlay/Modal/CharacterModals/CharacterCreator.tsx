@@ -1,6 +1,9 @@
 import { PyrenzModal, PyrenzModalContent, PyrenzBlueButton, PyrenzMessageBox } from '~/theme';
 import { Box, useMediaQuery } from '@mui/material';
 import { useAssistantAPI } from '@components';
+import { useEffect, useRef, memo } from 'react';
+
+const MemoizedMessageBox = memo(PyrenzMessageBox);
 
 export function AssistantModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const {
@@ -14,10 +17,14 @@ export function AssistantModal({ open, onClose }: { open: boolean; onClose: () =
     handleClear,
     handleContextSubmit,
     handleExtract,
-    messagesEndRef,
   } = useAssistantAPI({ initialInstruction: 'You are a helpful assistant.' });
 
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const isMobile = useMediaQuery('(max-width:600px)');
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   return (
     <PyrenzModal open={open} onClose={onClose}>
@@ -30,16 +37,18 @@ export function AssistantModal({ open, onClose }: { open: boolean; onClose: () =
         }}
       >
         <Box sx={{ flex: 1, overflowY: 'auto', mb: 2, px: 1 }}>
-          {messages.filter((m) => m.role !== 'system').map((msg, i) => (
-            <PyrenzMessageBox
-              key={i}
-              role={msg.role === 'user' ? 'user' : 'char'}
-              displayName={msg.role === 'user' ? 'You' : 'Assistant'}
-              content={msg.content}
-              isGeneratingEmptyCharMessage={msg.isGeneratingEmptyCharMessage}
-              disableReplacement={true}
-            />
-          ))}
+          {messages
+            .filter((m) => m.role !== 'system')
+            .map((msg, i) => (
+              <MemoizedMessageBox
+                key={i}
+                role={msg.role === 'user' ? 'user' : 'char'}
+                displayName={msg.role === 'user' ? 'You' : 'Assistant'}
+                content={msg.content}
+                isGeneratingEmptyCharMessage={msg.isGeneratingEmptyCharMessage}
+                disableReplacement={true}
+              />
+            ))}
           <div ref={messagesEndRef} />
         </Box>
 
@@ -68,11 +77,7 @@ export function AssistantModal({ open, onClose }: { open: boolean; onClose: () =
             }}
             disabled={loading}
           />
-          <PyrenzBlueButton
-            onClick={handleContextSubmit}
-            disabled={loading}
-            sx={{ flexShrink: 0 }}
-          >
+          <PyrenzBlueButton onClick={handleContextSubmit} disabled={loading} sx={{ flexShrink: 0 }}>
             Submit
           </PyrenzBlueButton>
         </Box>
@@ -109,24 +114,13 @@ export function AssistantModal({ open, onClose }: { open: boolean; onClose: () =
             disabled={loading}
           />
           <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 1 }}>
-            <PyrenzBlueButton
-              onClick={() => handleSend(input)}
-              disabled={loading}
-            >
+            <PyrenzBlueButton onClick={() => handleSend(input)} disabled={loading}>
               {loading ? 'Sending...' : 'Send'}
             </PyrenzBlueButton>
-            <PyrenzBlueButton
-              onClick={handleClear}
-              disabled={loading}
-              color="error"
-            >
+            <PyrenzBlueButton onClick={handleClear} disabled={loading} color="error">
               Clear
             </PyrenzBlueButton>
-            <PyrenzBlueButton
-              onClick={handleExtract}
-              disabled={loading}
-              color="secondary"
-            >
+            <PyrenzBlueButton onClick={handleExtract} disabled={loading} color="secondary">
               Extract
             </PyrenzBlueButton>
           </Box>

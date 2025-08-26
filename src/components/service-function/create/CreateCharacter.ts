@@ -79,7 +79,6 @@ const postCharacter = async (
   filteredCharacter: CharacterPayload
 ): Promise<CreateCharacterResponse> => {
   const data = { type, character: filteredCharacter };
-
   const res = await utils.post<CreateCharacterResponse>('/api/CreateCharacter', data);
   if (res.error) throw new Error(res.error);
   if (res.is_moderated) {
@@ -89,9 +88,7 @@ const postCharacter = async (
     );
   }
   if (res.issues && res.issues.length > 0) {
-    throw new Error(
-      `Character moderation issues: ${res.issues.join('; ')}`
-    );
+    throw new Error(`Character moderation issues: ${res.issues.join('; ')}`);
   }
   return res;
 };
@@ -126,24 +123,60 @@ const handleCharacterPost = async (
   }
 };
 
-export const createCharacter = (
-  character: CharacterPayload
+export const createCharacter = async (
+  character: CharacterPayload,
+  trackingFunctions?: {
+    trackCharacterCreated?: (character: any, result?: { char_uuid?: string }) => void;
+    trackCharacterCreationFailed?: (character: any, error: string) => void;
+  }
 ): Promise<CreateCharacterResponse> => {
-  return handleCharacterPost(
-    'create',
-    character,
-    'Successfully created {{char}}.'
-  );
+  try {
+    const result = await handleCharacterPost(
+      'create',
+      character,
+      'Successfully created {{char}}.'
+    );
+    if (!result.error && trackingFunctions?.trackCharacterCreated) {
+      trackingFunctions.trackCharacterCreated(character, result);
+    }
+    return result;
+  } catch (error) {
+    if (trackingFunctions?.trackCharacterCreationFailed) {
+      trackingFunctions.trackCharacterCreationFailed(
+        character,
+        error instanceof Error ? error.message : 'Unknown error'
+      );
+    }
+    throw error;
+  }
 };
 
-export const updateCharacter = (
-  character: CharacterPayload
+export const updateCharacter = async (
+  character: CharacterPayload,
+  trackingFunctions?: {
+    trackCharacterUpdated?: (character: any, result?: { char_uuid?: string }) => void;
+    trackCharacterUpdateFailed?: (character: any, error: string) => void;
+  }
 ): Promise<CreateCharacterResponse> => {
-  return handleCharacterPost(
-    'update',
-    character,
-    'Successfully updated {{char}}.'
-  );
+  try {
+    const result = await handleCharacterPost(
+      'update',
+      character,
+      'Successfully updated {{char}}.'
+    );
+    if (!result.error && trackingFunctions?.trackCharacterUpdated) {
+      trackingFunctions.trackCharacterUpdated(character, result);
+    }
+    return result;
+  } catch (error) {
+    if (trackingFunctions?.trackCharacterUpdateFailed) {
+      trackingFunctions.trackCharacterUpdateFailed(
+        character,
+        error instanceof Error ? error.message : 'Unknown error'
+      );
+    }
+    throw error;
+  }
 };
 
 export const createDraft = async (
