@@ -4,6 +4,9 @@ compatibility_date = "2025-07-05"
 pages_build_output_dir = "./dist"
 
 [vars]
-VITE_SERVER_API_URL_1 = "https://s1.pyrenzai.com" 
+VITE_SERVER_API_URL_1 = "https://s1.pyrenzai.com"
 VITE_SERVER_API_URL_2 = "https://s2.pyrenzai.com"
-# Required by the application, if you wish to run this in cloudflare, feel free to do so, else manually copy this env to your env file.
+BUN_VERSION = "latest"
+
+[build]
+command = "bun run build"
