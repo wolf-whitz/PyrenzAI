@@ -1,39 +1,21 @@
 import React, { createContext, useContext, useEffect, ReactNode } from 'react';
 import * as amplitude from '@amplitude/analytics-browser';
 import { sessionReplayPlugin } from '@amplitude/plugin-session-replay-browser';
+import FingerprintJS from '@fingerprintjs/fingerprintjs';
+import { useUserStore } from '~/store';
 import { CharacterPayload, CharacterPayloadSchema } from '@shared-types';
 
 type AmplitudeContextType = {
   amplitude: typeof amplitude;
-  trackCharacterCreated: (
-    character: CharacterPayload,
-    result?: { char_uuid?: string }
-  ) => void;
-  trackCharacterUpdated: (
-    character: CharacterPayload,
-    result?: { char_uuid?: string }
-  ) => void;
-  trackCharacterDrafted: (
-    character: CharacterPayload,
-    creatorUuid?: string
-  ) => void;
-  trackCharacterCreationFailed: (
-    character: CharacterPayload,
-    error: string
-  ) => void;
-  trackCharacterUpdateFailed: (
-    character: CharacterPayload,
-    error: string
-  ) => void;
-  trackCharacterDraftFailed: (
-    character: CharacterPayload,
-    error: string
-  ) => void;
+  trackCharacterCreated: (character: CharacterPayload, result?: { char_uuid?: string }) => void;
+  trackCharacterUpdated: (character: CharacterPayload, result?: { char_uuid?: string }) => void;
+  trackCharacterDrafted: (character: CharacterPayload, creatorUuid?: string) => void;
+  trackCharacterCreationFailed: (character: CharacterPayload, error: string) => void;
+  trackCharacterUpdateFailed: (character: CharacterPayload, error: string) => void;
+  trackCharacterDraftFailed: (character: CharacterPayload, error: string) => void;
 };
 
-const AmplitudeContext = createContext<AmplitudeContextType | undefined>(
-  undefined
-);
+const AmplitudeContext = createContext<AmplitudeContextType | undefined>(undefined);
 
 interface AmplitudeProviderProps {
   children: ReactNode;
@@ -49,12 +31,29 @@ export function AmplitudeProvider({
   apiKey = '408a394190372749f2a9e6157f91f981',
   options = { autocapture: true, sampleRate: 1 },
 }: AmplitudeProviderProps) {
+  const userUUID = useUserStore((state) => state.userUUID);
+  const setUserUUID = useUserStore((state) => state.setUserUUID);
+
   useEffect(() => {
-    if (!amplitude.getDeviceId()) {
-      amplitude.add(sessionReplayPlugin({ sampleRate: options.sampleRate }));
-      amplitude.init(apiKey, { autocapture: options.autocapture });
-    }
-  }, [apiKey, options.autocapture, options.sampleRate]);
+    const initAmplitude = async () => {
+      if (!amplitude.getDeviceId()) {
+        amplitude.add(sessionReplayPlugin({ sampleRate: options.sampleRate }));
+        amplitude.init(apiKey, { autocapture: options.autocapture });
+
+        if (userUUID) {
+          amplitude.setUserId(userUUID);
+        } else {
+          const fp = await FingerprintJS.load();
+          const result = await fp.get();
+          const anonId = `anon-${result.visitorId}`;
+          setUserUUID(anonId);
+          amplitude.setUserId(anonId);
+        }
+      }
+    };
+
+    initAmplitude();
+  }, [apiKey, options.autocapture, options.sampleRate, userUUID, setUserUUID]);
 
   const validatePayload = (character: CharacterPayload): CharacterPayload => {
     const parsed = CharacterPayloadSchema.safeParse(character);
@@ -65,60 +64,42 @@ export function AmplitudeProvider({
     return parsed.data;
   };
 
-  const trackCharacterCreated = (
-    character: CharacterPayload,
-    result?: { char_uuid?: string }
-  ) => {
+  const trackCharacterCreated = (character: CharacterPayload, result?: { char_uuid?: string }) => {
     amplitude.track('Character Created', {
       ...validatePayload(character),
       character_uuid: result?.char_uuid ?? character.char_uuid,
     });
   };
 
-  const trackCharacterUpdated = (
-    character: CharacterPayload,
-    result?: { char_uuid?: string }
-  ) => {
+  const trackCharacterUpdated = (character: CharacterPayload, result?: { char_uuid?: string }) => {
     amplitude.track('Character Updated', {
       ...validatePayload(character),
       character_uuid: result?.char_uuid ?? character.char_uuid,
     });
   };
 
-  const trackCharacterDrafted = (
-    character: CharacterPayload,
-    creatorUuid?: string
-  ) => {
+  const trackCharacterDrafted = (character: CharacterPayload, creatorUuid?: string) => {
     amplitude.track('Character Drafted', {
       ...validatePayload(character),
       creator_uuid: creatorUuid ?? character.creator,
     });
   };
 
-  const trackCharacterCreationFailed = (
-    character: CharacterPayload,
-    error: string
-  ) => {
+  const trackCharacterCreationFailed = (character: CharacterPayload, error: string) => {
     amplitude.track('Character Creation Failed', {
       ...validatePayload(character),
       error_message: error,
     });
   };
 
-  const trackCharacterUpdateFailed = (
-    character: CharacterPayload,
-    error: string
-  ) => {
+  const trackCharacterUpdateFailed = (character: CharacterPayload, error: string) => {
     amplitude.track('Character Update Failed', {
       ...validatePayload(character),
       error_message: error,
     });
   };
 
-  const trackCharacterDraftFailed = (
-    character: CharacterPayload,
-    error: string
-  ) => {
+  const trackCharacterDraftFailed = (character: CharacterPayload, error: string) => {
     amplitude.track('Character Draft Failed', {
       ...validatePayload(character),
       error_message: error,
@@ -144,19 +125,13 @@ export function AmplitudeProvider({
 
 export function useAmplitude() {
   const context = useContext(AmplitudeContext);
-  if (!context) {
-    throw new Error('useAmplitude must be used within an AmplitudeProvider');
-  }
+  if (!context) throw new Error('useAmplitude must be used within an AmplitudeProvider');
   return context.amplitude;
 }
 
 export function useAmplitudeTracking() {
   const context = useContext(AmplitudeContext);
-  if (!context) {
-    throw new Error(
-      'useAmplitudeTracking must be used within an AmplitudeProvider'
-    );
-  }
+  if (!context) throw new Error('useAmplitudeTracking must be used within an AmplitudeProvider');
   return {
     trackCharacterCreated: context.trackCharacterCreated,
     trackCharacterUpdated: context.trackCharacterUpdated,
