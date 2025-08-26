@@ -60,7 +60,6 @@ export function CharacterCard({ character }: CharacterCardProps) {
   if (character.isLoading) return null;
 
   const formatTag = (tag: string) => {
-    // Remove emojis and punctuation
     const cleaned = tag.replace(/[^\w\s]/g, '');
     return cleaned.charAt(0).toUpperCase() + cleaned.slice(1).toLowerCase();
   };
@@ -80,11 +79,7 @@ export function CharacterCard({ character }: CharacterCardProps) {
           {character.is_nsfw && (
             <PyrenzRibbon
               color="red"
-              style={{
-                position: 'absolute',
-                top: '30px',
-                right: '6px',
-              }}
+              style={{ position: 'absolute', top: '30px', right: '6px' }}
             >
               NSFW
             </PyrenzRibbon>
@@ -96,12 +91,7 @@ export function CharacterCard({ character }: CharacterCardProps) {
           />
         </PyrenzCharacterCardImage>
         <PyrenzCharacterCardContent>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="flex-start"
-            mb={1}
-          >
+          <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={1}>
             <Box display="flex" flexDirection="column">
               <PyrenzCharacterCardTitle
                 sx={{
@@ -117,29 +107,20 @@ export function CharacterCard({ character }: CharacterCardProps) {
                 display="flex"
                 alignItems="center"
                 gap={1}
-                sx={{
-                  cursor: 'pointer',
-                  '&:hover': { textDecoration: 'underline' },
-                }}
+                sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
                 onClick={handleCreatorClick}
               >
                 <PyrenzAltTag>@{character.creator}</PyrenzAltTag>
               </Box>
             </Box>
-            <Box
-              display={{ xs: 'none', md: 'flex' }}
-              alignItems="center"
-              gap={0.5}
-            >
+            <Box display={{ xs: 'none', md: 'flex' }} alignItems="center" gap={0.5}>
               <ChatIcon fontSize="small" sx={{ color: '#e2e8f0' }} />
-              <Typography
-                variant="caption"
-                sx={{ color: '#e2e8f0', fontWeight: 500 }}
-              >
+              <Typography variant="caption" sx={{ color: '#e2e8f0', fontWeight: 500 }}>
                 {character.chat_messages_count}
               </Typography>
             </Box>
           </Box>
+
           <PyrenzCharacterCardDescription
             sx={{
               whiteSpace: isMobile ? 'normal' : 'nowrap',
@@ -154,6 +135,7 @@ export function CharacterCard({ character }: CharacterCardProps) {
               ? `${character.description.slice(0, 120)}...`
               : character.description || 'No description available.'}
           </PyrenzCharacterCardDescription>
+
           <PyrenzCharacterCardTags>
             <PyrenzCharacterCardTag>
               {character.is_public ? (
@@ -168,9 +150,10 @@ export function CharacterCard({ character }: CharacterCardProps) {
                 </>
               )}
             </PyrenzCharacterCardTag>
-            {filteredTags.map((tag, index) => (
-              <PyrenzCharacterCardTag key={index}>{tag}</PyrenzCharacterCardTag>
-            ))}
+            {!isMobile &&
+              filteredTags.map((tag, index) => (
+                <PyrenzCharacterCardTag key={index}>{tag}</PyrenzCharacterCardTag>
+              ))}
           </PyrenzCharacterCardTags>
         </PyrenzCharacterCardContent>
       </PyrenzCharacterCard>
