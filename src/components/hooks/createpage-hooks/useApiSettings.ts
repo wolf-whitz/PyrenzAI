@@ -105,7 +105,12 @@ export const useApiSettings = () => {
       showAlert('User not loaded yet, please try again 🤷‍♂️', 'Alert');
       return;
     }
-    if (!modelUrl.trim() || !modelApiKey.trim() || !modelName.trim() || !modelDescription.trim()) {
+    if (
+      !modelUrl.trim() ||
+      !modelApiKey.trim() ||
+      !modelName.trim() ||
+      !modelDescription.trim()
+    ) {
       showAlert(
         id
           ? 'All fields must be filled in to update the model 📝'
@@ -125,13 +130,19 @@ export const useApiSettings = () => {
           model_description: modelDescription,
           model_api_key: encryptedApiKey,
         },
-        match: id ? { id } as ExtendedMatch : undefined,
+        match: id ? ({ id } as ExtendedMatch) : undefined,
       });
-      showAlert(id ? 'Model updated successfully! 🎉' : 'Model saved successfully! 🎉', 'Success');
+      showAlert(
+        id ? 'Model updated successfully! 🎉' : 'Model saved successfully! 🎉',
+        'Success'
+      );
       if (!id) clearForm();
       await fetchUserModels();
     } catch (err) {
-      console.error(id ? 'Error updating model:' : 'Error inserting model:', err);
+      console.error(
+        id ? 'Error updating model:' : 'Error inserting model:',
+        err
+      );
       showAlert(
         id
           ? 'Oops! Couldn’t update your model. Check the console.'
@@ -155,7 +166,10 @@ export const useApiSettings = () => {
       await fetchUserModels();
     } catch (err) {
       console.error('Error deleting model:', err);
-      showAlert('Oops! Couldn’t delete your model. Check the console.', 'Error');
+      showAlert(
+        'Oops! Couldn’t delete your model. Check the console.',
+        'Error'
+      );
     }
   };
 

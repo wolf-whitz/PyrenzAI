@@ -1,6 +1,11 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { withClient } from './client';
-import { checkCacheHealth, getCached, setCached, deleteCached } from '~/sdk/caches';
+import {
+  checkCacheHealth,
+  getCached,
+  setCached,
+  deleteCached,
+} from '~/sdk/caches';
 import { createFetcherClient } from './Fetcher';
 import { consolePanel } from './ConsolePanel';
 
@@ -57,7 +62,11 @@ export class SupabaseUtil {
     return _instance;
   }
 
-  async queueOrFetch<T>(url: string, method: string, payload?: any): Promise<T> {
+  async queueOrFetch<T>(
+    url: string,
+    method: string,
+    payload?: any
+  ): Promise<T> {
     if (!navigator.onLine) {
       const queued: QueuedRequest[] = (await getCached(QUEUE_KEY)) || [];
       const id = crypto.randomUUID();
@@ -103,12 +112,16 @@ export class SupabaseUtil {
     if (typeof window === 'undefined') return;
 
     window.addEventListener('online', () => {
-      consolePanel.panel('🔌 Network', ['Connection restored, flushing queue...']);
+      consolePanel.panel('🔌 Network', [
+        'Connection restored, flushing queue...',
+      ]);
       this.#flushQueue();
     });
 
     window.addEventListener('offline', () => {
-      consolePanel.panel('⚡️ Network', ['Connection lost, queueing mode active']);
+      consolePanel.panel('⚡️ Network', [
+        'Connection lost, queueing mode active',
+      ]);
     });
   }
 }

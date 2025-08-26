@@ -58,7 +58,9 @@ export function CharacterForm({
       <Paper
         elevation={3}
         component="form"
-        onSubmit={(e) => handleSubmit(character_update ? 'Update' : 'Create', e)}
+        onSubmit={(e) =>
+          handleSubmit(character_update ? 'Update' : 'Create', e)
+        }
         sx={{
           backgroundColor: 'rgba(30, 30, 30, 0.75)',
           backdropFilter: 'blur(6px)',
@@ -108,7 +110,9 @@ export function CharacterForm({
         >
           <FormActions
             onClear={handleClear}
-            onCreate={() => handleSubmit(character_update ? 'Update' : 'Create')}
+            onCreate={() =>
+              handleSubmit(character_update ? 'Update' : 'Create')
+            }
             onSave={() => handleSubmit('Draft')}
             onDelete={handleDelete}
             saveLoading={saveLoading}

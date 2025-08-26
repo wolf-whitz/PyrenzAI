@@ -78,7 +78,10 @@ export function FirstMessageAlternatives({
             <ChevronLeftIcon fontSize="small" />
           </IconButton>
 
-          <Typography variant="body2" sx={{ minWidth: 30, textAlign: 'center' }}>
+          <Typography
+            variant="body2"
+            sx={{ minWidth: 30, textAlign: 'center' }}
+          >
             {currentIndex + 1} / {alternativeMessages.length}
           </Typography>
 
@@ -92,7 +95,10 @@ export function FirstMessageAlternatives({
         </Box>
 
         <Box sx={{ display: 'flex', gap: 0.5 }}>
-          <IconButton onClick={handleRemove} disabled={alternativeMessages.length <= 1}>
+          <IconButton
+            onClick={handleRemove}
+            disabled={alternativeMessages.length <= 1}
+          >
             <RemoveIcon />
           </IconButton>
 

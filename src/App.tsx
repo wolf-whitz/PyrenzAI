@@ -1,68 +1,68 @@
-import React, { useEffect, useState, Suspense } from 'react'
+import React, { useEffect, useState, Suspense } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
   useLocation,
   useNavigate,
-} from 'react-router-dom'
-import { AppRoutes } from '~/routes/routes'
-import { Spinner, ProofOfWorkModal } from '@components'
-import { Utils as utils } from '~/utility'
-import { useUserStore } from '~/store'
-import { Box, useTheme } from '@mui/material'
-import { BlockedPage } from './routes/Routing'
-import { HelmetProvider } from 'react-helmet-async'
-import { HelmetWrapper } from '~/HelmetWrapper'
+} from 'react-router-dom';
+import { AppRoutes } from '~/routes/routes';
+import { Spinner, ProofOfWorkModal } from '@components';
+import { Utils as utils } from '~/utility';
+import { useUserStore } from '~/store';
+import { Box, useTheme } from '@mui/material';
+import { BlockedPage } from './routes/Routing';
+import { HelmetProvider } from 'react-helmet-async';
+import { HelmetWrapper } from '~/HelmetWrapper';
 
 interface UserData {
-  is_deleted: boolean
+  is_deleted: boolean;
 }
 
 interface BannedUser {
-  is_banned: boolean
+  is_banned: boolean;
 }
 
 const AppContent = () => {
-  const [loading, setLoading] = useState(true)
-  const [isBlocked, setIsBlocked] = useState(false)
-  const [showPoWModal, setShowPoWModal] = useState(true)
+  const [loading, setLoading] = useState(true);
+  const [isBlocked, setIsBlocked] = useState(false);
+  const [showPoWModal, setShowPoWModal] = useState(true);
 
-  const setIsDeleted = useUserStore((state) => state.setIsDeleted)
-  const setIsBanned = useUserStore((state) => state.setIsBanned)
-  const setToken = useUserStore((state) => state.setToken)
-  const token = useUserStore((state) => state.token)
+  const setIsDeleted = useUserStore((state) => state.setIsDeleted);
+  const setIsBanned = useUserStore((state) => state.setIsBanned);
+  const setToken = useUserStore((state) => state.setToken);
+  const token = useUserStore((state) => state.token);
 
-  const theme = useTheme()
-  const currentTheme = theme.palette.mode
-  const location = useLocation()
-  const navigate = useNavigate()
+  const theme = useTheme();
+  const currentTheme = theme.palette.mode;
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const initChecks = async () => {
       try {
         if (!token) {
-          const { data } = await utils.db.client.auth.getSession()
-          const newToken = data?.session?.access_token
+          const { data } = await utils.db.client.auth.getSession();
+          const newToken = data?.session?.access_token;
           if (newToken) {
-            setToken(newToken)
+            setToken(newToken);
           }
         }
 
-        const res = await fetch('https://ipapi.co/json/')
-        const geoData = await res.json()
-        const blockedCountries = ['United Kingdom']
+        const res = await fetch('https://ipapi.co/json/');
+        const geoData = await res.json();
+        const blockedCountries = ['United Kingdom'];
 
         if (blockedCountries.includes(geoData?.country_name)) {
-          setIsBlocked(true)
+          setIsBlocked(true);
           if (location.pathname !== '/Blocked') {
-            navigate('/Blocked', { replace: true })
+            navigate('/Blocked', { replace: true });
           }
-          return
+          return;
         }
 
-        const user = await utils.db.getUser()
+        const user = await utils.db.getUser();
         if (user) {
-          const userId = user.id
+          const userId = user.id;
 
           const [deletedRes, bannedRes] = await Promise.all([
             utils.db.select<UserData>({
@@ -75,44 +75,44 @@ const AppContent = () => {
               columns: 'is_banned',
               match: { user_uuid: userId },
             }),
-          ])
+          ]);
 
-          const isDeletedUser = deletedRes?.data?.[0]?.is_deleted
-          const isBannedUser = bannedRes?.data?.[0]?.is_banned
+          const isDeletedUser = deletedRes?.data?.[0]?.is_deleted;
+          const isBannedUser = bannedRes?.data?.[0]?.is_banned;
 
           if (isDeletedUser) {
-            setIsDeleted(true)
-            await utils.db.client.auth.signOut()
-            navigate('/Blocked?type=deleted', { replace: true })
-            return
+            setIsDeleted(true);
+            await utils.db.client.auth.signOut();
+            navigate('/Blocked?type=deleted', { replace: true });
+            return;
           }
 
           if (isBannedUser) {
-            setIsBanned(true)
-            await utils.db.client.auth.signOut()
-            navigate('/Blocked?type=banned', { replace: true })
-            return
+            setIsBanned(true);
+            await utils.db.client.auth.signOut();
+            navigate('/Blocked?type=banned', { replace: true });
+            return;
           }
 
-          setIsDeleted(false)
-          setIsBanned(false)
+          setIsDeleted(false);
+          setIsBanned(false);
         } else {
-          setIsDeleted(false)
-          setIsBanned(false)
+          setIsDeleted(false);
+          setIsBanned(false);
         }
       } catch {
-        setIsDeleted(false)
-        setIsBanned(false)
+        setIsDeleted(false);
+        setIsBanned(false);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    initChecks()
-  }, [location, navigate, setIsDeleted, setIsBanned, setToken, token])
+    initChecks();
+  }, [location, navigate, setIsDeleted, setIsBanned, setToken, token]);
 
-  if (loading) return <Spinner />
-  if (isBlocked) return <BlockedPage />
+  if (loading) return <Spinner />;
+  if (isBlocked) return <BlockedPage />;
 
   return (
     <HelmetWrapper>
@@ -152,8 +152,8 @@ const AppContent = () => {
         )}
       </Box>
     </HelmetWrapper>
-  )
-}
+  );
+};
 
 export function App() {
   return (
@@ -164,5 +164,5 @@ export function App() {
         </Suspense>
       </Router>
     </HelmetProvider>
-  )
+  );
 }

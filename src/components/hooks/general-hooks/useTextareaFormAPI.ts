@@ -56,10 +56,12 @@ export const useTextareaFormAPI = () => {
       .flatMap((cat) => cat.fields)
       .find((f) => f.name === 'first_message') ?? {};
 
-  const [alternativeMessages, setAlternativeMessages] = useState<string[]>(() =>
-    Array.isArray(character.first_message) && character.first_message.length > 0
-      ? character.first_message
-      : ['']
+  const [alternativeMessages, setAlternativeMessages] = useState<string[]>(
+    () =>
+      Array.isArray(character.first_message) &&
+      character.first_message.length > 0
+        ? character.first_message
+        : ['']
   );
 
   const [currentIndex, setCurrentIndex] = useState(0);

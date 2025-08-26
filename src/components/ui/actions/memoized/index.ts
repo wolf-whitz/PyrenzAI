@@ -1,1 +1,1 @@
-export * from './MemoizedComponents'
+export * from './MemoizedComponents';

@@ -39,10 +39,15 @@ export function TextareaForm() {
     setTagsInputRaw((character.tags || []).join('\n'));
   }, [character.tags]);
 
-  function handleTagsChange(e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) {
+  function handleTagsChange(
+    e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  ) {
     const raw = e.target.value;
     setTagsInputRaw(raw);
-    const parsedTags = raw.split(/\r?\n/).map((t) => t.trim()).filter(Boolean);
+    const parsedTags = raw
+      .split(/\r?\n/)
+      .map((t) => t.trim())
+      .filter(Boolean);
     handleTagsUpdate(parsedTags);
   }
 
@@ -72,8 +77,11 @@ export function TextareaForm() {
             }
 
             const value =
-              field.name === 'tags' ? tagsInputRaw : (character as any)[field.name] || '';
-            const onChange = field.name === 'tags' ? handleTagsChange : handleChange;
+              field.name === 'tags'
+                ? tagsInputRaw
+                : (character as any)[field.name] || '';
+            const onChange =
+              field.name === 'tags' ? handleTagsChange : handleChange;
 
             return (
               <MemoizedTextarea
@@ -86,7 +94,9 @@ export function TextareaForm() {
                 placeholder={field.placeholder}
                 is_tag={field.is_tag}
                 maxLength={field.maxLength}
-                onTagPressed={field.name === 'tags' ? handleOpenDropdown : undefined}
+                onTagPressed={
+                  field.name === 'tags' ? handleOpenDropdown : undefined
+                }
                 showTokenizer={field.showTokenizer}
               />
             );

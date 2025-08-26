@@ -1,4 +1,4 @@
 export * from './CharacterCardModal';
-export * from './ImportModal'
+export * from './ImportModal';
 
-export * from './CharacterCreator'
+export * from './CharacterCreator';

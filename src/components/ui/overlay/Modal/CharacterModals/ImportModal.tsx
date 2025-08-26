@@ -105,7 +105,11 @@ export function ImportModal({ open, onClose }: ImportModalProps) {
           />
         </Box>
         <Box display="flex" gap={2}>
-          <PyrenzBlueButton component="label" variant="contained" sx={{ flexShrink: 0 }}>
+          <PyrenzBlueButton
+            component="label"
+            variant="contained"
+            sx={{ flexShrink: 0 }}
+          >
             Choose File
             <input
               type="file"

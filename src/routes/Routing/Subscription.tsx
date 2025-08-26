@@ -65,7 +65,9 @@ const subscriptionPlans: Plan[] = [
 ];
 
 export function Subscription() {
-  const [selectedPlanTitle, setSelectedPlanTitle] = useState<string | null>(null);
+  const [selectedPlanTitle, setSelectedPlanTitle] = useState<string | null>(
+    null
+  );
   const [isMonthly, setIsMonthly] = useState<boolean>(true);
   const [hoveredPlanTitle, setHoveredPlanTitle] = useState<string | null>(null);
   const [showLoginModal, setShowLoginModal] = useState(false);

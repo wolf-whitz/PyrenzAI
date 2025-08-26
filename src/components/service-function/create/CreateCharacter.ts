@@ -64,7 +64,8 @@ const notifySuccess = async (
   userName?: string,
   charName?: string
 ) => {
-  if (typeof document === 'undefined' || document.visibilityState === 'visible') return;
+  if (typeof document === 'undefined' || document.visibilityState === 'visible')
+    return;
   await NotificationManager.fire({
     title: 'Character Saved',
     body: message,
@@ -79,7 +80,10 @@ const postCharacter = async (
   filteredCharacter: CharacterPayload
 ): Promise<CreateCharacterResponse> => {
   const data = { type, character: filteredCharacter };
-  const res = await utils.post<CreateCharacterResponse>('/api/CreateCharacter', data);
+  const res = await utils.post<CreateCharacterResponse>(
+    '/api/CreateCharacter',
+    data
+  );
   if (res.error) throw new Error(res.error);
   if (res.is_moderated) {
     throw new Error(
@@ -126,7 +130,10 @@ const handleCharacterPost = async (
 export const createCharacter = async (
   character: CharacterPayload,
   trackingFunctions?: {
-    trackCharacterCreated?: (character: any, result?: { char_uuid?: string }) => void;
+    trackCharacterCreated?: (
+      character: any,
+      result?: { char_uuid?: string }
+    ) => void;
     trackCharacterCreationFailed?: (character: any, error: string) => void;
   }
 ): Promise<CreateCharacterResponse> => {
@@ -154,7 +161,10 @@ export const createCharacter = async (
 export const updateCharacter = async (
   character: CharacterPayload,
   trackingFunctions?: {
-    trackCharacterUpdated?: (character: any, result?: { char_uuid?: string }) => void;
+    trackCharacterUpdated?: (
+      character: any,
+      result?: { char_uuid?: string }
+    ) => void;
     trackCharacterUpdateFailed?: (character: any, error: string) => void;
   }
 ): Promise<CreateCharacterResponse> => {

@@ -56,8 +56,8 @@ export const useCreateAPI = (
   const tags = Array.isArray(rawTags)
     ? rawTags
     : typeof rawTags === 'string'
-    ? rawTags.split(',').map((tag) => tag.trim())
-    : [];
+      ? rawTags.split(',').map((tag) => tag.trim())
+      : [];
 
   const handleImageSelect = (file: File | null) => {
     if (file) {
@@ -66,10 +66,9 @@ export const useCreateAPI = (
     }
   };
 
-  const emotionsNormalized =
-    Array.isArray(characterStateWithoutError.emotions)
-      ? characterStateWithoutError.emotions
-      : [];
+  const emotionsNormalized = Array.isArray(characterStateWithoutError.emotions)
+    ? characterStateWithoutError.emotions
+    : [];
 
   const character: CharacterPayload = {
     ...(characterStateWithoutError as CharacterPayload),

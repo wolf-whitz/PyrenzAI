@@ -15,7 +15,12 @@ import {
   DeleteOutlined as DeleteIcon,
 } from '@mui/icons-material';
 import { GetUserUUID } from '@components';
-import { PyrenzModal, PyrenzModalContent, PyrenzCard, PyrenzMenu } from '~/theme';
+import {
+  PyrenzModal,
+  PyrenzModalContent,
+  PyrenzCard,
+  PyrenzMenu,
+} from '~/theme';
 import { Utils } from '~/utility';
 import type { CharacterPayload } from '@shared-types';
 
@@ -30,7 +35,9 @@ export function DraftsModal({ onClose, onSelect }: DraftsModalProps) {
   const [drafts, setDrafts] = useState<CharacterPayload[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
-  const [displayedDrafts, setDisplayedDrafts] = useState<CharacterPayload[]>([]);
+  const [displayedDrafts, setDisplayedDrafts] = useState<CharacterPayload[]>(
+    []
+  );
   const [userUuid, setUserUuid] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const hasFetched = useRef(false);

@@ -64,7 +64,9 @@ export function CharacterCard({ character }: CharacterCardProps) {
     return cleaned.charAt(0).toUpperCase() + cleaned.slice(1).toLowerCase();
   };
 
-  const filteredTags = (character.tags ?? []).map(formatTag).filter(tag => tag.length > 0);
+  const filteredTags = (character.tags ?? [])
+    .map(formatTag)
+    .filter((tag) => tag.length > 0);
 
   return (
     <Fade in={isLoaded} timeout={1500}>
@@ -91,7 +93,12 @@ export function CharacterCard({ character }: CharacterCardProps) {
           />
         </PyrenzCharacterCardImage>
         <PyrenzCharacterCardContent>
-          <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={1}>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="flex-start"
+            mb={1}
+          >
             <Box display="flex" flexDirection="column">
               <PyrenzCharacterCardTitle
                 sx={{
@@ -107,15 +114,25 @@ export function CharacterCard({ character }: CharacterCardProps) {
                 display="flex"
                 alignItems="center"
                 gap={1}
-                sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                sx={{
+                  cursor: 'pointer',
+                  '&:hover': { textDecoration: 'underline' },
+                }}
                 onClick={handleCreatorClick}
               >
                 <PyrenzAltTag>@{character.creator}</PyrenzAltTag>
               </Box>
             </Box>
-            <Box display={{ xs: 'none', md: 'flex' }} alignItems="center" gap={0.5}>
+            <Box
+              display={{ xs: 'none', md: 'flex' }}
+              alignItems="center"
+              gap={0.5}
+            >
               <ChatIcon fontSize="small" sx={{ color: '#e2e8f0' }} />
-              <Typography variant="caption" sx={{ color: '#e2e8f0', fontWeight: 500 }}>
+              <Typography
+                variant="caption"
+                sx={{ color: '#e2e8f0', fontWeight: 500 }}
+              >
                 {character.chat_messages_count}
               </Typography>
             </Box>
@@ -152,7 +169,9 @@ export function CharacterCard({ character }: CharacterCardProps) {
             </PyrenzCharacterCardTag>
             {!isMobile &&
               filteredTags.map((tag, index) => (
-                <PyrenzCharacterCardTag key={index}>{tag}</PyrenzCharacterCardTag>
+                <PyrenzCharacterCardTag key={index}>
+                  {tag}
+                </PyrenzCharacterCardTag>
               ))}
           </PyrenzCharacterCardTags>
         </PyrenzCharacterCardContent>

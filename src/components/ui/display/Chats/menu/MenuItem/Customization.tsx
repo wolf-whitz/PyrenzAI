@@ -34,7 +34,9 @@ export function Customization({
   customization,
   subscriptionPlan,
 }: CustomizationProps) {
-  const [showPopover, setShowPopover] = useState<keyof typeof sliderDescriptions | null>(null);
+  const [showPopover, setShowPopover] = useState<
+    keyof typeof sliderDescriptions | null
+  >(null);
   const [submitting, setSubmitting] = useState(false);
 
   const {

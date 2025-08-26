@@ -15,7 +15,9 @@ export function VisibilityDropdown() {
   const setCharacter = useCharacterStore((state) => state.setCharacter);
   const isPublic = useCharacterStore((state) => state.is_public);
   const isNSFW = useCharacterStore((state) => state.is_nsfw);
-  const isDetailsPrivate = useCharacterStore((state) => state.is_details_private);
+  const isDetailsPrivate = useCharacterStore(
+    (state) => state.is_details_private
+  );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;

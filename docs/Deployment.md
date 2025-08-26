@@ -22,7 +22,6 @@ Easiest way to get started is using Docker. We’ve already set it up so you don
    ```
 
 3. This will:
-
    - Build the Docker image
    - Run `npm install`
    - Run `npm run build` to bundle the app

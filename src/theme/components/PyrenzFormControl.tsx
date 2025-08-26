@@ -115,7 +115,9 @@ export const PyrenzSelect = styled((props: SelectProps) => (
   },
 });
 
-export const PyrenzMenuItem = styled((props: MenuItemProps) => <MenuItem {...props} />)({
+export const PyrenzMenuItem = styled((props: MenuItemProps) => (
+  <MenuItem {...props} />
+))({
   display: 'flex',
   alignItems: 'center',
   gap: '8px',

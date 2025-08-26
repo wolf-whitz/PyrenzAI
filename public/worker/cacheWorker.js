@@ -29,7 +29,9 @@ self.onmessage = async function (e) {
   switch (type) {
     case 'get': {
       const { hit, data } = getFromCache(key);
-      self.postMessage(hit ? { type: 'hit', key, data } : { type: 'miss', key });
+      self.postMessage(
+        hit ? { type: 'hit', key, data } : { type: 'miss', key }
+      );
       break;
     }
     case 'set': {

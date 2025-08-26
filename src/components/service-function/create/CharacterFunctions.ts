@@ -4,11 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { GetUserData } from '@components';
 import { useCharacterStore } from '~/store';
 import { Character } from '@shared-types';
-import {
-  createCharacter,
-  createDraft,
-  updateCharacter,
-} from '@components';
+import { createCharacter, createDraft, updateCharacter } from '@components';
 
 type ActionType = 'Create' | 'Update' | 'Draft';
 
@@ -150,9 +146,10 @@ export const handleSubmitCharacter = async (
         setError(null);
         navigate(`/chat/${chatResponse.chat_uuid}`);
       }
-      const successMessage = type === 'Create'
-        ? 'Chat created successfully.'
-        : 'Character updated successfully!';
+      const successMessage =
+        type === 'Create'
+          ? 'Chat created successfully.'
+          : 'Character updated successfully!';
       showAlert(successMessage, 'success');
       setError(null);
     }

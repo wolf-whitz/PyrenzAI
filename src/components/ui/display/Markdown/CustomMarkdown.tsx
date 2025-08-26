@@ -124,7 +124,10 @@ export function CustomMarkdown({
                 color: getColor('quote', dataState),
               }}
             >
-              <Typography variant="body2" sx={{ fontSize: '0.9rem', lineHeight: 1.7 }}>
+              <Typography
+                variant="body2"
+                sx={{ fontSize: '0.9rem', lineHeight: 1.7 }}
+              >
                 {children}
               </Typography>
             </Box>
@@ -149,7 +152,10 @@ export function CustomMarkdown({
           pre: ({ children }) => (
             <Box
               component="pre"
-              sx={{ ...preLikeStyles.wrapper, color: getColor('code', dataState) }}
+              sx={{
+                ...preLikeStyles.wrapper,
+                color: getColor('code', dataState),
+              }}
             >
               <Typography component="code" sx={preLikeStyles.inner}>
                 {children}

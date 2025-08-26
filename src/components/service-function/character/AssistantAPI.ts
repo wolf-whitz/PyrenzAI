@@ -21,7 +21,9 @@ interface UseAssistantAPIProps {
   disableReplacement?: boolean;
 }
 
-export function useAssistantAPI({ initialInstruction = 'You are a helpful assistant.' }: UseAssistantAPIProps = {}) {
+export function useAssistantAPI({
+  initialInstruction = 'You are a helpful assistant.',
+}: UseAssistantAPIProps = {}) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [contextInput, setContextInput] = useState('');
@@ -46,7 +48,8 @@ export function useAssistantAPI({ initialInstruction = 'You are a helpful assist
       else {
         const firstMsg: ChatMessage = {
           role: 'char',
-          content: 'Hello i can help you create characters! First can you tell me what the character is?',
+          content:
+            'Hello i can help you create characters! First can you tell me what the character is?',
         };
         setMessages([firstMsg]);
         await store.setItem('all_messages', [firstMsg]);
@@ -74,7 +77,11 @@ export function useAssistantAPI({ initialInstruction = 'You are a helpful assist
       ? [...messages, userMessage]
       : [{ role: 'system', content: instruction }, ...messages, userMessage];
 
-    const typingIndicator: ChatMessage = { role: 'char', content: '', isGeneratingEmptyCharMessage: true };
+    const typingIndicator: ChatMessage = {
+      role: 'char',
+      content: '',
+      isGeneratingEmptyCharMessage: true,
+    };
     const localMessages = [...allMessages, typingIndicator];
 
     setMessages(localMessages);
@@ -88,7 +95,10 @@ export function useAssistantAPI({ initialInstruction = 'You are a helpful assist
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: 'mistral',
-          messages: allMessages.map((m) => ({ role: mapRoleForAPI(m.role), content: m.content })),
+          messages: allMessages.map((m) => ({
+            role: mapRoleForAPI(m.role),
+            content: m.content,
+          })),
           temperature: 0.7,
           stream: false,
           private: true,
@@ -109,7 +119,11 @@ export function useAssistantAPI({ initialInstruction = 'You are a helpful assist
       setMessages((prev) => {
         const updated = [...prev];
         const index = updated.findIndex((m) => m.isGeneratingEmptyCharMessage);
-        if (index !== -1) updated[index] = { role: 'char', content: 'Error: could not fetch response.' };
+        if (index !== -1)
+          updated[index] = {
+            role: 'char',
+            content: 'Error: could not fetch response.',
+          };
         saveMessages(updated);
         return updated;
       });
@@ -121,7 +135,8 @@ export function useAssistantAPI({ initialInstruction = 'You are a helpful assist
   const handleClear = async () => {
     const firstMsg: ChatMessage = {
       role: 'char',
-      content: 'Hello i can help you create characters! First can you tell me what the character is?',
+      content:
+        'Hello i can help you create characters! First can you tell me what the character is?',
     };
     setMessages([firstMsg]);
     await store.setItem('all_messages', [firstMsg]);
@@ -142,7 +157,9 @@ export function useAssistantAPI({ initialInstruction = 'You are a helpful assist
 
       if (data?.result) {
         setMessages((prev) => {
-          const existingSystemIndex = prev.findIndex((m) => m.role === 'system');
+          const existingSystemIndex = prev.findIndex(
+            (m) => m.role === 'system'
+          );
           let updated: ChatMessage[];
           if (existingSystemIndex !== -1) {
             updated = [...prev];
@@ -152,7 +169,10 @@ export function useAssistantAPI({ initialInstruction = 'You are a helpful assist
             };
           } else {
             updated = [
-              { role: 'system', content: `${instruction}\n\n[Context]\n${data.result}` },
+              {
+                role: 'system',
+                content: `${instruction}\n\n[Context]\n${data.result}`,
+              },
               ...prev,
             ];
           }

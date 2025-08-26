@@ -8,4 +8,4 @@ export * from './getRandomCharacters';
 export * from './getUserCreatedCharacters';
 
 export * from './CharacterAPI';
-export * from './AssistantAPI'
+export * from './AssistantAPI';

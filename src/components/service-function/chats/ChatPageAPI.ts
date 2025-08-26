@@ -100,9 +100,7 @@ export const fetchChatData = async (
       Character: characterData,
       firstMessage: firstMessagesArray.length > 0 ? firstMessagesArray[0] : '',
       alternativeFirstMessages:
-        firstMessagesArray.length > 1
-          ? firstMessagesArray.slice(1)
-          : [],
+        firstMessagesArray.length > 1 ? firstMessagesArray.slice(1) : [],
     };
   } catch (err) {
     Sentry.captureException(

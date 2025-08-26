@@ -23,7 +23,8 @@ export const useChatStore = create<ChatStore>((set) => ({
   setFirstMessage: (message: string) => set({ firstMessage: message }),
 
   alternativeFirstMessages: [],
-  setAlternativeFirstMessages: (messages: string[]) => set({ alternativeFirstMessages: messages }),
+  setAlternativeFirstMessages: (messages: string[]) =>
+    set({ alternativeFirstMessages: messages }),
 
   messages: [],
   setMessages: (updater) =>

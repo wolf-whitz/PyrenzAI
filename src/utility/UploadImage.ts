@@ -19,7 +19,10 @@ export async function uploadImage(
 
     const maxSizeInBytes = 5 * 1024 * 1024;
     if ('size' in file && file.size > maxSizeInBytes) {
-      return { url: null, error: 'File size must be less than or equal to 5MB.' };
+      return {
+        url: null,
+        error: 'File size must be less than or equal to 5MB.',
+      };
     }
 
     const webpBlob = await convertToWebP(file);
@@ -28,7 +31,10 @@ export async function uploadImage(
     }
 
     if (webpBlob.size > maxSizeInBytes) {
-      return { url: null, error: 'Converted image size must be less than or equal to 5MB.' };
+      return {
+        url: null,
+        error: 'Converted image size must be less than or equal to 5MB.',
+      };
     }
 
     const fileName = `${uuidv4()}.webp`;

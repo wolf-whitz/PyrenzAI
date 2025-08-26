@@ -1,1 +1,1 @@
-export * from './FirstMessageAlternatives'
+export * from './FirstMessageAlternatives';

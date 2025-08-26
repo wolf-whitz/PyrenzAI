@@ -16,7 +16,14 @@ export function ChatPage() {
   const { chat_uuid } = useParams<{ chat_uuid: string }>();
   const navigate = useNavigate();
 
-  const { setFirstMessage, setAlternativeFirstMessages, setUser, setChar, user, char } = useChatStore();
+  const {
+    setFirstMessage,
+    setAlternativeFirstMessages,
+    setUser,
+    setChar,
+    user,
+    char,
+  } = useChatStore();
 
   const [loading, setLoading] = useState(true);
   const [userUuid, setUserUuid] = useState<string | null>(null);
@@ -85,7 +92,14 @@ export function ChatPage() {
     };
 
     getChatData();
-  }, [chat_uuid, userUuid, user, setChar, setFirstMessage, setAlternativeFirstMessages]);
+  }, [
+    chat_uuid,
+    userUuid,
+    user,
+    setChar,
+    setFirstMessage,
+    setAlternativeFirstMessages,
+  ]);
 
   if (loading || !user) {
     return (

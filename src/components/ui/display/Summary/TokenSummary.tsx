@@ -2,8 +2,12 @@ import { Typography, Box, CircularProgress } from '@mui/material';
 import { useCharacterStore } from '~/store';
 
 export function TokenSummary() {
-  const permanentTokens = useCharacterStore((state) => state.permanentTokens || 0);
-  const temporaryTokens = useCharacterStore((state) => state.temporaryTokens || 0);
+  const permanentTokens = useCharacterStore(
+    (state) => state.permanentTokens || 0
+  );
+  const temporaryTokens = useCharacterStore(
+    (state) => state.temporaryTokens || 0
+  );
   const tokenTotal = useCharacterStore((state) => state.tokenTotal || 0);
   const isCounting = useCharacterStore((state) => state.isCounting);
 

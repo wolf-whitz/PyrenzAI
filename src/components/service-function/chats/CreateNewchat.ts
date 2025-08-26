@@ -71,6 +71,9 @@ export async function CreateNewChat(
     return { chat_uuid: chatUuid };
   } catch (error: any) {
     console.error('Error creating new chat:', error);
-    return { chat_uuid: '', error: error.message || 'An unexpected error occurred' };
+    return {
+      chat_uuid: '',
+      error: error.message || 'An unexpected error occurred',
+    };
   }
 }

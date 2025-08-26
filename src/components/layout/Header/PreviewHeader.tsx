@@ -109,7 +109,14 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', px: 6 }}>
+        <Toolbar
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            width: '100%',
+            px: 6,
+          }}
+        >
           <Box
             sx={{
               display: 'flex',
@@ -127,7 +134,13 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
               whileHover={{ scale: 1.2, rotate: 10 }}
               transition={{ type: 'spring', stiffness: 300 }}
             />
-            <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'baseline',
+              }}
+            >
               <Typography
                 component="span"
                 sx={{
@@ -153,7 +166,15 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
           </Box>
 
           {!isMediumOrSmaller && (
-            <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 4 }}>
+            <Box
+              sx={{
+                flex: 1,
+                display: 'flex',
+                justifyContent: 'flex-end',
+                alignItems: 'center',
+                gap: 4,
+              }}
+            >
               {menuItems.map(({ name, icon, link, external }) => (
                 <PyrenzBlueButtonWithLoading
                   key={name}
@@ -213,7 +234,9 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
                       external ? window.open(link, '_blank') : navigate(link);
                     }}
                   >
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                    <Box
+                      sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}
+                    >
                       {icon}
                       <Typography variant="body1">{name}</Typography>
                     </Box>
@@ -228,7 +251,9 @@ export function PreviewHeader({ setShowLogin, setShowRegister }: HeaderProps) {
                         action();
                       }}
                     >
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                      <Box
+                        sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}
+                      >
                         {icon}
                         <Typography variant="body1">{name}</Typography>
                       </Box>

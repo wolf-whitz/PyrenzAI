@@ -55,7 +55,9 @@ export function Api() {
   } = useApiSettings();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedModelIndex, setSelectedModelIndex] = useState<number | null>(null);
+  const [selectedModelIndex, setSelectedModelIndex] = useState<number | null>(
+    null
+  );
   const [dialogOpen, setDialogOpen] = useState(false);
   const [modelToDelete, setModelToDelete] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -79,7 +81,8 @@ export function Api() {
       setModelApiKey(model.model_api_key || '');
       setModelUrl(model.model_url || '');
       setSelectedProvider(
-        providers.find((p) => p.provider_link === model.model_url)?.provider_name || ''
+        providers.find((p) => p.provider_link === model.model_url)
+          ?.provider_name || ''
       );
       setIsEditing(true);
       setEditingModelId(model.id);
@@ -126,14 +129,22 @@ export function Api() {
   }
 
   return (
-    <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', height: '100%' }}>
+    <Box
+      sx={{ p: 3, display: 'flex', flexDirection: 'column', height: '100%' }}
+    >
       <Typography variant="h6" gutterBottom>
         API Settings
       </Typography>
-      <Box component="form" onSubmit={handleFormSubmit} sx={{ flex: 1, backgroundColor: 'transparent' }}>
+      <Box
+        component="form"
+        onSubmit={handleFormSubmit}
+        sx={{ flex: 1, backgroundColor: 'transparent' }}
+      >
         <Box mb={2}>
           <PyrenzFormControl fullWidth>
-            <PyrenzInputLabel id="provider-select-label">Select Provider</PyrenzInputLabel>
+            <PyrenzInputLabel id="provider-select-label">
+              Select Provider
+            </PyrenzInputLabel>
             <PyrenzSelect
               labelId="provider-select-label"
               id="provider-select"
@@ -142,7 +153,12 @@ export function Api() {
             >
               {providers.map((provider, index) => (
                 <MenuItem key={index} value={provider.provider_name}>
-                  <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    width="100%"
+                  >
                     <Typography>{provider.provider_name}</Typography>
                     <Tooltip title={provider.provider_description} arrow>
                       <IconButton size="small" edge="end">
@@ -157,19 +173,36 @@ export function Api() {
         </Box>
         <Box mb={2}>
           <Typography variant="subtitle1">API URL</Typography>
-          <Textarea value={modelUrl} onChange={(e) => setModelUrl(e.target.value)} placeholder="Enter the API URL" require_link />
+          <Textarea
+            value={modelUrl}
+            onChange={(e) => setModelUrl(e.target.value)}
+            placeholder="Enter the API URL"
+            require_link
+          />
         </Box>
         <Box mb={2}>
           <Typography variant="subtitle1">API Key</Typography>
-          <Textarea value={modelApiKey} onChange={(e) => setModelApiKey(e.target.value)} placeholder="Enter your API Key" />
+          <Textarea
+            value={modelApiKey}
+            onChange={(e) => setModelApiKey(e.target.value)}
+            placeholder="Enter your API Key"
+          />
         </Box>
         <Box mb={2}>
           <Typography variant="subtitle1">Model Name</Typography>
-          <Textarea value={modelName} onChange={(e) => setModelName(e.target.value)} placeholder="Enter the Model Name or slug name" />
+          <Textarea
+            value={modelName}
+            onChange={(e) => setModelName(e.target.value)}
+            placeholder="Enter the Model Name or slug name"
+          />
         </Box>
         <Box mb={2}>
           <Typography variant="subtitle1">Model Description</Typography>
-          <Textarea value={modelDescription} onChange={(e) => setModelDescription(e.target.value)} placeholder="Describe your model's vibes" />
+          <Textarea
+            value={modelDescription}
+            onChange={(e) => setModelDescription(e.target.value)}
+            placeholder="Describe your model's vibes"
+          />
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
           <PyrenzBlueButton type="submit">
@@ -185,15 +218,30 @@ export function Api() {
           {userModels.map((model, index) => (
             <PyrenzCard key={index} sx={{ minWidth: 275 }}>
               <CardContent>
-                <Box display="flex" justifyContent="space-between" alignItems="center">
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
                   <Typography variant="h5">{model.model_name}</Typography>
-                  <IconButton aria-label="more" aria-controls="pyrenz-model-menu" aria-haspopup="true" onClick={(event) => handleMenuOpen(event, index)}>
+                  <IconButton
+                    aria-label="more"
+                    aria-controls="pyrenz-model-menu"
+                    aria-haspopup="true"
+                    onClick={(event) => handleMenuOpen(event, index)}
+                  >
                     <MoreHorizIcon />
                   </IconButton>
                 </Box>
-                <Typography variant="body2">{truncate(model.model_description, 100)}</Typography>
+                <Typography variant="body2">
+                  {truncate(model.model_description, 100)}
+                </Typography>
               </CardContent>
-              <PyrenzMenu anchorEl={anchorEl} open={Boolean(anchorEl) && selectedModelIndex === index} onClose={handleMenuClose}>
+              <PyrenzMenu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl) && selectedModelIndex === index}
+                onClose={handleMenuClose}
+              >
                 <MenuItem onClick={handleEditClick}>Edit</MenuItem>
                 <MenuItem onClick={handleDeleteClick}>Delete</MenuItem>
               </PyrenzMenu>

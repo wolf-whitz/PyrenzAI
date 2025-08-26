@@ -80,11 +80,11 @@ export function ChatMessages({
 
   const messages: Message[] = (() => {
     if (!previous_message) return [];
-  
+
     const alreadyIncludesFirst = previous_message.some(
       (m) => m.text === firstMessage && m.type === 'char'
     );
-  
+
     if (firstMessage && !alreadyIncludesFirst) {
       return [
         {
@@ -98,11 +98,9 @@ export function ChatMessages({
         ...previous_message,
       ];
     }
-  
+
     return previous_message;
   })();
-  
-  
 
   return (
     <Box className="space-y-4 p-4 max-w-2xl mx-auto">

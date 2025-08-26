@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const targetDir = path.resolve(__dirname, 'src'); 
+const targetDir = path.resolve(__dirname, 'src');
 const fromImport = '@utils';
 const toImport = '~/Utility';
 

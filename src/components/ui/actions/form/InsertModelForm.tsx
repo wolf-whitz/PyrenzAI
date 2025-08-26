@@ -146,7 +146,8 @@ export function InsertModelForm({ onSuccess }: InsertModelFormProps) {
           admin_uuid: userUUID,
           name: name || pendingPayload?.name || '',
           slug: slug || pendingPayload?.id || '',
-          model_description: modelDescription || pendingPayload?.description || '',
+          model_description:
+            modelDescription || pendingPayload?.description || '',
           subscription_plan: subscriptionPlan,
         },
       });
@@ -243,7 +244,9 @@ export function InsertModelForm({ onSuccess }: InsertModelFormProps) {
                 <Typography color="text.secondary">
                   Slug: {model.slug}
                 </Typography>
-                <Typography sx={{ mt: 1 }}>{model.model_description}</Typography>
+                <Typography sx={{ mt: 1 }}>
+                  {model.model_description}
+                </Typography>
                 <Typography sx={{ mt: 1, fontStyle: 'italic' }}>
                   Plan: {model.subscription_plan}
                 </Typography>

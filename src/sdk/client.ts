@@ -18,7 +18,9 @@ export const withClient = (client: SupabaseClient) => {
       return update<T>(client, req);
     },
 
-    remove: async <T extends Record<string, any>>(req: Parameters<typeof remove>[1]) => {
+    remove: async <T extends Record<string, any>>(
+      req: Parameters<typeof remove>[1]
+    ) => {
       return remove<T>(client, req);
     },
 

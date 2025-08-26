@@ -7,8 +7,8 @@ export interface TextareaField {
   showTokenizer?: boolean;
   is_alternatives?: boolean;
   max_alternatives?: number;
-  is_permanent?: boolean;    
-  is_temporary?: boolean;    
+  is_permanent?: boolean;
+  is_temporary?: boolean;
 }
 
 export interface TextareaCategory {
@@ -74,11 +74,10 @@ export const textareasByCategory: TextareaCategory[] = [
         showTokenizer: true,
         is_permanent: true,
       },
-       {
+      {
         name: 'message_example',
         label: 'Message Example',
-        placeholder:
-          `Provide examples for the model to follow. Never use "you" or "your"; always use {{char}}. Do not mention {{user}}. This is intended to instruct the model through examples.`,
+        placeholder: `Provide examples for the model to follow. Never use "you" or "your"; always use {{char}}. Do not mention {{user}}. This is intended to instruct the model through examples.`,
         showTokenizer: true,
         is_permanent: true,
       },

@@ -8,7 +8,13 @@ import {
   ImportExportOutlined as ImportIcon,
   SmartToyOutlined as AssistantIcon,
 } from '@mui/icons-material';
-import { CreateButton, DraftsModal, Emotion, ImportModal, AssistantModal } from '@components';
+import {
+  CreateButton,
+  DraftsModal,
+  Emotion,
+  ImportModal,
+  AssistantModal,
+} from '@components';
 import { CharacterPayload } from '@shared-types';
 import { PyrenzBlueButton } from '~/theme';
 import { useNavigate } from 'react-router-dom';
@@ -119,7 +125,15 @@ export function FormActions({
   };
 
   return (
-    <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-end', gap: 2, mt: 4 }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'flex-end',
+        gap: 2,
+        mt: 4,
+      }}
+    >
       <PyrenzBlueButton
         variant="contained"
         onClick={handleClear}
@@ -131,7 +145,13 @@ export function FormActions({
         variant="contained"
         onClick={handleSave}
         disabled={saveLoading || savePressed || loading}
-        startIcon={saveLoading ? <CircularProgress size={20} color="inherit" /> : <SaveIcon />}
+        startIcon={
+          saveLoading ? (
+            <CircularProgress size={20} color="inherit" />
+          ) : (
+            <SaveIcon />
+          )
+        }
       >
         {saveLoading ? 'Saving...' : 'Save'}
       </PyrenzBlueButton>
@@ -183,12 +203,43 @@ export function FormActions({
         character_update={character_update}
         disabled={loading}
       />
-      {isDraftModalOpen && <DraftsModal onClose={handleCloseDraftModal} onSelect={onSelectDraft} />}
-      {emotionModalOpen && <Emotion open={emotionModalOpen} onClose={handleCloseEmotion} onSave={handleSaveEmotion} />}
-      {isImportModalOpen && <ImportModal open={isImportModalOpen} onClose={handleCloseImportModal} />}
-      {isAssistantModalOpen && <AssistantModal open={isAssistantModalOpen} onClose={handleCloseAssistantModal} />}
-      <Typography variant="body1" align="center" sx={{ width: '100%', mt: 2, color: 'grey.600' }}>
-        <Link component="button" variant="body1" onClick={handleGuideClick} sx={{ textDecoration: 'underline', cursor: 'pointer', color: 'inherit' }}>
+      {isDraftModalOpen && (
+        <DraftsModal onClose={handleCloseDraftModal} onSelect={onSelectDraft} />
+      )}
+      {emotionModalOpen && (
+        <Emotion
+          open={emotionModalOpen}
+          onClose={handleCloseEmotion}
+          onSave={handleSaveEmotion}
+        />
+      )}
+      {isImportModalOpen && (
+        <ImportModal
+          open={isImportModalOpen}
+          onClose={handleCloseImportModal}
+        />
+      )}
+      {isAssistantModalOpen && (
+        <AssistantModal
+          open={isAssistantModalOpen}
+          onClose={handleCloseAssistantModal}
+        />
+      )}
+      <Typography
+        variant="body1"
+        align="center"
+        sx={{ width: '100%', mt: 2, color: 'grey.600' }}
+      >
+        <Link
+          component="button"
+          variant="body1"
+          onClick={handleGuideClick}
+          sx={{
+            textDecoration: 'underline',
+            cursor: 'pointer',
+            color: 'inherit',
+          }}
+        >
           Not sure where to start? Check out our starter guide! ദ്ദി(ᵔᗜᵔ)
         </Link>
       </Typography>

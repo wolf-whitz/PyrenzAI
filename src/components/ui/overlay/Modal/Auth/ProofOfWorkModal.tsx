@@ -9,7 +9,11 @@ interface ProofOfWorkModalProps {
   onSuccess: () => void;
 }
 
-export function ProofOfWorkModal({ open, onClose, onSuccess }: ProofOfWorkModalProps) {
+export function ProofOfWorkModal({
+  open,
+  onClose,
+  onSuccess,
+}: ProofOfWorkModalProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const verifiedRef = useRef(false);
@@ -35,10 +39,13 @@ export function ProofOfWorkModal({ open, onClose, onSuccess }: ProofOfWorkModalP
 
         if (data.success) {
           try {
-            const verifyRes = await utils.post<{ success: boolean }>('/api/VerifyProof', {
-              challenge,
-              solution: data.nonce,
-            });
+            const verifyRes = await utils.post<{ success: boolean }>(
+              '/api/VerifyProof',
+              {
+                challenge,
+                solution: data.nonce,
+              }
+            );
 
             if (verifyRes.success) {
               verifiedRef.current = true;
@@ -77,7 +84,13 @@ export function ProofOfWorkModal({ open, onClose, onSuccess }: ProofOfWorkModalP
             Security Check
           </Typography>
         </Box>
-        <Box display="flex" flexDirection="column" alignItems="center" textAlign="center" gap={2.5}>
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          textAlign="center"
+          gap={2.5}
+        >
           <Typography sx={{ color: '#ccc' }}>
             Solving a quick proof-of-work challenge to verify you’re human.
           </Typography>

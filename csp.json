@@ -22,7 +22,6 @@
   ],
   "connect-src": [
     "'self'",
-    "https://ipapi.co",
     "https://*.ingest.us.sentry.io",
     "https://*.adtrafficquality.google",
     "https://*.google.com",
@@ -34,7 +33,7 @@
     "https://*.pollinations.ai",
     "https://cloudflareinsights.com",
     "https://*.onrender.com",
-    "https://*.amplitude.com/"
+    "https://*.amplitude.com"
   ],
   "media-src": ["'self'", "blob:"],
   "font-src": ["'self'", "*"],

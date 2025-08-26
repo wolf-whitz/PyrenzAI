@@ -2,7 +2,11 @@ import * as Sentry from '@sentry/react';
 import { usePyrenzAlert } from '~/provider';
 import { Utils as utils } from '~/utility';
 
-export const handleLogin = async (email: string, password: string, captchaToken: string) => {
+export const handleLogin = async (
+  email: string,
+  password: string,
+  captchaToken: string
+) => {
   try {
     const { data, error } = await utils.db.client.auth.signInWithPassword({
       email,

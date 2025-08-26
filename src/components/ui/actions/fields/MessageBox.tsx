@@ -57,8 +57,8 @@ export function MessageBox(
         alternation_first
           ? 0
           : alternatives.length > 0
-          ? alternatives.length - 1
-          : 0
+            ? alternatives.length - 1
+            : 0
       );
       prevMsgIdRef.current = msg.id;
     }
@@ -160,9 +160,7 @@ export function MessageBox(
           isEditing={isEditingThisMessage}
           localEditedMessage={localEditedMessage}
           onChange={(e) => setLocalEditedMessage(e.target.value)}
-          onSaveEdit={() =>
-            msg.id && onSaveEdit(msg.id, debouncedValue, role)
-          }
+          onSaveEdit={() => msg.id && onSaveEdit(msg.id, debouncedValue, role)}
           onCancelEdit={onCancelEdit}
           isLoading={isLoading}
           onGoPrev={handlePrev}
