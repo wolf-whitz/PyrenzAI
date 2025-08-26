@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { CharacterPayloadSchema, CharacterPayload } from '@components';
+import { CharacterSimpleSchema, CharacterSimple } from '@components';
 import { useCharacterStore } from '~/store';
 import { PyrenzModal, PyrenzModalContent, PyrenzBlueButton } from '~/theme';
-import { Textarea } from '@components';
 import { Box, Typography } from '@mui/material';
+import { usePyrenzAlert } from '~/provider';
 
 interface ImportModalProps {
   open: boolean;
@@ -12,22 +12,45 @@ interface ImportModalProps {
 
 export function ImportModal({ open, onClose }: ImportModalProps) {
   const setCharacter = useCharacterStore((state) => state.setCharacter);
-  const [error, setError] = useState<string | null>(null);
+  const showAlert = usePyrenzAlert();
   const [rawInput, setRawInput] = useState<string>('');
 
-  const parseAndSetCharacter = (data: any) => {
-    if (typeof data.first_message === 'string') {
+  const normalizeData = (data: any) => {
+    if (data.first_message && typeof data.first_message === 'string') {
       data.first_message = [data.first_message];
     }
+    if (data.message_example && Array.isArray(data.message_example)) {
+      data.message_example = data.message_example.join(' ');
+    }
+    return data;
+  };
 
-    const parsed: CharacterPayload = CharacterPayloadSchema.parse(data);
-    setCharacter(parsed);
+  const parseAndSetCharacter = (data: any) => {
+    try {
+      const normalized = normalizeData(data);
+      const parsed: CharacterSimple = CharacterSimpleSchema.parse(normalized);
+      setCharacter((prev) => ({
+        ...prev,
+        ...parsed,
+        first_message: Array.isArray(normalized.first_message)
+          ? normalized.first_message
+          : prev.first_message,
+        message_example:
+          typeof normalized.message_example === 'string'
+            ? normalized.message_example
+            : prev.message_example,
+      }));
+      showAlert('Character imported successfully!', 'success');
+      onClose();
+    } catch (err) {
+      console.error(err);
+      showAlert('Invalid JSON or missing required fields.', 'error');
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
     const reader = new FileReader();
     reader.onload = (event) => {
       try {
@@ -35,11 +58,10 @@ export function ImportModal({ open, onClose }: ImportModalProps) {
         if (typeof text !== 'string') throw new Error('File content invalid');
         const data = JSON.parse(text);
         parseAndSetCharacter(data);
-        setError(null);
         setRawInput('');
-        onClose();
-      } catch {
-        setError('Invalid file format or missing required fields.');
+      } catch (err) {
+        console.error(err);
+        showAlert('Invalid file format or missing required fields.', 'error');
       }
     };
     reader.readAsText(file);
@@ -49,11 +71,10 @@ export function ImportModal({ open, onClose }: ImportModalProps) {
     try {
       const data = JSON.parse(rawInput);
       parseAndSetCharacter(data);
-      setError(null);
       setRawInput('');
-      onClose();
-    } catch {
-      setError('Invalid JSON or missing required fields.');
+    } catch (err) {
+      console.error(err);
+      showAlert('Invalid JSON or missing required fields.', 'error');
     }
   };
 
@@ -61,17 +82,28 @@ export function ImportModal({ open, onClose }: ImportModalProps) {
     <PyrenzModal open={open} onClose={onClose}>
       <PyrenzModalContent>
         <Typography variant="h6" gutterBottom>
-          Import Data
+          Import Character
         </Typography>
         <Typography variant="body2" color="text.secondary" mb={2}>
-          Here you can import your saved data or configuration by uploading a JSON file or pasting the raw JSON below.
+          Upload a JSON file or paste your character JSON below to import.
         </Typography>
-        <Textarea
-          placeholder="Paste your JSON data here..."
-          value={rawInput}
-          onChange={(e) => setRawInput(e.target.value)}
-          className="w-full mb-3 font-mono"
-        />
+        <Box className="w-full mb-3 font-mono">
+          <textarea
+            placeholder="Paste your JSON here..."
+            value={rawInput}
+            onChange={(e) => setRawInput(e.target.value)}
+            style={{
+              width: '100%',
+              minHeight: 120,
+              padding: 12,
+              borderRadius: 8,
+              border: '1px solid #555',
+              background: '#222',
+              color: '#fff',
+              fontFamily: 'monospace',
+            }}
+          />
+        </Box>
         <Box display="flex" gap={2}>
           <PyrenzBlueButton component="label" variant="contained" sx={{ flexShrink: 0 }}>
             Choose File
@@ -90,11 +122,6 @@ export function ImportModal({ open, onClose }: ImportModalProps) {
             Import from Text
           </PyrenzBlueButton>
         </Box>
-        {error && (
-          <Typography color="error" mt={2}>
-            {error}
-          </Typography>
-        )}
       </PyrenzModalContent>
     </PyrenzModal>
   );

@@ -67,11 +67,29 @@ export const useCharacterStore = create<
   temporaryTokens: 0,
   error: null,
   isCounting: false,
+
   setCharacter: (data) =>
-    set((state) => ({
-      ...state,
-      ...(typeof data === 'function' ? data(state) : data),
-    })),
+    set((state) => {
+      const nextState =
+        typeof data === 'function' ? data(state) : { ...state, ...data };
+
+      if (nextState.first_message) {
+        if (typeof nextState.first_message === 'string') {
+          nextState.first_message = [nextState.first_message];
+        } else if (!Array.isArray(nextState.first_message)) {
+          nextState.first_message = [];
+        }
+      } else {
+        nextState.first_message = [];
+      }
+
+      if (Array.isArray(nextState.message_example)) {
+        nextState.message_example = nextState.message_example.join(' ');
+      }
+
+      return nextState;
+    }),
+
   setGender: (gender) => set({ gender }),
   setTokenTotal: (tokenTotal) => set({ tokenTotal }),
   setPermanentTokens: (tokens) => set({ permanentTokens: tokens }),
@@ -83,5 +101,17 @@ export const useCharacterStore = create<
   setFirstMessageAlternatives: (alternatives) =>
     set({ first_message: alternatives }),
   setMaxAlternatives: (max) => set({ max_alternatives: max }),
-  loadDraft: (draft) => set(() => ({ ...draft })),
+  loadDraft: (draft) =>
+    set(() => {
+      let fm: string[] = [];
+      if (draft.first_message) {
+        fm =
+          typeof draft.first_message === 'string'
+            ? [draft.first_message]
+            : draft.first_message;
+      }
+      let me = draft.message_example;
+      if (Array.isArray(me)) me = me.join(' ');
+      return { ...draft, first_message: fm, message_example: me };
+    }),
 }));

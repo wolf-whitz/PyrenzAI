@@ -3,6 +3,7 @@ import { z } from 'zod';
 export const EmotionSchema = z.object({
   triggerWords: z.array(z.string()),
   imageUrl: z.string().nullable(),
+  file: z.any().nullable().optional(),
 });
 
 export const CharacterSchema = z.object({
@@ -31,6 +32,8 @@ export const CharacterSchema = z.object({
   lorebook: z.string(),
   attribute: z.string().optional(),
   emotions: z.array(EmotionSchema).optional(),
+  profileImageFile: z.any().nullable().optional(),
+  emotionImageFile: z.any().nullable().optional(),
 });
 
 export const ApiResponseSchema = z.object({
@@ -67,10 +70,26 @@ export const CharacterPayloadSchema = z.object({
   lorebook: z.string(),
   attribute: z.string().optional(),
   emotions: z.array(EmotionSchema).optional(),
-  profileImageFile: z.instanceof(File).nullable().optional(),
-  emotionImageFile: z.instanceof(File).nullable().optional(),
+  profileImageFile: z.any().nullable().optional(),
+  emotionImageFile: z.any().nullable().optional(),
+});
+
+export const CharacterSimpleSchema = z.object({
+  title: z.string(),
+  name: z.string().default('Anon'),
+  description: z.string(),
+  persona: z.string(),
+  model_instructions: z.string(),
+  first_message: z.array(z.string()),
+  message_example: z.string(),
+  scenario: z.string(),
+  gender: z.string(),
+  tags: z.array(z.string()).default([]),
+  lorebook: z.string(),
+  attribute: z.string(),
 });
 
 export type Character = z.infer<typeof CharacterSchema>;
 export type ApiResponse = z.infer<typeof ApiResponseSchema>;
 export type CharacterPayload = z.infer<typeof CharacterPayloadSchema>;
+export type CharacterSimple = z.infer<typeof CharacterSimpleSchema>;

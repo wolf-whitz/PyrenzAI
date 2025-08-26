@@ -10,6 +10,7 @@ interface CustomMarkdownProps {
   char: { name?: string };
   ai_message?: string;
   dataState?: 'user' | 'char';
+  disableReplacement?: boolean;
 }
 
 export function CustomMarkdown({
@@ -17,19 +18,23 @@ export function CustomMarkdown({
   char,
   ai_message = '',
   dataState,
+  disableReplacement = false,
 }: CustomMarkdownProps) {
   const [replacedText, setReplacedText] = useState('');
   const { customization, username, personaName } = useUserStore();
 
   useEffect(() => {
-    const replace = (content: string = '') =>
-      content
+    const replace = (content: string = '') => {
+      if (disableReplacement) return content;
+
+      return content
         .replace(/{{char}}/g, char?.name || 'Anon')
         .replace(/{{user}}/g, personaName || username || 'Anon')
         .replace(/{{you}}:/g, '')
         .replace(/{{ai_message}}/g, ai_message);
+    };
     setReplacedText(replace(text));
-  }, [text, char, username, personaName, ai_message]);
+  }, [text, char, username, personaName, ai_message, disableReplacement]);
 
   const getColor = (
     type: 'text' | 'italic' | 'quote' | 'code',

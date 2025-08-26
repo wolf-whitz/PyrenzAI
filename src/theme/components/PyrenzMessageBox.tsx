@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Box,
-  Avatar,
-  TextField,
-  styled,
-  SxProps,
-} from '@mui/material';
+import { Box, Avatar, TextField, styled, SxProps } from '@mui/material';
 import { PyrenzBlueButton } from '~/theme';
 import { CustomMarkdown, TypingIndicator, MessageNav } from '@components';
 
@@ -33,6 +27,7 @@ export interface PyrenzMessageBoxProps {
   ai_message?: string;
   isGeneratingEmptyCharMessage?: boolean;
   alternation_first?: boolean;
+  disableReplacement?: boolean;
 }
 
 const StyledPyrenzMessageBox = styled(Box, {
@@ -90,6 +85,7 @@ export function PyrenzMessageBox({
   ai_message = '',
   isGeneratingEmptyCharMessage = false,
   alternation_first = true,
+  disableReplacement = false,
 }: PyrenzMessageBoxProps) {
   const [altIndex, setAltIndex] = useState(
     alternation_first ? 0 : alternativeMessages.length - 1
@@ -175,6 +171,7 @@ export function PyrenzMessageBox({
           dataState={role}
           char={char}
           ai_message={ai_message}
+          disableReplacement={disableReplacement}
         />
         {showNav && totalMessages > 1 && (
           <MessageNav
