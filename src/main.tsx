@@ -13,7 +13,7 @@ import * as Sentry from '@sentry/react';
 
 import { ErrorBoundary } from './routes/ErrorBoundary';
 
-import { AlertProvider } from '~/provider';
+import { AlertProvider, AmplitudeProvider } from '~/provider';
 import { HelmetProvider } from 'react-helmet-async';
 
 const theme = GetTheme();
@@ -36,13 +36,15 @@ if (rootElement) {
         <I18nextProvider i18n={i18n}>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            <SentryProvider>
-              <AlertProvider>
-                <ErrorBoundary>
-                  <App />
-                </ErrorBoundary>
-              </AlertProvider>
-            </SentryProvider>
+            <AmplitudeProvider>
+              <SentryProvider>
+                <AlertProvider>
+                  <ErrorBoundary>
+                    <App />
+                  </ErrorBoundary>
+                </AlertProvider>
+              </SentryProvider>
+            </AmplitudeProvider>
           </ThemeProvider>
         </I18nextProvider>
       </HelmetProvider>
