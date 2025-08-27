@@ -27,7 +27,7 @@ export function MessageBox(
     alternation_first = true,
   } = props;
 
-  const role = msg.type; // 'user' | 'char'
+  const role = msg.type;
   const displayName =
     role === 'user' ? msg.username || user.username : msg.name || char.name;
 
@@ -47,22 +47,30 @@ export function MessageBox(
   const prevMsgIdRef = useRef<string | number | undefined>(msg.id);
 
   const [altIndex, setAltIndex] = useState(
-    alternation_first ? 0 : totalMessages > 0 ? totalMessages - 1 : 0
+    msg.current !== undefined ? msg.current : 
+    (alternation_first ? 0 : totalMessages > 0 ? totalMessages - 1 : 0)
   );
 
   useEffect(() => {
     if (msg.id !== prevMsgIdRef.current) {
       setLocalEditedMessage(msg.text || '');
       setAltIndex(
-        alternation_first
+        msg.current !== undefined ? msg.current :
+        (alternation_first
           ? 0
           : alternatives.length > 0
             ? alternatives.length - 1
-            : 0
+            : 0)
       );
       prevMsgIdRef.current = msg.id;
     }
-  }, [msg.id, alternation_first, alternatives.length, msg.text]);
+  }, [msg.id, msg.current, alternation_first, alternatives.length, msg.text]);
+
+  useEffect(() => {
+    if (msg.current !== undefined && msg.current !== altIndex) {
+      setAltIndex(msg.current);
+    }
+  }, [msg.current]);
 
   useEffect(() => {
     if (!isEditingThisMessage) return;
@@ -172,6 +180,7 @@ export function MessageBox(
           ai_message={currentText}
           char={char}
           alternation_first={alternation_first}
+          msg={msg}
           sx={{
             cursor: 'pointer',
             width: isEditingThisMessage ? '100%' : 'fit-content',
@@ -208,6 +217,7 @@ export function MessageBox(
             />
           </Box>
         )}
+
 
       <PyrenzDialog
         open={openDialog}

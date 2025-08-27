@@ -4,7 +4,10 @@ import { GetUserUUID } from '@function';
 
 export async function GetUserData(): Promise<any> {
   const user_uuid = await GetUserUUID();
-  if (!user_uuid) return { error: 'User UUID not found' };
+  if (!user_uuid) {
+    console.warn('Cannot fetch user data: User not authenticated');
+    return { error: 'User not authenticated. Please log in to continue.' };
+  }
 
   try {
     const response = await Utils.post<any>(
@@ -14,7 +17,8 @@ export async function GetUserData(): Promise<any> {
     );
 
     if (!response || typeof response.username === 'undefined') {
-      return { error: 'Failed to fetch user data' };
+      console.error('Invalid response from GetUserData API:', response);
+      return { error: 'Failed to fetch user data from server' };
     }
 
     const store = useUserStore.getState();
@@ -43,7 +47,8 @@ export async function GetUserData(): Promise<any> {
     store.setMaxTokenLimit(response.subscription_data.max_token);
 
     return response;
-  } catch {
+  } catch (error) {
+    console.error('Error fetching user data:', error);
     return { error: 'An error occurred while fetching user data' };
   }
 }

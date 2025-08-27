@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Box, Avatar, TextField, styled, SxProps } from '@mui/material';
 import { PyrenzBlueButton } from '~/theme';
 import { CustomMarkdown, TypingIndicator, MessageNav } from '@components';
+import { useChatStore } from '~/store';
+import type { Message } from '@shared-types';
 
 export interface PyrenzMessageBoxProps {
   role: 'user' | 'char';
@@ -28,6 +30,7 @@ export interface PyrenzMessageBoxProps {
   isGeneratingEmptyCharMessage?: boolean;
   alternation_first?: boolean;
   disableReplacement?: boolean;
+  msg?: Message;
 }
 
 const StyledPyrenzMessageBox = styled(Box, {
@@ -86,41 +89,56 @@ export function PyrenzMessageBox({
   isGeneratingEmptyCharMessage = false,
   alternation_first = true,
   disableReplacement = false,
+  msg,
 }: PyrenzMessageBoxProps) {
   const [altIndex, setAltIndex] = useState(
     alternation_first ? 0 : alternativeMessages.length - 1
   );
 
-  useEffect(() => {
-    setAltIndex(alternation_first ? 0 : alternativeMessages.length - 1);
-  }, [alternativeMessages, alternation_first]);
-
   const totalMessages = alternativeMessages.length;
 
-  function getDisplayedText() {
+  useEffect(() => {
+    setAltIndex(alternation_first ? 0 : alternativeMessages.length - 1);
+  }, [alternativeMessages, alternation_first, msg?.id]);
+
+  useEffect(() => {
+    if (msg?.id != null) {
+      useChatStore.getState().setMessages((prev) =>
+        prev.map((m) =>
+          m.id === msg.id ? { ...m, current: altIndex } : m
+        )
+      );
+    }
+  }, [altIndex, msg?.id]);
+
+  useEffect(() => {
+    if (msg?.current !== undefined && msg.current !== altIndex) {
+      setAltIndex(msg.current);
+    }
+  }, [msg?.current]);
+
+  const getDisplayedText = () => {
     if (totalMessages > 0) {
       return alternativeMessages[altIndex] ?? '';
     }
     return content;
-  }
+  };
 
-  function handleGoPrev(event: React.MouseEvent) {
+  const handleGoPrev = (event: React.MouseEvent) => {
     event.stopPropagation();
     setAltIndex((prev) => (prev === 0 ? totalMessages - 1 : prev - 1));
     onGoPrev?.(event);
-  }
+  };
 
-  function handleGoNext(event: React.MouseEvent) {
+  const handleGoNext = (event: React.MouseEvent) => {
     event.stopPropagation();
     setAltIndex((prev) => (prev + 1) % totalMessages);
     onGoNext?.(event);
-  }
+  };
 
-  function handleClick(event: React.MouseEvent) {
-    onClick?.(event);
-  }
+  const handleClick = (event: React.MouseEvent) => onClick?.(event);
 
-  function renderContent() {
+  const renderContent = () => {
     if (isEditing) {
       return (
         <Box display="flex" flexDirection="column" flex={1}>
@@ -160,9 +178,7 @@ export function PyrenzMessageBox({
       );
     }
 
-    if (isGeneratingEmptyCharMessage) {
-      return <TypingIndicator />;
-    }
+    if (isGeneratingEmptyCharMessage) return <TypingIndicator />;
 
     return (
       <>
@@ -183,7 +199,7 @@ export function PyrenzMessageBox({
         )}
       </>
     );
-  }
+  };
 
   return (
     <Box

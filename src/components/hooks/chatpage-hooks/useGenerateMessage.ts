@@ -16,12 +16,6 @@ interface UserDataRow {
   inference_settings: any;
 }
 
-interface RawMessageRow {
-  user_message: string | null;
-  char_message: string | null;
-  alternative_messages: string[] | null;
-}
-
 export const useGenerateMessage = () => {
   const showAlert = usePyrenzAlert();
   const isTabFocused = useTabFocus();
@@ -32,73 +26,60 @@ export const useGenerateMessage = () => {
       user: any,
       char: any,
       chat_uuid: string,
+      current: number,
       setMessages: React.Dispatch<React.SetStateAction<Message[]>>,
       setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>,
       generationType: 'Generate' | 'Regenerate' = 'Generate',
       messageId?: string
     ): Promise<GenerateMessageResponse> => {
-      if (!user || !char || !chat_uuid) return { isSubscribed: false };
+      if (!user || !char || !chat_uuid) {
+        return { isSubscribed: false };
+      }
+      
+      
       setIsGenerating(true);
-
-      let userQueryText = text;
-      let charMessageText: string | null = null;
-      let previousCharMsg: string | null = null;
-      let previousAlternatives: string[] = [];
+      const userQueryText = text;
 
       if (generationType === 'Generate') {
         const userMessage: Message = {
-          id: undefined,
-          user_id: undefined,
+          id: uuidv4(),
+          user_id: user.user_uuid,
           username: user.username,
+          name: user.username,
           text,
           profile_image: user.user_avatar,
           type: 'user',
+          chat_uuid,
+          isGenerate: false,
+          role: 'user',
+          error: false,
+          gender: user.gender || '',
+          char_id: char.char_id,
+          alternative_messages: [],
+          current: 0,
+          emotion_type: '',
         };
 
-        const charMessage: Message = {
+        const charMessageObj: Message = {
           id: uuidv4(),
-          char_id: undefined,
+          char_id: char.char_id,
           name: char.name || char.character_name || 'AI',
           text: '',
-          profile_image: char.user_avatar,
+          profile_image: char.profile_image || char.user_avatar,
           type: 'char',
+          chat_uuid,
           isGenerate: true,
+          role: 'assistant',
+          error: false,
+          gender: char.gender || '',
+          user_id: user.user_uuid,
+          username: char.name || char.character_name || 'AI',
           alternative_messages: [],
+          current: 0,
+          emotion_type: '',
         };
 
-        setMessages((prev) => [...prev, userMessage, charMessage]);
-      } else if (generationType === 'Regenerate') {
-        if (!messageId) {
-          showAlert('Missing message ID for regeneration', 'Alert');
-          setIsGenerating(false);
-          return { isSubscribed: false };
-        }
-
-        try {
-          const result = await Utils.db.select<RawMessageRow>({
-            tables: 'chat_messages',
-            columns: 'user_message, char_message, alternative_messages',
-            match: { id: messageId },
-            nocache: true,
-          });
-
-          const row = result?.data?.[0];
-
-          if (!row?.user_message || !row?.char_message) {
-            showAlert('Could not find original messages for regen', 'Alert');
-            setIsGenerating(false);
-            return { isSubscribed: false };
-          }
-
-          userQueryText = row.user_message;
-          charMessageText = row.char_message;
-          previousCharMsg = row.char_message;
-          previousAlternatives = row.alternative_messages ?? [];
-        } catch {
-          showAlert('Failed to fetch messages for regeneration', 'Alert');
-          setIsGenerating(false);
-          return { isSubscribed: false };
-        }
+        setMessages((prev) => [...prev, userMessage, charMessageObj]);
       }
 
       try {
@@ -111,14 +92,11 @@ export const useGenerateMessage = () => {
 
         if (!userData?.[0]) throw new Error('No inference settings found');
 
-        const messagePayload =
-          generationType === 'Generate'
-            ? { query: userQueryText }
-            : {
-                query: userQueryText,
-                CharMessage: charMessageText,
-                MessageID: Number(messageId),
-              };
+        const messagePayload = {
+          query: userQueryText,
+          current,
+          ...(messageId ? { MessageID: Number(messageId) } : { is_first: true }),
+        };
 
         const body = {
           type: generationType,
@@ -131,49 +109,35 @@ export const useGenerateMessage = () => {
         const res = await Utils.post<any>(url, body);
         const generatedMessage = res.message?.content;
         const responseId = res.message?.MessageID;
-        const user_id = res.message?.user_id;
-        const char_id = res.message?.char_id;
         const emotion_type = res.message?.emotion_type;
 
         if (!generatedMessage) throw new Error('No valid response from API');
 
-        if (generationType === 'Generate') {
-          setMessages((prev) =>
-            prev.map((msg) => {
-              if (msg.isGenerate) {
-                return {
-                  ...msg,
-                  id: responseId,
-                  text: generatedMessage,
-                  isGenerate: false,
-                  char_id: Number(char_id),
-                  alternative_messages: [],
-                  ...(emotion_type && { emotion_type }),
-                };
-              } else if (msg.type === 'user' && msg.id === undefined) {
-                return { ...msg, id: responseId, user_id: Number(user_id) };
-              }
-              return msg;
-            })
-          );
-        }
-
-        if (generationType === 'Regenerate' && messageId) {
-          setMessages((prev) =>
-            prev.map((msg) => {
-              if (msg.id === messageId && msg.type === 'char') {
-                return {
-                  ...msg,
-                  text: generatedMessage,
-                  isGenerate: false,
-                  alternative_messages: previousAlternatives,
-                  ...(emotion_type && { emotion_type }),
-                };
-              }
-              return msg;
-            })
-          );
-        }
+        setMessages((prev) =>
+          prev.map((msg) => {
+            if (msg.isGenerate) {
+              return {
+                ...msg,
+                id: responseId,
+                text: generatedMessage,
+                isGenerate: false,
+                char_id: char.char_id,
+                alternative_messages: [],
+                ...(emotion_type && { emotion_type }),
+              };
+            } else if (msg.type === 'user' && msg.id === undefined) {
+              return { ...msg, id: responseId, user_id: user.user_uuid };
+            } else if (generationType === 'Regenerate' && msg.id === messageId && msg.type === 'char') {
+              return {
+                ...msg,
+                text: generatedMessage,
+                isGenerate: false,
+                ...(emotion_type && { emotion_type }),
+              };
+            }
+            return msg;
+          })
+        );
 
         await NotificationManager.fire({
           title: `${char.name || char.character_name || 'AI'}: replied!`,

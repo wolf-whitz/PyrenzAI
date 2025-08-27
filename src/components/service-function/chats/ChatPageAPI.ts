@@ -73,6 +73,7 @@ export const fetchChatData = async (
           profile_image: userData.user_avatar || '',
           type: 'user',
           chat_uuid: msg.chat_uuid,
+          current: 0,
         });
       }
 
@@ -86,8 +87,26 @@ export const fetchChatData = async (
           chat_uuid: msg.chat_uuid,
           gender: characterData.gender,
           alternative_messages: msg.alternative_messages ?? [],
+          current: 0,
           meta: lastUserText ? { queryText: lastUserText } : undefined,
         });
+
+        if (msg.alternative_messages && msg.alternative_messages.length > 0) {
+          msg.alternative_messages.forEach((altText, index) => {
+            formattedMessages.push({
+              id: `${msg.id}-alt-${index + 1}`,
+              name: characterData.name || 'Anon',
+              text: altText,
+              profile_image: characterData.profile_image || '',
+              type: 'char',
+              chat_uuid: msg.chat_uuid,
+              gender: characterData.gender,
+              alternative_messages: msg.alternative_messages,
+              current: index + 1,
+              meta: lastUserText ? { queryText: lastUserText } : undefined,
+            });
+          });
+        }
       }
     }
 

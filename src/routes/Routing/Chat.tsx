@@ -37,7 +37,8 @@ export function ChatPage() {
         if (uuid) {
           setUserUuid(uuid);
         } else {
-          throw new Error('UUID is null');
+          console.warn('User not authenticated - redirecting to login');
+          setUserDataError(true);
         }
       } catch (error) {
         console.error('Failed to fetch user UUID:', error);

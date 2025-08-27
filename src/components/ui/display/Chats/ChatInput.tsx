@@ -9,7 +9,7 @@ import { useChatStore } from '~/store';
 
 interface ChatInputProps {
   className?: string;
-  handleSend: (message: string) => void;
+  handleSend: (message: string) => Promise<void>;
   isGenerating: boolean;
 }
 
@@ -27,11 +27,15 @@ export function ChatInput({
 
   const { char } = useChatStore();
 
-  const sendMessage = useCallback(() => {
+  const sendMessage = useCallback(async () => {
     const trimmedMessage = message.trim();
     if (!trimmedMessage) return;
-    handleSend(trimmedMessage);
-    setMessage('');
+    try {
+      await handleSend(trimmedMessage);
+      setMessage('');
+    } catch (error) {
+      console.error('Error sending message:', error);
+    }
   }, [message, handleSend]);
 
   const handleMessageChange = useCallback(

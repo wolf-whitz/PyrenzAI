@@ -47,76 +47,119 @@ export const useChatPageAPI = (
     setIsSettingsOpen((prev) => !prev);
   };
 
+  const getLatestCharMessageCurrent = (): number => {
+    const latestChar = [...previous_message]
+      .reverse()
+      .find((msg) => msg.type === 'char');
+
+    if (!latestChar) return 0;
+
+    return latestChar.current ?? 0;
+  };
+
+  const getLatestCharMessageWithUserQuery = (): { charMessage: string; userQuery: string } => {
+    const latestCharIndex = [...previous_message]
+      .reverse()
+      .findIndex((msg) => msg.type === 'char');
+
+    const latestChar = latestCharIndex !== -1
+      ? previous_message[previous_message.length - 1 - latestCharIndex]
+      : undefined;
+
+    const charMessage = latestChar
+      ? (() => {
+          const currentValue = latestChar.current ?? 0;
+          if (currentValue === 0) return latestChar.text || '';
+          return latestChar.alternative_messages?.[currentValue - 1] || latestChar.text || '';
+        })()
+      : char?.first_message?.[0] || '';
+
+    const userMessage = latestChar
+      ? previous_message
+          .slice(0, previous_message.indexOf(latestChar))
+          .reverse()
+          .find((msg) => msg.type === 'user')
+      : undefined;
+
+    return {
+      charMessage: charMessage || char?.first_message?.[0] || '',
+      userQuery: userMessage?.text || '',
+    };
+  };
+
   const handleSend = async (message: string) => {
     const trimmed = message.trim();
     if (!trimmed) return;
 
     try {
+      const current = getLatestCharMessageCurrent();
       const response = await generateMessage(
         trimmed,
         user,
         char,
         chat_uuid,
+        current,
         setMessages,
         setIsGenerating,
         'Generate'
       );
 
-      if (response?.emotion_type && onEmotionDetected) {
-        onEmotionDetected(response.emotion_type);
-      }
-
-      if (!response.isSubscribed && response.remainingMessages === 0) {
-        setIsAdModalOpen(true);
-      }
+      if (response?.emotion_type && onEmotionDetected) onEmotionDetected(response.emotion_type);
+      if (!response.isSubscribed && response.remainingMessages === 0) setIsAdModalOpen(true);
     } catch (err) {
-      console.error('Error:', err);
+      console.error('handleSend - Error:', err);
     }
   };
 
   const handleRemoveMessage = async (messageId: string) => {
     if (!messageId) return;
 
-    const index = previous_message.findIndex((msg) => msg.id === messageId);
-    if (index === -1) return;
+    const messageToRemove = previous_message.find((msg) => msg.id === messageId);
+    if (!messageToRemove) return;
 
-    const ids = previous_message
-      .slice(index)
-      .map((msg) => msg.id)
-      .filter((id): id is string => !!id);
-
-    if (!ids.length) return;
+    const baseMessageId = typeof messageId === 'string' && messageId.includes('-alt-') 
+      ? messageId.split('-alt-')[0] 
+      : messageId;
 
     try {
       await Utils.db.remove({
         tables: 'chat_messages',
-        match: { id: ids },
+        match: { id: baseMessageId },
       });
 
-      setMessages((prev) => prev.filter((msg) => !ids.includes(msg.id!)));
+      setMessages((prev) => prev.filter((msg) => {
+        if (!msg.id) return true;
+        const msgIdStr = String(msg.id);
+        const msgBaseId = msgIdStr.includes('-alt-') 
+          ? msgIdStr.split('-alt-')[0] 
+          : msgIdStr;
+        return msgBaseId !== baseMessageId;
+      }));
     } catch (err) {
-      console.error('Error deleting messages:', err);
+      console.error('Error deleting message:', err);
     }
   };
 
   const handleRegenerateMessage = async (messageId: string) => {
     if (!messageId) return;
 
+    const { userQuery } = getLatestCharMessageWithUserQuery();
+    const current = getLatestCharMessageCurrent();
+
     try {
       const response = await generateMessage(
-        '',
+        userQuery,
         user,
         char,
         chat_uuid,
+        current,
         setMessages,
         setIsGenerating,
         'Regenerate',
         messageId
       );
 
-      if (response?.emotion_type && onEmotionDetected) {
-        onEmotionDetected(response.emotion_type);
-      }
+      if (response?.emotion_type && onEmotionDetected) onEmotionDetected(response.emotion_type);
     } catch (err) {
       console.error('Error regenerating message:', err);
     }
@@ -175,6 +218,7 @@ export const useChatPageAPI = (
         text: `![Generated Image](${imageUrl})`,
         name: char.name,
         profile_image: char.profile_image,
+        current: 0,
       };
 
       await Utils.db.insert({
