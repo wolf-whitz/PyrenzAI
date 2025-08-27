@@ -35,10 +35,8 @@ export const useGenerateMessage = () => {
       if (!user || !char || !chat_uuid) {
         return { isSubscribed: false };
       }
-      
-      
+
       setIsGenerating(true);
-      const userQueryText = text;
 
       if (generationType === 'Generate') {
         const userMessage: Message = {
@@ -80,6 +78,21 @@ export const useGenerateMessage = () => {
         };
 
         setMessages((prev) => [...prev, userMessage, charMessageObj]);
+
+        try {
+          const inserted = await Utils.db.insert({
+            tables: 'chat_messages',
+            data: {
+              chat_uuid,
+              user_uuid: user.user_uuid,
+              user_message: text,
+            },
+          });
+
+          messageId = String((inserted[0] as any).id);
+        } catch (err) {
+          console.error('[Insert chat_message Error]', err);
+        }
       }
 
       try {
@@ -91,11 +104,12 @@ export const useGenerateMessage = () => {
         });
 
         if (!userData?.[0]) throw new Error('No inference settings found');
+        if (!messageId) throw new Error('No messageID available for request');
 
         const messagePayload = {
-          query: userQueryText,
           current,
-          ...(messageId ? { MessageID: Number(messageId) } : { is_first: true }),
+          MessageID: messageId ? Number(messageId) : undefined,
+          ...(generationType === 'Generate' ? { is_first: true } : {}),
         };
 
         const body = {
@@ -127,7 +141,7 @@ export const useGenerateMessage = () => {
               };
             } else if (msg.type === 'user' && msg.id === undefined) {
               return { ...msg, id: responseId, user_id: user.user_uuid };
-            } else if (generationType === 'Regenerate' && msg.id === messageId && msg.type === 'char') {
+            } else if (generationType === 'Regenerate' && String(msg.id) === String(messageId) && msg.type === 'char') {
               return {
                 ...msg,
                 text: generatedMessage,
