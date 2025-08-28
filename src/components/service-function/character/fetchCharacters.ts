@@ -1,23 +1,25 @@
-import { Utils } from '~/utility';
-import * as Sentry from '@sentry/react';
-import { Character } from '@shared-types';
-import { useHomeStore, useUserStore } from '~/store';
+import { Utils } from '~/utility'
+import * as Sentry from '@sentry/react'
+import { Character } from '@shared-types'
+import { useHomeStore, useUserStore } from '~/store'
 
 interface FetchCharactersProps {
-  currentPage?: number;
-  itemsPerPage?: number;
-  genderFilter?: string | null;
-  tagsFilter?: string[] | null;
-  sortBy?: string;
-  filterCreatorUUID?: string | null;
-  filterCharUUID?: string | null;
-  search?: string | null;
+  currentPage?: number
+  itemsPerPage?: number
+  genderFilter?: string | null
+  tagsFilter?: string[] | null
+  sortBy?: string
+  filterCreatorUUID?: string | null
+  filterCharUUID?: string | null
+  search?: string | null
+  showRecommended?: boolean
 }
 
 interface FetchCharactersResponse {
-  characters: Character[];
-  totalItems: number;
-  totalPages: number;
+  characters: Character[]
+  totalItems: number
+  totalPages: number
+  recommendedCharacters: Character[]
 }
 
 export async function fetchCharacters({
@@ -29,23 +31,18 @@ export async function fetchCharacters({
   filterCreatorUUID = null,
   filterCharUUID = null,
   search = null,
+  showRecommended = false,
 }: FetchCharactersProps): Promise<FetchCharactersResponse> {
-  const { setCurrentPage, setMaxPage } = useHomeStore.getState();
-  const { blocked_tags, show_nsfw } = useUserStore.getState();
+  const { setCurrentPage, setMaxPage } = useHomeStore.getState()
+  const { blocked_tags, show_nsfw } = useUserStore.getState()
 
   try {
-    const bannedRes = await Utils.db.select<{ user_uuid: string }>({
-      tables: 'banned_users',
-      columns: 'user_uuid',
-    });
-
-    const bannedCreatorUUIDs =
-      bannedRes.data?.map((user) => user.user_uuid) ?? [];
-
     const result = await Utils.post<{
-      total_count: number;
-      total_pages: number;
-      characters: Character[];
+      total_count: number
+      total_pages: number
+      current_page: number
+      characters: Character[]
+      recommended_characters?: Character[]
     }>('/api/Characters', {
       limit: itemsPerPage,
       page: currentPage,
@@ -57,37 +54,36 @@ export async function fetchCharacters({
       filter_creator_uuid: filterCreatorUUID,
       filter_char_uuid: filterCharUUID,
       search,
-    });
+      show_recommended: showRecommended,
+    })
 
-    const totalItems = result.total_count ?? 0;
-    const totalPages = result.total_pages ?? 1;
+    const totalItems = result.total_count ?? 0
+    const totalPages = result.total_pages ?? 1
 
-    const filteredCharacters = (result.characters ?? []).filter((char) => {
-      return !char.is_banned && !bannedCreatorUUIDs.includes(char.creator_uuid);
-    });
-
-    setCurrentPage(currentPage);
-    setMaxPage(totalPages);
+    setCurrentPage(result.current_page ?? currentPage)
+    setMaxPage(totalPages)
 
     return {
-      characters: filteredCharacters,
+      characters: result.characters ?? [],
       totalItems,
       totalPages,
-    };
+      recommendedCharacters: result.recommended_characters ?? [],
+    }
   } catch (err) {
     if (err instanceof Error) {
-      Sentry.captureException(err);
+      Sentry.captureException(err)
     } else {
-      Sentry.captureMessage('An unknown error occurred in fetchCharacters.');
+      Sentry.captureMessage('An unknown error occurred in fetchCharacters.')
     }
 
-    setCurrentPage(1);
-    setMaxPage(1);
+    setCurrentPage(1)
+    setMaxPage(1)
 
     return {
       characters: [],
       totalItems: 0,
       totalPages: 1,
-    };
+      recommendedCharacters: [],
+    }
   }
 }

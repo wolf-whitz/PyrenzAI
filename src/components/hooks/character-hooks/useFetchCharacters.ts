@@ -9,6 +9,7 @@ interface UseFetchCharactersProps {
   search: string;
   itemsPerPage: number;
   t: (key: string) => string;
+  tag?: string;
 }
 
 export function useFetchCharacters({
@@ -16,6 +17,7 @@ export function useFetchCharacters({
   search,
   itemsPerPage,
   t,
+  tag,
 }: UseFetchCharactersProps) {
   const showAlert = usePyrenzAlert();
   const {
@@ -36,8 +38,10 @@ export function useFetchCharacters({
         itemsPerPage,
         sortBy: 'chat_messages_count',
         search,
+        tagsFilter: tag ? [tag] : null,
       });
 
+      console.log(response)
       const safeCharacters = response.characters.map((char: Character) => char);
       setCharacters(safeCharacters);
 
@@ -55,6 +59,7 @@ export function useFetchCharacters({
     search,
     itemsPerPage,
     t,
+    tag,
     setLoading,
     setCharacters,
     setMaxPage,

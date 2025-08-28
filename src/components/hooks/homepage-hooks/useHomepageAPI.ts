@@ -1,9 +1,8 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFetchCharacters, useHandleCharacterFetchClick } from '@components';
 import { useHomeStore } from '~/store';
-import { usePyrenzAlert } from '~/provider';
-import type { Character } from '@shared-types';
+import { useLocation } from 'react-router-dom';
 
 export const useHomepageAPI = (pageFromURL: number) => {
   const {
@@ -17,6 +16,11 @@ export const useHomepageAPI = (pageFromURL: number) => {
   const { t } = useTranslation();
   const itemsPerPage = 20;
   const usedCustomButton = useRef(false);
+  const fetchCharacterData = useHandleCharacterFetchClick();
+  const location = useLocation();
+
+  const params = new URLSearchParams(location.search);
+  const tagFromURL = params.get('tag') || undefined;
 
   const {
     characters,
@@ -28,9 +32,26 @@ export const useHomepageAPI = (pageFromURL: number) => {
     search,
     itemsPerPage,
     t,
+    tag: tagFromURL,
   });
 
-  const fetchCharacterData = useHandleCharacterFetchClick();
+  useEffect(() => {
+    if (tagFromURL) {
+      (async () => {
+        const res = await fetchCharacterData(
+          'tags',
+          itemsPerPage,
+          pageFromURL,
+          undefined,
+          tagFromURL,
+          undefined,
+          search
+        );
+        setCharacters(res.characters);
+        setMaxPage(res.totalPages);
+      })();
+    }
+  }, [tagFromURL, pageFromURL, fetchCharacterData, search, setCharacters, setMaxPage]);
 
   const onButtonTagClicked = async (tag: string) => {
     const res = await fetchCharacterData(
@@ -82,5 +103,6 @@ export const useHomepageAPI = (pageFromURL: number) => {
       setStoreCurrentPage(page);
     },
     onButtonTagClicked,
+    tagFromURL,
   };
 };

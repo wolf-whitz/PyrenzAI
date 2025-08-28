@@ -16,6 +16,7 @@ import {
   ArrowForward as ArrowForwardIcon,
   ReportOutlined as ReportIcon,
 } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 import { PyrenzBlueButton } from '~/theme';
 import { Textarea } from '@components';
 
@@ -43,6 +44,7 @@ export function CharacterProfile({
   const isCreator = userUuid === character.creator_uuid;
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [reportText, setReportText] = useState('');
+  const navigate = useNavigate();
 
   const handleOpenReport = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -117,6 +119,7 @@ export function CharacterProfile({
               <Chip
                 key={tag}
                 label={tag}
+                onClick={() => navigate(`/home?tag=${encodeURIComponent(tag)}`)}
                 sx={{
                   backgroundColor: '#333',
                   color: 'white',
@@ -133,15 +136,7 @@ export function CharacterProfile({
           </Box>
           <PyrenzBlueButton
             variant="contained"
-            sx={{
-              mt: 3,
-              py: 1.5,
-              color: 'white',
-              backgroundColor: '#008b8b',
-              '&:hover': {
-                backgroundColor: '#007777',
-              },
-            }}
+            sx={{ mt: 3, py: 1.5, color: 'white' }}
             fullWidth
             onClick={handleStartChat}
             disabled={isLoading.startChat}
@@ -154,15 +149,7 @@ export function CharacterProfile({
             <>
               <PyrenzBlueButton
                 variant="contained"
-                sx={{
-                  mt: 2,
-                  py: 1.5,
-                  color: 'white',
-                  backgroundColor: 'warning.main',
-                  '&:hover': {
-                    backgroundColor: 'warning.dark',
-                  },
-                }}
+                sx={{ mt: 2, py: 1.5, color: 'white' }}
                 fullWidth
                 onClick={handleOpenReport}
                 startIcon={<ReportIcon />}
@@ -202,13 +189,7 @@ export function CharacterProfile({
                     <Button
                       variant="contained"
                       onClick={handleSubmitReport}
-                      sx={{
-                        backgroundColor: 'warning.main',
-                        color: 'white',
-                        '&:hover': {
-                          backgroundColor: 'warning.dark',
-                        },
-                      }}
+                      sx={{ color: 'white' }}
                     >
                       Submit
                     </Button>
@@ -222,15 +203,7 @@ export function CharacterProfile({
             <>
               <PyrenzBlueButton
                 variant="contained"
-                sx={{
-                  mt: 2,
-                  py: 1.5,
-                  color: 'white',
-                  backgroundColor: '#1976d2',
-                  '&:hover': {
-                    backgroundColor: '#1565c0',
-                  },
-                }}
+                sx={{ mt: 2, py: 1.5, color: 'white' }}
                 fullWidth
                 onClick={handleEditCharacter}
                 disabled={isLoading.editCharacter}
@@ -240,15 +213,7 @@ export function CharacterProfile({
               </PyrenzBlueButton>
               <PyrenzBlueButton
                 variant="contained"
-                sx={{
-                  mt: 2,
-                  py: 1.5,
-                  color: 'white',
-                  backgroundColor: 'error.main',
-                  '&:hover': {
-                    backgroundColor: 'error.dark',
-                  },
-                }}
+                sx={{ mt: 2, py: 1.5, color: 'white' }}
                 fullWidth
                 onClick={handleCharacterDeletion}
                 disabled={isLoading.deleteCharacter}
