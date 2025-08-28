@@ -40,9 +40,7 @@ export function ModelSelection({
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [popoverContent, setPopoverContent] = useState('');
   const [modelOptions, setModelOptions] = useState<ModelOption[] | null>(null);
-  const [privateModels, setPrivateModels] = useState<
-    Record<string, PrivateModel>
-  >({});
+  const [privateModels, setPrivateModels] = useState<Record<string, PrivateModel>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -59,33 +57,26 @@ export function ModelSelection({
           columns: 'name, subscription_plan, model_description',
         });
 
-        const { data: privateModelsData } = await Utils.db.select<PrivateModel>(
-          {
-            tables: 'private_models',
-            columns: 'model_name, model_description',
-            match: { user_uuid: userUUID },
-          }
-        );
+        const { data: privateModelsData } = await Utils.db.select<PrivateModel>({
+          tables: 'private_models',
+          columns: 'model_name, model_description',
+          match: { user_uuid: userUUID },
+        });
 
-        const formattedModelOptions: ModelOption[] = modelIdentifiers.map(
-          (model) => ({
-            value: model.name,
-            label: model.name,
-            description: model.model_description,
-            subscription_plan: model.subscription_plan,
-          })
-        );
+        const formattedModelOptions: ModelOption[] = modelIdentifiers.map((model) => ({
+          value: model.name,
+          label: model.name,
+          description: model.model_description,
+          subscription_plan: model.subscription_plan,
+        }));
 
-        const formattedPrivateModels = privateModelsData.reduce(
-          (acc, model) => {
-            acc[model.model_name] = {
-              model_name: model.model_name,
-              model_description: model.model_description,
-            };
-            return acc;
-          },
-          {} as Record<string, PrivateModel>
-        );
+        const formattedPrivateModels = privateModelsData.reduce((acc, model) => {
+          acc[model.model_name] = {
+            model_name: model.model_name,
+            model_description: model.model_description,
+          };
+          return acc;
+        }, {} as Record<string, PrivateModel>);
 
         setModelOptions(formattedModelOptions);
         setPrivateModels(formattedPrivateModels);
@@ -159,18 +150,16 @@ export function ModelSelection({
                   }}
                 >
                   <Box display="flex" alignItems="center">
-                    <Typography variant="body1">{option.label}</Typography>
-                    {option.isPrivate && (
-                      <LockIcon fontSize="small" sx={{ ml: 1 }} />
-                    )}
+                    <Typography variant="body1">
+                      {option.label.length > 15 ? option.label.slice(0, 15) + '...' : option.label}
+                    </Typography>
+                    {option.isPrivate && <LockIcon fontSize="small" sx={{ ml: 1 }} />}
                     <Typography variant="caption" color="gray" sx={{ ml: 2 }}>
                       Plan: {option.subscription_plan}
                     </Typography>
                   </Box>
                   <IconButton
-                    onMouseEnter={(e) =>
-                      handlePopoverOpen(e, option.description)
-                    }
+                    onMouseEnter={(e) => handlePopoverOpen(e, option.description)}
                     onMouseLeave={handlePopoverClose}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -190,14 +179,8 @@ export function ModelSelection({
           open={open}
           anchorEl={anchorEl}
           onClose={handlePopoverClose}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'left',
-          }}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+          transformOrigin={{ vertical: 'top', horizontal: 'left' }}
           sx={{ pointerEvents: 'none' }}
           disableRestoreFocus
         >
