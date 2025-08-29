@@ -218,7 +218,6 @@ export function MessageBox(
           </Box>
         )}
 
-
       <PyrenzDialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}

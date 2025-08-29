@@ -26,7 +26,6 @@ export function CustomMarkdown({
   useEffect(() => {
     const replace = (content: string = '') => {
       if (disableReplacement) return content;
-
       return content
         .replace(/{{char}}/g, char?.name || 'Anon')
         .replace(/{{user}}/g, personaName || username || 'Anon')
@@ -58,43 +57,8 @@ export function CustomMarkdown({
     return colorMap[state][type] || 'inherit';
   };
 
-  const preLikeStyles = {
-    wrapper: {
-      fontSize: '1.0rem',
-      borderRadius: '8px',
-      padding: '16px',
-      whiteSpace: 'pre-wrap' as const,
-      wordWrap: 'break-word' as const,
-      overflowWrap: 'anywhere' as const,
-    },
-    inner: {
-      display: 'block',
-      lineHeight: 1.6,
-      whiteSpace: 'pre-wrap' as const,
-      wordWrap: 'break-word' as const,
-    },
-  };
-
-  const ItalicLike = ({ children }: { children: React.ReactNode }) => {
-    const content = String(children);
-    const enlarged = /^".*"$/.test(content);
-    return (
-      <Typography
-        component="span"
-        sx={{
-          ...preLikeStyles.wrapper,
-          color: getColor('italic', dataState),
-          fontStyle: 'italic',
-          fontSize: enlarged ? '1rem' : preLikeStyles.wrapper.fontSize,
-        }}
-      >
-        {children}
-      </Typography>
-    );
-  };
-
   return (
-    <Box className="text-styles" sx={{ width: '100%' }}>
+    <Box sx={{ width: '100%' }}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeRaw]}
@@ -112,8 +76,28 @@ export function CustomMarkdown({
               {children}
             </Typography>
           ),
-          em: ({ children }) => <ItalicLike>{children}</ItalicLike>,
-          strong: ({ children }) => <ItalicLike>{children}</ItalicLike>,
+          em: ({ children }) => (
+            <Typography
+              component="span"
+              sx={{
+                color: getColor('italic', dataState),
+                fontStyle: 'italic',
+              }}
+            >
+              {children}
+            </Typography>
+          ),
+          strong: ({ children }) => (
+            <Typography
+              component="span"
+              sx={{
+                fontWeight: 700,
+                color: getColor('text', dataState),
+              }}
+            >
+              {children}
+            </Typography>
+          ),
           blockquote: ({ children }) => (
             <Box
               sx={{
@@ -138,12 +122,10 @@ export function CustomMarkdown({
               sx={{
                 backgroundColor: '#2d2d2d',
                 color: getColor('code', dataState),
-                fontSize: '0.8rem',
+                fontSize: '0.85rem',
                 borderRadius: '6px',
                 padding: '2px 6px',
                 whiteSpace: 'pre-wrap',
-                wordWrap: 'break-word',
-                overflowWrap: 'anywhere',
               }}
             >
               {children}
@@ -153,32 +135,32 @@ export function CustomMarkdown({
             <Box
               component="pre"
               sx={{
-                ...preLikeStyles.wrapper,
-                color: getColor('code', dataState),
+                backgroundColor: '#2d2d2d',
+                borderRadius: '8px',
+                padding: '12px',
+                overflowX: 'auto',
               }}
             >
-              <Typography component="code" sx={preLikeStyles.inner}>
-                {children}
-              </Typography>
+              <Typography component="code">{children}</Typography>
             </Box>
           ),
           img: ({ src, alt }) => (
             <Box
               component="img"
-              src={src}
+              src={src || ''}
               alt={alt || ''}
               sx={{
                 maxWidth: '100%',
                 height: 'auto',
                 borderRadius: 2,
+                my: 2,
                 boxShadow: '0 4px 14px rgba(0,0,0,0.4)',
               }}
             />
           ),
-          hr: () => <Box sx={{ borderBottom: '1px solid #555' }} />,
         }}
       >
-        {typeof replacedText === 'string' ? replacedText : ''}
+        {replacedText}
       </ReactMarkdown>
     </Box>
   );

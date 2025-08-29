@@ -41,7 +41,6 @@ export function useFetchCharacters({
         tagsFilter: tag ? [tag] : null,
       });
 
-      console.log(response)
       const safeCharacters = response.characters.map((char: Character) => char);
       setCharacters(safeCharacters);
 

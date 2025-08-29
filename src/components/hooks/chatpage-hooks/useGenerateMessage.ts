@@ -127,8 +127,24 @@ export const useGenerateMessage = () => {
 
         if (!generatedMessage) throw new Error('No valid response from API');
 
-        setMessages((prev) =>
-          prev.map((msg) => {
+        setMessages((prev) => {
+          if (generationType === 'Regenerate') {
+            const idx = prev.findIndex((msg) => String(msg.id) === String(messageId));
+            if (idx === -1) return prev;
+
+            const kept = prev.slice(0, idx);
+            const regeneratedMsg: Message = {
+              ...prev[idx],
+              id: responseId,
+              text: generatedMessage,
+              isGenerate: false,
+              alternative_messages: [],
+              ...(emotion_type && { emotion_type }),
+            };
+            return [...kept, regeneratedMsg];
+          }
+
+          return prev.map((msg) => {
             if (msg.isGenerate) {
               return {
                 ...msg,
@@ -141,17 +157,10 @@ export const useGenerateMessage = () => {
               };
             } else if (msg.type === 'user' && msg.id === undefined) {
               return { ...msg, id: responseId, user_id: user.user_uuid };
-            } else if (generationType === 'Regenerate' && String(msg.id) === String(messageId) && msg.type === 'char') {
-              return {
-                ...msg,
-                text: generatedMessage,
-                isGenerate: false,
-                ...(emotion_type && { emotion_type }),
-              };
             }
             return msg;
-          })
-        );
+          });
+        });
 
         await NotificationManager.fire({
           title: `${char.name || char.character_name || 'AI'}: replied!`,
@@ -166,6 +175,7 @@ export const useGenerateMessage = () => {
           isSubscribed: Boolean(res?.isSubscribed),
           remainingMessages: res?.remainingMessages ?? 0,
           showAd: res?.remainingMessages === 0,
+          emotion_type,
         };
       } catch (error) {
         const msg = error instanceof Error ? error.message : 'Unknown error';
