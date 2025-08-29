@@ -129,19 +129,22 @@ export const useGenerateMessage = () => {
 
         setMessages((prev) => {
           if (generationType === 'Regenerate') {
-            const idx = prev.findIndex((msg) => String(msg.id) === String(messageId));
-            if (idx === -1) return prev;
-
-            const kept = prev.slice(0, idx);
-            const regeneratedMsg: Message = {
-              ...prev[idx],
-              id: responseId,
-              text: generatedMessage,
-              isGenerate: false,
-              alternative_messages: [],
-              ...(emotion_type && { emotion_type }),
-            };
-            return [...kept, regeneratedMsg];
+            const targetIndex = prev.findIndex(
+              (msg) => String(msg.id) === String(messageId) && msg.type === 'char'
+            );
+            if (targetIndex !== -1) {
+              return [
+                ...prev.slice(0, targetIndex),
+                {
+                  ...prev[targetIndex],
+                  id: responseId,
+                  text: generatedMessage,
+                  isGenerate: false,
+                  ...(emotion_type && { emotion_type }),
+                },
+              ];
+            }
+            return prev;
           }
 
           return prev.map((msg) => {
@@ -175,7 +178,6 @@ export const useGenerateMessage = () => {
           isSubscribed: Boolean(res?.isSubscribed),
           remainingMessages: res?.remainingMessages ?? 0,
           showAd: res?.remainingMessages === 0,
-          emotion_type,
         };
       } catch (error) {
         const msg = error instanceof Error ? error.message : 'Unknown error';
@@ -188,5 +190,31 @@ export const useGenerateMessage = () => {
     [showAlert, isTabFocused]
   );
 
-  return generateMessage;
+  const deleteMessage = useCallback(
+    async (
+      messageId: string,
+      setMessages: React.Dispatch<React.SetStateAction<Message[]>>
+    ) => {
+      if (!messageId) return;
+
+      try {
+        await Utils.db.remove({
+          tables: 'chat_messages',
+          match: { id: messageId },
+        });
+
+        setMessages((prev) => {
+          const targetIndex = prev.findIndex((msg) => String(msg.id) === String(messageId));
+          if (targetIndex === -1) return prev;
+          return prev.slice(0, targetIndex);
+        });
+      } catch (err) {
+        console.error('[Delete Message Error]', err);
+        showAlert('Failed to delete message', 'Alert');
+      }
+    },
+    [showAlert]
+  );
+
+  return { generateMessage, deleteMessage };
 };

@@ -40,7 +40,7 @@ export const useChatPageAPI = (
 ): ChatPageAPI => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isAdModalOpen, setIsAdModalOpen] = useState(false);
-  const generateMessage = useGenerateMessage();
+  const { generateMessage, deleteMessage } = useGenerateMessage();
   const { setMessages } = useChatStore();
 
   const toggleSettings = () => {
@@ -117,9 +117,10 @@ export const useChatPageAPI = (
     const messageToRemove = previous_message.find((msg) => msg.id === messageId);
     if (!messageToRemove) return;
 
-    const baseMessageId = typeof messageId === 'string' && messageId.includes('-alt-') 
-      ? messageId.split('-alt-')[0] 
-      : messageId;
+    const baseMessageId =
+      typeof messageId === 'string' && messageId.includes('-alt-')
+        ? messageId.split('-alt-')[0]
+        : messageId;
 
     try {
       await Utils.db.remove({
@@ -127,14 +128,11 @@ export const useChatPageAPI = (
         match: { id: baseMessageId },
       });
 
-      setMessages((prev) => prev.filter((msg) => {
-        if (!msg.id) return true;
-        const msgIdStr = String(msg.id);
-        const msgBaseId = msgIdStr.includes('-alt-') 
-          ? msgIdStr.split('-alt-')[0] 
-          : msgIdStr;
-        return msgBaseId !== baseMessageId;
-      }));
+      setMessages((prev) => {
+        const targetIndex = prev.findIndex((msg) => String(msg.id) === String(baseMessageId));
+        if (targetIndex === -1) return prev;
+        return prev.slice(0, targetIndex); // trim everything after
+      });
     } catch (err) {
       console.error('Error deleting message:', err);
     }
