@@ -1,4 +1,4 @@
-import { Typography, Box, CircularProgress } from '@mui/material';
+import { Typography, Box } from '@mui/material';
 import { useCharacterStore } from '~/store';
 
 export function TokenSummary() {
@@ -9,7 +9,6 @@ export function TokenSummary() {
     (state) => state.temporaryTokens || 0
   );
   const tokenTotal = useCharacterStore((state) => state.tokenTotal || 0);
-  const isCounting = useCharacterStore((state) => state.isCounting);
 
   return (
     <Box className="mt-4">
@@ -33,7 +32,6 @@ export function TokenSummary() {
         <Typography variant="body1" className="text-gray-400">
           Total Tokens: {Math.round(tokenTotal)}
         </Typography>
-        {isCounting && <CircularProgress size={16} color="inherit" />}
       </Box>
     </Box>
   );

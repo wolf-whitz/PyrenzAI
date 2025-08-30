@@ -51,10 +51,11 @@ export const fetchChatData = async (
         nocache: true,
       });
 
-      messages = result?.data?.map((msg) => ({
-        ...msg,
-        id: Number(msg.id),
-      })) ?? [];
+      messages =
+        result?.data?.map((msg) => ({
+          ...msg,
+          id: Number(msg.id),
+        })) ?? [];
     } catch (err) {
       Sentry.captureException(err);
       return { is_error: true, error: 'Failed to fetch chat messages' };

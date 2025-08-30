@@ -83,6 +83,7 @@ export function PyrenzMessageBox({
   onGoPrev,
   onGoNext,
   showNav = false,
+  currentMessageIndex = 0,
   alternativeMessages = [],
   char = {},
   ai_message = '',
@@ -92,12 +93,19 @@ export function PyrenzMessageBox({
   msg,
 }: PyrenzMessageBoxProps) {
   const totalMessages = alternativeMessages.length;
-  const currentIndex = msg?.current ?? 0;
 
   const getDisplayedText = () => {
     if (isEditing) return localEditedMessage ?? '';
-    if (totalMessages > 0 && currentIndex < totalMessages) {
-      return alternativeMessages[currentIndex] ?? '';
+
+    if (totalMessages > 0) {
+      if (currentMessageIndex === 0) {
+        return content;
+      } else if (
+        currentMessageIndex >= 1 &&
+        currentMessageIndex <= totalMessages
+      ) {
+        return alternativeMessages[currentMessageIndex - 1] ?? '';
+      }
     }
     return content;
   };
@@ -181,10 +189,10 @@ export function PyrenzMessageBox({
                 ai_message={ai_message}
                 disableReplacement={disableReplacement}
               />
-              {showNav && totalMessages > 1 && (
+              {showNav && totalMessages > 0 && (
                 <MessageNav
-                  altIndex={currentIndex}
-                  totalMessages={totalMessages}
+                  altIndex={currentMessageIndex}
+                  totalMessages={totalMessages + 1}
                   onGoPrev={handleGoPrev}
                   onGoNext={handleGoNext}
                 />

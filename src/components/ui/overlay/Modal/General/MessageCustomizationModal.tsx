@@ -6,7 +6,7 @@ import {
   PyrenzColorPicker,
   PyrenzModal,
   PyrenzModalContent,
-  GlassSwitch
+  GlassSwitch,
 } from '~/theme';
 import { useUserStore } from '~/store';
 
@@ -37,8 +37,16 @@ const colorFields: { key: keyof ColorCustomization; label: string }[] = [
   { key: 'charQuotedColor', label: 'Character Quoted Color' },
 ];
 
-export function MessageCustomizationModal({ open, onClose }: MessageCustomizationModalProps) {
-  const { customization, setCustomization, strip_incomplete_output, setStripIncompleteOutput } = useUserStore();
+export function MessageCustomizationModal({
+  open,
+  onClose,
+}: MessageCustomizationModalProps) {
+  const {
+    customization,
+    setCustomization,
+    strip_incomplete_output,
+    setStripIncompleteOutput,
+  } = useUserStore();
 
   const [colors, setColors] = useState<ColorCustomization>({
     user_color: customization?.user_color || '#555555',
@@ -73,8 +81,10 @@ export function MessageCustomizationModal({ open, onClose }: MessageCustomizatio
     setStripIncompleteOutput(true);
   };
 
-  const userAvatarUrl = 'https://api.dicebear.com/8.x/thumbs/svg?seed=UserExample';
-  const charAvatarUrl = 'https://api.dicebear.com/8.x/thumbs/svg?seed=CharExample';
+  const userAvatarUrl =
+    'https://api.dicebear.com/8.x/thumbs/svg?seed=UserExample';
+  const charAvatarUrl =
+    'https://api.dicebear.com/8.x/thumbs/svg?seed=CharExample';
 
   return (
     <PyrenzModal open={open} onClose={onClose}>
@@ -85,7 +95,12 @@ export function MessageCustomizationModal({ open, onClose }: MessageCustomizatio
 
         <Stack direction="column" spacing={2}>
           {colorFields.map(({ key, label }) => (
-            <Stack key={key} direction="row" justifyContent="space-between" alignItems="center">
+            <Stack
+              key={key}
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+            >
               <Typography variant="body1" color="text.secondary">
                 {label}:
               </Typography>
@@ -96,7 +111,11 @@ export function MessageCustomizationModal({ open, onClose }: MessageCustomizatio
             </Stack>
           ))}
 
-          <Stack direction="row" alignItems="center" justifyContent="space-between">
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+          >
             <Typography variant="body1" color="text.secondary">
               Strip Incomplete Output:
             </Typography>
@@ -113,22 +132,41 @@ export function MessageCustomizationModal({ open, onClose }: MessageCustomizatio
             charAvatar={charAvatarUrl}
             displayName="AI Character"
             content="Character: Hello!"
-            sx={{ color: colors.charTextColor, backgroundColor: colors.char_color }}
+            sx={{
+              color: colors.charTextColor,
+              backgroundColor: colors.char_color,
+            }}
           />
           <PyrenzMessageBox
             role="user"
             userAvatar={userAvatarUrl}
             displayName="You"
             content="User: Hi there!"
-            sx={{ color: colors.userTextColor, backgroundColor: colors.user_color, mt: 1 }}
+            sx={{
+              color: colors.userTextColor,
+              backgroundColor: colors.user_color,
+              mt: 1,
+            }}
           />
         </Box>
 
-        <PyrenzBlueButton onClick={handleReset} variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+        <PyrenzBlueButton
+          onClick={handleReset}
+          variant="contained"
+          color="primary"
+          fullWidth
+          sx={{ mt: 2 }}
+        >
           Reset to Default
         </PyrenzBlueButton>
 
-        <PyrenzBlueButton onClick={onClose} variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+        <PyrenzBlueButton
+          onClick={onClose}
+          variant="contained"
+          color="primary"
+          fullWidth
+          sx={{ mt: 2 }}
+        >
           Save Changes
         </PyrenzBlueButton>
       </PyrenzModalContent>

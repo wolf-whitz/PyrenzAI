@@ -1,4 +1,4 @@
-import { SkeletonCard, CharacterCard } from '~/components'
+import { SkeletonCard, CharacterCard } from '~/components';
 import {
   Typography,
   Box,
@@ -6,8 +6,8 @@ import {
   useTheme,
   keyframes,
   styled,
-} from '@mui/material'
-import { Character } from '@shared-types'
+} from '@mui/material';
+import { Character } from '@shared-types';
 
 const ellipsisAnimation = keyframes`
   0% { content: ''; }
@@ -15,7 +15,7 @@ const ellipsisAnimation = keyframes`
   50% { content: '..'; }
   75% { content: '...'; }
   100% { content: ''; }
-`
+`;
 
 const LoadingText = styled(Typography)`
   position: relative;
@@ -28,13 +28,13 @@ const LoadingText = styled(Typography)`
     overflow: hidden;
     animation: ${ellipsisAnimation} 1.5s steps(4, end) infinite;
   }
-`
+`;
 
 interface CharacterListProps {
-  characters: Character[]
-  loading: boolean
-  itemsPerPage: number
-  t: (key: string, options?: Record<string, any>) => string
+  characters: Character[];
+  loading: boolean;
+  itemsPerPage: number;
+  t: (key: string, options?: Record<string, any>) => string;
 }
 
 export function CharacterList({
@@ -43,8 +43,8 @@ export function CharacterList({
   itemsPerPage,
   t,
 }: CharacterListProps) {
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   return (
     <Box
@@ -61,49 +61,53 @@ export function CharacterList({
         mt: 3, // small spacing above to visually separate from details
       }}
     >
-      {loading
-        ? isMobile
-          ? (
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: '100%',
-                gridColumn: '1 / -1',
-              }}
-            >
-              <img
-                src="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MascotHappy.avif"
-                alt="Mascot"
-                style={{
-                  width: '100px',
-                  height: '100px',
-                  animation: 'bounce 2s infinite',
-                }}
-              />
-              <LoadingText variant="body1">Loading</LoadingText>
-            </Box>
-          )
-          : Array.from({ length: itemsPerPage }).map((_, i) => <SkeletonCard key={i} />)
-        : characters.length > 0
-        ? characters.map((char) => <CharacterCard key={char.id} character={char} />)
-        : (
+      {loading ? (
+        isMobile ? (
           <Box
             sx={{
-              color: 'text.secondary',
-              textAlign: 'center',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
               width: '100%',
               gridColumn: '1 / -1',
             }}
-            aria-live="polite"
           >
-            <Typography variant="body1">
-              {t('messages.noCharactersFound')}
-            </Typography>
+            <img
+              src="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MascotHappy.avif"
+              alt="Mascot"
+              style={{
+                width: '100px',
+                height: '100px',
+                animation: 'bounce 2s infinite',
+              }}
+            />
+            <LoadingText variant="body1">Loading</LoadingText>
           </Box>
-        )}
+        ) : (
+          Array.from({ length: itemsPerPage }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))
+        )
+      ) : characters.length > 0 ? (
+        characters.map((char) => (
+          <CharacterCard key={char.id} character={char} />
+        ))
+      ) : (
+        <Box
+          sx={{
+            color: 'text.secondary',
+            textAlign: 'center',
+            width: '100%',
+            gridColumn: '1 / -1',
+          }}
+          aria-live="polite"
+        >
+          <Typography variant="body1">
+            {t('messages.noCharactersFound')}
+          </Typography>
+        </Box>
+      )}
     </Box>
-  )
+  );
 }

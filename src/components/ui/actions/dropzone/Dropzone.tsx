@@ -1,8 +1,6 @@
-import { useDropzone, Accept } from 'react-dropzone';
-import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
-import { Box, Typography } from '@mui/material';
-import clsx from 'clsx';
 import { useState, useEffect } from 'react';
+import { Box } from '@mui/material';
+import { PyrenzDropzone } from '~/theme';
 import { usePyrenzAlert } from '~/provider';
 
 interface DropzoneProps {
@@ -14,7 +12,7 @@ interface DropzoneProps {
 
 export function Dropzone({
   onDrop,
-  label = 'Drop or click to upload image',
+  label = 'Click to upload image',
   className,
   initialImage,
 }: DropzoneProps) {
@@ -27,52 +25,32 @@ export function Dropzone({
     if (initialImage) setBannerImagePreview(initialImage);
   }, [initialImage]);
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop: (acceptedFiles) => {
-      const file = acceptedFiles[0];
-      if (file) {
-        if (!file.type.startsWith('image/')) {
-          showAlert('Please upload an image file.', 'Alert');
-          return;
-        }
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const base64data = reader.result as string;
-          setBannerImagePreview(base64data);
-        };
-        reader.readAsDataURL(file);
-        onDrop(acceptedFiles);
-      }
-    },
-    accept: {
-      'image/*': ['.jpeg', '.png', '.gif'],
-    } as Accept,
-    multiple: false,
-  });
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      showAlert('Please upload an image file.', 'Alert');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64data = reader.result as string;
+      setBannerImagePreview(base64data);
+    };
+    reader.readAsDataURL(file);
+    onDrop([file]);
+  };
 
   return (
-    <Box
-      {...getRootProps()}
-      className={clsx('w-full cursor-pointer select-none', className)}
-      sx={{
-        border: '1px solid rgba(255,255,255,0.15)',
-        borderRadius: '20px',
-        overflow: 'hidden',
-        p: 0,
-        position: 'relative',
-        backdropFilter: isDragActive ? 'blur(6px)' : 'blur(4px)',
-        background: isDragActive
-          ? 'linear-gradient(to right, rgba(255,255,255,0.05), rgba(255,255,255,0.08))'
-          : 'linear-gradient(to right, rgba(255,255,255,0.03), rgba(255,255,255,0.05))',
-        transition: 'all 0.3s ease',
-        '&:hover': {
-          transform: 'scale(1.01)',
-          background:
-            'linear-gradient(to right, rgba(255,255,255,0.05), rgba(255,255,255,0.1))',
-        },
-      }}
-    >
-      <input {...getInputProps()} />
+    <PyrenzDropzone className={className}>
+      <input
+        type="file"
+        accept="image/*"
+        style={{ display: 'none' }}
+        onChange={handleFileSelect}
+      />
       {bannerImagePreview ? (
         <Box
           component="img"
@@ -85,6 +63,11 @@ export function Dropzone({
             objectFit: 'cover',
             borderRadius: '20px',
           }}
+          onClick={() =>
+            document
+              .querySelector<HTMLInputElement>('input[type=file]')
+              ?.click()
+          }
         />
       ) : (
         <Box
@@ -96,22 +79,18 @@ export function Dropzone({
             py: 5,
             color: '#aaa',
             gap: 1,
+            textAlign: 'center',
+            cursor: 'pointer',
           }}
+          onClick={() =>
+            document
+              .querySelector<HTMLInputElement>('input[type=file]')
+              ?.click()
+          }
         >
-          <InsertPhotoOutlinedIcon sx={{ fontSize: '3rem' }} />
-          <Typography
-            variant="body2"
-            sx={{
-              textAlign: 'center',
-              opacity: 0.8,
-              fontSize: '0.95rem',
-              px: 2,
-            }}
-          >
-            {label}
-          </Typography>
+          {label}
         </Box>
       )}
-    </Box>
+    </PyrenzDropzone>
   );
 }

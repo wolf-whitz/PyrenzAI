@@ -25,6 +25,7 @@ interface ModelOption {
   label: string;
   description: string;
   subscription_plan: string;
+  slug: string;
   isPrivate?: boolean;
 }
 
@@ -40,7 +41,9 @@ export function ModelSelection({
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [popoverContent, setPopoverContent] = useState('');
   const [modelOptions, setModelOptions] = useState<ModelOption[] | null>(null);
-  const [privateModels, setPrivateModels] = useState<Record<string, PrivateModel>>({});
+  const [privateModels, setPrivateModels] = useState<
+    Record<string, PrivateModel>
+  >({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -52,31 +55,40 @@ export function ModelSelection({
           name: string;
           subscription_plan: string;
           model_description: string;
+          slug: string;
         }>({
           tables: 'model_identifiers',
-          columns: 'name, subscription_plan, model_description',
+          columns: 'name, subscription_plan, model_description, slug',
         });
 
-        const { data: privateModelsData } = await Utils.db.select<PrivateModel>({
-          tables: 'private_models',
-          columns: 'model_name, model_description',
-          match: { user_uuid: userUUID },
-        });
+        const { data: privateModelsData } = await Utils.db.select<PrivateModel>(
+          {
+            tables: 'private_models',
+            columns: 'model_name, model_description',
+            match: { user_uuid: userUUID },
+          }
+        );
 
-        const formattedModelOptions: ModelOption[] = modelIdentifiers.map((model) => ({
-          value: model.name,
-          label: model.name,
-          description: model.model_description,
-          subscription_plan: model.subscription_plan,
-        }));
+        const formattedModelOptions: ModelOption[] = modelIdentifiers.map(
+          (model) => ({
+            value: model.slug,
+            label: model.name,
+            description: model.model_description,
+            subscription_plan: model.subscription_plan,
+            slug: model.slug,
+          })
+        );
 
-        const formattedPrivateModels = privateModelsData.reduce((acc, model) => {
-          acc[model.model_name] = {
-            model_name: model.model_name,
-            model_description: model.model_description,
-          };
-          return acc;
-        }, {} as Record<string, PrivateModel>);
+        const formattedPrivateModels = privateModelsData.reduce(
+          (acc, model) => {
+            acc[model.model_name] = {
+              model_name: model.model_name,
+              model_description: model.model_description,
+            };
+            return acc;
+          },
+          {} as Record<string, PrivateModel>
+        );
 
         setModelOptions(formattedModelOptions);
         setPrivateModels(formattedPrivateModels);
@@ -108,12 +120,13 @@ export function ModelSelection({
   const mergedModels: ModelOption[] = [
     ...(modelOptions ?? []),
     ...Object.entries(privateModels)
-      .filter(([key]) => !(modelOptions ?? []).some((opt) => opt.value === key))
+      .filter(([key]) => !(modelOptions ?? []).some((opt) => opt.slug === key))
       .map(([key, value]) => ({
         value: key,
         label: value.model_name,
         description: value.model_description,
         subscription_plan: 'Private',
+        slug: key,
         isPrivate: true,
       })),
   ];
@@ -128,11 +141,11 @@ export function ModelSelection({
         ) : (
           <Box display="flex" flexDirection="column" gap={2}>
             {mergedModels.map((option) => {
-              const isSelected = option.value === preferredModel;
+              const isSelected = option.slug === preferredModel;
               return (
                 <Paper
-                  key={option.value}
-                  onClick={() => setPreferredModel(option.value)}
+                  key={option.slug}
+                  onClick={() => setPreferredModel(option.slug)}
                   elevation={isSelected ? 6 : 2}
                   sx={{
                     p: 2,
@@ -151,15 +164,21 @@ export function ModelSelection({
                 >
                   <Box display="flex" alignItems="center">
                     <Typography variant="body1">
-                      {option.label.length > 15 ? option.label.slice(0, 15) + '...' : option.label}
+                      {option.label.length > 15
+                        ? option.label.slice(0, 15) + '...'
+                        : option.label}
                     </Typography>
-                    {option.isPrivate && <LockIcon fontSize="small" sx={{ ml: 1 }} />}
+                    {option.isPrivate && (
+                      <LockIcon fontSize="small" sx={{ ml: 1 }} />
+                    )}
                     <Typography variant="caption" color="gray" sx={{ ml: 2 }}>
                       Plan: {option.subscription_plan}
                     </Typography>
                   </Box>
                   <IconButton
-                    onMouseEnter={(e) => handlePopoverOpen(e, option.description)}
+                    onMouseEnter={(e) =>
+                      handlePopoverOpen(e, option.description)
+                    }
                     onMouseLeave={handlePopoverClose}
                     onClick={(e) => {
                       e.stopPropagation();

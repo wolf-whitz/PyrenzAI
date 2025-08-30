@@ -23,7 +23,7 @@ export const getCachedUser = async (
   inflightRequest = (async () => {
     try {
       const { data, error } = await client.auth.getUser();
-      
+
       if (error) {
         console.warn('Supabase auth error:', error.message);
         cachedUser = {
@@ -34,7 +34,7 @@ export const getCachedUser = async (
       }
 
       const user = data.user;
-      
+
       if (!user) {
         console.info('No authenticated user found');
       }

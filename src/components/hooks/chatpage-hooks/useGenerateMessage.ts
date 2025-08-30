@@ -95,10 +95,20 @@ export const useGenerateMessage = () => {
           match: { user_uuid },
         });
 
-        if (!userData?.[0] || messageId == null) throw new Error('Missing required data');
+        if (!userData?.[0] || messageId == null)
+          throw new Error('Missing required data');
 
-        const messagePayload = { current, MessageID: messageId, ...(generationType === 'Generate' ? { is_first: true } : {}) };
-        const body = { type: generationType, chat_uuid, inference_settings: userData[0].inference_settings, message: messagePayload };
+        const messagePayload = {
+          current,
+          MessageID: messageId,
+          ...(generationType === 'Generate' ? { is_first: true } : {}),
+        };
+        const body = {
+          type: generationType,
+          chat_uuid,
+          inference_settings: userData[0].inference_settings,
+          message: messagePayload,
+        };
         const url = `/api/Generate?user_uuid=${user_uuid}`;
         const res = await Utils.post<any>(url, body);
 
@@ -110,28 +120,44 @@ export const useGenerateMessage = () => {
         setMessages((prev) =>
           prev.map((msg) => {
             if (msg.isGenerate) {
-              return { ...msg, id: responseId, text: generatedMessage, isGenerate: false, char_id: char.char_id, alternative_messages: [], ...(emotion_type && { emotion_type }) };
+              return {
+                ...msg,
+                id: responseId,
+                text: generatedMessage,
+                isGenerate: false,
+                char_id: char.char_id,
+                alternative_messages: [],
+                ...(emotion_type && { emotion_type }),
+              };
             } else if (msg.type === 'user' && msg.id == null) {
               return { ...msg, id: responseId, user_id: user.user_uuid };
-            } else if (generationType === 'Regenerate' && msg.id === messageId && msg.type === 'char') {
+            } else if (
+              generationType === 'Regenerate' &&
+              msg.id === messageId &&
+              msg.type === 'char'
+            ) {
               const currentAlternatives = msg.alternative_messages || [];
               const newAlternatives = [...currentAlternatives];
-              
+
               if (!newAlternatives.includes(generatedMessage)) {
                 newAlternatives.push(generatedMessage);
               }
-              
-              Utils.db.update({
-                tables: 'chat_messages',
-                values: { alternative_messages: newAlternatives },
-                match: { id: messageId }
-              }).catch(err => console.error('Failed to update alternative messages:', err));
-              
-              return { 
-                ...msg, 
+
+              Utils.db
+                .update({
+                  tables: 'chat_messages',
+                  values: { alternative_messages: newAlternatives },
+                  match: { id: messageId },
+                })
+                .catch((err) =>
+                  console.error('Failed to update alternative messages:', err)
+                );
+
+              return {
+                ...msg,
                 alternative_messages: newAlternatives,
                 current: newAlternatives.length - 1,
-                ...(emotion_type && { emotion_type })
+                ...(emotion_type && { emotion_type }),
               };
             }
             return msg;
@@ -147,7 +173,12 @@ export const useGenerateMessage = () => {
           userName: user.username,
         });
 
-        return { isSubscribed: Boolean(res?.isSubscribed), remainingMessages: res?.remainingMessages ?? 0, showAd: res?.remainingMessages === 0, emotion_type };
+        return {
+          isSubscribed: Boolean(res?.isSubscribed),
+          remainingMessages: res?.remainingMessages ?? 0,
+          showAd: res?.remainingMessages === 0,
+          emotion_type,
+        };
       } catch (error) {
         const msg = error instanceof Error ? error.message : 'Unknown error';
         showAlert(`Error occurred: ${msg}`, 'Alert');
@@ -160,17 +191,22 @@ export const useGenerateMessage = () => {
   );
 
   const deleteMessage = useCallback(
-    async (messageId: number, setMessages: React.Dispatch<React.SetStateAction<Message[]>>) => {
+    async (
+      messageId: number,
+      setMessages: React.Dispatch<React.SetStateAction<Message[]>>
+    ) => {
       if (messageId == null) return;
 
       try {
         setMessages((prev) => {
           const targetIndex = prev.findIndex((msg) => msg.id === messageId);
           if (targetIndex === -1) return prev;
-          
+
           const messagesToDelete = prev.slice(targetIndex);
-          const idsToDelete = messagesToDelete.map(msg => msg.id).filter(id => id != null);
-          
+          const idsToDelete = messagesToDelete
+            .map((msg) => msg.id)
+            .filter((id) => id != null);
+
           idsToDelete.forEach(async (id) => {
             try {
               await Utils.db.remove({ tables: 'chat_messages', match: { id } });
@@ -178,7 +214,7 @@ export const useGenerateMessage = () => {
               console.error(`Failed to delete message ${id}:`, err);
             }
           });
-          
+
           return prev.slice(0, targetIndex);
         });
       } catch (err) {

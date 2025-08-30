@@ -39,6 +39,16 @@ export const Spinner = () => (
   />
 );
 
+export const AppSpinner = () => (
+  <SpinnerBase
+    message={
+      <>
+        Loading <span className="font-baloo text-blue-500">PyrenzAI</span>
+      </>
+    }
+  />
+);
+
 export const ChatPageSpinner = () => (
   <SpinnerBase
     message={

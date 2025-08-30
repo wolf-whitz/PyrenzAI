@@ -44,12 +44,19 @@ export const useChatPageAPI = (
   const toggleSettings = () => setIsSettingsOpen((prev) => !prev);
 
   const getLatestCharMessageCurrent = (): number => {
-    const latestChar = [...previous_message].reverse().find((msg) => msg.type === 'char');
+    const latestChar = [...previous_message]
+      .reverse()
+      .find((msg) => msg.type === 'char');
     return latestChar?.current ?? 0;
   };
 
-  const getLatestCharMessageWithUserQuery = (): { charMessage: string; userQuery: string } => {
-    const latestCharIndex = [...previous_message].reverse().findIndex((msg) => msg.type === 'char');
+  const getLatestCharMessageWithUserQuery = (): {
+    charMessage: string;
+    userQuery: string;
+  } => {
+    const latestCharIndex = [...previous_message]
+      .reverse()
+      .findIndex((msg) => msg.type === 'char');
     const latestChar =
       latestCharIndex !== -1
         ? previous_message[previous_message.length - 1 - latestCharIndex]
@@ -58,14 +65,22 @@ export const useChatPageAPI = (
     const charMessage = latestChar
       ? latestChar.current === 0
         ? latestChar.text || ''
-        : latestChar.alternative_messages?.[latestChar.current - 1] || latestChar.text || ''
+        : latestChar.alternative_messages?.[latestChar.current - 1] ||
+          latestChar.text ||
+          ''
       : char.first_message?.[0] || '';
 
     const userMessage = latestChar
-      ? previous_message.slice(0, previous_message.indexOf(latestChar)).reverse().find((msg) => msg.type === 'user')
+      ? previous_message
+          .slice(0, previous_message.indexOf(latestChar))
+          .reverse()
+          .find((msg) => msg.type === 'user')
       : undefined;
 
-    return { charMessage: charMessage || '', userQuery: userMessage?.text || '' };
+    return {
+      charMessage: charMessage || '',
+      userQuery: userMessage?.text || '',
+    };
   };
 
   const handleSend = async (message: string) => {
@@ -85,8 +100,10 @@ export const useChatPageAPI = (
         'Generate'
       );
 
-      if (response?.emotion_type && onEmotionDetected) onEmotionDetected(response.emotion_type);
-      if (!response.isSubscribed && response.remainingMessages === 0) setIsAdModalOpen(true);
+      if (response?.emotion_type && onEmotionDetected)
+        onEmotionDetected(response.emotion_type);
+      if (!response.isSubscribed && response.remainingMessages === 0)
+        setIsAdModalOpen(true);
     } catch (err) {
       console.error(err);
     }
@@ -99,10 +116,12 @@ export const useChatPageAPI = (
       setMessages((prev) => {
         const targetIndex = prev.findIndex((msg) => msg.id === messageId);
         if (targetIndex === -1) return prev;
-        
+
         const messagesToDelete = prev.slice(targetIndex);
-        const idsToDelete = messagesToDelete.map(msg => msg.id).filter(id => id != null);
-        
+        const idsToDelete = messagesToDelete
+          .map((msg) => msg.id)
+          .filter((id) => id != null);
+
         idsToDelete.forEach(async (id) => {
           try {
             await Utils.db.remove({ tables: 'chat_messages', match: { id } });
@@ -110,7 +129,7 @@ export const useChatPageAPI = (
             console.error(`Failed to delete message ${id}:`, err);
           }
         });
-        
+
         return prev.slice(0, targetIndex);
       });
     } catch (err) {
@@ -136,7 +155,8 @@ export const useChatPageAPI = (
         messageId
       );
 
-      if (response?.emotion_type && onEmotionDetected) onEmotionDetected(response.emotion_type);
+      if (response?.emotion_type && onEmotionDetected)
+        onEmotionDetected(response.emotion_type);
     } catch (err) {
       console.error(err);
     }
@@ -152,12 +172,18 @@ export const useChatPageAPI = (
     try {
       await Utils.db.update({
         tables: 'chat_messages',
-        values: { [type === 'user' ? 'user_message' : 'char_message']: editedMessage },
+        values: {
+          [type === 'user' ? 'user_message' : 'char_message']: editedMessage,
+        },
         match: { id: messageId, user_uuid: user.user_uuid, chat_uuid },
       });
 
       setMessages((prev) =>
-        prev.map((msg) => (msg.id === messageId && msg.type === type ? { ...msg, text: editedMessage } : msg))
+        prev.map((msg) =>
+          msg.id === messageId && msg.type === type
+            ? { ...msg, text: editedMessage }
+            : msg
+        )
       );
     } catch (err) {
       console.error(err);
@@ -168,8 +194,14 @@ export const useChatPageAPI = (
     if (messageId == null) return;
 
     try {
-      const prompt = previous_message.slice(-10).map((msg) => `${char.persona}. ${msg.text}`).join(' ');
-      const res = await Utils.post('/api/ImageGen', { type: 'Anime', query: prompt });
+      const prompt = previous_message
+        .slice(-10)
+        .map((msg) => `${char.persona}. ${msg.text}`)
+        .join(' ');
+      const res = await Utils.post('/api/ImageGen', {
+        type: 'Anime',
+        query: prompt,
+      });
       const imageUrl = (res as ImageGenerationResponse)?.data?.data?.[0]?.url;
       if (!imageUrl) return;
 
@@ -184,7 +216,13 @@ export const useChatPageAPI = (
 
       await Utils.db.insert({
         tables: 'chat_messages',
-        data: { user_uuid: user.user_uuid, chat_uuid, char_message: newMsg.text, is_image: true, id: messageId },
+        data: {
+          user_uuid: user.user_uuid,
+          chat_uuid,
+          char_message: newMsg.text,
+          is_image: true,
+          id: messageId,
+        },
       });
 
       setMessages((prev) => [...prev, newMsg]);

@@ -6,3 +6,5 @@ export * from './general';
 
 export * from './oauth';
 export * from './persona';
+
+export * from './customization';

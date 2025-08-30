@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import { Box, useMediaQuery, useTheme, Typography } from '@mui/material'
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Box, useMediaQuery, useTheme, Typography } from '@mui/material';
 import {
   CharacterPageLoader,
   Sidebar,
@@ -10,12 +10,12 @@ import {
   CharacterDetails,
   AuthenticationModal,
   CharacterList,
-} from '@components'
-import { CreateNewChat } from '@function'
-import { Utils } from '~/utility'
+} from '@components';
+import { CreateNewChat } from '@function';
+import { Utils } from '~/utility';
 
 export function CharacterPage() {
-  const { char_uuid } = useParams<{ char_uuid: string }>()
+  const { char_uuid } = useParams<{ char_uuid: string }>();
   const {
     character,
     recommendedCharacters,
@@ -23,28 +23,28 @@ export function CharacterPage() {
     handleDeleteCharacter,
     handleReportCharacter,
     loading,
-  } = useCharacterData(char_uuid)
+  } = useCharacterData(char_uuid);
 
-  const [showLoginModal, setShowLoginModal] = useState(false)
-  const [authMode, setAuthMode] = useState<'login' | 'register'>('login')
-  const [userUuid, setUserUuid] = useState<string | null>(null)
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+  const [userUuid, setUserUuid] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState({
     startChat: false,
     editCharacter: false,
     deleteCharacter: false,
-  })
+  });
 
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
-  const navigate = useNavigate()
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserUuid = async () => {
-      const { data } = await Utils.db.client.auth.getUser()
-      setUserUuid(data?.user?.id || null)
-    }
-    fetchUserUuid()
-  }, [])
+      const { data } = await Utils.db.client.auth.getUser();
+      setUserUuid(data?.user?.id || null);
+    };
+    fetchUserUuid();
+  }, []);
 
   if (notFound) {
     return (
@@ -69,49 +69,49 @@ export function CharacterPage() {
           permission to view it.
         </Typography>
       </Box>
-    )
+    );
   }
 
   if (!character) {
-    return <CharacterPageLoader />
+    return <CharacterPageLoader />;
   }
 
   const handleStartChat = async () => {
     if (!userUuid) {
-      setAuthMode('login')
-      setShowLoginModal(true)
-      return
+      setAuthMode('login');
+      setShowLoginModal(true);
+      return;
     }
 
-    setIsLoading((prev) => ({ ...prev, startChat: true }))
+    setIsLoading((prev) => ({ ...prev, startChat: true }));
     try {
-      const result = await CreateNewChat(character.char_uuid, userUuid)
+      const result = await CreateNewChat(character.char_uuid, userUuid);
       if (!result.error) {
-        navigate(`/chat/${result.chat_uuid}`)
+        navigate(`/chat/${result.chat_uuid}`);
       }
     } finally {
-      setIsLoading((prev) => ({ ...prev, startChat: false }))
+      setIsLoading((prev) => ({ ...prev, startChat: false }));
     }
-  }
+  };
 
   const handleCharacterDeletion = async () => {
-    setIsLoading((prev) => ({ ...prev, deleteCharacter: true }))
-    const success = await handleDeleteCharacter()
+    setIsLoading((prev) => ({ ...prev, deleteCharacter: true }));
+    const success = await handleDeleteCharacter();
     if (success) {
-      navigate('/Home')
+      navigate('/Home');
     }
-    setIsLoading((prev) => ({ ...prev, deleteCharacter: false }))
-  }
+    setIsLoading((prev) => ({ ...prev, deleteCharacter: false }));
+  };
 
   const handleCreatorClick = () => {
-    navigate(`/profile/${character.creator_uuid}`)
-  }
+    navigate(`/profile/${character.creator_uuid}`);
+  };
 
   const handleEditCharacter = () => {
-    setIsLoading((prev) => ({ ...prev, editCharacter: true }))
-    navigate(`/create/${character.char_uuid}`)
-    setIsLoading((prev) => ({ ...prev, editCharacter: false }))
-  }
+    setIsLoading((prev) => ({ ...prev, editCharacter: true }));
+    navigate(`/create/${character.char_uuid}`);
+    setIsLoading((prev) => ({ ...prev, editCharacter: false }));
+  };
 
   return (
     <Box
@@ -168,5 +168,5 @@ export function CharacterPage() {
         />
       )}
     </Box>
-  )
+  );
 }

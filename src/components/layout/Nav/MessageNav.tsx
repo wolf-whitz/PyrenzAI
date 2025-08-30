@@ -40,12 +40,12 @@ export const MessageNav = ({
           e.stopPropagation();
           onGoPrev?.(e);
         }}
-        disabled={altIndex === 0}
+        disabled={false}
         sx={{
           color: '#fff',
-          backgroundColor: altIndex === 0 ? 'rgba(51,51,51,0.5)' : '#333',
-          '&:hover': { 
-            backgroundColor: altIndex === 0 ? 'rgba(51,51,51,0.5)' : '#444' 
+          backgroundColor: '#333',
+          '&:hover': {
+            backgroundColor: '#444',
           },
           '&:disabled': {
             color: 'rgba(255,255,255,0.3)',
@@ -92,12 +92,12 @@ export const MessageNav = ({
           e.stopPropagation();
           onGoNext?.(e);
         }}
-        disabled={altIndex === totalMessages - 1}
+        disabled={false}
         sx={{
           color: '#fff',
-          backgroundColor: altIndex === totalMessages - 1 ? 'rgba(51,51,51,0.5)' : '#333',
-          '&:hover': { 
-            backgroundColor: altIndex === totalMessages - 1 ? 'rgba(51,51,51,0.5)' : '#444' 
+          backgroundColor: '#333',
+          '&:hover': {
+            backgroundColor: '#444',
           },
           '&:disabled': {
             color: 'rgba(255,255,255,0.3)',

@@ -39,15 +39,16 @@ export function ProofOfWorkModal({
 
         if (data.success) {
           try {
-            const verifyRes = await utils.post<{ success: boolean }>(
-              '/api/VerifyProof',
-              {
-                challenge,
-                solution: data.nonce,
-              }
-            );
+            const verifyRes = await utils.post<{
+              success: boolean;
+              token?: string;
+            }>('/api/VerifyProof', {
+              challenge,
+              solution: data.nonce,
+            });
 
-            if (verifyRes.success) {
+            if (verifyRes.success && verifyRes.token) {
+              localStorage.setItem('authToken', verifyRes.token);
               verifiedRef.current = true;
               onSuccess();
               onClose();

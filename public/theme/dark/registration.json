@@ -1,0 +1,9 @@
+{
+  "id": "theme-dark",
+  "name": "Dark Mode",
+  "description": "Sleek dark mode for late-night coding sessions",
+  "creator": "System",
+  "type": "theme",
+  "themePath": ["theme.json"],
+  "include": ["fonts.css"]
+}

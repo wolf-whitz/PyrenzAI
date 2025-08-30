@@ -56,6 +56,7 @@ interface UserStore {
   cachedUserData?: CachedUserData;
   token: string | null;
   strip_incomplete_output: boolean;
+  currentThemeId?: string;
   setUserUUID: (uuid: string) => void;
   setUsername: (name: string) => void;
   setPersonaName: (name: string) => void;
@@ -79,6 +80,7 @@ interface UserStore {
   clearData: () => void;
   setToken: (token: string | null) => void;
   setStripIncompleteOutput: (value: boolean) => void;
+  setTheme: (themeId: string) => void;
 }
 
 export const useUserStore = create<UserStore>()(
@@ -120,6 +122,7 @@ export const useUserStore = create<UserStore>()(
       cachedUserData: undefined,
       token: null,
       strip_incomplete_output: true,
+      currentThemeId: undefined,
       setUserUUID: (uuid) => set({ userUUID: uuid }),
       setUsername: (name) => set({ username: name }),
       setPersonaName: (name) => set({ personaName: name }),
@@ -181,9 +184,12 @@ export const useUserStore = create<UserStore>()(
           cachedUserData: undefined,
           token: null,
           strip_incomplete_output: true,
+          currentThemeId: undefined,
         }),
       setToken: (token) => set({ token }),
-      setStripIncompleteOutput: (value) => set({ strip_incomplete_output: value }),
+      setStripIncompleteOutput: (value) =>
+        set({ strip_incomplete_output: value }),
+      setTheme: (themeId) => set({ currentThemeId: themeId }),
     }),
     {
       name: 'user-storage',

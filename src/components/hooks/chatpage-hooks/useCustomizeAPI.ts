@@ -18,14 +18,6 @@ interface CustomizationProps {
   subscriptionPlan: string | null;
 }
 
-interface ModelOption {
-  value: string;
-  label: string;
-  name: string;
-  description: string;
-  subscription_plan: string;
-}
-
 interface PrivateModel {
   model_description: string;
   model_name: string;
@@ -38,10 +30,10 @@ interface PrivateModels {
 interface UserData {
   subscription_data: {
     max_token: number;
-    model?: Record<string, { description: string; plan: string }>;
+    model?: Record<string, { description: string; plan: string; slug: string }>;
     private_models?: PrivateModels;
   };
-  preferred_model?: string;
+  preferred_model?: { name: string; slug: string };
 }
 
 type GetUserDataResponse = UserData | { error: string };
@@ -74,10 +66,10 @@ export const useCustomizeAPI = ({
     customization?.modelMemoryLimit || 15
   );
   const [preferredModel, setPreferredModel] = useState<string>(
-    customization?.model || userStore.preferredModel || 'Mango Ube'
+    customization?.model || 'Mango Ube'
   );
   const [modelId, setModelId] = useState<string>(
-    customization?.model || userStore.preferredModel || 'Mango Ube'
+    customization?.model || 'Mango Ube'
   );
   const [maxTokenLimit, setMaxTokenLimit] = useState<number>(
     customization?.maxTokens || userStore.maxTokenLimit || 1000
@@ -97,25 +89,28 @@ export const useCustomizeAPI = ({
     modelMemoryLimit: (value: number) => setModelMemoryLimit(value),
   };
 
-  const isModelPrivate = (modelName: string): boolean => {
-    return privateModels && !!privateModels[modelName];
+  const isModelPrivate = (modelSlug: string): boolean => {
+    return (
+      privateModels &&
+      Object.values(privateModels).some((pm) => pm.model_name === modelSlug)
+    );
   };
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const userData: GetUserDataResponse = await GetUserData();
-        if ('error' in userData) {
-          throw new Error(userData.error);
-        }
+        if ('error' in userData) throw new Error(userData.error);
+
         setMaxTokenLimit(userData.subscription_data.max_token);
+
         if (userData.subscription_data.private_models) {
           setPrivateModels(userData.subscription_data.private_models);
         }
-        if (userData.preferred_model) {
-          const preferredModelFromData = userData.preferred_model;
-          setPreferredModel(preferredModelFromData);
-          setModelId(preferredModelFromData);
+
+        if (userData.preferred_model && userData.preferred_model.slug) {
+          setPreferredModel(userData.preferred_model.slug);
+          setModelId(userData.preferred_model.slug);
         }
       } catch (error) {
         Sentry.captureException(error);
@@ -139,7 +134,7 @@ export const useCustomizeAPI = ({
       const data = {
         user_uuid: userUUID,
         inference_settings: inferenceSettings,
-        preferred_model: preferredModel,
+        slug: preferredModel,
         is_public: !isModelPrivate(preferredModel),
         modelMemoryLimit,
       };

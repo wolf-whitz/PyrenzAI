@@ -13,9 +13,9 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import { PyrenzBlueButton } from '~/theme';
-import { Account, Profile, Persona, Api } from './Items';
+import { Account, Profile, Persona, Api, Customization } from './Items';
 
-const tabs = ['account', 'profile', 'persona', 'api'] as const;
+const tabs = ['account', 'profile', 'persona', 'api', 'customization'] as const;
 
 export function Setting() {
   const [activeTab, setActiveTab] = useState<(typeof tabs)[number]>('account');
@@ -96,7 +96,7 @@ export function Setting() {
             scrollButtons="auto"
             sx={{ width: 'fit-content' }}
           >
-            {getTabs(tabs.slice(0, 2))}
+            {getTabs(tabs.slice(0, 3))}
           </Tabs>
           <Tabs
             value={activeTab}
@@ -105,7 +105,7 @@ export function Setting() {
             scrollButtons="auto"
             sx={{ width: 'fit-content' }}
           >
-            {getTabs(tabs.slice(2))}
+            {getTabs(tabs.slice(3))}
           </Tabs>
         </Box>
       );
@@ -142,6 +142,8 @@ export function Setting() {
         return <Persona />;
       case 'api':
         return <Api />;
+      case 'customization':
+        return <Customization />;
       default:
         return null;
     }

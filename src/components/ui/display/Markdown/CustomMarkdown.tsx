@@ -4,7 +4,6 @@ import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import { Typography, Box } from '@mui/material';
 import { useUserStore } from '~/store';
-import { split } from 'sentence-splitter';
 
 interface CustomMarkdownProps {
   text?: string;
@@ -21,7 +20,8 @@ export function CustomMarkdown({
   dataState,
   disableReplacement = false,
 }: CustomMarkdownProps) {
-  const { customization, username, personaName, strip_incomplete_output } = useUserStore();
+  const { customization, username, personaName, strip_incomplete_output } =
+    useUserStore();
 
   const processedText = useMemo(() => {
     let replaced = text;
@@ -33,16 +33,17 @@ export function CustomMarkdown({
         .replace(/{{ai_message}}/g, ai_message);
     }
 
-    if (dataState === 'char' && strip_incomplete_output) {
-      const sentences = split(replaced)
-        .filter((node) => node.type === 'Sentence')
-        .map((node: any) => node.raw.trim())
-        .filter(Boolean);
-      replaced = sentences.join(' ');
-    }
-
     return replaced;
-  }, [text, char?.name, personaName, username, ai_message, dataState, disableReplacement, strip_incomplete_output]);
+  }, [
+    text,
+    char?.name,
+    personaName,
+    username,
+    ai_message,
+    dataState,
+    disableReplacement,
+    strip_incomplete_output,
+  ]);
 
   const getColor = (
     type: 'text' | 'italic' | 'quote' | 'code',
@@ -117,7 +118,10 @@ export function CustomMarkdown({
                 color: getColor('quote', dataState),
               }}
             >
-              <Typography variant="body2" sx={{ fontSize: '0.9rem', lineHeight: 1.7 }}>
+              <Typography
+                variant="body2"
+                sx={{ fontSize: '0.9rem', lineHeight: 1.7 }}
+              >
                 {children}
               </Typography>
             </Box>
@@ -150,20 +154,23 @@ export function CustomMarkdown({
               <Typography component="code">{children}</Typography>
             </Box>
           ),
-          img: ({ src, alt }) => (
-            <Box
-              component="img"
-              src={src || ''}
-              alt={alt || ''}
-              sx={{
-                maxWidth: '100%',
-                height: 'auto',
-                borderRadius: 2,
-                my: 2,
-                boxShadow: '0 4px 14px rgba(0,0,0,0.4)',
-              }}
-            />
-          ),
+          img: ({ src, alt }) => {
+            if (!src) return null;
+            return (
+              <Box
+                component="img"
+                src={src}
+                alt={alt || ''}
+                sx={{
+                  maxWidth: '100%',
+                  height: 'auto',
+                  borderRadius: 2,
+                  my: 2,
+                  boxShadow: '0 4px 14px rgba(0,0,0,0.4)',
+                }}
+              />
+            );
+          },
         }}
       >
         {processedText}

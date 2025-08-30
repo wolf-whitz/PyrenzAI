@@ -13,7 +13,6 @@ interface StoreState {
   permanentTokens: number;
   temporaryTokens: number;
   error: string | null;
-  isCounting: boolean;
 }
 
 interface CharacterActions {
@@ -26,7 +25,6 @@ interface CharacterActions {
   setTokenTotal: (tokenTotal: number) => void;
   setPermanentTokens: (tokens: number) => void;
   setTemporaryTokens: (tokens: number) => void;
-  setIsCounting: (isCounting: boolean) => void;
   addEmotion: (emotion: EmotionData) => void;
   setError: (error: string | null) => void;
   setFirstMessageAlternatives: (alternatives: string[]) => void;
@@ -66,7 +64,6 @@ export const useCharacterStore = create<
   permanentTokens: 0,
   temporaryTokens: 0,
   error: null,
-  isCounting: false,
 
   setCharacter: (data) =>
     set((state) => {
@@ -94,7 +91,6 @@ export const useCharacterStore = create<
   setTokenTotal: (tokenTotal) => set({ tokenTotal }),
   setPermanentTokens: (tokens) => set({ permanentTokens: tokens }),
   setTemporaryTokens: (tokens) => set({ temporaryTokens: tokens }),
-  setIsCounting: (isCounting) => set({ isCounting }),
   addEmotion: (emotion) =>
     set((state) => ({ emotions: [...(state.emotions ?? []), emotion] })),
   setError: (error) => set({ error }),

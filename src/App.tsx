@@ -6,10 +6,10 @@ import {
   useNavigate,
 } from 'react-router-dom';
 import { AppRoutes } from '~/routes/routes';
-import { Spinner, ProofOfWorkModal } from '@components';
+import { ProofOfWorkModal, AppSpinner } from '@components';
 import { Utils as utils } from '~/utility';
 import { useUserStore } from '~/store';
-import { Box, useTheme } from '@mui/material';
+import { Box } from '@mui/material';
 import { BlockedPage } from './routes/Routing';
 import { HelmetProvider } from 'react-helmet-async';
 import { HelmetWrapper } from '~/HelmetWrapper';
@@ -32,8 +32,6 @@ const AppContent = () => {
   const setToken = useUserStore((state) => state.setToken);
   const token = useUserStore((state) => state.token);
 
-  const theme = useTheme();
-  const currentTheme = theme.palette.mode;
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -111,13 +109,15 @@ const AppContent = () => {
     initChecks();
   }, [location, navigate, setIsDeleted, setIsBanned, setToken, token]);
 
-  if (loading) return <Spinner />;
+  if (loading) return <AppSpinner />;
   if (isBlocked) return <BlockedPage />;
+
+  const activeTheme = document.documentElement.getAttribute('data-mui-theme');
 
   return (
     <HelmetWrapper>
       <Box
-        data-mui-theme={`theme-${currentTheme}`}
+        data-mui-theme={activeTheme || 'theme-dark'}
         aria-label="PyrenzAI"
         sx={{
           scrollBehavior: 'smooth',
@@ -159,7 +159,7 @@ export function App() {
   return (
     <HelmetProvider>
       <Router>
-        <Suspense fallback={<Spinner />}>
+        <Suspense fallback={<AppSpinner />}>
           <AppContent />
         </Suspense>
       </Router>

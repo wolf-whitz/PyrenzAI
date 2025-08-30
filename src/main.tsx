@@ -1,4 +1,4 @@
-import { StrictMode } from 'react';
+import { StrictMode, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 
 import './GlobalStyles.css';
@@ -12,11 +12,9 @@ import { SentryProvider } from './provider/SentryProvider';
 import * as Sentry from '@sentry/react';
 
 import { ErrorBoundary } from './routes/ErrorBoundary';
-
 import { AlertProvider, AmplitudeProvider } from '~/provider';
 import { HelmetProvider } from 'react-helmet-async';
-
-const theme = GetTheme();
+import { Spinner } from '@components';
 
 Sentry.init({
   dsn: 'https://2bed6b35dd70e8068f61a53812a8a5fc@o4509146215284736.ingest.us.sentry.io/4509243214725120',
@@ -29,8 +27,24 @@ Sentry.init({
 
 const rootElement = document.getElementById('root');
 
-if (rootElement) {
-  createRoot(rootElement).render(
+function BootstrapApp() {
+  const [theme, setTheme] = useState<any>(null);
+
+  useEffect(() => {
+    const init = async () => {
+      try {
+        const loadedTheme = await GetTheme();
+        setTheme(loadedTheme);
+      } catch (err) {
+        console.error('Failed to load theme:', err);
+      }
+    };
+    init();
+  }, []);
+
+  if (!theme) return <Spinner />;
+
+  return (
     <StrictMode>
       <HelmetProvider>
         <I18nextProvider i18n={i18n}>
@@ -50,6 +64,10 @@ if (rootElement) {
       </HelmetProvider>
     </StrictMode>
   );
+}
+
+if (rootElement) {
+  createRoot(rootElement).render(<BootstrapApp />);
 } else {
   console.error('Root element not found');
 }

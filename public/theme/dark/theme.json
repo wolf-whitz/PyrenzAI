@@ -1,0 +1,18 @@
+{
+  "palette": {
+    "mode": "dark",
+    "primary": { "main": "#6366f1" },
+    "secondary": { "main": "#f59e0b" },
+    "background": {
+      "default": "#111827",
+      "paper": "#1f2937"
+    },
+    "text": {
+      "primary": "#ffffff",
+      "secondary": "#d1d5db"
+    }
+  },
+  "typography": {
+    "fontFamily": "Comic Neue, system-ui"
+  }
+}

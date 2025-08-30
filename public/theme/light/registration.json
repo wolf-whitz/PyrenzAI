@@ -1,0 +1,9 @@
+{
+  "id": "theme-light",
+  "name": "Light Mode",
+  "description": "Clean light theme for daytime productivity",
+  "creator": "System",
+  "type": "theme",
+  "themePath": ["theme.json"],
+  "include": ["fonts.css"]
+}

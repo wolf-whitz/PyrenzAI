@@ -50,72 +50,70 @@ export function MessageBox(
     msg.current !== undefined
       ? msg.current
       : alternation_first
-      ? 0
-      : totalMessages > 0
-      ? totalMessages - 1
-      : 0
+        ? 0
+        : totalMessages > 0
+          ? totalMessages
+          : 0
   );
 
-  const updateCurrentInStore = (index: number) => {
+  const updateCurrentInStore = (currentIndex: number) => {
     if (!numericId) return;
-    useChatStore.getState().setMessages((prev) =>
-      prev.map((m) => (m.id === numericId ? { ...m, current: index } : m))
-    );
+    useChatStore
+      .getState()
+      .setMessages((prev) =>
+        prev.map((m) =>
+          m.id === numericId ? { ...m, current: currentIndex } : m
+        )
+      );
   };
 
   useEffect(() => {
     if (numericId !== prevMsgIdRef.current) {
       setLocalEditedMessage(msg.text || '');
-      setAltIndex(
-        msg.current !== undefined
-          ? msg.current
-          : alternation_first
-          ? 0
-          : alternatives.length > 0
-          ? alternatives.length - 1
-          : 0
-      );
       prevMsgIdRef.current = numericId;
     }
-  }, [numericId, msg.current, alternation_first, alternatives.length, msg.text]);
-
-  useEffect(() => {
-    if (!isEditingThisMessage && msg.current !== undefined && msg.current !== altIndex) {
-      setAltIndex(msg.current);
-    }
-  }, [msg.current, altIndex, isEditingThisMessage]);
+  }, [numericId, msg.text]);
 
   useEffect(() => {
     if (!isEditingThisMessage) updateCurrentInStore(altIndex);
-  }, [altIndex, isEditingThisMessage]);
+  }, [altIndex, isEditingThisMessage, numericId]);
 
   useEffect(() => {
     if (!isEditingThisMessage) {
-      const timer = setTimeout(() => setDebouncedValue(localEditedMessage), 500);
+      const timer = setTimeout(
+        () => setDebouncedValue(localEditedMessage),
+        500
+      );
       return () => clearTimeout(timer);
     }
   }, [localEditedMessage, isEditingThisMessage]);
 
   const handlePrev = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const newIndex = altIndex === 0 ? totalMessages - 1 : altIndex - 1;
+    const newIndex = altIndex <= 0 ? totalMessages : altIndex - 1;
     setAltIndex(newIndex);
-    updateCurrentInStore(newIndex);
   };
 
   const handleNext = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const newIndex = (altIndex + 1) % totalMessages;
+    const newIndex = altIndex >= totalMessages ? 0 : altIndex + 1;
     setAltIndex(newIndex);
-    updateCurrentInStore(newIndex);
   };
 
-  const currentText = alternatives[altIndex] ?? msg.text ?? '';
-  const isEmptyCharMessage = role === 'char' && isLastMessage && isGenerating && currentText.trim() === '';
+  const currentText =
+    altIndex === 0 ? (msg.text ?? '') : (alternatives[altIndex - 1] ?? '');
+  const isEmptyCharMessage =
+    role === 'char' &&
+    isLastMessage &&
+    isGenerating &&
+    currentText.trim() === '';
 
   const theme = useTheme();
   const menuRef = useRef<HTMLDivElement | null>(null);
-  const [menuPosition, setMenuPosition] = useState<{ top: number; left: number } | null>(null);
+  const [menuPosition, setMenuPosition] = useState<{
+    top: number;
+    left: number;
+  } | null>(null);
 
   const handleMessageBoxClick = (e: React.MouseEvent) => {
     if (!isEditingThisMessage && index !== 0 && !isGenerating) {
@@ -127,7 +125,11 @@ export function MessageBox(
 
   useEffect(() => {
     const onOutside = (e: MouseEvent) => {
-      if (menuRef.current && e.target instanceof Node && !menuRef.current.contains(e.target)) {
+      if (
+        menuRef.current &&
+        e.target instanceof Node &&
+        !menuRef.current.contains(e.target)
+      ) {
         handleCloseMenu();
       }
     };
@@ -182,7 +184,7 @@ export function MessageBox(
           isLoading={isLoading}
           onGoPrev={handlePrev}
           onGoNext={handleNext}
-          showNav={totalMessages > 1}
+          showNav={totalMessages > 0}
           currentMessageIndex={altIndex}
           alternativeMessages={alternatives}
           isGeneratingEmptyCharMessage={isEmptyCharMessage}
@@ -190,35 +192,42 @@ export function MessageBox(
           char={char}
           alternation_first={alternation_first}
           msg={{ ...msg, id: numericId }}
-          sx={{ cursor: 'pointer', width: isEditingThisMessage ? '100%' : 'fit-content', maxWidth: '100%' }}
+          sx={{
+            cursor: 'pointer',
+            width: isEditingThisMessage ? '100%' : 'fit-content',
+            maxWidth: '100%',
+          }}
         />
       </Box>
 
-      {menuPosition && !isEditingThisMessage && index !== 0 && !isGenerating && (
-        <Box
-          ref={menuRef}
-          sx={{
-            position: 'fixed',
-            top: menuPosition.top,
-            left: menuPosition.left,
-            zIndex: 1300,
-            bgcolor: theme.palette.background.paper,
-            borderRadius: 1,
-            boxShadow: 3,
-          }}
-        >
-          <MessageContextMenu
-            msg={{ ...msg, id: numericId }}
-            onRegenerate={() => numericId && onRegenerate(numericId)}
-            onRemove={() => setOpenDialog(true)}
-            handleSpeak={handleSpeak}
-            onEditClick={onEditClick}
-            handleCopy={handleCopy}
-            onGenerateImage={onGenerateImage}
-            onClose={handleCloseMenu}
-          />
-        </Box>
-      )}
+      {menuPosition &&
+        !isEditingThisMessage &&
+        index !== 0 &&
+        !isGenerating && (
+          <Box
+            ref={menuRef}
+            sx={{
+              position: 'fixed',
+              top: menuPosition.top,
+              left: menuPosition.left,
+              zIndex: 1300,
+              bgcolor: theme.palette.background.paper,
+              borderRadius: 1,
+              boxShadow: 3,
+            }}
+          >
+            <MessageContextMenu
+              msg={{ ...msg, id: numericId }}
+              onRegenerate={() => numericId && onRegenerate(numericId)}
+              onRemove={() => setOpenDialog(true)}
+              handleSpeak={handleSpeak}
+              onEditClick={onEditClick}
+              handleCopy={handleCopy}
+              onGenerateImage={onGenerateImage}
+              onClose={handleCloseMenu}
+            />
+          </Box>
+        )}
 
       <PyrenzDialog
         open={openDialog}

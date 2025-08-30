@@ -23,27 +23,35 @@ export async function GetUserData(): Promise<any> {
 
     const store = useUserStore.getState();
 
-    store.setUserUUID(response.user_uuid);
+    store.setUserUUID(user_uuid);
     store.setUsername(response.username);
-    store.setPersonaName(response.persona_name || '');
+    store.setPersonaName(response.persona_name || response.username);
     store.setUserIcon(response.user_avatar);
     store.setIsAdmin(response.is_admin);
     store.setSubscriptionPlan([response.subscription_data.tier]);
-    store.setPreferredModel(response.preferred_model || '');
+    store.setPreferredModel(response.preferred_model || {});
     store.setPurchaseId(response.purchase_id || '');
 
-    if (response.ai_customization?.inference_settings) {
-      store.setInferenceSettings(response.ai_customization.inference_settings);
+    if (response.ai_customization) {
+      store.setInferenceSettings(response.ai_customization);
     }
 
-    const modelIdentifiers = Object.entries(
-      response.subscription_data.model
-    ).map(([name, info]: any) => ({
-      name,
-      model_description: info.description,
+    const publicModels = Object.entries(response.subscription_data.model).map(
+      ([name, info]: any) => ({
+        name,
+        model_description: info.description,
+        slug: info.slug,
+      })
+    );
+
+    const privateModels = Object.entries(
+      response.subscription_data.private_models
+    ).map(([_, info]: any) => ({
+      name: info.model_name,
+      model_description: info.model_description,
     }));
 
-    store.setModelIdentifiers(modelIdentifiers);
+    store.setModelIdentifiers([...publicModels, ...privateModels]);
     store.setMaxTokenLimit(response.subscription_data.max_token);
 
     return response;

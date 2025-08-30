@@ -1,0 +1,6 @@
+{
+  "themes": [
+    { "id": "theme-dark", "folder": "dark" },
+    { "id": "theme-light", "folder": "light" }
+  ]
+}

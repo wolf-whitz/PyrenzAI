@@ -1,4 +1,10 @@
-import React, { useState, useEffect, ChangeEvent } from 'react';
+import React, {
+  useState,
+  useEffect,
+  ChangeEvent,
+  useMemo,
+  useCallback,
+} from 'react';
 import {
   ImageUploader,
   useTextareaFormAPI,
@@ -11,7 +17,7 @@ import { useCharacterStore } from '~/store';
 import { Character } from '@shared-types';
 import { Box, Typography } from '@mui/material';
 
-export function TextareaForm() {
+export const TextareaForm = React.memo(() => {
   const character = useCharacterStore((state) => state) as Character;
 
   const {
@@ -39,17 +45,18 @@ export function TextareaForm() {
     setTagsInputRaw((character.tags || []).join('\n'));
   }, [character.tags]);
 
-  function handleTagsChange(
-    e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
-  ) {
-    const raw = e.target.value;
-    setTagsInputRaw(raw);
-    const parsedTags = raw
-      .split(/\r?\n/)
-      .map((t) => t.trim())
-      .filter(Boolean);
-    handleTagsUpdate(parsedTags);
-  }
+  const handleTagsChange = useCallback(
+    (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+      const raw = e.target.value;
+      setTagsInputRaw(raw);
+      const parsedTags = raw
+        .split(/\r?\n/)
+        .map((t) => t.trim())
+        .filter(Boolean);
+      handleTagsUpdate(parsedTags);
+    },
+    [handleTagsUpdate]
+  );
 
   return (
     <>
@@ -118,4 +125,4 @@ export function TextareaForm() {
       />
     </>
   );
-}
+});

@@ -14,7 +14,6 @@ export const useTextareaFormAPI = () => {
   const setTokenTotal = useCharacterStore((s) => s.setTokenTotal);
   const setPermanentTokens = useCharacterStore((s) => s.setPermanentTokens);
   const setTemporaryTokens = useCharacterStore((s) => s.setTemporaryTokens);
-  const setIsCounting = useCharacterStore((s) => s.setIsCounting);
 
   const showAlert = usePyrenzAlert();
 
@@ -70,60 +69,91 @@ export const useTextareaFormAPI = () => {
 
   const updateTokenCounts = useCallback(
     (updatedCharacter: CharacterPayload, updatedAlternatives: string[]) => {
-      const altTokens = updatedAlternatives.reduce(
-        (sum, msg) => sum + countTokens(msg),
-        0
-      );
       let permanent = 0;
-      let temporary = altTokens;
+      let temporary = 0;
 
       textareasByCategory
         .flatMap((cat) => cat.fields)
         .forEach((field) => {
           if (!field.showTokenizer) return;
-          const value = (updatedCharacter as any)[field.name];
-          const values = Array.isArray(value) ? value : [value];
-          const fieldCount = values.reduce(
-            (sum, v) => (typeof v === 'string' ? sum + countTokens(v) : sum),
-            0
-          );
-          if (field.is_permanent) permanent += fieldCount;
-          else temporary += fieldCount;
+
+          let fieldCount = 0;
+
+          if (field.name === 'first_message') {
+            fieldCount = updatedAlternatives.reduce(
+              (sum, msg) => sum + countTokens(msg || ''),
+              0
+            );
+          } else {
+            const value = (updatedCharacter as any)[field.name];
+
+            if (value !== undefined && value !== null) {
+              if (Array.isArray(value)) {
+                fieldCount = value.reduce(
+                  (sum, v) => sum + countTokens(String(v || '')),
+                  0
+                );
+              } else {
+                fieldCount = countTokens(String(value || ''));
+              }
+            }
+          }
+
+          if (field.is_permanent === true) {
+            permanent += fieldCount;
+          } else {
+            temporary += fieldCount;
+          }
         });
 
       const total = permanent + temporary;
       setPermanentTokens(permanent);
       setTemporaryTokens(temporary);
       setTokenTotal(total);
-      setIsCounting(false);
     },
-    [setTokenTotal, setPermanentTokens, setTemporaryTokens, setIsCounting]
+    [setTokenTotal, setPermanentTokens, setTemporaryTokens]
   );
 
-  const debouncedUpdateTokenCounts = useMemo(
-    () =>
-      createDebouncedTokenizer((total) => {
-        updateTokenCounts(
-          { ...character, first_message: alternativeMessages },
-          alternativeMessages
-        );
-      }, 500),
-    [updateTokenCounts, character, alternativeMessages]
-  );
+  const debouncedUpdateTokenCounts = useMemo(() => {
+    let timeoutId: NodeJS.Timeout;
+    return {
+      call: (
+        updatedAlternatives: string[],
+        updatedCharacter?: CharacterPayload
+      ) => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+          const charToUse = updatedCharacter || character;
+          updateTokenCounts(
+            { ...charToUse, first_message: updatedAlternatives },
+            updatedAlternatives
+          );
+        }, 300);
+      },
+      cancel: () => clearTimeout(timeoutId),
+    };
+  }, [updateTokenCounts]);
 
   const updateAlternativeMessage = useCallback(
     (newValue: string, index = currentIndex) => {
-      setAlternativeMessages((prev) => {
-        const updated = [...prev];
-        updated[index] = newValue;
-        setCharacter({ first_message: updated });
-        setIsCounting(true);
-        debouncedUpdateTokenCounts.cancel();
-        debouncedUpdateTokenCounts(updated);
-        return updated;
-      });
+      const updatedMessages = [...alternativeMessages];
+      updatedMessages[index] = newValue;
+
+      setAlternativeMessages(updatedMessages);
+      setCharacter((prev) => ({
+        ...prev,
+        first_message: updatedMessages,
+      }));
+
+      debouncedUpdateTokenCounts.cancel();
+      debouncedUpdateTokenCounts.call(updatedMessages);
     },
-    [currentIndex, setCharacter, debouncedUpdateTokenCounts, setIsCounting]
+    [
+      currentIndex,
+      alternativeMessages,
+      setCharacter,
+      debouncedUpdateTokenCounts,
+    ]
   );
 
   const removeAlternative = useCallback(
@@ -132,13 +162,12 @@ export const useTextareaFormAPI = () => {
         if (prev.length <= 1) return prev;
         const updated = prev.filter((_, i) => i !== index);
         setCharacter({ first_message: updated });
-        setIsCounting(true);
         debouncedUpdateTokenCounts.cancel();
-        debouncedUpdateTokenCounts(updated);
+        debouncedUpdateTokenCounts.call(updated);
         return updated;
       });
     },
-    [setCharacter, debouncedUpdateTokenCounts, setIsCounting]
+    [setCharacter, debouncedUpdateTokenCounts]
   );
 
   const handleChange = useCallback(
@@ -154,19 +183,29 @@ export const useTextareaFormAPI = () => {
           value = (target as HTMLInputElement).checked;
         }
 
-        const updatedCharacter = { ...character, [name]: value };
-        setCharacter(updatedCharacter);
-        setIsCounting(true);
-        debouncedUpdateTokenCounts.cancel();
-        debouncedUpdateTokenCounts(alternativeMessages);
+        setCharacter((prev) => {
+          const updatedCharacter = { ...prev, [name]: value };
+
+          const field = textareasByCategory
+            .flatMap((cat) => cat.fields)
+            .find((f) => f.name === name);
+
+          if (field?.showTokenizer) {
+            debouncedUpdateTokenCounts.cancel();
+            debouncedUpdateTokenCounts.call(
+              alternativeMessages,
+              updatedCharacter
+            );
+          }
+
+          return updatedCharacter;
+        });
       }
     },
     [
       updateAlternativeMessage,
       setCharacter,
-      character,
       debouncedUpdateTokenCounts,
-      setIsCounting,
       currentIndex,
       alternativeMessages,
     ]
@@ -188,15 +227,17 @@ export const useTextareaFormAPI = () => {
   const clearAllCategories = useCallback(() => {
     setAlternativeMessages(['']);
     setCharacter({} as CharacterPayload);
-    setIsCounting(true);
     debouncedUpdateTokenCounts.cancel();
-    debouncedUpdateTokenCounts(['']);
-  }, [setCharacter, setIsCounting, debouncedUpdateTokenCounts]);
+    debouncedUpdateTokenCounts.call(['']);
+  }, [setCharacter, debouncedUpdateTokenCounts]);
 
   useEffect(() => {
-    setIsCounting(true);
-    debouncedUpdateTokenCounts(alternativeMessages);
-  }, []);
+    const timer = setTimeout(() => {
+      updateTokenCounts(character, alternativeMessages);
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [updateTokenCounts, character, alternativeMessages]);
 
   return {
     anchorEl,

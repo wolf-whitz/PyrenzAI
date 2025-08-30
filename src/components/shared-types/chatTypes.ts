@@ -1,7 +1,10 @@
 import { z } from 'zod';
 
 export const MessageSchema = z.object({
-  id: z.preprocess((val) => (val != null ? Number(val) : undefined), z.number()),
+  id: z.preprocess(
+    (val) => (val != null ? Number(val) : undefined),
+    z.number()
+  ),
   name: z.string().optional(),
   text: z.string().optional(),
   profile_image: z.string().optional(),
@@ -16,9 +19,11 @@ export const MessageSchema = z.object({
   char_id: z.string().optional(),
   alternative_messages: z.array(z.string()).optional(),
   current: z.number().default(0).optional(),
-  meta: z.object({
-    queryText: z.string(),
-  }).optional(),
+  meta: z
+    .object({
+      queryText: z.string(),
+    })
+    .optional(),
   emotion_type: z.string().optional(),
 });
 
@@ -36,17 +41,22 @@ export const ChatContainerPropsSchema = z.object({
   previous_message: z.array(MessageSchema),
   isGenerating: z.boolean(),
   handleSend: z.function().args(z.string()).returns(z.promise(z.void())),
-  messageIdRef: z.object({
-    char_uuid: z.string().nullable(),
-    user_uuid: z.string().nullable(),
-  }).nullable(),
+  messageIdRef: z
+    .object({
+      char_uuid: z.string().nullable(),
+      user_uuid: z.string().nullable(),
+    })
+    .nullable(),
   messagesEndRef: z.any(),
 });
 
 export const GenerateResponseSchema = z.object({
   role: z.string(),
   content: z.string(),
-  MessageID: z.preprocess((val) => (val != null ? Number(val) : undefined), z.number()),
+  MessageID: z.preprocess(
+    (val) => (val != null ? Number(val) : undefined),
+    z.number()
+  ),
   remainingMessages: z.number(),
   isSubscribed: z.boolean(),
   user_uuid: z.string(),

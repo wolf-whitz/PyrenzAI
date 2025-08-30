@@ -51,7 +51,14 @@ export const useHomepageAPI = (pageFromURL: number) => {
         setMaxPage(res.totalPages);
       })();
     }
-  }, [tagFromURL, pageFromURL, fetchCharacterData, search, setCharacters, setMaxPage]);
+  }, [
+    tagFromURL,
+    pageFromURL,
+    fetchCharacterData,
+    search,
+    setCharacters,
+    setMaxPage,
+  ]);
 
   const onButtonTagClicked = async (tag: string) => {
     const res = await fetchCharacterData(

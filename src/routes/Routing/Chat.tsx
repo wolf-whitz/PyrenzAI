@@ -102,61 +102,6 @@ export function ChatPage() {
     setAlternativeFirstMessages,
   ]);
 
-  if (loading || !user) {
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="100vh"
-        width="100vw"
-      >
-        <CircularProgress />
-      </Box>
-    );
-  }
-
-  if (fetchError || !chat_uuid || userDataError || !char) {
-    return (
-      <Fade in timeout={600}>
-        <Box
-          display="flex"
-          minHeight="100vh"
-          width="100vw"
-          bgcolor="gray.900"
-          color="white"
-        >
-          <Box display={{ xs: 'none', lg: 'flex' }} width="256px">
-            <Sidebar />
-          </Box>
-
-          <Box
-            display="flex"
-            flexDirection="column"
-            justifyContent="center"
-            alignItems="center"
-            flex={1}
-          >
-            <img
-              src="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MascotCrying.avif"
-              alt="Mascot Crying"
-              style={{
-                width: 96,
-                height: 96,
-                marginBottom: 20,
-                cursor: 'pointer',
-              }}
-              onClick={() => navigate('/Home')}
-            />
-            <Typography variant="body1" color="white">
-              Unknown Chat or Character... Try again later. ˙◠˙?
-            </Typography>
-          </Box>
-        </Box>
-      </Fade>
-    );
-  }
-
   return (
     <Fade in timeout={600}>
       <Box
@@ -167,17 +112,57 @@ export function ChatPage() {
         color="white"
         position="relative"
       >
-        <Box display={{ xs: 'none', lg: 'flex' }}>
-          <Sidebar />
-        </Box>
-
-        <Box flex={1} overflow="auto" component="main">
-          <ChatContainer chat_uuid={chat_uuid} />
-        </Box>
-
-        <Box position="absolute" top={0} right={0}>
-          <PreviousChat />
-        </Box>
+        {loading || !user ? (
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            minHeight="100vh"
+            width="100vw"
+          >
+            <CircularProgress />
+          </Box>
+        ) : fetchError || !chat_uuid || userDataError || !char ? (
+          <>
+            <Box display={{ xs: 'none', lg: 'flex' }} width="256px">
+              <Sidebar />
+            </Box>
+            <Box
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
+              alignItems="center"
+              flex={1}
+            >
+              <img
+                src="https://cqtbishpefnfvaxheyqu.supabase.co/storage/v1/object/public/character-image/CDN/MascotCrying.avif"
+                alt="Mascot Crying"
+                style={{
+                  width: 96,
+                  height: 96,
+                  marginBottom: 20,
+                  cursor: 'pointer',
+                }}
+                onClick={() => navigate('/Home')}
+              />
+              <Typography variant="body1" color="white">
+                Unknown Chat or Character... Try again later. ˙◠˙?
+              </Typography>
+            </Box>
+          </>
+        ) : (
+          <>
+            <Box display={{ xs: 'none', lg: 'flex' }}>
+              <Sidebar />
+            </Box>
+            <Box flex={1} overflow="auto" component="main">
+              <ChatContainer chat_uuid={chat_uuid} />
+            </Box>
+            <Box position="absolute" top={0} right={0}>
+              <PreviousChat />
+            </Box>
+          </>
+        )}
       </Box>
     </Fade>
   );

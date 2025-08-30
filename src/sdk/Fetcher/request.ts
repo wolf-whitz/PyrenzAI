@@ -33,7 +33,7 @@ export async function request<T>(
   isImage = false,
   options: SSEOptions = {}
 ): Promise<T> {
-  const { userUUID, purchase_id, token } = useUserStore.getState();
+  const { userUUID, purchase_id } = useUserStore.getState();
   const BASE = purchase_id && userUUID ? SERVER_API_URL_1 : SERVER_API_URL_2;
   const url = new URL(`${BASE}${endpoint}`);
 
@@ -55,6 +55,7 @@ export async function request<T>(
   }
 
   const requestPromise = (async (): Promise<T> => {
+    const token = localStorage.getItem('authToken');
     const authHeader = token ? { Authorization: `Bearer ${token}` } : {};
 
     if (options?.isSSE) {
