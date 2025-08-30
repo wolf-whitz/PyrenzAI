@@ -18,3 +18,5 @@ export * from './PyrenzModal';
 
 export * from './PyrenzMenu';
 export * from './PyrenzCard';
+
+export * from './PyrenzSwitch'

@@ -5,7 +5,7 @@ import { Utils as utils } from '~/utility';
 import { getChatData, GetUserData } from '@components';
 
 interface ChatMessageWithId {
-  id: string;
+  id: number;
   user_message: string | null;
   char_message: string | null;
   chat_uuid: string;
@@ -51,7 +51,10 @@ export const fetchChatData = async (
         nocache: true,
       });
 
-      messages = result?.data ?? [];
+      messages = result?.data?.map((msg) => ({
+        ...msg,
+        id: Number(msg.id),
+      })) ?? [];
     } catch (err) {
       Sentry.captureException(err);
       return { is_error: true, error: 'Failed to fetch chat messages' };
@@ -78,6 +81,12 @@ export const fetchChatData = async (
       }
 
       if (msg.char_message) {
+        // Create a single message with all alternatives
+        const allAlternatives = [msg.char_message];
+        if (msg.alternative_messages && msg.alternative_messages.length > 0) {
+          allAlternatives.push(...msg.alternative_messages);
+        }
+
         formattedMessages.push({
           id: msg.id,
           name: characterData.name || 'Anon',
@@ -86,27 +95,10 @@ export const fetchChatData = async (
           type: 'char',
           chat_uuid: msg.chat_uuid,
           gender: characterData.gender,
-          alternative_messages: msg.alternative_messages ?? [],
+          alternative_messages: allAlternatives,
           current: 0,
           meta: lastUserText ? { queryText: lastUserText } : undefined,
         });
-
-        if (msg.alternative_messages && msg.alternative_messages.length > 0) {
-          msg.alternative_messages.forEach((altText, index) => {
-            formattedMessages.push({
-              id: `${msg.id}-alt-${index + 1}`,
-              name: characterData.name || 'Anon',
-              text: altText,
-              profile_image: characterData.profile_image || '',
-              type: 'char',
-              chat_uuid: msg.chat_uuid,
-              gender: characterData.gender,
-              alternative_messages: msg.alternative_messages,
-              current: index + 1,
-              meta: lastUserText ? { queryText: lastUserText } : undefined,
-            });
-          });
-        }
       }
     }
 

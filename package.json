@@ -91,6 +91,7 @@
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.1",
     "sanitize-html": "^2.14.0",
+    "sentence-splitter": "^5.0.0",
     "slick-carousel": "^1.8.1",
     "styled-components": "^6.1.17",
     "swr": "^2.3.3",

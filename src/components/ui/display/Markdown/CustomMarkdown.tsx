@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import { Typography, Box } from '@mui/material';
 import { useUserStore } from '~/store';
+import { split } from 'sentence-splitter';
 
 interface CustomMarkdownProps {
   text?: string;
@@ -20,20 +21,28 @@ export function CustomMarkdown({
   dataState,
   disableReplacement = false,
 }: CustomMarkdownProps) {
-  const [replacedText, setReplacedText] = useState('');
-  const { customization, username, personaName } = useUserStore();
+  const { customization, username, personaName, strip_incomplete_output } = useUserStore();
 
-  useEffect(() => {
-    const replace = (content: string = '') => {
-      if (disableReplacement) return content;
-      return content
+  const processedText = useMemo(() => {
+    let replaced = text;
+    if (!disableReplacement) {
+      replaced = replaced
         .replace(/{{char}}/g, char?.name || 'Anon')
         .replace(/{{user}}/g, personaName || username || 'Anon')
         .replace(/{{you}}:/g, '')
         .replace(/{{ai_message}}/g, ai_message);
-    };
-    setReplacedText(replace(text));
-  }, [text, char, username, personaName, ai_message, disableReplacement]);
+    }
+
+    if (dataState === 'char' && strip_incomplete_output) {
+      const sentences = split(replaced)
+        .filter((node) => node.type === 'Sentence')
+        .map((node: any) => node.raw.trim())
+        .filter(Boolean);
+      replaced = sentences.join(' ');
+    }
+
+    return replaced;
+  }, [text, char?.name, personaName, username, ai_message, dataState, disableReplacement, strip_incomplete_output]);
 
   const getColor = (
     type: 'text' | 'italic' | 'quote' | 'code',
@@ -108,10 +117,7 @@ export function CustomMarkdown({
                 color: getColor('quote', dataState),
               }}
             >
-              <Typography
-                variant="body2"
-                sx={{ fontSize: '0.9rem', lineHeight: 1.7 }}
-              >
+              <Typography variant="body2" sx={{ fontSize: '0.9rem', lineHeight: 1.7 }}>
                 {children}
               </Typography>
             </Box>
@@ -160,7 +166,7 @@ export function CustomMarkdown({
           ),
         }}
       >
-        {replacedText}
+        {processedText}
       </ReactMarkdown>
     </Box>
   );

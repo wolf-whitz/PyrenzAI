@@ -15,6 +15,8 @@ interface InferenceSettings {
 }
 
 interface Customization {
+  user_color: string;
+  char_color: string;
   userTextColor: string;
   charTextColor: string;
   userItalicColor: string;
@@ -53,6 +55,7 @@ interface UserStore {
   purchase_id: string | null;
   cachedUserData?: CachedUserData;
   token: string | null;
+  strip_incomplete_output: boolean;
   setUserUUID: (uuid: string) => void;
   setUsername: (name: string) => void;
   setPersonaName: (name: string) => void;
@@ -75,6 +78,7 @@ interface UserStore {
   clearCachedUserData: () => void;
   clearData: () => void;
   setToken: (token: string | null) => void;
+  setStripIncompleteOutput: (value: boolean) => void;
 }
 
 export const useUserStore = create<UserStore>()(
@@ -101,6 +105,8 @@ export const useUserStore = create<UserStore>()(
       modelIdentifiers: [],
       maxTokenLimit: 200,
       customization: {
+        user_color: '#555555',
+        char_color: 'rgba(20,24,28,0.6)',
         userTextColor: '#FFFFFF',
         charTextColor: '#FFFFFF',
         userItalicColor: '#999999',
@@ -113,6 +119,7 @@ export const useUserStore = create<UserStore>()(
       purchase_id: null,
       cachedUserData: undefined,
       token: null,
+      strip_incomplete_output: true,
       setUserUUID: (uuid) => set({ userUUID: uuid }),
       setUsername: (name) => set({ username: name }),
       setPersonaName: (name) => set({ personaName: name }),
@@ -159,6 +166,8 @@ export const useUserStore = create<UserStore>()(
           modelIdentifiers: [],
           maxTokenLimit: 200,
           customization: {
+            user_color: '#555555',
+            char_color: 'rgba(20,24,28,0.6)',
             userTextColor: '#FFFFFF',
             charTextColor: '#FFFFFF',
             userItalicColor: '#999999',
@@ -171,8 +180,10 @@ export const useUserStore = create<UserStore>()(
           purchase_id: null,
           cachedUserData: undefined,
           token: null,
+          strip_incomplete_output: true,
         }),
       setToken: (token) => set({ token }),
+      setStripIncompleteOutput: (value) => set({ strip_incomplete_output: value }),
     }),
     {
       name: 'user-storage',

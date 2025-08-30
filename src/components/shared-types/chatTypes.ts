@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const MessageSchema = z.object({
-  id: z.string().optional(),
+  id: z.preprocess((val) => (val != null ? Number(val) : undefined), z.number()),
   name: z.string().optional(),
   text: z.string().optional(),
   profile_image: z.string().optional(),
@@ -46,7 +46,7 @@ export const ChatContainerPropsSchema = z.object({
 export const GenerateResponseSchema = z.object({
   role: z.string(),
   content: z.string(),
-  MessageID: z.string(),
+  MessageID: z.preprocess((val) => (val != null ? Number(val) : undefined), z.number()),
   remainingMessages: z.number(),
   isSubscribed: z.boolean(),
   user_uuid: z.string(),

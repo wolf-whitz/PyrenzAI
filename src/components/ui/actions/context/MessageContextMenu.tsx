@@ -8,21 +8,21 @@ import ImageIcon from '@mui/icons-material/Image';
 
 interface MessageContextMenuProps {
   msg: {
-    id?: string;
+    id?: number;
     text?: string;
     type?: 'user' | 'char';
     error?: boolean;
   };
-  onRegenerate: (messageId: string) => void;
-  onRemove: (messageId: string) => void;
+  onRegenerate: (messageId: number) => void;
+  onRemove: (messageId: number) => void;
   handleSpeak: (text: string) => void;
   onEditClick: (
-    messageId: string,
+    messageId: number,
     currentMessage: string,
     type: 'user' | 'char'
   ) => void;
   handleCopy: () => void;
-  onGenerateImage: (messageId: string) => void;
+  onGenerateImage: (messageId: number) => void;
   onClose: () => void;
 }
 
@@ -32,7 +32,7 @@ const menuConfig = {
       icon: <DeleteIcon />,
       label: 'Delete',
       action: (props: MessageContextMenuProps) => () =>
-        props.msg.id && props.onRemove(props.msg.id),
+        props.msg.id !== undefined && props.onRemove(props.msg.id),
     },
     {
       icon: <FileCopyIcon />,
@@ -43,7 +43,7 @@ const menuConfig = {
       icon: <EditIcon />,
       label: 'Edit',
       action: (props: MessageContextMenuProps) => () =>
-        props.msg.id &&
+        props.msg.id !== undefined &&
         props.onEditClick(props.msg.id, props.msg.text || '', 'user'),
     },
   ],
@@ -52,13 +52,13 @@ const menuConfig = {
       icon: <RefreshIcon />,
       label: 'Regenerate',
       action: (props: MessageContextMenuProps) => () =>
-        props.msg.id && props.onRegenerate(props.msg.id),
+        props.msg.id !== undefined && props.onRegenerate(props.msg.id),
     },
     {
       icon: <DeleteIcon />,
       label: 'Delete',
       action: (props: MessageContextMenuProps) => () =>
-        props.msg.id && props.onRemove(props.msg.id),
+        props.msg.id !== undefined && props.onRemove(props.msg.id),
     },
     {
       icon: <VolumeUpIcon />,
@@ -75,14 +75,14 @@ const menuConfig = {
       icon: <EditIcon />,
       label: 'Edit',
       action: (props: MessageContextMenuProps) => () =>
-        props.msg.id &&
+        props.msg.id !== undefined &&
         props.onEditClick(props.msg.id, props.msg.text || '', 'char'),
     },
     {
       icon: <ImageIcon />,
       label: 'Generate Image',
       action: (props: MessageContextMenuProps) => () =>
-        props.msg.id && props.onGenerateImage(props.msg.id),
+        props.msg.id !== undefined && props.onGenerateImage(props.msg.id),
     },
   ],
 };

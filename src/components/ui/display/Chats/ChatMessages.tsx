@@ -8,12 +8,12 @@ interface ChatMessagesExtendedProps
   extends Omit<ChatMessagesProps, 'user' | 'char'> {
   setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>;
   onEditMessage: (
-    messageId: string,
+    messageId: number,
     editedMessage: string,
     type: 'user' | 'char'
   ) => void;
   firstMessage: string;
-  onGenerateImage: (messageId: string) => void;
+  onGenerateImage: (messageId: number) => void;
 }
 
 export function ChatMessages({
@@ -26,10 +26,8 @@ export function ChatMessages({
   firstMessage,
   onGenerateImage,
 }: ChatMessagesExtendedProps) {
-  const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
-  const [editingMessageType, setEditingMessageType] = useState<
-    'user' | 'char' | null
-  >(null);
+  const [editingMessageId, setEditingMessageId] = useState<number | null>(null);
+  const [editingMessageType, setEditingMessageType] = useState<'user' | 'char' | null>(null);
   const [editedMessage, setEditedMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -43,29 +41,19 @@ export function ChatMessages({
   const handleSpeak = async (text: string) => {
     setIsGenerating(true);
     try {
-      await speakMessage(text, char?.gender as string, () => {
-        setIsGenerating(false);
-      });
+      await speakMessage(text, char?.gender as string, () => setIsGenerating(false));
     } catch {
       setIsGenerating(false);
     }
   };
 
-  const handleEditClick = (
-    messageId: string,
-    currentMessage: string,
-    type: 'user' | 'char'
-  ) => {
+  const handleEditClick = (messageId: number, currentMessage: string, type: 'user' | 'char') => {
     setEditingMessageId(messageId);
     setEditingMessageType(type);
     setEditedMessage(currentMessage);
   };
 
-  const handleSaveEdit = async (
-    messageId: string,
-    editedMessage: string,
-    type: 'user' | 'char'
-  ) => {
+  const handleSaveEdit = async (messageId: number, editedMessage: string, type: 'user' | 'char') => {
     setIsLoading(true);
     await onEditMessage(messageId, editedMessage, type);
     setIsLoading(false);
@@ -88,7 +76,7 @@ export function ChatMessages({
     if (firstMessage && !alreadyIncludesFirst) {
       return [
         {
-          id: 'first-message',
+          id: -1, // use a numeric placeholder for the first message
           type: 'char',
           text: firstMessage,
           name: char?.name,

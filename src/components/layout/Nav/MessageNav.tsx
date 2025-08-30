@@ -22,17 +22,16 @@ export const MessageNav = ({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        width: 0,
-        height: 0,
-        overflow: 'hidden',
-        transition: 'width 0.3s ease, height 0.3s ease',
+        width: 'auto',
+        height: 32,
+        opacity: 0.7,
+        transition: 'opacity 0.3s ease',
         '.hover-container:hover &': {
-          width: 'auto',
-          height: 32,
-          overflow: 'visible',
+          opacity: 1,
         },
         position: 'relative',
         mt: 1,
+        mb: 0.5,
       }}
     >
       <IconButton
@@ -41,32 +40,51 @@ export const MessageNav = ({
           e.stopPropagation();
           onGoPrev?.(e);
         }}
+        disabled={altIndex === 0}
         sx={{
           color: '#fff',
-          backgroundColor: '#333',
-          '&:hover': { backgroundColor: '#444' },
+          backgroundColor: altIndex === 0 ? 'rgba(51,51,51,0.5)' : '#333',
+          '&:hover': { 
+            backgroundColor: altIndex === 0 ? 'rgba(51,51,51,0.5)' : '#444' 
+          },
+          '&:disabled': {
+            color: 'rgba(255,255,255,0.3)',
+          },
           mr: 1,
+          minWidth: 32,
+          height: 32,
         }}
-        aria-label="Previous message"
+        aria-label="Previous alternative message"
       >
-        <ChevronLeftIcon />
+        <ChevronLeftIcon fontSize="small" />
       </IconButton>
 
-      <Typography
-        variant="caption"
-        color="inherit"
+      <Box
         sx={{
-          userSelect: 'none',
-          fontWeight: 'bold',
-          fontSize: '0.75rem',
-          fontFamily: 'monospace',
-          color: 'rgba(255,255,255,0.7)',
-          minWidth: 30,
-          textAlign: 'center',
+          display: 'flex',
+          alignItems: 'center',
+          backgroundColor: 'rgba(255,255,255,0.1)',
+          borderRadius: 1,
+          px: 1.5,
+          py: 0.5,
+          mx: 1,
         }}
       >
-        {altIndex + 1}/{totalMessages}
-      </Typography>
+        <Typography
+          variant="caption"
+          sx={{
+            userSelect: 'none',
+            fontWeight: 'bold',
+            fontSize: '0.75rem',
+            fontFamily: 'monospace',
+            color: 'rgba(255,255,255,0.9)',
+            minWidth: 40,
+            textAlign: 'center',
+          }}
+        >
+          {altIndex + 1} / {totalMessages}
+        </Typography>
+      </Box>
 
       <IconButton
         size="small"
@@ -74,15 +92,23 @@ export const MessageNav = ({
           e.stopPropagation();
           onGoNext?.(e);
         }}
+        disabled={altIndex === totalMessages - 1}
         sx={{
           color: '#fff',
-          backgroundColor: '#333',
-          '&:hover': { backgroundColor: '#444' },
+          backgroundColor: altIndex === totalMessages - 1 ? 'rgba(51,51,51,0.5)' : '#333',
+          '&:hover': { 
+            backgroundColor: altIndex === totalMessages - 1 ? 'rgba(51,51,51,0.5)' : '#444' 
+          },
+          '&:disabled': {
+            color: 'rgba(255,255,255,0.3)',
+          },
           ml: 1,
+          minWidth: 32,
+          height: 32,
         }}
-        aria-label="Next message"
+        aria-label="Next alternative message"
       >
-        <ChevronRightIcon />
+        <ChevronRightIcon fontSize="small" />
       </IconButton>
     </Box>
   );

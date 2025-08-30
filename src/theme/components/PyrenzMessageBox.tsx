@@ -91,119 +91,31 @@ export function PyrenzMessageBox({
   disableReplacement = false,
   msg,
 }: PyrenzMessageBoxProps) {
-  const [altIndex, setAltIndex] = useState(
-    alternation_first ? 0 : alternativeMessages.length - 1
-  );
-
   const totalMessages = alternativeMessages.length;
-
-  useEffect(() => {
-    setAltIndex(alternation_first ? 0 : alternativeMessages.length - 1);
-  }, [alternativeMessages, alternation_first, msg?.id]);
-
-  useEffect(() => {
-    if (msg?.id != null) {
-      useChatStore.getState().setMessages((prev) =>
-        prev.map((m) =>
-          m.id === msg.id ? { ...m, current: altIndex } : m
-        )
-      );
-    }
-  }, [altIndex, msg?.id]);
-
-  useEffect(() => {
-    if (msg?.current !== undefined && msg.current !== altIndex) {
-      setAltIndex(msg.current);
-    }
-  }, [msg?.current]);
+  const currentIndex = msg?.current ?? 0;
 
   const getDisplayedText = () => {
-    if (totalMessages > 0) {
-      return alternativeMessages[altIndex] ?? '';
+    if (isEditing) return localEditedMessage ?? '';
+    if (totalMessages > 0 && currentIndex < totalMessages) {
+      return alternativeMessages[currentIndex] ?? '';
     }
     return content;
   };
 
   const handleGoPrev = (event: React.MouseEvent) => {
     event.stopPropagation();
-    setAltIndex((prev) => (prev === 0 ? totalMessages - 1 : prev - 1));
     onGoPrev?.(event);
   };
 
   const handleGoNext = (event: React.MouseEvent) => {
     event.stopPropagation();
-    setAltIndex((prev) => (prev + 1) % totalMessages);
     onGoNext?.(event);
   };
 
   const handleClick = (event: React.MouseEvent) => onClick?.(event);
 
-  const renderContent = () => {
-    if (isEditing) {
-      return (
-        <Box display="flex" flexDirection="column" flex={1}>
-          <TextField
-            value={localEditedMessage ?? ''}
-            onChange={onChange}
-            autoFocus
-            multiline
-            fullWidth
-            minRows={3}
-            maxRows={20}
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                padding: '8px',
-                '& fieldset': { border: 'none' },
-              },
-              '& textarea': { overflow: 'auto' },
-            }}
-          />
-          <Box display="flex" justifyContent="flex-end" gap={1} mt={1}>
-            <PyrenzBlueButton
-              onClick={onSaveEdit}
-              disabled={isLoading}
-              sx={{ backgroundColor: 'transparent', color: '#fff' }}
-            >
-              {isLoading ? 'Saving...' : 'Submit'}
-            </PyrenzBlueButton>
-            <PyrenzBlueButton
-              onClick={onCancelEdit}
-              disabled={isLoading}
-              sx={{ backgroundColor: 'transparent', color: '#fff' }}
-            >
-              Cancel
-            </PyrenzBlueButton>
-          </Box>
-        </Box>
-      );
-    }
-
-    if (isGeneratingEmptyCharMessage) return <TypingIndicator />;
-
-    return (
-      <>
-        <CustomMarkdown
-          text={getDisplayedText()}
-          dataState={role}
-          char={char}
-          ai_message={ai_message}
-          disableReplacement={disableReplacement}
-        />
-        {showNav && totalMessages > 1 && (
-          <MessageNav
-            altIndex={altIndex}
-            totalMessages={totalMessages}
-            onGoPrev={handleGoPrev}
-            onGoNext={handleGoNext}
-          />
-        )}
-      </>
-    );
-  };
-
   return (
     <Box
-      className="hover-container"
       display="flex"
       flexDirection="column"
       alignItems={role === 'user' ? 'flex-end' : 'flex-start'}
@@ -215,23 +127,76 @@ export function PyrenzMessageBox({
             alt={displayName ?? ''}
             src={charAvatar}
             sx={{ width: 32, height: 32, mr: 1 }}
-            className="rounded-full"
           />
         )}
         <StyledPyrenzMessageBox
           onClick={handleClick}
           sx={{ ...sx, flex: 1 }}
-          className={className}
+          className={`${className} hover-container`}
           role={role}
         >
-          {renderContent()}
+          {isEditing ? (
+            <Box display="flex" flexDirection="column" flex={1}>
+              <TextField
+                value={localEditedMessage ?? ''}
+                onChange={onChange}
+                autoFocus
+                multiline
+                fullWidth
+                minRows={3}
+                maxRows={20}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    padding: '8px',
+                    '& fieldset': { border: 'none' },
+                  },
+                  '& textarea': { overflow: 'auto' },
+                }}
+              />
+              <Box display="flex" justifyContent="flex-end" gap={1} mt={1}>
+                <PyrenzBlueButton
+                  onClick={onSaveEdit}
+                  disabled={isLoading}
+                  sx={{ backgroundColor: 'transparent', color: '#fff' }}
+                >
+                  {isLoading ? 'Saving...' : 'Submit'}
+                </PyrenzBlueButton>
+                <PyrenzBlueButton
+                  onClick={onCancelEdit}
+                  disabled={isLoading}
+                  sx={{ backgroundColor: 'transparent', color: '#fff' }}
+                >
+                  Cancel
+                </PyrenzBlueButton>
+              </Box>
+            </Box>
+          ) : isGeneratingEmptyCharMessage ? (
+            <TypingIndicator />
+          ) : (
+            <>
+              <CustomMarkdown
+                text={getDisplayedText()}
+                dataState={role}
+                char={char}
+                ai_message={ai_message}
+                disableReplacement={disableReplacement}
+              />
+              {showNav && totalMessages > 1 && (
+                <MessageNav
+                  altIndex={currentIndex}
+                  totalMessages={totalMessages}
+                  onGoPrev={handleGoPrev}
+                  onGoNext={handleGoNext}
+                />
+              )}
+            </>
+          )}
         </StyledPyrenzMessageBox>
         {role === 'user' && userAvatar && (
           <HoverableAvatar
             alt={displayName ?? ''}
             src={userAvatar}
             sx={{ width: 32, height: 32, ml: 1 }}
-            className="rounded-full"
           />
         )}
       </Box>
